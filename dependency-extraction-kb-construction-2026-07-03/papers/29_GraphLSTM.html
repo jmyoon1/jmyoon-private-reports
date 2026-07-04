@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>[29] Cross-Sentence N-ary Relation Extraction with Graph LSTMs — Dependency Extraction &amp; KB Construction Survey</title>
+<style>
+:root {
+  --bg: #0d1117; --card: #161b22; --border: #30363d;
+  --text: #e6edf3; --muted: #7d8590; --accent: #58a6ff;
+  --teal: #39d0c7; --green: #3fb950; --yellow: #d29922;
+  --red: #f85149; --purple: #bc8cff; --orange: #e3b341;
+  --sidebar-w: 262px; --toc-w: 210px; --hdr-h: 48px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+body { font-family: -apple-system, sans-serif; background: var(--bg);
+       color: var(--text); line-height: 1.6; }
+.bd-root { display: flex; height: 100vh; overflow: hidden; }
+.bd-sidebar-primary {
+  width: var(--sidebar-w); min-width: var(--sidebar-w);
+  overflow-y: auto; background: var(--card);
+  border-right: 1px solid var(--border);
+  padding: 0.75rem 0; flex-shrink: 0;
+}
+.bd-sidebar-primary::-webkit-scrollbar { width: 4px; }
+.bd-sidebar-primary::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+.bd-main { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-width: 0; }
+.article-header-bar {
+  height: var(--hdr-h); background: var(--card);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; padding: 0 1.5rem;
+  gap: 1rem; flex-shrink: 0;
+}
+.header-brand { color: var(--teal); font-weight: bold; font-size: 0.95em;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 1; }
+.header-brand a { color: inherit; text-decoration: none; }
+.breadcrumb { color: var(--muted); font-size: 0.82em; display: flex;
+  align-items: center; gap: 0.3rem; flex-shrink: 0; }
+.breadcrumb a { color: var(--accent); text-decoration: none; }
+.breadcrumb span { color: var(--border); }
+.bd-article { flex: 1; overflow-y: auto; padding: 2rem 2.5rem; }
+.bd-article::-webkit-scrollbar { width: 6px; }
+.bd-article::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+.bd-sidebar-secondary {
+  width: var(--toc-w); min-width: var(--toc-w);
+  overflow-y: auto; border-left: 1px solid var(--border);
+  padding: 1rem 0.75rem; flex-shrink: 0;
+}
+.bd-sidebar-secondary::-webkit-scrollbar { width: 4px; }
+.bd-sidebar-secondary::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+.sidebar-logo { padding: 0.5rem 1rem 0.75rem;
+  border-bottom: 1px solid var(--border); margin-bottom: 0.5rem; }
+.sidebar-logo a { color: var(--teal); font-weight: bold; font-size: 0.95em;
+  text-decoration: none; display: block; }
+.sidebar-section { color: var(--muted); font-size: 0.72em; font-weight: bold;
+  text-transform: uppercase; letter-spacing: 0.07em;
+  padding: 0.7rem 1rem 0.25rem; }
+.sidebar-nav-link { display: block; padding: 0.28rem 1rem 0.28rem 1.25rem;
+  color: var(--muted); font-size: 0.875em; text-decoration: none; }
+.sidebar-nav-link:hover { color: var(--text); background: rgba(255,255,255,0.03); }
+.sidebar-nav-link.active { color: var(--teal);
+  border-left: 2px solid var(--teal);
+  padding-left: calc(1.25rem - 2px); background: rgba(57,208,199,0.05); }
+.mini-toc-label { color: var(--muted); font-size: 0.72em; font-weight: bold;
+  text-transform: uppercase; letter-spacing: 0.07em; padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border); margin-bottom: 0.5rem; }
+.mini-toc { list-style: none; }
+.mini-toc li a { display: block; padding: 0.22rem 0;
+  color: var(--muted); font-size: 0.83em; text-decoration: none;
+  border-left: 2px solid transparent; padding-left: 0.5rem; }
+.mini-toc li a:hover { color: var(--text); }
+.mini-toc li a.toc-active { color: var(--teal); border-left-color: var(--teal); }
+.section-anchor { scroll-margin-top: calc(var(--hdr-h) + 8px); }
+h1 { color: var(--teal); font-size: 1.7em; margin-bottom: 0.5rem; }
+h2 { color: var(--teal); font-size: 1.25em; margin: 1.5rem 0 0.6rem; }
+h3 { color: var(--teal); font-size: 1.05em; margin: 1.2rem 0 0.4rem; }
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+p { margin-bottom: 0.8rem; }
+.card { background: var(--card); border: 1px solid var(--border);
+        border-radius: 8px; padding: 1.2rem; margin-bottom: 1rem; }
+table { width: 100%; border-collapse: collapse; font-size: 0.9em; }
+th { background: var(--card); color: var(--teal); padding: 8px;
+     border: 1px solid var(--border); text-align: left; }
+td { padding: 8px; border: 1px solid var(--border); vertical-align: top; }
+tr:nth-child(even) td { background: rgba(0,0,0,0.2); }
+.stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+             gap: 1rem; margin-bottom: 1.5rem; }
+.stat-box { background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+            padding: 1rem; text-align: center; }
+.stat-num { font-size: 2rem; font-weight: bold; color: var(--teal); }
+.stat-label { color: var(--muted); font-size: 0.85em; margin-top: 0.2rem; }
+.sp-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+           gap: 1rem; margin: 1rem 0; }
+.sp-card { background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+           padding: 1.2rem; cursor: pointer; transition: border-color 0.15s; }
+.sp-card:hover { border-color: var(--teal); }
+.sp-card h3 { margin: 0 0 0.5rem; color: var(--teal); font-size: 1em; }
+.sp-card p { margin: 0; color: var(--muted); font-size: 0.88em; }
+.sp-badge { display: inline-block; background: rgba(57,208,199,0.1); color: var(--teal);
+            border-radius: 4px; padding: 2px 8px; font-size: 0.8em; margin-bottom: 0.5rem; }
+.paper-meta { color: var(--muted); font-size: 0.9em; margin-bottom: 1.5rem; }
+.paper-meta a { color: var(--accent); }
+.section-label { color: var(--teal); font-weight: bold; font-size: 0.85em;
+                 text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.4rem; }
+.pill { display: inline-block; border-radius: 4px; padding: 0.15rem 0.6rem;
+        font-size: 0.8em; font-weight: bold; margin-right: 0.4rem; }
+.pill-p0 { background: rgba(63,185,80,0.2); color: var(--green); }
+.pill-p1 { background: rgba(57,208,199,0.15); color: var(--teal); }
+.pill-p2 { background: rgba(210,153,34,0.2); color: var(--yellow); }
+.pill-p4 { background: rgba(125,133,144,0.2); color: var(--muted); }
+.pill-tool { background: rgba(188,140,255,0.2); color: var(--purple); }
+.delta-row { margin: 0.4rem 0; padding: 0.4rem 0.8rem;
+             border-left: 3px solid var(--border); border-radius: 0 4px 4px 0; }
+.delta-resolved { border-left-color: var(--green); }
+.delta-missing  { border-left-color: var(--yellow); }
+.delta-ref      { border-left-color: var(--muted); }
+.chain { position: relative; padding-left: 2rem; }
+.chain::before { content: ''; position: absolute; left: 0.95rem; top: 0;
+                 bottom: 0; width: 2px; background: var(--border); }
+.chain-node { position: relative; margin-bottom: 2rem; }
+.chain-node::before { content: ''; position: absolute; left: -1.55rem;
+                      top: 1.1rem; width: 12px; height: 12px;
+                      border-radius: 50%; background: var(--teal); }
+.chain-num { display: inline-block; width: 28px; height: 28px; background: var(--teal);
+             color: #000; border-radius: 50%; text-align: center; line-height: 28px;
+             font-weight: bold; font-size: 0.85em; margin-right: 0.6rem; flex-shrink: 0; }
+.chain-q { font-weight: bold; color: var(--text); margin: 0.4rem 0 0.3rem; font-size: 1em; }
+.chain-papers { color: var(--muted); font-size: 0.85em; margin-bottom: 0.6rem; }
+.chain-start { background: var(--card); border: 1px solid var(--teal);
+               border-radius: 8px; padding: 1rem; margin-bottom: 2rem; }
+.chain-start h3 { margin: 0 0 0.5rem; color: var(--teal); }
+.chain-converge { background: var(--card); border: 1px solid var(--green);
+                  border-radius: 8px; padding: 1rem; margin-top: 1rem; }
+.chain-converge h3 { margin: 0 0 0.5rem; color: var(--green); }
+.chain-label { display: inline-block; border-radius: 4px; padding: 0.15rem 0.6rem;
+               font-size: 0.8em; font-weight: bold; margin-right: 0.4rem; }
+.chain-status { border-radius: 0 4px 4px 0; padding: 0.5rem 0.8rem;
+                margin: 0.35rem 0; font-size: 0.88em; }
+.chain-status ul { margin: 0.3rem 0 0 1.2rem; padding: 0; }
+.chain-status li { margin-bottom: 0.25rem; }
+.chain-status.solved  { background: rgba(63,185,80,0.07);  border-left: 3px solid var(--green); }
+.chain-status.remains { background: rgba(210,153,34,0.07); border-left: 3px solid var(--yellow); }
+.chain-status.added   { background: rgba(248,81,73,0.07);  border-left: 3px solid var(--red); }
+.chain-status.pivoted { background: rgba(188,140,255,0.1); border-left: 3px solid var(--purple); }
+.chain-label.solved   { background: rgba(63,185,80,0.2);  color: var(--green); }
+.chain-label.remains  { background: rgba(210,153,34,0.2); color: var(--yellow); }
+.chain-label.added    { background: rgba(248,81,73,0.2);  color: var(--red); }
+.chain-label.pivoted  { background: rgba(188,140,255,0.2); color: var(--purple); }
+.chain-status.expected { background: rgba(88,166,255,0.07);  border-left: 3px solid var(--accent); }
+.chain-label.expected  { background: rgba(88,166,255,0.2);   color: var(--accent); }
+.chain-status.revised  { background: rgba(57,208,199,0.07);  border-left: 3px solid var(--teal); }
+.chain-label.revised   { background: rgba(57,208,199,0.2);   color: var(--teal); }
+.concept-box { border-left: 4px solid var(--teal); background: #0d1f1f;
+               border-radius: 4px; padding: 1.2rem; margin-bottom: 1.2rem; }
+.concept-name { font-weight: bold; color: var(--teal); font-size: 1.05em; margin-bottom: 0.5rem; }
+.concept-field { margin: 0.3rem 0; }
+.concept-label { color: var(--muted); font-size: 0.85em; }
+.hypothesis { border-left: 4px solid var(--teal); background: #0d1f1f;
+              border-radius: 4px; padding: 1rem; margin: 1rem 0; }
+.recommendation { border-left: 4px solid var(--purple); background: #1a0f2e;
+                  border-radius: 4px; padding: 1rem; margin: 1rem 0; }
+.rq-row { background: rgba(88,166,255,0.05); border-left: 3px solid var(--accent);
+          padding: 0.4rem 0.8rem; margin-bottom: 0.5rem; border-radius: 0 4px 4px 0; }
+.scroll-table-wrap { max-height: 420px; overflow-y: auto; border: 1px solid var(--border);
+                     border-radius: 4px; }
+.scroll-table-wrap thead th { position: sticky; top: 0; background: #161b22; z-index: 1; }
+.page-nav { display: flex; justify-content: space-between; margin-top: 2rem;
+            padding-top: 1rem; border-top: 1px solid var(--border); gap: 1rem; }
+.page-nav a { color: var(--accent); font-size: 0.9em; }
+html.ko-active .en-only { display: none !important; }
+html.ko-active .ko-only { display: block !important; }
+.ko-only { display: none; }
+span.ko-only, span.en-only { display: inline; }
+html.ko-active span.en-only { display: none !important; }
+html.ko-active span.ko-only { display: inline !important; }
+.lang-btn { background: transparent; color: var(--muted); border: 1px solid var(--border);
+            border-radius: 4px; padding: 3px 9px; font-size: 0.8em; cursor: pointer; }
+.lang-btn.active { border-color: var(--teal); color: var(--teal); }
+@media (max-width: 1024px) { .bd-sidebar-secondary { display: none; } }
+@media (max-width: 768px) {
+  .bd-sidebar-primary { display: none; }
+  .bd-root { flex-direction: column; height: auto; overflow: visible; }
+  .bd-main { overflow: visible; }
+  .bd-article { overflow: visible; padding: 1rem; }
+  .stat-grid { grid-template-columns: repeat(2, 1fr); }
+  .sp-grid { grid-template-columns: 1fr; }
+}
+</style>
+<script>
+function toggleLanguage() {
+  const html = document.documentElement;
+  const isKo = html.classList.toggle('ko-active');
+  document.querySelectorAll('.lang-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.lang === (isKo ? 'ko' : 'en'));
+  });
+  localStorage.setItem('survey-lang', isKo ? 'ko' : 'en');
+}
+document.addEventListener('DOMContentLoaded', function() {
+  const saved = localStorage.getItem('survey-lang');
+  if (saved === 'ko') {
+    document.documentElement.classList.add('ko-active');
+    document.querySelectorAll('.lang-btn').forEach(b =>
+      b.classList.toggle('active', b.dataset.lang === 'ko'));
+  } else {
+    document.querySelectorAll('[data-lang="en"]').forEach(b => b.classList.add('active'));
+  }
+  const article = document.querySelector('.bd-article');
+  const sections = Array.from(document.querySelectorAll('.section-anchor[id]'));
+  const sideLinks = Array.from(document.querySelectorAll('.bd-sidebar-primary .sidebar-nav-link'));
+  const tocLinks = Array.from(document.querySelectorAll('.bd-sidebar-secondary .mini-toc a'));
+  if (!article || !sections.length) return;
+  function current() {
+    let id = sections[0].id;
+    const scrollTop = article.scrollTop + 60;
+    sections.forEach(function(s) { if (s.offsetTop <= scrollTop) id = s.id; });
+    return id;
+  }
+  function update() {
+    const id = current();
+    sideLinks.forEach(function(a) { a.classList.toggle('active', a.getAttribute('href') === '#' + id); });
+    tocLinks.forEach(function(a) { a.classList.toggle('toc-active', a.getAttribute('href') === '#' + id); });
+  }
+  article.addEventListener('scroll', update, { passive: true });
+  update();
+});
+</script>
+</head>
+<body>
+<div class="bd-root">
+  <nav class="bd-sidebar-primary">
+  <div class="sidebar-logo">
+    <a href="../index.html">&#x2b21; <span class="en-only">Dependency Extraction &amp; KB Construction Survey</span><span class="ko-only">의존성 추출 및 지식베이스 구축 문헌 조사</span></a>
+  </div>
+  <div class="sidebar-section en-only">Overview</div>
+  <div class="sidebar-section ko-only">개요</div>
+  <a href="../index.html#overview" class="sidebar-nav-link"><span class="en-only">Survey Hub</span><span class="ko-only">조사 허브</span></a>
+  <a href="../index.html#answers" class="sidebar-nav-link"><span class="en-only">Key Answers</span><span class="ko-only">핵심 답변</span></a>
+  <div class="sidebar-section en-only">Sub-Problems</div>
+  <div class="sidebar-section ko-only">세부 문제</div>
+  <a href="../sp1_citation_intent.html" class="sidebar-nav-link">SP1: <span class="en-only">Citation Intent</span><span class="ko-only">인용 의도</span></a>
+  <a href="../sp2_concept_relation_extraction.html" class="sidebar-nav-link active">SP2: <span class="en-only">Concept/Relation Extraction</span><span class="ko-only">개념·관계 추출</span></a>
+  <a href="../sp3_concept_prerequisite.html" class="sidebar-nav-link">SP3: <span class="en-only">Concept Prerequisite</span><span class="ko-only">개념 선행관계</span></a>
+  <a href="../sp4_entity_linking.html" class="sidebar-nav-link">SP4: <span class="en-only">Entity Linking</span><span class="ko-only">개체 링킹</span></a>
+  <a href="../sp5_related_work_novelty.html" class="sidebar-nav-link">SP5: <span class="en-only">Related Work / Novelty</span><span class="ko-only">관련연구·신규성</span></a>
+  <a href="../sp6_llm_agent_kg.html" class="sidebar-nav-link">SP6: <span class="en-only">LLM-Agent KG</span><span class="ko-only">LLM 에이전트 KG</span></a>
+  <a href="../sp7_ontology_alignment.html" class="sidebar-nav-link">SP7: <span class="en-only">Ontology Alignment</span><span class="ko-only">온톨로지 정렬</span></a>
+  <a href="../sp8_incremental_kg.html" class="sidebar-nav-link">SP8: <span class="en-only">Incremental KG</span><span class="ko-only">증분 KG</span></a>
+  <a href="../sp9_link_prediction_dag.html" class="sidebar-nav-link">SP9: <span class="en-only">DAG Link Prediction</span><span class="ko-only">DAG 링크 예측</span></a>
+  <div class="sidebar-section en-only">Synthesis</div>
+  <div class="sidebar-section ko-only">종합</div>
+  <a href="../conclusion.html" class="sidebar-nav-link"><span class="en-only">Conclusion</span><span class="ko-only">결론</span></a>
+  <a href="../thinking-process.html" class="sidebar-nav-link"><span class="en-only">Thinking Process</span><span class="ko-only">추론 과정</span></a>
+</nav>
+  <div class="bd-main">
+    <div class="article-header-bar">
+  <div class="header-brand"><a href="../index.html"><span class="en-only">Dependency Extraction &amp; KB Construction Survey</span><span class="ko-only">의존성 추출 및 지식베이스 구축 문헌 조사</span></a></div>
+  <nav class="breadcrumb"><a href="../index.html"><span class="en-only">Survey</span><span class="ko-only">조사</span></a><span>›</span><a href="../sp2_concept_relation_extraction.html">SP2</a><span>›</span><span>[29] Cross-Sentence N-ary Relation Extracti</span></nav>
+  <button class="lang-btn" data-lang="en" onclick="toggleLanguage()">EN</button>
+  <button class="lang-btn" data-lang="ko" onclick="toggleLanguage()">KO</button>
+</div>
+    <div class="bd-article">
+      <section id="header" class="section-anchor">
+  <div class="paper-meta">
+    <h1 style="margin-bottom:0.3rem">Cross-Sentence N-ary Relation Extraction with Graph LSTMs</h1>
+    <p style="margin:0.3rem 0;color:var(--muted)">Peng et al. · TACL 2017 · 2017 · <span class="en-only">538 citations</span><span class="ko-only">인용 538회</span></p>
+    <p style="margin:0.3rem 0"><a href="https://arxiv.org/abs/1708.03743" target="_blank">arXiv:1708.03743</a> · <a href="https://arxiv.org/pdf/1708.03743.pdf" target="_blank">PDF</a> · SP: <a href="../sp2_concept_relation_extraction.html">SP2</a></p>
+    <p><span class="pill pill-p0">P0</span><span class="pill" style="background:rgba(255,255,255,0.05);color:var(--muted)">Track C</span></p>
+  </div>
+</section><section id="problem" class="section-anchor"><div class="card"><div class="section-label en-only">Problem</div><div class="section-label ko-only">해결하려는 문제</div><div class="en-only"><p>Prior relation extraction focused on <strong>binary</strong> relations within a <strong>single sentence</strong>, tied to the shortest dependency path between two entities. High-value domains (precision medicine) require <strong>n-ary</strong> relations (e.g., a drug-gene-mutation ternary interaction) whose arguments are frequently spread <strong>across multiple sentences</strong> and are not expressed by any sentence alone. Feature-based and single-sentence neural methods cannot represent such tuples jointly, and syntactic/discourse structure across sentence boundaries is left unmodeled.</p></div><div class="ko-only"><p>고가치 과학·생의학 관계는 문장 경계를 넘어 서술되어 단일 문장 추출로는 포착되지 않는다.</p></div></div></section><section id="solution" class="section-anchor"><div class="card"><div class="section-label en-only">Solution / Contribution</div><div class="section-label ko-only">해결책 / 기여</div><div class="en-only"><p>A general framework: encode the passage with a <strong>Graph LSTM</strong> over a <strong>document graph</strong>, extract per-entity contextual vectors, concatenate them, and classify with (logistic-regression) relation classifiers. Key mechanism — generalize the LSTM recurrence to graphs by giving each node one forget gate per predecessor edge:</p>
+<p>$$i_t = \sigma\!\left(W_i x_t + \sum_{j\in P(t)} U_i^{m(t,j)} h_j + b_i\right),\quad f_{tj} = \sigma\!\left(W_f x_t + U_f^{m(t,j)} h_j + b_f\right)$$ $$c_t = i_t \odot \tilde{c}_t + \sum_{j\in P(t)} f_{tj}\odot c_j,\quad h_t = o_t \odot \tanh(c_t)$$</p>
+<p>The cyclic document graph is partitioned into forward and backward DAGs so backprop runs like bidirectional chain LSTM (asynchronous updates) rather than expensive loopy propagation. <strong>Multi-task learning</strong> adds a classifier per sub-relation (e.g. drug-mutation) sharing the same Graph LSTM, pooling scarce n-ary supervision with more abundant binary signal.</p></div><div class="ko-only"><p>문서 그래프 위의 Graph LSTM으로 문장 간 n-ary 관계를 추출하여 단일 문장 대비 3–5배 많은 상호작용을 포착함을 보인다.</p></div></div><div class="card"><div class="section-label en-only">Key Results</div><div class="section-label ko-only">주요 결과</div><ul><li>Drug-gene-mutation ternary, cross-sentence: Graph LSTM-FULL <strong>80.7%</strong> vs. BiLSTM 80.1, CNN 78.1, Feature-Based 77.7 (Table 1).</li><li>Drug-mutation binary, cross-sentence: Graph LSTM-FULL <strong>76.7%</strong>; Tree LSTM 75.9, BiLSTM-Shortest-Path 71.7 (loses 4-5 pts to parse noise) (Table 2).</li><li>Multi-task learning: ternary 80.7→82.0, drug-mutation 76.7→<strong>78.5</strong> (Graph LSTM); also lifts BiLSTM (Table 3).</li><li>Cross-sentence extraction yields <strong>3–5× more</strong> unique interactions than single-sentence at PubMed scale (57,033 vs 10,873 candidates); from only <strong>59</strong> curated triples the model extracts orders of magnitude more (Table 4).</li><li>GENIA gene-regulation binary: Graph LSTM <strong>34.8 F1</strong> (gold parses 35.8) vs. BiLSTM 33.0, Poon et al. 2015 33.2; gold parses give significant gain → syntax quality matters (Table 7).</li><li>Manual precision: 75% at p≥0.9, 64% at p≥0.5 (Table 6).</li></ul></div></section><section id="results" class="section-anchor"><details style="margin-top:0.6rem"><summary style="color:var(--muted);cursor:pointer"><span class="en-only">Concepts Introduced</span><span class="ko-only">도입된 개념</span></summary><div class="card" style="margin-top:0.5rem"><p><strong>Graph LSTM</strong></p>
+<ul><li><strong>What it computes</strong>: input = word embeddings of a text span + a <em>document graph</em> whose edges encode linear adjacency, syntactic dependencies, and discourse relations → operation = an LSTM recurrent unit generalized so each node may have multiple predecessors (one forget gate per predecessor edge, plus edge-typed weight matrices) → output = one contextual vector $h_t$ per word. Entity vectors are concatenated and fed to a relation classifier.</li><li><strong>Why it was created</strong>: linear-chain LSTMs model only sequential context and ignore syntactic/discourse structure; tree LSTMs are locked to a parse tree. Neither handles the arbitrary graph of intra- and inter-sentential dependencies needed to link entities scattered across multiple sentences.</li><li><strong>Concrete example</strong>: hidden dim = 150, edge-type embedding dim = 3, GloVe 100-d init. On the drug-gene-mutation ternary task, cross-sentence Graph LSTM-FULL reaches 80.7% accuracy vs. BiLSTM 80.1%.</li><li><strong>How it is used in this paper</strong>: it is the core representation learner (Fig. 2) for cross-sentence n-ary relation classification in two biomedical settings (molecular tumor boards; GENIA genetic pathways).</li></ul>
+<p><strong>Document graph</strong></p>
+<ul><li><strong>What it computes</strong>: input = a passage of ≤ K consecutive sentences → operation = build a graph with word nodes and typed edges (adjacent-word chain, Stanford syntactic dependencies, coreference, discourse) → output = the backbone over which the Graph LSTM is unrolled. For backprop it is partitioned into two DAGs (forward L→R + backward R→L).</li><li><strong>Why it was created</strong>: unifies prior LSTM variants — restrict edges to adjacency → linear-chain LSTM; restrict to parse tree → tree LSTM — while allowing richer linguistic structure.</li><li><strong>Concrete example</strong>: Fig. 1 links "L858E … EGFR gene" in sentence 1 to "gefitinib" in sentence 2 via a NEXTSENT edge plus dependency arcs, expressing a ternary interaction no single sentence states.</li><li><strong>How it is used in this paper</strong>: adopted from Quirk &amp; Poon (2017); determines what dependencies the Graph LSTM can exploit.</li></ul>
+<p><strong>Edge-type parametrization (Full vs. Edge-Type Embedding)</strong></p>
+<ul><li><strong>What it computes</strong>: Full = a distinct weight matrix $U^{m(t,j)}$ per coarse edge type; Embedding = a low-dim edge-type embedding $e_j$ combined via tensor product $h_j \otimes e_j$ with 3-way tensors $U$ to produce a "typed hidden representation".</li><li><strong>Why it was created</strong>: dozens of Stanford dependency labels would explode the parameter count under full parametrization; the embedding shares statistics across fine-grained edge types.</li><li><strong>Concrete example</strong>:  FULL slightly beats EMBED (80.7 vs. 80.6 ternary cross-sentence).</li><li><strong>How it is used in this paper</strong>: two variants compared in all experiments; FULL used for the PubMed-scale extraction run.</li></ul>
+<p>---</p></div></details><details style="margin-top:0.6rem"><summary style="color:var(--muted);cursor:pointer"><span class="en-only">5Cs Analysis</span><span class="ko-only">5Cs 분석</span></summary><div class="card" style="margin-top:0.5rem"><p><strong>Category</strong>: new method (neural architecture for relation extraction) <strong>Context</strong>: builds on Quirk &amp; Poon (2017) (document graph, distant supervision, minimal-span candidates), tree LSTM (Tai et al. 2015), Miwa &amp; Bansal (2016) stacked LSTMs; within this survey it is the foundational cross-sentence / document-level RE mechanism for SP2 (scientific concept &amp; relation extraction). Precedes PURE/PL-Marker/DyGIE++ style span-based RE also in this survey. <strong>Correctness</strong>: 5-fold CV with document-level fold assignment (no train-test contamination); significance via McNemar's chi-square (p&lt;0.05 ternary, p&lt;0.01 GENIA); manual eval with 88% inter-annotator agreement. Solid. Automatic-eval labels are noisy (distant supervision) — acknowledged. <strong>Contributions</strong>: (1) first neural architecture for cross-sentence n-ary RE that jointly represents an entity tuple; (2) Graph LSTM generalizing chain/tree LSTMs with edge-typed gating; (3) multi-task learning over sub-relations + PubMed-scale distant-supervision extraction. <strong>Clarity</strong>: equations and hyperparameters given (Theano, hidden=150, edge-emb=3, GloVe 100d, SGD batch 8, lr 0.02, ≤30 epochs); dataset release promised. Reproducible from description.</p></div></details><details style="margin-top:0.6rem"><summary style="color:var(--muted);cursor:pointer"><span class="en-only">Contribution vs. Claim</span><span class="ko-only">기여 대 주장</span></summary><div class="card" style="margin-top:0.5rem"><p><strong>Stated claims</strong>: general framework for cross-sentence n-ary RE; graph formulation subsumes chain/tree LSTMs; rich linguistic analysis improves extraction; multi-task with sub-relations helps; cross-sentence produces larger KBs. <strong>Demonstrated results</strong>: all supported with numbers on two biomedical domains. Larger-KB and multi-task claims clearly shown. <strong>Gap</strong>:  — the "rich linguistic analysis helps" claim is only weakly demonstrated on the biomedical ternary task (Graph LSTM beats BiLSTM by &lt;1 pt, and coreference/discourse edges gave <em>no</em> significant gain); the clear syntactic benefit appears only on GENIA where <strong>gold</strong> parses exist. So the value of graph structure is conditional on parse quality, narrower than the general framing suggests. Only biomedical domains evaluated (generality across domains asserted but not tested).</p></div></details><details style="margin-top:0.6rem"><summary style="color:var(--muted);cursor:pointer"><span class="en-only">Implementation Feasibility</span><span class="ko-only">구현 실현가능성</span></summary><div class="card" style="margin-top:0.5rem"><ul><li><strong>Needs</strong>: tokenizer + POS + Stanford dependency parser (CoreNLP/SPLAT), entity taggers, GloVe embeddings, a KB for distant supervision, GPU + Theano (or modern re-impl in PyTorch). PubMed Central full text for the large run.</li><li><strong>Code</strong>: dataset release promised at hanover.azurewebsites.net; .</li><li><strong>Modifications</strong>: for our agent pipeline, reuse the <em>document-graph construction</em> idea as an input representation to an LLM (serialize typed dependency edges into the prompt) rather than training the Graph LSTM; replace fixed biomedical schema with open scientific-concept types.</li><li><strong>Unknowns</strong>: <code>missing link: how well the DAG-partition backprop and edge-typed gating transfer beyond biomedical text; whether the graph structure adds value when parses are noisy (paper suggests limited gain).</code></li></ul></div></details><details style="margin-top:0.6rem"><summary style="color:var(--muted);cursor:pointer"><span class="en-only">Follow-up Papers</span><span class="ko-only">관련 후속 논문</span></summary><div class="card" style="margin-top:0.5rem"><ul><li>DyGIE++ (Wadden et al., 2019) <a href="../papers/17_DyGIEpp.html">[17]</a> — span-graph propagation for joint entity+relation, successor to graph-structured document-level RE.</li><li>PURE (Zhong &amp; Chen, 2021) <a href="../papers/19_PURE.html">[19]</a> — reexamines whether shared vs. separate encoders help relation extraction, revisiting Miwa &amp; Bansal-style joint modeling this paper builds on.</li><li>SciERC / SciIE (Luan et al., 2018) <a href="../papers/16_SciERC.html">[16]</a> — scientific-domain entity+relation+coref dataset, the schema closest to our open scientific-concept target.</li></ul></div></details></section><section id="delta" class="section-anchor"><div class="card"><div class="section-label en-only">Condition Delta — transfer to our setting</div><div class="section-label ko-only">조건 차이 — 우리 환경으로의 전이</div><p><strong>Paper's setting</strong>: inputs = biomedical passages (≤3 consecutive sentences) with pre-tagged drug/gene/mutation entities + syntactic parses; outputs = accuracy/precision of a fixed relation type (drug-gene-mutation ternary, gene regulation); conditions = distant supervision from GDKD+CIVIC KBs, closed entity-type schema, trained neural model (Theano). <strong>Our setting</strong>: inputs = a newly-added scientific paper (any CS/ML topic) added to a growing KB; outputs = prerequisite/derivation dependency links to existing KB nodes; conditions = LLM-agent-driven via prompting/retrieval, open/evolving schema, incremental DAG maintenance. <strong>Differences</strong>:</p>
+<ul><li>Document-level / cross-sentence relation signal: <strong>resolved: reference only</strong> — confirms that dependency-bearing relations routinely span sentence boundaries and must be modeled at passage/document scope, a design premise for our extractor.</li><li>Trained supervised/distant model vs. LLM prompting: <strong>missing link</strong> — Graph LSTM requires training a custom model; our constraint prioritizes prompt/retrieval methods. The <em>mechanism</em> (build a typed document graph, jointly represent an entity tuple) is transferable as an intermediate representation, not the model itself.</li><li>Fixed 3-entity biomedical schema vs. open scientific-concept schema: <strong>missing link</strong> — no entity/relation typology reuse; concept-prerequisite links differ from drug-gene-mutation triples.</li><li>Reliance on syntactic parse quality: <strong>reference only</strong> — cautionary signal that dependency-parse-based structure degrades on noisy/OOD text (biomedical parse errors erased the graph advantage).</li></ul></div></section>
+      <div class="page-nav"><a href="28_LiteratureGraph.html">← [28] LiteratureGraph</a><a href="../sp2_concept_relation_extraction.html">↑ SP2</a><a href="30_LectureBank.html">[30] LectureBank →</a></div>
+    </div>
+  </div>
+  <nav class="bd-sidebar-secondary">
+    <div class="mini-toc-label en-only">On this page</div>
+    <div class="mini-toc-label ko-only">이 페이지</div>
+    <ul class="mini-toc">
+      <li><a href="#header"><span class="en-only">Paper info</span><span class="ko-only">논문 정보</span></a></li>
+      <li><a href="#problem"><span class="en-only">Problem</span><span class="ko-only">문제</span></a></li>
+      <li><a href="#solution"><span class="en-only">Solution</span><span class="ko-only">해결책</span></a></li>
+      <li><a href="#results"><span class="en-only">Concepts &amp; Analysis</span><span class="ko-only">개념·분석</span></a></li>
+      <li><a href="#delta"><span class="en-only">Condition Delta</span><span class="ko-only">조건 차이</span></a></li>
+    </ul>
+  </nav>
+</div>
+</body>
+</html>

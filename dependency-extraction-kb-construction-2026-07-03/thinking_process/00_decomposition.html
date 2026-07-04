@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Phase 0b — Decomposition</title>
+<style>
+:root{--bg:#0d1117;--card:#161b22;--border:#30363d;--text:#e6edf3;
+      --muted:#8b949e;--accent:#58a6ff;--green:#3fb950;--amber:#d29922;
+      --teal:#39d0c7;--purple:#bc8cff;}
+body{background:var(--bg);color:var(--text);font-family:-apple-system,sans-serif;
+     margin:0;padding:1rem;}
+.cell{border:1px solid var(--border);border-radius:8px;overflow:hidden;}
+.cell-header{background:var(--card);padding:.6rem 1rem;display:flex;
+             align-items:center;gap:.75rem;border-bottom:1px solid var(--border);}
+.badge{font-size:.72rem;font-weight:700;padding:.2rem .55rem;border-radius:4px;}
+.b-decomp {background:rgba(210,153,34,.15);color:var(--amber);}
+.b-search  {background:rgba(88,166,255,.15);color:var(--accent);}
+.b-skim    {background:rgba(63,185,80,.15); color:var(--green);}
+.b-synth   {background:rgba(188,140,255,.15);color:var(--purple);}
+.b-verify  {background:rgba(57,208,199,.15);color:var(--teal);}
+.cell-title{font-size:.9rem;font-weight:600;}
+.cell-ts   {margin-left:auto;font-size:.72rem;color:var(--muted);}
+.cell-body {padding:1rem;display:flex;flex-direction:column;gap:.7rem;}
+.field     {padding:.55rem .8rem;border-radius:6px;}
+.f-expected{background:rgba(88,166,255,.07);border-left:3px solid var(--accent);}
+.f-found   {background:rgba(63,185,80,.07); border-left:3px solid var(--green);}
+.f-surprise{background:rgba(210,153,34,.07);border-left:3px solid var(--amber);}
+.f-revised {background:rgba(57,208,199,.07);border-left:3px solid var(--teal);}
+.f-neutral {background:rgba(139,148,158,.07);border-left:3px solid var(--muted);}
+.f-label   {font-size:.71rem;font-weight:700;letter-spacing:.05em;
+            text-transform:uppercase;color:var(--muted);margin-bottom:.28rem;}
+.f-content {font-size:.88rem;line-height:1.55;margin:0;}
+.f-content ul{margin:.3rem 0 0 1.1rem;padding:0;}
+.f-content li{margin-bottom:.25rem;}
+</style>
+</head>
+<body>
+<div class="cell" id="cell-00-decomposition">
+  <div class="cell-header">
+    <span class="badge b-decomp">PHASE 0b — DECOMPOSITION</span>
+    <span class="cell-title">Dependency extraction &amp; linking for incremental KB construction</span>
+    <span class="cell-ts">2026-07-03 14:11 KST</span>
+  </div>
+  <div class="cell-body">
+    <div class="field f-expected">
+      <div class="f-label">Objectives → SP mapping</div>
+      <p class="f-content">
+        <ul>
+          <li><b>O1</b> (extract dependency signals from a new paper's text/citations) → SP1 (citation intent/function classification), SP2 (scientific concept/relation extraction), SP3 (concept prerequisite learning, secondary), SP5 (related-work generation/extension detection), SP6 (agent pipelines, cross-cutting)</li>
+          <li><b>O2</b> (link signals to existing KB nodes or spawn new ones) → SP3 (concept prerequisite learning, primary), SP4 (scientific entity/concept linking), SP5 (novelty/extension detection), SP6 (agent pipelines), SP7 (ontology/taxonomy alignment)</li>
+          <li><b>O3</b> (maintain global DAG consistency as it grows) → SP6 (agent pipelines, cross-cutting), SP8 (incremental KG construction/maintenance), SP9 (link prediction/completion for hierarchical graphs)</li>
+        </ul>
+      </p>
+    </div>
+    <div class="field f-found">
+      <div class="f-label">SP set (9 sub-problems)</div>
+      <p class="f-content">
+        <ul>
+          <li><b>SP1</b> — Citation intent and function classification: why a paper cites another (background/method-use/extension/comparison) is the primary derivation-lineage signal.</li>
+          <li><b>SP2</b> — Scientific concept and relation extraction: pulls candidate prerequisite-concept signals out of body text before any linking step.</li>
+          <li><b>SP3</b> — Concept prerequisite learning and prediction: defines the prerequisite-relation task itself, with benchmarks and matching criteria.</li>
+          <li><b>SP4</b> — Scientific entity and concept linking: core mechanism for matching extracted signals to existing KB nodes vs. new nodes.</li>
+          <li><b>SP5</b> — Related work generation and extension/novelty detection: generates derivation-lineage edges and informs new-node-vs-extension calls.</li>
+          <li><b>SP6</b> — LLM-agent and RAG pipelines for KG construction: cross-cutting, demonstrates end-to-end agent pipelines matching this workspace's architecture.</li>
+          <li><b>SP7</b> — Ontology and taxonomy alignment: structural-level matching/confidence criteria above single-entity linking.</li>
+          <li><b>SP8</b> — Incremental knowledge graph construction and maintenance: how to update a KG as new nodes/edges arrive while preserving consistency.</li>
+          <li><b>SP9</b> — Link prediction and completion for hierarchical/DAG graphs: detecting missing/redundant edges and validating DAG structure without full retraining.</li>
+        </ul>
+      </p>
+    </div>
+    <div class="field f-surprise">
+      <div class="f-label">Ranking rationale</div>
+      <p class="f-content">
+        SP1 is ranked first because citation-intent classification is the most direct, longest-established signal source for O1 and anchors the vocabulary (background/method/extends/compares) that later SPs (SP5, SP6) reuse. The five P1-objective SPs (SP1–SP5) are front-loaded ahead of the cross-cutting agent-pipeline SP6, so that by the time SP6 is surveyed, the loop already has concrete extraction and linking techniques to check against modern LLM-agent pipelines rather than the reverse. The two P2-only SPs (SP8, SP9, DAG maintenance) are ranked last since O3 is priority 2 and the convergence loop may exit before reaching them if O1/O2 saturate early — SP6 was deliberately placed at rank 6, before SP7/8/9, because it targets all three objectives and its findings are expected to reshape queries for the remaining graph-maintenance SPs.
+      </p>
+    </div>
+    <div class="field f-neutral">
+      <div class="f-label">Field assumptions</div>
+      <p class="f-content">
+        The ranker assumed: (1) citation intent/function classification and concept-prerequisite learning are mature enough sub-fields to have standard benchmarks (SciCite, ACL-ARC, LectureBank/LectureBankCD) that will return non-trivial hit counts; (2) LLM-agent/RAG pipelines for KG construction is a fast-moving but real category with dedicated papers (not just blog posts) by 2022–2026; (3) DAG-aware link prediction/completion is a genuine sub-topic distinct from generic KG completion, worth its own SP rather than folding into SP8. Phase 1 search results will confirm or contradict these before synthesis begins.
+      </p>
+    </div>
+  </div>
+</div>
+</body>
+</html>

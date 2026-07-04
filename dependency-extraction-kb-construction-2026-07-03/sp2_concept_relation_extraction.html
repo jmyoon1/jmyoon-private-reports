@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SP2: Scientific Concept and Relation Extraction — Dependency Extraction &amp; KB Construction Survey</title>
+<style>
+:root {
+  --bg: #0d1117; --card: #161b22; --border: #30363d;
+  --text: #e6edf3; --muted: #7d8590; --accent: #58a6ff;
+  --teal: #39d0c7; --green: #3fb950; --yellow: #d29922;
+  --red: #f85149; --purple: #bc8cff; --orange: #e3b341;
+  --sidebar-w: 262px; --toc-w: 210px; --hdr-h: 48px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+body { font-family: -apple-system, sans-serif; background: var(--bg);
+       color: var(--text); line-height: 1.6; }
+.bd-root { display: flex; height: 100vh; overflow: hidden; }
+.bd-sidebar-primary {
+  width: var(--sidebar-w); min-width: var(--sidebar-w);
+  overflow-y: auto; background: var(--card);
+  border-right: 1px solid var(--border);
+  padding: 0.75rem 0; flex-shrink: 0;
+}
+.bd-sidebar-primary::-webkit-scrollbar { width: 4px; }
+.bd-sidebar-primary::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+.bd-main { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-width: 0; }
+.article-header-bar {
+  height: var(--hdr-h); background: var(--card);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; padding: 0 1.5rem;
+  gap: 1rem; flex-shrink: 0;
+}
+.header-brand { color: var(--teal); font-weight: bold; font-size: 0.95em;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 1; }
+.header-brand a { color: inherit; text-decoration: none; }
+.breadcrumb { color: var(--muted); font-size: 0.82em; display: flex;
+  align-items: center; gap: 0.3rem; flex-shrink: 0; }
+.breadcrumb a { color: var(--accent); text-decoration: none; }
+.breadcrumb span { color: var(--border); }
+.bd-article { flex: 1; overflow-y: auto; padding: 2rem 2.5rem; }
+.bd-article::-webkit-scrollbar { width: 6px; }
+.bd-article::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+.bd-sidebar-secondary {
+  width: var(--toc-w); min-width: var(--toc-w);
+  overflow-y: auto; border-left: 1px solid var(--border);
+  padding: 1rem 0.75rem; flex-shrink: 0;
+}
+.bd-sidebar-secondary::-webkit-scrollbar { width: 4px; }
+.bd-sidebar-secondary::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+.sidebar-logo { padding: 0.5rem 1rem 0.75rem;
+  border-bottom: 1px solid var(--border); margin-bottom: 0.5rem; }
+.sidebar-logo a { color: var(--teal); font-weight: bold; font-size: 0.95em;
+  text-decoration: none; display: block; }
+.sidebar-section { color: var(--muted); font-size: 0.72em; font-weight: bold;
+  text-transform: uppercase; letter-spacing: 0.07em;
+  padding: 0.7rem 1rem 0.25rem; }
+.sidebar-nav-link { display: block; padding: 0.28rem 1rem 0.28rem 1.25rem;
+  color: var(--muted); font-size: 0.875em; text-decoration: none; }
+.sidebar-nav-link:hover { color: var(--text); background: rgba(255,255,255,0.03); }
+.sidebar-nav-link.active { color: var(--teal);
+  border-left: 2px solid var(--teal);
+  padding-left: calc(1.25rem - 2px); background: rgba(57,208,199,0.05); }
+.mini-toc-label { color: var(--muted); font-size: 0.72em; font-weight: bold;
+  text-transform: uppercase; letter-spacing: 0.07em; padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border); margin-bottom: 0.5rem; }
+.mini-toc { list-style: none; }
+.mini-toc li a { display: block; padding: 0.22rem 0;
+  color: var(--muted); font-size: 0.83em; text-decoration: none;
+  border-left: 2px solid transparent; padding-left: 0.5rem; }
+.mini-toc li a:hover { color: var(--text); }
+.mini-toc li a.toc-active { color: var(--teal); border-left-color: var(--teal); }
+.section-anchor { scroll-margin-top: calc(var(--hdr-h) + 8px); }
+h1 { color: var(--teal); font-size: 1.7em; margin-bottom: 0.5rem; }
+h2 { color: var(--teal); font-size: 1.25em; margin: 1.5rem 0 0.6rem; }
+h3 { color: var(--teal); font-size: 1.05em; margin: 1.2rem 0 0.4rem; }
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+p { margin-bottom: 0.8rem; }
+.card { background: var(--card); border: 1px solid var(--border);
+        border-radius: 8px; padding: 1.2rem; margin-bottom: 1rem; }
+table { width: 100%; border-collapse: collapse; font-size: 0.9em; }
+th { background: var(--card); color: var(--teal); padding: 8px;
+     border: 1px solid var(--border); text-align: left; }
+td { padding: 8px; border: 1px solid var(--border); vertical-align: top; }
+tr:nth-child(even) td { background: rgba(0,0,0,0.2); }
+.stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+             gap: 1rem; margin-bottom: 1.5rem; }
+.stat-box { background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+            padding: 1rem; text-align: center; }
+.stat-num { font-size: 2rem; font-weight: bold; color: var(--teal); }
+.stat-label { color: var(--muted); font-size: 0.85em; margin-top: 0.2rem; }
+.sp-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+           gap: 1rem; margin: 1rem 0; }
+.sp-card { background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+           padding: 1.2rem; cursor: pointer; transition: border-color 0.15s; }
+.sp-card:hover { border-color: var(--teal); }
+.sp-card h3 { margin: 0 0 0.5rem; color: var(--teal); font-size: 1em; }
+.sp-card p { margin: 0; color: var(--muted); font-size: 0.88em; }
+.sp-badge { display: inline-block; background: rgba(57,208,199,0.1); color: var(--teal);
+            border-radius: 4px; padding: 2px 8px; font-size: 0.8em; margin-bottom: 0.5rem; }
+.paper-meta { color: var(--muted); font-size: 0.9em; margin-bottom: 1.5rem; }
+.paper-meta a { color: var(--accent); }
+.section-label { color: var(--teal); font-weight: bold; font-size: 0.85em;
+                 text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.4rem; }
+.pill { display: inline-block; border-radius: 4px; padding: 0.15rem 0.6rem;
+        font-size: 0.8em; font-weight: bold; margin-right: 0.4rem; }
+.pill-p0 { background: rgba(63,185,80,0.2); color: var(--green); }
+.pill-p1 { background: rgba(57,208,199,0.15); color: var(--teal); }
+.pill-p2 { background: rgba(210,153,34,0.2); color: var(--yellow); }
+.pill-p4 { background: rgba(125,133,144,0.2); color: var(--muted); }
+.pill-tool { background: rgba(188,140,255,0.2); color: var(--purple); }
+.delta-row { margin: 0.4rem 0; padding: 0.4rem 0.8rem;
+             border-left: 3px solid var(--border); border-radius: 0 4px 4px 0; }
+.delta-resolved { border-left-color: var(--green); }
+.delta-missing  { border-left-color: var(--yellow); }
+.delta-ref      { border-left-color: var(--muted); }
+.chain { position: relative; padding-left: 2rem; }
+.chain::before { content: ''; position: absolute; left: 0.95rem; top: 0;
+                 bottom: 0; width: 2px; background: var(--border); }
+.chain-node { position: relative; margin-bottom: 2rem; }
+.chain-node::before { content: ''; position: absolute; left: -1.55rem;
+                      top: 1.1rem; width: 12px; height: 12px;
+                      border-radius: 50%; background: var(--teal); }
+.chain-num { display: inline-block; width: 28px; height: 28px; background: var(--teal);
+             color: #000; border-radius: 50%; text-align: center; line-height: 28px;
+             font-weight: bold; font-size: 0.85em; margin-right: 0.6rem; flex-shrink: 0; }
+.chain-q { font-weight: bold; color: var(--text); margin: 0.4rem 0 0.3rem; font-size: 1em; }
+.chain-papers { color: var(--muted); font-size: 0.85em; margin-bottom: 0.6rem; }
+.chain-start { background: var(--card); border: 1px solid var(--teal);
+               border-radius: 8px; padding: 1rem; margin-bottom: 2rem; }
+.chain-start h3 { margin: 0 0 0.5rem; color: var(--teal); }
+.chain-converge { background: var(--card); border: 1px solid var(--green);
+                  border-radius: 8px; padding: 1rem; margin-top: 1rem; }
+.chain-converge h3 { margin: 0 0 0.5rem; color: var(--green); }
+.chain-label { display: inline-block; border-radius: 4px; padding: 0.15rem 0.6rem;
+               font-size: 0.8em; font-weight: bold; margin-right: 0.4rem; }
+.chain-status { border-radius: 0 4px 4px 0; padding: 0.5rem 0.8rem;
+                margin: 0.35rem 0; font-size: 0.88em; }
+.chain-status ul { margin: 0.3rem 0 0 1.2rem; padding: 0; }
+.chain-status li { margin-bottom: 0.25rem; }
+.chain-status.solved  { background: rgba(63,185,80,0.07);  border-left: 3px solid var(--green); }
+.chain-status.remains { background: rgba(210,153,34,0.07); border-left: 3px solid var(--yellow); }
+.chain-status.added   { background: rgba(248,81,73,0.07);  border-left: 3px solid var(--red); }
+.chain-status.pivoted { background: rgba(188,140,255,0.1); border-left: 3px solid var(--purple); }
+.chain-label.solved   { background: rgba(63,185,80,0.2);  color: var(--green); }
+.chain-label.remains  { background: rgba(210,153,34,0.2); color: var(--yellow); }
+.chain-label.added    { background: rgba(248,81,73,0.2);  color: var(--red); }
+.chain-label.pivoted  { background: rgba(188,140,255,0.2); color: var(--purple); }
+.chain-status.expected { background: rgba(88,166,255,0.07);  border-left: 3px solid var(--accent); }
+.chain-label.expected  { background: rgba(88,166,255,0.2);   color: var(--accent); }
+.chain-status.revised  { background: rgba(57,208,199,0.07);  border-left: 3px solid var(--teal); }
+.chain-label.revised   { background: rgba(57,208,199,0.2);   color: var(--teal); }
+.concept-box { border-left: 4px solid var(--teal); background: #0d1f1f;
+               border-radius: 4px; padding: 1.2rem; margin-bottom: 1.2rem; }
+.concept-name { font-weight: bold; color: var(--teal); font-size: 1.05em; margin-bottom: 0.5rem; }
+.concept-field { margin: 0.3rem 0; }
+.concept-label { color: var(--muted); font-size: 0.85em; }
+.hypothesis { border-left: 4px solid var(--teal); background: #0d1f1f;
+              border-radius: 4px; padding: 1rem; margin: 1rem 0; }
+.recommendation { border-left: 4px solid var(--purple); background: #1a0f2e;
+                  border-radius: 4px; padding: 1rem; margin: 1rem 0; }
+.rq-row { background: rgba(88,166,255,0.05); border-left: 3px solid var(--accent);
+          padding: 0.4rem 0.8rem; margin-bottom: 0.5rem; border-radius: 0 4px 4px 0; }
+.scroll-table-wrap { max-height: 420px; overflow-y: auto; border: 1px solid var(--border);
+                     border-radius: 4px; }
+.scroll-table-wrap thead th { position: sticky; top: 0; background: #161b22; z-index: 1; }
+.page-nav { display: flex; justify-content: space-between; margin-top: 2rem;
+            padding-top: 1rem; border-top: 1px solid var(--border); gap: 1rem; }
+.page-nav a { color: var(--accent); font-size: 0.9em; }
+html.ko-active .en-only { display: none !important; }
+html.ko-active .ko-only { display: block !important; }
+.ko-only { display: none; }
+span.ko-only, span.en-only { display: inline; }
+html.ko-active span.en-only { display: none !important; }
+html.ko-active span.ko-only { display: inline !important; }
+.lang-btn { background: transparent; color: var(--muted); border: 1px solid var(--border);
+            border-radius: 4px; padding: 3px 9px; font-size: 0.8em; cursor: pointer; }
+.lang-btn.active { border-color: var(--teal); color: var(--teal); }
+@media (max-width: 1024px) { .bd-sidebar-secondary { display: none; } }
+@media (max-width: 768px) {
+  .bd-sidebar-primary { display: none; }
+  .bd-root { flex-direction: column; height: auto; overflow: visible; }
+  .bd-main { overflow: visible; }
+  .bd-article { overflow: visible; padding: 1rem; }
+  .stat-grid { grid-template-columns: repeat(2, 1fr); }
+  .sp-grid { grid-template-columns: 1fr; }
+}
+</style>
+<script>
+function toggleLanguage() {
+  const html = document.documentElement;
+  const isKo = html.classList.toggle('ko-active');
+  document.querySelectorAll('.lang-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.lang === (isKo ? 'ko' : 'en'));
+  });
+  localStorage.setItem('survey-lang', isKo ? 'ko' : 'en');
+}
+document.addEventListener('DOMContentLoaded', function() {
+  const saved = localStorage.getItem('survey-lang');
+  if (saved === 'ko') {
+    document.documentElement.classList.add('ko-active');
+    document.querySelectorAll('.lang-btn').forEach(b =>
+      b.classList.toggle('active', b.dataset.lang === 'ko'));
+  } else {
+    document.querySelectorAll('[data-lang="en"]').forEach(b => b.classList.add('active'));
+  }
+  const article = document.querySelector('.bd-article');
+  const sections = Array.from(document.querySelectorAll('.section-anchor[id]'));
+  const sideLinks = Array.from(document.querySelectorAll('.bd-sidebar-primary .sidebar-nav-link'));
+  const tocLinks = Array.from(document.querySelectorAll('.bd-sidebar-secondary .mini-toc a'));
+  if (!article || !sections.length) return;
+  function current() {
+    let id = sections[0].id;
+    const scrollTop = article.scrollTop + 60;
+    sections.forEach(function(s) { if (s.offsetTop <= scrollTop) id = s.id; });
+    return id;
+  }
+  function update() {
+    const id = current();
+    sideLinks.forEach(function(a) { a.classList.toggle('active', a.getAttribute('href') === '#' + id); });
+    tocLinks.forEach(function(a) { a.classList.toggle('toc-active', a.getAttribute('href') === '#' + id); });
+  }
+  article.addEventListener('scroll', update, { passive: true });
+  update();
+});
+</script>
+</head>
+<body>
+<div class="bd-root">
+  <nav class="bd-sidebar-primary">
+  <div class="sidebar-logo">
+    <a href="./index.html">&#x2b21; <span class="en-only">Dependency Extraction &amp; KB Construction Survey</span><span class="ko-only">의존성 추출 및 지식베이스 구축 문헌 조사</span></a>
+  </div>
+  <div class="sidebar-section en-only">Overview</div>
+  <div class="sidebar-section ko-only">개요</div>
+  <a href="./index.html#overview" class="sidebar-nav-link"><span class="en-only">Survey Hub</span><span class="ko-only">조사 허브</span></a>
+  <a href="./index.html#answers" class="sidebar-nav-link"><span class="en-only">Key Answers</span><span class="ko-only">핵심 답변</span></a>
+  <div class="sidebar-section en-only">Sub-Problems</div>
+  <div class="sidebar-section ko-only">세부 문제</div>
+  <a href="./sp1_citation_intent.html" class="sidebar-nav-link">SP1: <span class="en-only">Citation Intent</span><span class="ko-only">인용 의도</span></a>
+  <a href="./sp2_concept_relation_extraction.html" class="sidebar-nav-link active">SP2: <span class="en-only">Concept/Relation Extraction</span><span class="ko-only">개념·관계 추출</span></a>
+  <a href="./sp3_concept_prerequisite.html" class="sidebar-nav-link">SP3: <span class="en-only">Concept Prerequisite</span><span class="ko-only">개념 선행관계</span></a>
+  <a href="./sp4_entity_linking.html" class="sidebar-nav-link">SP4: <span class="en-only">Entity Linking</span><span class="ko-only">개체 링킹</span></a>
+  <a href="./sp5_related_work_novelty.html" class="sidebar-nav-link">SP5: <span class="en-only">Related Work / Novelty</span><span class="ko-only">관련연구·신규성</span></a>
+  <a href="./sp6_llm_agent_kg.html" class="sidebar-nav-link">SP6: <span class="en-only">LLM-Agent KG</span><span class="ko-only">LLM 에이전트 KG</span></a>
+  <a href="./sp7_ontology_alignment.html" class="sidebar-nav-link">SP7: <span class="en-only">Ontology Alignment</span><span class="ko-only">온톨로지 정렬</span></a>
+  <a href="./sp8_incremental_kg.html" class="sidebar-nav-link">SP8: <span class="en-only">Incremental KG</span><span class="ko-only">증분 KG</span></a>
+  <a href="./sp9_link_prediction_dag.html" class="sidebar-nav-link">SP9: <span class="en-only">DAG Link Prediction</span><span class="ko-only">DAG 링크 예측</span></a>
+  <div class="sidebar-section en-only">Synthesis</div>
+  <div class="sidebar-section ko-only">종합</div>
+  <a href="./conclusion.html" class="sidebar-nav-link"><span class="en-only">Conclusion</span><span class="ko-only">결론</span></a>
+  <a href="./thinking-process.html" class="sidebar-nav-link"><span class="en-only">Thinking Process</span><span class="ko-only">추론 과정</span></a>
+</nav>
+  <div class="bd-main">
+    <div class="article-header-bar">
+  <div class="header-brand"><a href="./index.html"><span class="en-only">Dependency Extraction &amp; KB Construction Survey</span><span class="ko-only">의존성 추출 및 지식베이스 구축 문헌 조사</span></a></div>
+  <nav class="breadcrumb"><a href="index.html"><span class="en-only">Survey</span><span class="ko-only">조사</span></a><span>›</span><span><span class="en-only">SP2: Concept/Relation Extraction</span><span class="ko-only">SP2: 개념·관계 추출</span></span></nav>
+  <button class="lang-btn" data-lang="en" onclick="toggleLanguage()">EN</button>
+  <button class="lang-btn" data-lang="ko" onclick="toggleLanguage()">KO</button>
+</div>
+    <div class="bd-article">
+      <section id="intro" class="section-anchor">
+  <div class="en-only"><h1>SP2: Scientific Concept and Relation Extraction</h1>
+    <p style="color:var(--muted)">11 papers · targets O1</p>
+    <p>Before any linking can occur, the concepts and their typed relations must be pulled from a paper's body text. SP2 surveys scientific concept-and-relation extraction — the signal-generation step of O1 that runs upstream of SP3/SP4.</p></div>
+  <div class="ko-only"><h1>SP2: 과학 개념 및 관계 추출</h1>
+    <p style="color:var(--muted)">11편 논문 · O1 목표 대상</p>
+    <p>어떤 링킹이 일어나기 전에, 개념과 그 유형 관계가 논문 본문에서 추출되어야 한다. SP2는 SP3/SP4의 상류에서 실행되는 O1의 신호 생성 단계인 과학 개념·관계 추출을 조사한다.</p></div>
+</section>
+
+<section id="rationale" class="section-anchor">
+  <div class="card" style="border-color:var(--accent)">
+    <div class="en-only">
+      <h2 style="margin-top:0">Entry Assumption vs. What Was Found</h2>
+      <p><strong>Expected (original rationale — no revisions)</strong>: Extracting concepts and their relations from a paper's body text supplies the prerequisite-concept signals needed before any linking/matching step can occur.</p>
+      <p><strong>Found:</strong> A mature, converging paradigm exists: span-based entity+relation extraction on a SciBERT backbone (SciIE → DyGIE++ → PURE → PL-Marker), reaching ~67 entity / ~48 relation F1 on SciERC, with the field settling the joint-vs-pipeline debate in favour of a typed-marker pipeline. Candidate relation vocabularies come from SciERC (7 relations) and SemEval-2018 (6 relations).</p>
+      <p><strong>Assessment:</strong> Surprised on two counts: (1) no relation schema contains a <code>requires</code>/<code>prerequisite</code> type — the closest proxies are Used-for and Hyponym-of, so genuine prerequisite semantics live in SP3; (2) every empirically strong method is fully supervised — the prompting-adaptable route the constraints require is unbenchmarked against the SciERC ceiling.</p>
+    </div>
+    <div class="ko-only">
+      <h2 style="margin-top:0">사전 가정과 실제 발견</h2>
+      <p><strong>기대 (최초 rationale — 수정 없음)</strong>: 논문 본문에서 개념과 그 관계를 추출하는 것이 링킹/매칭 단계 이전에 필요한 선행 개념 신호를 공급한다고 기대하였다.</p>
+      <p><strong>발견</strong>: 성숙하고 수렴하는 패러다임이 존재한다. SciBERT 백본 위의 span 기반 개체+관계 추출(SciIE → DyGIE++ → PURE → PL-Marker)은 SciERC에서 ~67 개체 / ~48 관계 F1을 달성하며, 분야는 joint 대 pipeline 논쟁을 typed-marker pipeline 우세로 정리하였다. 후보 관계 어휘는 SciERC(7개)와 SemEval-2018(6개)에서 온다.</p>
+      <p><strong>평가</strong>: 두 가지 점에서 예상과 다름: (1) 어떤 관계 스키마도 <code>requires</code>/<code>prerequisite</code> 유형을 포함하지 않으며 가장 근접한 대리는 Used-for와 Hyponym-of이므로 진정한 선행 의미는 SP3에 있다; (2) 경험적으로 강한 모든 방법이 완전 지도학습이며, 제약이 요구하는 prompting 적응 경로는 SciERC 상한 대비 벤치마크되지 않았다.</p>
+    </div>
+  </div>
+</section>
+
+<section id="establishes" class="section-anchor">
+  <div class="card" style="border-color:var(--teal)">
+    <div class="en-only"><h2 style="margin-top:0">What SP2 Establishes</h2><p>The dominant family is supervised span-based extraction on an in-domain encoder. It displaced BIO-tagging and dependency-tree LSTMs because span enumeration solves nested entities, shared representations, and BERT integration at once. Relation extraction is the accuracy bottleneck (~20 F1 below entities; collapses to ~20 macro-F1 without gold entities), and dependency-bearing relations routinely cross sentence boundaries. The prompting-adaptable path exists only as a model-catalog survey without IE benchmark numbers.</p></div>
+    <div class="ko-only"><h2 style="margin-top:0">SP2이 확립한 것</h2><p>지배적 계열은 in-domain 인코더 위의 지도 span 기반 추출이다. span 열거가 중첩 개체·공유 표상·BERT 통합을 동시에 해결하기에 BIO 태깅과 dependency-tree LSTM을 대체하였다. 관계 추출은 정확도 병목이며(개체 대비 ~20 F1 낮고, gold 개체가 없으면 ~20 macro-F1로 붕괴), 의존을 담은 관계는 흔히 문장 경계를 넘는다. prompting 적응 경로는 IE 벤치마크 수치 없는 모델 카탈로그 서베이로만 존재한다.</p></div>
+  </div>
+</section>
+
+<section id="concepts" class="section-anchor">
+  <div class="en-only"><h2>Key Concepts</h2></div>
+  <div class="ko-only"><h2>핵심 개념</h2></div>
+  <div class="concept-box">
+  <div class="concept-name">Span-based extraction</div>
+  <div class="concept-field"><span class="concept-label en-only">What it is: </span><span class="concept-label ko-only">정의: </span><span class="en-only">Enumerate all spans, represent each by endpoint embeddings + width, feed to an entity head (single span) and a relation head (span pairs) — replacing BIO tagging.</span><span class="ko-only">모든 span을 열거하고 각각을 끝점 임베딩+너비로 표상해 개체 head(단일 span)와 관계 head(span 쌍)에 투입하며, BIO 태깅을 대체한다.</span></div>
+  <div class="concept-field"><span class="concept-label en-only">Why it matters here: </span><span class="concept-label ko-only">이 조사에서의 역할: </span><span class="en-only">The dominant paradigm whose SciERC numbers set the reference ceiling for O1.</span><span class="ko-only">O1의 참조 상한을 설정하는 SciERC 수치의 지배적 패러다임이다.</span></div>
+</div><div class="concept-box">
+  <div class="concept-name">Typed entity markers</div>
+  <div class="concept-field"><span class="concept-label en-only">What it is: </span><span class="concept-label ko-only">정의: </span><span class="en-only">Inject marker tokens (e.g., [S:Method]…[/S:Method]) around a candidate pair so a dedicated relation encoder sees entity boundaries and types; packed/levitated variants recover batching efficiency.</span><span class="ko-only">후보 쌍 주위에 마커 토큰([S:Method]…[/S:Method])을 삽입해 전용 관계 인코더가 개체 경계·유형을 보게 하며, packed/levitated 변형이 배치 효율을 회복한다.</span></div>
+  <div class="concept-field"><span class="concept-label en-only">Why it matters here: </span><span class="concept-label ko-only">이 조사에서의 역할: </span><span class="en-only">The mechanism behind the pipeline's win over joint models (PURE, PL-Marker).</span><span class="ko-only">joint 모델 대비 pipeline 우세의 메커니즘이다(PURE, PL-Marker).</span></div>
+</div><div class="concept-box">
+  <div class="concept-name">Scientific relation typology</div>
+  <div class="concept-field"><span class="concept-label en-only">What it is: </span><span class="concept-label ko-only">정의: </span><span class="en-only">Fixed directed label sets: SciERC's 7 (Used-for, Feature-of, Hyponym-of, Part-of, Compare, Conjunction, Evaluate-for) and SemEval-2018's 6 (USAGE, RESULT, MODEL-FEATURE, PART-WHOLE, TOPIC, COMPARE).</span><span class="ko-only">고정 방향 라벨 집합으로, SciERC의 7개와 SemEval-2018의 6개가 있다.</span></div>
+  <div class="concept-field"><span class="concept-label en-only">Why it matters here: </span><span class="concept-label ko-only">이 조사에서의 역할: </span><span class="en-only">The candidate dependency-label vocabulary for O1 — but none contains a prerequisite type.</span><span class="ko-only">O1의 후보 의존 라벨 어휘이나, 어느 것도 prerequisite 유형을 포함하지 않는다.</span></div>
+</div>
+</section>
+
+<section id="rqs" class="section-anchor">
+  <div class="en-only"><h2>Research Questions Extracted</h2></div>
+  <div class="ko-only"><h2>추출된 연구 질문</h2></div>
+  <div class="rq-row"><strong>RQ2.1</strong><span class="en-only"> — Which extraction architecture achieves the best SciERC concept+relation extraction, and by what mechanism?</span><span class="ko-only"> — 어떤 추출 아키텍처가 최고의 SciERC 개념+관계 추출을 달성하며 그 메커니즘은 무엇인가?</span></div>
+<div class="rq-row"><strong>RQ2.2</strong><span class="en-only"> — What relation typologies exist, and which labels map onto dependency/prerequisite signals?</span><span class="ko-only"> — 어떤 관계 typology가 존재하며 어느 라벨이 의존/선행 신호에 대응하는가?</span></div>
+<div class="rq-row"><strong>RQ2.3</strong><span class="en-only"> — Is joint entity–relation modeling necessary, or does a pipeline with typed markers suffice?</span><span class="ko-only"> — joint 개체-관계 모델링이 필요한가, 아니면 typed marker pipeline으로 충분한가?</span></div>
+<div class="rq-row"><strong>RQ2.4</strong><span class="en-only"> — Do scientific dependency relations span sentence boundaries, and how much does document-graph context help?</span><span class="ko-only"> — 과학 의존 관계가 문장 경계를 넘는가, 문서 그래프 문맥은 얼마나 도움이 되는가?</span></div>
+<div class="rq-row"><strong>RQ2.5</strong><span class="en-only"> — How much does in-domain pretraining improve extraction, and does corpus or vocabulary drive the gain?</span><span class="ko-only"> — in-domain 사전학습이 추출을 얼마나 개선하며 corpus와 vocabulary 중 무엇이 이득을 견인하는가?</span></div>
+<div class="rq-row"><strong>RQ2.6</strong><span class="en-only"> — How far does end-to-end relation-extraction accuracy fall when gold entities are replaced by predicted ones?</span><span class="ko-only"> — gold 개체를 예측 개체로 대체하면 종단간 관계 추출 정확도가 얼마나 떨어지는가?</span></div>
+
+</section>
+
+<section id="papers" class="section-anchor">
+  <div class="card" style="margin-top:1.5rem">
+    <div class="en-only"><h3>Papers in SP2 (11 papers)</h3></div>
+    <div class="ko-only"><h3>SP2 논문 목록 (11편)</h3></div>
+    <div class="scroll-table-wrap">
+      <table><thead><tr>
+        <th>Ref</th><th><span class="en-only">Authors (year)</span><span class="ko-only">저자 (연도)</span></th>
+        <th><span class="en-only">Title</span><span class="ko-only">제목</span></th><th>Tier</th>
+        <th><span class="en-only">Fit</span><span class="ko-only">적합도</span></th>
+        <th><span class="en-only">Gap / Risk</span><span class="ko-only">Gap/위험</span></th>
+      </tr></thead><tbody>
+      <tr><td>[4]</td><td>Beltagy et al. (2019)</td><td><a href="papers/04_SciBERT.html">SciBERT: A Pretrained Language Model for Scientific Text</a></td><td><span class="pill pill-p0">P0</span></td><td>Standard backbone for all SciERC extractors + citation intent</td><td>Encoder only, no extraction/linking layer; predates instruction-tuned LLMs</td></tr>
+<tr><td>[16]</td><td>Luan et al. (2018)</td><td><a href="papers/16_SciERC.html">Multi-Task Identification of Entities, Relations, and Coreference for Scientific Knowledge Graph Construction</a></td><td><span class="pill pill-p0">P0</span></td><td>Defines the canonical scientific IE benchmark and relation schema</td><td>Abstracts only; biLSTM+ELMo era; relations ≠ prerequisite</td></tr>
+<tr><td>[17]</td><td>Wadden et al. (2019)</td><td><a href="papers/17_DyGIEpp.html">Entity, Relation, and Event Extraction with Contextualized Span Representations</a></td><td><span class="pill pill-p0">P0</span></td><td>Strong joint span-based SOTA (Ent 67.5 / Rel 48.4)</td><td>Within-sentence relations; supervised; per-doc tuples not KB</td></tr>
+<tr><td>[18]</td><td>Augenstein et al. (2017)</td><td><a href="papers/18_ScienceIE.html">SemEval 2017 Task 10: ScienceIE - Extracting Keyphrases and Relations from Scientific Publications</a></td><td><span class="pill pill-p0">P0</span></td><td>Keyphrase/concept extraction task definition + IAA data</td><td>Only 2 relations; pre-transformer ceiling ~0.43 F1</td></tr>
+<tr><td>[19]</td><td>Zhong &amp; Chen (2021)</td><td><a href="papers/19_PURE.html">A Frustratingly Easy Approach for Entity and Relation Extraction</a></td><td><span class="pill pill-p0">P0</span></td><td>Settles joint-vs-pipeline; simplest strong extractor</td><td>Fully supervised; fixed schema; sentence/short-window scope</td></tr>
+<tr><td>[21]</td><td>Ye et al. (2022)</td><td><a href="papers/21_PLMarker.html">Packed Levitated Marker for Entity and Relation Extraction</a></td><td><span class="pill pill-p0">P0</span></td><td>Current SOTA span-pair extractor for scientific text</td><td>Supervised; fixed relation inventory</td></tr>
+<tr><td>[22]</td><td>Gabor et al. (2018)</td><td><a href="papers/22_SemEval2018Task7.html">SemEval-2018 Task 7: Semantic Relation Extraction and Classification in Scientific Papers</a></td><td><span class="pill pill-p0">P0</span></td><td>Candidate dependency-relation vocabulary; quantifies the extraction bottleneck</td><td>Entities pre-annotated; abstract-only; no prerequisite relation</td></tr>
+<tr><td>[23]</td><td>Zhang et al. (2024)</td><td><a href="papers/23_SciLLMSurvey.html">A Comprehensive Survey of Scientific Large Language Models and Their Applications in Scientific Discovery</a></td><td><span class="pill pill-p0">P0</span></td><td>Directory to text-modality scientific LLMs for LLM-IE</td><td>Model-centric, not task-centric; IE/KB coverage unconfirmed</td></tr>
+<tr><td>[27]</td><td>Miwa &amp; Bansal (2016)</td><td><a href="papers/27_MiwaBansal.html">End-to-End Relation Extraction using LSTMs on Sequences and Tree Structures</a></td><td><span class="pill pill-p0">P0</span></td><td>Foundational joint-extraction paradigm; entity-pretraining trick</td><td>Newswire only; sentence-level; word2vec era</td></tr>
+<tr><td>[28]</td><td>Ammar et al. (2018)</td><td><a href="papers/28_LiteratureGraph.html">Construction of the Literature Graph in Semantic Scholar</a></td><td><span class="pill pill-p0">P0</span></td><td>Reference architecture for KB construction; pooling extractors</td><td>Relation-extraction component omitted from evaluation; title+abstract only</td></tr>
+<tr><td>[29]</td><td>Peng et al. (2017)</td><td><a href="papers/29_GraphLSTM.html">Cross-Sentence N-ary Relation Extraction with Graph LSTMs</a></td><td><span class="pill pill-p0">P0</span></td><td>Establishes document-scope relations; 3–5× more interactions</td><td>Graph benefit conditional on parse quality; biomedical only</td></tr>
+</tbody></table>
+    </div>
+  </div>
+</section>
+
+<section id="open" class="section-anchor">
+  <div class="card">
+    <div class="en-only"><h3>Open Questions After SP2</h3><ul><li>Are LLM-prompting extractors competitive with supervised span-based SOTA? No SP2 paper with reported accuracy is prompting-based; the LLM route is unbenchmarked against ~67 Ent / ~48 Rel.</li><li>No relation schema contains a prerequisite/requires type — the exact dependency relation O1 needs is absent (→ SP3).</li><li>Extraction is validated on abstracts/single sentences, not full paper bodies; and per-document tuples are not persistent KB nodes (→ SP4).</li></ul></div>
+    <div class="ko-only"><h3>SP2 이후 미해결 질문</h3><ul><li>LLM prompting 추출기가 지도 span 기반 SOTA와 경쟁 가능한가? 정확도가 보고된 SP2 논문 중 prompting 기반이 없으며, LLM 경로는 ~67 개체 / ~48 관계 대비 벤치마크되지 않았다.</li><li>어떤 관계 스키마도 prerequisite/requires 유형을 포함하지 않으며, O1이 필요로 하는 정확한 의존 관계가 부재한다(→ SP3).</li><li>추출은 전문이 아니라 초록/단일 문장에서 검증되며, 문서별 튜플은 영속 KB 노드가 아니다(→ SP4).</li></ul></div>
+  </div>
+</section>
+
+<div class="page-nav"><a href="sp1_citation_intent.html">← <span class="en-only">SP1: Citation Intent</span><span class="ko-only">SP1: 인용 의도</span></a><a href="index.html"><span class="en-only">↑ Survey Hub</span><span class="ko-only">↑ 조사 허브</span></a><a href="sp3_concept_prerequisite.html"><span class="en-only">SP3: Concept Prerequisite</span><span class="ko-only">SP3: 개념 선행관계</span> →</a></div>
+    </div>
+  </div>
+  <nav class="bd-sidebar-secondary">
+    <div class="mini-toc-label en-only">On this page</div>
+    <div class="mini-toc-label ko-only">이 페이지</div>
+    <ul class="mini-toc">
+      <li><a href="#intro"><span class="en-only">Introduction</span><span class="ko-only">개요</span></a></li>
+      <li><a href="#rationale"><span class="en-only">Entry Assumption</span><span class="ko-only">사전 가정</span></a></li>
+      <li><a href="#establishes"><span class="en-only">What SP2 Establishes</span><span class="ko-only">확립한 것</span></a></li>
+      <li><a href="#concepts"><span class="en-only">Key Concepts</span><span class="ko-only">핵심 개념</span></a></li>
+      <li><a href="#rqs"><span class="en-only">Research Questions</span><span class="ko-only">연구 질문</span></a></li>
+      <li><a href="#papers"><span class="en-only">Papers</span><span class="ko-only">논문</span></a></li>
+      <li><a href="#open"><span class="en-only">Open Questions</span><span class="ko-only">미해결 질문</span></a></li>
+    </ul>
+  </nav>
+</div>
+</body>
+</html>

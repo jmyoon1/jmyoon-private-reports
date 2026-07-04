@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dependency Extraction &amp; KB Construction — Literature Survey</title>
+<style>
+:root {
+  --bg: #0d1117; --card: #161b22; --border: #30363d;
+  --text: #e6edf3; --muted: #7d8590; --accent: #58a6ff;
+  --teal: #39d0c7; --green: #3fb950; --yellow: #d29922;
+  --red: #f85149; --purple: #bc8cff; --orange: #e3b341;
+  --sidebar-w: 262px; --toc-w: 210px; --hdr-h: 48px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+body { font-family: -apple-system, sans-serif; background: var(--bg);
+       color: var(--text); line-height: 1.6; }
+.bd-root { display: flex; height: 100vh; overflow: hidden; }
+.bd-sidebar-primary {
+  width: var(--sidebar-w); min-width: var(--sidebar-w);
+  overflow-y: auto; background: var(--card);
+  border-right: 1px solid var(--border);
+  padding: 0.75rem 0; flex-shrink: 0;
+}
+.bd-sidebar-primary::-webkit-scrollbar { width: 4px; }
+.bd-sidebar-primary::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+.bd-main { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-width: 0; }
+.article-header-bar {
+  height: var(--hdr-h); background: var(--card);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; padding: 0 1.5rem;
+  gap: 1rem; flex-shrink: 0;
+}
+.header-brand { color: var(--teal); font-weight: bold; font-size: 0.95em;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 1; }
+.header-brand a { color: inherit; text-decoration: none; }
+.breadcrumb { color: var(--muted); font-size: 0.82em; display: flex;
+  align-items: center; gap: 0.3rem; flex-shrink: 0; }
+.breadcrumb a { color: var(--accent); text-decoration: none; }
+.breadcrumb span { color: var(--border); }
+.bd-article { flex: 1; overflow-y: auto; padding: 2rem 2.5rem; }
+.bd-article::-webkit-scrollbar { width: 6px; }
+.bd-article::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+.bd-sidebar-secondary {
+  width: var(--toc-w); min-width: var(--toc-w);
+  overflow-y: auto; border-left: 1px solid var(--border);
+  padding: 1rem 0.75rem; flex-shrink: 0;
+}
+.bd-sidebar-secondary::-webkit-scrollbar { width: 4px; }
+.bd-sidebar-secondary::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+.sidebar-logo { padding: 0.5rem 1rem 0.75rem;
+  border-bottom: 1px solid var(--border); margin-bottom: 0.5rem; }
+.sidebar-logo a { color: var(--teal); font-weight: bold; font-size: 0.95em;
+  text-decoration: none; display: block; }
+.sidebar-section { color: var(--muted); font-size: 0.72em; font-weight: bold;
+  text-transform: uppercase; letter-spacing: 0.07em;
+  padding: 0.7rem 1rem 0.25rem; }
+.sidebar-nav-link { display: block; padding: 0.28rem 1rem 0.28rem 1.25rem;
+  color: var(--muted); font-size: 0.875em; text-decoration: none; }
+.sidebar-nav-link:hover { color: var(--text); background: rgba(255,255,255,0.03); }
+.sidebar-nav-link.active { color: var(--teal);
+  border-left: 2px solid var(--teal);
+  padding-left: calc(1.25rem - 2px); background: rgba(57,208,199,0.05); }
+.mini-toc-label { color: var(--muted); font-size: 0.72em; font-weight: bold;
+  text-transform: uppercase; letter-spacing: 0.07em; padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border); margin-bottom: 0.5rem; }
+.mini-toc { list-style: none; }
+.mini-toc li a { display: block; padding: 0.22rem 0;
+  color: var(--muted); font-size: 0.83em; text-decoration: none;
+  border-left: 2px solid transparent; padding-left: 0.5rem; }
+.mini-toc li a:hover { color: var(--text); }
+.mini-toc li a.toc-active { color: var(--teal); border-left-color: var(--teal); }
+.section-anchor { scroll-margin-top: calc(var(--hdr-h) + 8px); }
+h1 { color: var(--teal); font-size: 1.7em; margin-bottom: 0.5rem; }
+h2 { color: var(--teal); font-size: 1.25em; margin: 1.5rem 0 0.6rem; }
+h3 { color: var(--teal); font-size: 1.05em; margin: 1.2rem 0 0.4rem; }
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+p { margin-bottom: 0.8rem; }
+.card { background: var(--card); border: 1px solid var(--border);
+        border-radius: 8px; padding: 1.2rem; margin-bottom: 1rem; }
+table { width: 100%; border-collapse: collapse; font-size: 0.9em; }
+th { background: var(--card); color: var(--teal); padding: 8px;
+     border: 1px solid var(--border); text-align: left; }
+td { padding: 8px; border: 1px solid var(--border); vertical-align: top; }
+tr:nth-child(even) td { background: rgba(0,0,0,0.2); }
+.stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+             gap: 1rem; margin-bottom: 1.5rem; }
+.stat-box { background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+            padding: 1rem; text-align: center; }
+.stat-num { font-size: 2rem; font-weight: bold; color: var(--teal); }
+.stat-label { color: var(--muted); font-size: 0.85em; margin-top: 0.2rem; }
+.sp-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+           gap: 1rem; margin: 1rem 0; }
+.sp-card { background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+           padding: 1.2rem; cursor: pointer; transition: border-color 0.15s; }
+.sp-card:hover { border-color: var(--teal); }
+.sp-card h3 { margin: 0 0 0.5rem; color: var(--teal); font-size: 1em; }
+.sp-card p { margin: 0; color: var(--muted); font-size: 0.88em; }
+.sp-badge { display: inline-block; background: rgba(57,208,199,0.1); color: var(--teal);
+            border-radius: 4px; padding: 2px 8px; font-size: 0.8em; margin-bottom: 0.5rem; }
+.paper-meta { color: var(--muted); font-size: 0.9em; margin-bottom: 1.5rem; }
+.paper-meta a { color: var(--accent); }
+.section-label { color: var(--teal); font-weight: bold; font-size: 0.85em;
+                 text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.4rem; }
+.pill { display: inline-block; border-radius: 4px; padding: 0.15rem 0.6rem;
+        font-size: 0.8em; font-weight: bold; margin-right: 0.4rem; }
+.pill-p0 { background: rgba(63,185,80,0.2); color: var(--green); }
+.pill-p1 { background: rgba(57,208,199,0.15); color: var(--teal); }
+.pill-p2 { background: rgba(210,153,34,0.2); color: var(--yellow); }
+.pill-p4 { background: rgba(125,133,144,0.2); color: var(--muted); }
+.pill-tool { background: rgba(188,140,255,0.2); color: var(--purple); }
+.delta-row { margin: 0.4rem 0; padding: 0.4rem 0.8rem;
+             border-left: 3px solid var(--border); border-radius: 0 4px 4px 0; }
+.delta-resolved { border-left-color: var(--green); }
+.delta-missing  { border-left-color: var(--yellow); }
+.delta-ref      { border-left-color: var(--muted); }
+.chain { position: relative; padding-left: 2rem; }
+.chain::before { content: ''; position: absolute; left: 0.95rem; top: 0;
+                 bottom: 0; width: 2px; background: var(--border); }
+.chain-node { position: relative; margin-bottom: 2rem; }
+.chain-node::before { content: ''; position: absolute; left: -1.55rem;
+                      top: 1.1rem; width: 12px; height: 12px;
+                      border-radius: 50%; background: var(--teal); }
+.chain-num { display: inline-block; width: 28px; height: 28px; background: var(--teal);
+             color: #000; border-radius: 50%; text-align: center; line-height: 28px;
+             font-weight: bold; font-size: 0.85em; margin-right: 0.6rem; flex-shrink: 0; }
+.chain-q { font-weight: bold; color: var(--text); margin: 0.4rem 0 0.3rem; font-size: 1em; }
+.chain-papers { color: var(--muted); font-size: 0.85em; margin-bottom: 0.6rem; }
+.chain-start { background: var(--card); border: 1px solid var(--teal);
+               border-radius: 8px; padding: 1rem; margin-bottom: 2rem; }
+.chain-start h3 { margin: 0 0 0.5rem; color: var(--teal); }
+.chain-converge { background: var(--card); border: 1px solid var(--green);
+                  border-radius: 8px; padding: 1rem; margin-top: 1rem; }
+.chain-converge h3 { margin: 0 0 0.5rem; color: var(--green); }
+.chain-label { display: inline-block; border-radius: 4px; padding: 0.15rem 0.6rem;
+               font-size: 0.8em; font-weight: bold; margin-right: 0.4rem; }
+.chain-status { border-radius: 0 4px 4px 0; padding: 0.5rem 0.8rem;
+                margin: 0.35rem 0; font-size: 0.88em; }
+.chain-status ul { margin: 0.3rem 0 0 1.2rem; padding: 0; }
+.chain-status li { margin-bottom: 0.25rem; }
+.chain-status.solved  { background: rgba(63,185,80,0.07);  border-left: 3px solid var(--green); }
+.chain-status.remains { background: rgba(210,153,34,0.07); border-left: 3px solid var(--yellow); }
+.chain-status.added   { background: rgba(248,81,73,0.07);  border-left: 3px solid var(--red); }
+.chain-status.pivoted { background: rgba(188,140,255,0.1); border-left: 3px solid var(--purple); }
+.chain-label.solved   { background: rgba(63,185,80,0.2);  color: var(--green); }
+.chain-label.remains  { background: rgba(210,153,34,0.2); color: var(--yellow); }
+.chain-label.added    { background: rgba(248,81,73,0.2);  color: var(--red); }
+.chain-label.pivoted  { background: rgba(188,140,255,0.2); color: var(--purple); }
+.chain-status.expected { background: rgba(88,166,255,0.07);  border-left: 3px solid var(--accent); }
+.chain-label.expected  { background: rgba(88,166,255,0.2);   color: var(--accent); }
+.chain-status.revised  { background: rgba(57,208,199,0.07);  border-left: 3px solid var(--teal); }
+.chain-label.revised   { background: rgba(57,208,199,0.2);   color: var(--teal); }
+.concept-box { border-left: 4px solid var(--teal); background: #0d1f1f;
+               border-radius: 4px; padding: 1.2rem; margin-bottom: 1.2rem; }
+.concept-name { font-weight: bold; color: var(--teal); font-size: 1.05em; margin-bottom: 0.5rem; }
+.concept-field { margin: 0.3rem 0; }
+.concept-label { color: var(--muted); font-size: 0.85em; }
+.hypothesis { border-left: 4px solid var(--teal); background: #0d1f1f;
+              border-radius: 4px; padding: 1rem; margin: 1rem 0; }
+.recommendation { border-left: 4px solid var(--purple); background: #1a0f2e;
+                  border-radius: 4px; padding: 1rem; margin: 1rem 0; }
+.rq-row { background: rgba(88,166,255,0.05); border-left: 3px solid var(--accent);
+          padding: 0.4rem 0.8rem; margin-bottom: 0.5rem; border-radius: 0 4px 4px 0; }
+.scroll-table-wrap { max-height: 420px; overflow-y: auto; border: 1px solid var(--border);
+                     border-radius: 4px; }
+.scroll-table-wrap thead th { position: sticky; top: 0; background: #161b22; z-index: 1; }
+.page-nav { display: flex; justify-content: space-between; margin-top: 2rem;
+            padding-top: 1rem; border-top: 1px solid var(--border); gap: 1rem; }
+.page-nav a { color: var(--accent); font-size: 0.9em; }
+html.ko-active .en-only { display: none !important; }
+html.ko-active .ko-only { display: block !important; }
+.ko-only { display: none; }
+span.ko-only, span.en-only { display: inline; }
+html.ko-active span.en-only { display: none !important; }
+html.ko-active span.ko-only { display: inline !important; }
+.lang-btn { background: transparent; color: var(--muted); border: 1px solid var(--border);
+            border-radius: 4px; padding: 3px 9px; font-size: 0.8em; cursor: pointer; }
+.lang-btn.active { border-color: var(--teal); color: var(--teal); }
+@media (max-width: 1024px) { .bd-sidebar-secondary { display: none; } }
+@media (max-width: 768px) {
+  .bd-sidebar-primary { display: none; }
+  .bd-root { flex-direction: column; height: auto; overflow: visible; }
+  .bd-main { overflow: visible; }
+  .bd-article { overflow: visible; padding: 1rem; }
+  .stat-grid { grid-template-columns: repeat(2, 1fr); }
+  .sp-grid { grid-template-columns: 1fr; }
+}
+</style>
+<script>
+function toggleLanguage() {
+  const html = document.documentElement;
+  const isKo = html.classList.toggle('ko-active');
+  document.querySelectorAll('.lang-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.lang === (isKo ? 'ko' : 'en'));
+  });
+  localStorage.setItem('survey-lang', isKo ? 'ko' : 'en');
+}
+document.addEventListener('DOMContentLoaded', function() {
+  const saved = localStorage.getItem('survey-lang');
+  if (saved === 'ko') {
+    document.documentElement.classList.add('ko-active');
+    document.querySelectorAll('.lang-btn').forEach(b =>
+      b.classList.toggle('active', b.dataset.lang === 'ko'));
+  } else {
+    document.querySelectorAll('[data-lang="en"]').forEach(b => b.classList.add('active'));
+  }
+  const article = document.querySelector('.bd-article');
+  const sections = Array.from(document.querySelectorAll('.section-anchor[id]'));
+  const sideLinks = Array.from(document.querySelectorAll('.bd-sidebar-primary .sidebar-nav-link'));
+  const tocLinks = Array.from(document.querySelectorAll('.bd-sidebar-secondary .mini-toc a'));
+  if (!article || !sections.length) return;
+  function current() {
+    let id = sections[0].id;
+    const scrollTop = article.scrollTop + 60;
+    sections.forEach(function(s) { if (s.offsetTop <= scrollTop) id = s.id; });
+    return id;
+  }
+  function update() {
+    const id = current();
+    sideLinks.forEach(function(a) { a.classList.toggle('active', a.getAttribute('href') === '#' + id); });
+    tocLinks.forEach(function(a) { a.classList.toggle('toc-active', a.getAttribute('href') === '#' + id); });
+  }
+  article.addEventListener('scroll', update, { passive: true });
+  update();
+});
+</script>
+</head>
+<body>
+<div class="bd-root">
+  <nav class="bd-sidebar-primary">
+  <div class="sidebar-logo">
+    <a href="./index.html">&#x2b21; <span class="en-only">Dependency Extraction &amp; KB Construction Survey</span><span class="ko-only">의존성 추출 및 지식베이스 구축 문헌 조사</span></a>
+  </div>
+  <div class="sidebar-section en-only">Overview</div>
+  <div class="sidebar-section ko-only">개요</div>
+  <a href="./index.html#overview" class="sidebar-nav-link active"><span class="en-only">Survey Hub</span><span class="ko-only">조사 허브</span></a>
+  <a href="./index.html#answers" class="sidebar-nav-link"><span class="en-only">Key Answers</span><span class="ko-only">핵심 답변</span></a>
+  <div class="sidebar-section en-only">Sub-Problems</div>
+  <div class="sidebar-section ko-only">세부 문제</div>
+  <a href="./sp1_citation_intent.html" class="sidebar-nav-link">SP1: <span class="en-only">Citation Intent</span><span class="ko-only">인용 의도</span></a>
+  <a href="./sp2_concept_relation_extraction.html" class="sidebar-nav-link">SP2: <span class="en-only">Concept/Relation Extraction</span><span class="ko-only">개념·관계 추출</span></a>
+  <a href="./sp3_concept_prerequisite.html" class="sidebar-nav-link">SP3: <span class="en-only">Concept Prerequisite</span><span class="ko-only">개념 선행관계</span></a>
+  <a href="./sp4_entity_linking.html" class="sidebar-nav-link">SP4: <span class="en-only">Entity Linking</span><span class="ko-only">개체 링킹</span></a>
+  <a href="./sp5_related_work_novelty.html" class="sidebar-nav-link">SP5: <span class="en-only">Related Work / Novelty</span><span class="ko-only">관련연구·신규성</span></a>
+  <a href="./sp6_llm_agent_kg.html" class="sidebar-nav-link">SP6: <span class="en-only">LLM-Agent KG</span><span class="ko-only">LLM 에이전트 KG</span></a>
+  <a href="./sp7_ontology_alignment.html" class="sidebar-nav-link">SP7: <span class="en-only">Ontology Alignment</span><span class="ko-only">온톨로지 정렬</span></a>
+  <a href="./sp8_incremental_kg.html" class="sidebar-nav-link">SP8: <span class="en-only">Incremental KG</span><span class="ko-only">증분 KG</span></a>
+  <a href="./sp9_link_prediction_dag.html" class="sidebar-nav-link">SP9: <span class="en-only">DAG Link Prediction</span><span class="ko-only">DAG 링크 예측</span></a>
+  <div class="sidebar-section en-only">Synthesis</div>
+  <div class="sidebar-section ko-only">종합</div>
+  <a href="./conclusion.html" class="sidebar-nav-link"><span class="en-only">Conclusion</span><span class="ko-only">결론</span></a>
+  <a href="./thinking-process.html" class="sidebar-nav-link"><span class="en-only">Thinking Process</span><span class="ko-only">추론 과정</span></a>
+</nav>
+  <div class="bd-main">
+    <div class="article-header-bar">
+  <div class="header-brand"><span class="en-only">Dependency Extraction &amp; KB Construction Survey</span><span class="ko-only">의존성 추출 및 지식베이스 구축 문헌 조사</span></div>
+  <nav class="breadcrumb"><span class="en-only">Survey Hub</span><span class="ko-only">조사 허브</span></nav>
+  <button class="lang-btn" data-lang="en" onclick="toggleLanguage()">EN</button>
+  <button class="lang-btn" data-lang="ko" onclick="toggleLanguage()">KO</button>
+</div>
+    <div class="bd-article">
+      <section id="overview" class="section-anchor">
+        <div class="en-only"><h1>Literature Survey: Dependency Extraction &amp; KB Construction</h1>
+          <p style="color:var(--muted)">69 of 139 sources analyzed · 9 SPs · converged after 9 iterations · O1/O2 covered, O3 partial · 2026-07-04 KST</p></div>
+        <div class="ko-only"><h1>문헌 조사: 의존성 추출 및 지식베이스 구축</h1>
+          <p style="color:var(--muted)">139개 중 69개 자료 분석 · 9개 SP · 9회 반복 후 수렴 · O1/O2 충족, O3 부분 · 2026-07-04 KST</p></div>
+        <div class="stat-grid" style="margin-top:1.2rem">
+          <div class="stat-box"><div class="stat-num">69</div><div class="stat-label en-only">Sources analyzed</div><div class="stat-label ko-only">분석 자료</div></div>
+          <div class="stat-box"><div class="stat-num">9</div><div class="stat-label en-only">Sub-Problems</div><div class="stat-label ko-only">세부 문제</div></div>
+          <div class="stat-box"><div class="stat-num">44</div><div class="stat-label en-only">Research Qs</div><div class="stat-label ko-only">연구 질문</div></div>
+          <div class="stat-box"><div class="stat-num">5</div><div class="stat-label en-only">Open Gaps</div><div class="stat-label ko-only">미해결 gap</div></div>
+        </div>
+      </section>
+
+      <section id="answers" class="section-anchor">
+        <div class="card" style="border-color:var(--teal);margin-bottom:1rem">
+          <div class="en-only"><h2 style="margin-top:0">What the literature says</h2>
+            <p><strong>O1 — extraction is machinery, not the edge.</strong> Two complementary signal sources exist and are benchmarked: citation-intent classification separates USES/EXTENDS lineage on the ACL-ARC 6-way schema (~68–71 macro-F1, with a scientific-pretrained encoder the single largest lever, +12 F1), and span-based body-text extraction reaches ~67 entity / ~48 relation F1 on SciERC. For an agent, the no-training route is open-schema LLM extraction (prompt for schema-free records, canonicalize afterward). But the dependency <em>edge</em> the KB needs sits one methodized step beyond every benchmark: citation-intent labels are sentence-level and no schema carries a <code>requires</code> type.</p>
+            <p><strong>O2 — matching is solved; the decision threshold is imported, not calibrated.</strong> Description/name-based dense matching (bi-encoder retrieve-then-rerank, or metric-learning cosine) links a mention to a KB node zero-shot, so a newly-added node is linkable without retraining. The reuse-vs-spawn decision, deferred by the academic entity-linking literature, is supplied operationally by the KG-construction toolchain, which converges independently on an embedding-similarity threshold (KARMA ρ, iText2KG θ_E=0.8, Neo4j 0.97). Crucially, the prerequisite direction must be <em>asymmetric</em> — symmetric similarity gives precision 0.98 / recall 0.16.</p>
+            <p><strong>O3 — append and prune are solved, cycle handling is not.</strong> Incremental set-merge against the existing graph and bi-temporal invalidate-not-delete handle append; fully-dynamic transitive reduction prunes redundant edges exactly at O(m) per update. But cycle detection and resolution on edge insertion is answered by no surveyed paper — even gold LectureBank contains 12 cyclic pairs, so the problem is real, and the fix must come from classical graph-algorithm literature outside the surveyed scope.</p></div>
+          <div class="ko-only"><h2 style="margin-top:0">문헌이 말하는 것</h2>
+            <p><strong>O1 — 추출은 기계일 뿐, edge가 아니다.</strong> 상보적 신호 원천 둘이 벤치마크되어 존재한다. 인용 의도 분류는 ACL-ARC 6-way 스키마에서 USES/EXTENDS 계보를 분리하며(~68–71 macro-F1, 과학 사전학습 인코더가 최대 레버로 +12 F1), span 기반 본문 추출은 SciERC에서 ~67 개체 / ~48 관계 F1을 달성한다. 에이전트에게 학습-free 경로는 open-schema LLM 추출이다(스키마 없는 레코드를 프롬프트하고 이후 정규화). 그러나 KB가 필요로 하는 의존 <em>edge</em>는 모든 벤치마크에서 한 단계 너머에 있다: 인용 의도 라벨은 문장 수준이고 어떤 스키마도 <code>requires</code> 유형을 담지 않는다.</p>
+            <p><strong>O2 — 매칭은 해결됨; 결정 임계값은 보정이 아닌 수입.</strong> 설명/이름 기반 밀집 매칭(bi-encoder retrieve-then-rerank 또는 metric-learning cosine)이 mention을 KB 노드에 zero-shot 링킹하므로 신규 노드가 재학습 없이 링킹된다. 학술 개체 링킹 문헌이 미룬 재사용-대-생성 결정은 KG 구성 툴체인이 운용적으로 공급하며, 임베딩 유사도 임계값에 독립 수렴한다(KARMA ρ, iText2KG θ_E=0.8, Neo4j 0.97). 결정적으로 선행 방향은 <em>비대칭</em>이어야 한다 — 대칭 유사도는 정밀도 0.98 / 재현율 0.16이다.</p>
+            <p><strong>O3 — 추가와 pruning은 해결, cycle 처리는 미해결.</strong> 기존 그래프에 대한 증분 set-merge와 bi-temporal 무효화-비삭제가 추가를 처리하고, 완전 동적 이행 축소가 중복 edge를 갱신당 O(m)으로 정확히 제거한다. 그러나 edge 삽입 시 cycle 검출·해소는 어떤 조사 논문도 답하지 않는다 — gold LectureBank조차 12개 순환 쌍을 포함하므로 문제는 실재하며, 해법은 조사 범위 밖 고전 그래프 알고리즘에서 와야 한다.</p></div>
+        </div>
+      </section>
+
+      <section id="todo" class="section-anchor">
+        <div class="card" style="border-color:var(--purple);margin-bottom:1rem">
+          <div class="en-only"><h2 style="margin-top:0">What we should do</h2>
+            <ol>
+              <li><strong>Stage 1 — Extract, two channels.</strong> Run open-schema LLM extraction over the body (SciBERT embeddings for Stage 2) and ACL-ARC citation-intent tagging over each citation context; then add the two steps the literature omits — sentence-intent → paper-edge aggregation and an asymmetric prerequisite-typing judgment. Open-schema extraction is the only no-training route with converging multi-tool support.</li>
+              <li><strong>Stage 2 — Link-or-spawn by threshold.</strong> Embed each mention and retrieve the nearest KB node; link within θ, spawn beyond it, gate the borderline band with an LLM equivalence check and the disputed/outKB signal. Start θ conservatively (θ≈0.8) and bias toward precision, then set edge direction with the Stage-1 asymmetric check.</li>
+              <li><strong>Stage 3 — Maintain the DAG.</strong> Set-merge incrementally, invalidate-not-delete stale links, run fully-dynamic transitive reduction to prune redundant edges — then supply the missing piece yourself: a classical incremental topological-order / cycle check on every insertion (reject or route cycle-closing edges). No surveyed paper provides it, so it is an engineering import.</li>
+            </ol></div>
+          <div class="ko-only"><h2 style="margin-top:0">해야 할 것</h2>
+            <ol>
+              <li><strong>1단계 — 두 채널 추출.</strong> 본문에 open-schema LLM 추출(2단계용 SciBERT 임베딩)과 각 인용 문맥에 ACL-ARC 인용 의도 태깅을 수행하고, 문헌이 생략한 두 단계 — 문장 의도 → 논문 edge 집계와 비대칭 선행-유형 판단 — 을 추가한다. open-schema 추출은 다중 도구가 수렴 지지하는 유일한 학습-free 경로이다.</li>
+              <li><strong>2단계 — 임계값 기반 링크-대-생성.</strong> 각 mention을 임베딩해 가장 가까운 KB 노드를 검색하고, θ 이내면 링크, 초과면 생성하며, 경계 구간을 LLM 동등성 검사와 disputed/outKB 신호로 게이팅한다. θ를 보수적으로(θ≈0.8) 시작해 정밀도로 편향하고, 1단계 비대칭 검사로 edge 방향을 설정한다.</li>
+              <li><strong>3단계 — DAG 유지.</strong> 증분 set-merge, stale 링크 무효화-비삭제, 완전 동적 이행 축소로 중복 edge를 pruning한 뒤, 누락 부분을 스스로 공급한다: 모든 삽입에 고전 증분 위상정렬/cycle 검사(순환을 닫는 edge는 기각 또는 라우팅). 어떤 조사 논문도 제공하지 않으므로 공학적 수입이다.</li>
+            </ol></div>
+        </div>
+      </section>
+
+      <section id="gaps" class="section-anchor">
+        <div class="card" style="border-color:var(--yellow);margin-bottom:1.5rem">
+          <div class="en-only"><h2 style="margin-top:0">What the literature does not answer</h2>
+            <ul style="margin:0;padding-left:1.2rem">
+              <li><strong>Gap 1 (P1)</strong>: Cycle detection and resolution on edge insertion — blocks Step 3. <span style="color:var(--muted)">Resolves with: a classical incremental topological-ordering algorithm (Pearce–Kelly) measured on a corpus-derived dependency graph.</span></li>
+              <li><strong>Gap 2 (P1)</strong>: Reuse-vs-spawn threshold calibration on a terse, canonical-name-poor scientific dependency KB — blocks trusting Step 2 unsupervised. <span style="color:var(--muted)">Resolves with: a θ-abstention calibration study with gold merge/spawn labels.</span></li>
+              <li><strong>Gap 3 (P1)</strong>: Sentence-intent → paper-level dependency-edge aggregation — blocks Step 1. <span style="color:var(--muted)">Resolves with: validating a pooling rule (any-EXTENDS-wins) against gold paper-level edges.</span></li>
+              <li><strong>Gap 4 (P2)</strong>: No task emits TYPED dependency edges (requires/derives-from/extends) with P/R evaluation. <span style="color:var(--muted)">Resolves with: a dependency-KB benchmark with gold edges and construction-side P/R/F1.</span></li>
+              <li><strong>Gap 5 (P2)</strong>: Transfer of all methods to noisy, definition-free, auto-extracted scientific graphs is uniformly untested.</li>
+            </ul></div>
+          <div class="ko-only"><h2 style="margin-top:0">문헌이 답하지 못하는 것</h2>
+            <ul style="margin:0;padding-left:1.2rem">
+              <li><strong>Gap 1 (P1)</strong>: edge 삽입 시 cycle 검출·해소 — 3단계를 차단한다. <span style="color:var(--muted)">해결: 코퍼스 유래 의존 그래프에서 측정한 고전 증분 위상정렬(Pearce–Kelly).</span></li>
+              <li><strong>Gap 2 (P1)</strong>: 간결하고 정본 이름이 빈약한 과학 의존 KB에서의 재사용-대-생성 임계값 보정 — 2단계의 비지도 신뢰를 차단한다.</li>
+              <li><strong>Gap 3 (P1)</strong>: 문장 의도 → 논문 수준 의존-edge 집계 — 1단계를 차단한다.</li>
+              <li><strong>Gap 4 (P2)</strong>: 어떤 과제도 P/R 평가와 함께 유형 의존 edge(requires/derives-from/extends)를 방출하지 않는다.</li>
+              <li><strong>Gap 5 (P2)</strong>: 모든 방법의 잡음·정의-부재 자동 추출 과학 그래프로의 전이가 일률적으로 미검증이다.</li>
+            </ul></div>
+        </div>
+      </section>
+
+      <section id="sps" class="section-anchor">
+        <div class="en-only"><h2>Sub-Problems Surveyed</h2></div>
+        <div class="ko-only"><h2>조사된 세부 문제</h2></div>
+        <div class="sp-grid"><a href="sp1_citation_intent.html" style="text-decoration:none">
+  <div class="sp-card"><div class="sp-badge">SP1 · 6 papers</div>
+    <h3><span class="en-only">Citation Intent and Function Classification</span><span class="ko-only">인용 의도 및 기능 분류</span></h3>
+    <p class="en-only">Citation intent is benchmarked and separates USES/EXTENDS lineage — but stops at sentence-level labels, never a directed paper→paper edge.</p><p class="ko-only">인용 의도는 벤치마크되어 USES/EXTENDS 계보를 분리하나, 문장 수준 라벨에서 멈추고 방향성 논문→논문 edge에 이르지 못한다.</p></div></a><a href="sp2_concept_relation_extraction.html" style="text-decoration:none">
+  <div class="sp-card"><div class="sp-badge">SP2 · 11 papers</div>
+    <h3><span class="en-only">Scientific Concept and Relation Extraction</span><span class="ko-only">과학 개념 및 관계 추출</span></h3>
+    <p class="en-only">Span-based SciBERT extraction reaches ~67/~48 SciERC F1, but no schema carries a prerequisite type and strong methods are all supervised.</p><p class="ko-only">span 기반 SciBERT 추출은 SciERC F1 ~67/~48을 달성하나, 어떤 스키마도 prerequisite 유형을 담지 않고 강한 방법은 모두 지도학습이다.</p></div></a><a href="sp3_concept_prerequisite.html" style="text-decoration:none">
+  <div class="sp-card"><div class="sp-badge">SP3 · 7 papers</div>
+    <h3><span class="en-only">Concept Prerequisite Learning and Prediction</span><span class="ko-only">개념 선행관계 학습 및 예측</span></h3>
+    <p class="en-only">The prerequisite decision must be asymmetric (symmetric similarity gives P0.98/R0.16); every method is supervised, so no agent threshold exists.</p><p class="ko-only">선행 결정은 비대칭이어야 하며(대칭 유사도는 P0.98/R0.16), 모든 방법이 지도학습이라 에이전트 임계값이 존재하지 않는다.</p></div></a><a href="sp4_entity_linking.html" style="text-decoration:none">
+  <div class="sp-card"><div class="sp-badge">SP4 · 7 papers</div>
+    <h3><span class="en-only">Scientific Entity and Concept Linking</span><span class="ko-only">과학 개체 및 개념 링킹</span></h3>
+    <p class="en-only">Zero-shot dense linking solves matching; the reuse-vs-spawn threshold is the least-benchmarked quantity (only S2abEL makes outKB first-class).</p><p class="ko-only">zero-shot 밀집 링킹이 매칭을 해결하나, 재사용-대-생성 임계값이 가장 덜 벤치마크되었다(S2abEL만 outKB를 일급으로 만듦).</p></div></a><a href="sp5_related_work_novelty.html" style="text-decoration:none">
+  <div class="sp-card"><div class="sp-badge">SP5 · 7 papers</div>
+    <h3><span class="en-only">Related Work Generation and Extension/Novelty Detection</span><span class="ko-only">관련연구 생성 및 확장/신규성 검출</span></h3>
+    <p class="en-only">Citation-graph primitives (edge weighting, span localization, grounded novelty) all exist — but consume citation structure, never emit typed edges.</p><p class="ko-only">인용 그래프 primitive(edge 가중·span 국소화·근거 신규성)가 모두 존재하나, 인용 구조를 소비할 뿐 유형 edge를 방출하지 않는다.</p></div></a><a href="sp6_llm_agent_kg.html" style="text-decoration:none">
+  <div class="sp-card"><div class="sp-badge">SP6 · 16 papers</div>
+    <h3><span class="en-only">LLM-Agent and RAG Pipelines for KG Construction</span><span class="ko-only">지식그래프 구성을 위한 LLM 에이전트·RAG 파이프라인</span></h3>
+    <p class="en-only">The load-bearing spine: open-schema extraction → embedding-threshold link-or-spawn → incremental merge, but no tool enforces DAG invariants.</p><p class="ko-only">핵심 척추: open-schema 추출 → 임베딩 임계 링크-대-생성 → 증분 병합. 그러나 어떤 도구도 DAG 불변식을 강제하지 않는다.</p></div></a><a href="sp7_ontology_alignment.html" style="text-decoration:none">
+  <div class="sp-card"><div class="sp-badge">SP7 · 7 papers</div>
+    <h3><span class="en-only">Ontology and Taxonomy Alignment</span><span class="ko-only">온톨로지 및 분류체계 정렬</span></h3>
+    <p class="en-only">The scored typed-relation 5-tuple + threshold is the equivalence-vs-new-node primitive; no method makes the full three-way decision.</p><p class="ko-only">채점된 유형-관계 5-tuple + 임계값이 동등성-대-신규 노드 primitive이나, 어떤 방법도 완전한 3-way 결정을 내리지 않는다.</p></div></a><a href="sp8_incremental_kg.html" style="text-decoration:none">
+  <div class="sp-card"><div class="sp-badge">SP8 · 4 papers</div>
+    <h3><span class="en-only">Incremental Knowledge Graph Construction and Maintenance</span><span class="ko-only">증분 지식그래프 구성 및 유지</span></h3>
+    <p class="en-only">Temporal-KG literature forecasts recurring event facts, not structure maintenance; it supplies vocabulary and append, not DAG consistency.</p><p class="ko-only">시계열-KG 문헌은 재발 사건 사실을 예측할 뿐 구조 유지가 아니며, DAG 일관성이 아닌 어휘와 추가를 제공한다.</p></div></a><a href="sp9_link_prediction_dag.html" style="text-decoration:none">
+  <div class="sp-card"><div class="sp-badge">SP9 · 6 papers</div>
+    <h3><span class="en-only">Link Prediction and Completion for Hierarchical/DAG Graphs</span><span class="ko-only">계층/DAG 그래프 링크 예측 및 완성</span></h3>
+    <p class="en-only">Fine-tune-free placement and exact incremental transitive reduction are solved; cycle detection/resolution is answered by no paper.</p><p class="ko-only">fine-tune-free 배치와 정확한 증분 이행 축소는 해결되나, cycle 검출/해소는 어떤 논문도 답하지 않는다.</p></div></a></div>
+        <div class="card" style="margin-top:1.5rem">
+          <div class="en-only"><h3>Objective Coverage</h3></div>
+          <div class="ko-only"><h3>목표 충족 현황</h3></div>
+          <table><thead><tr><th>ID</th><th><span class="en-only">Objective</span><span class="ko-only">목표</span></th><th>P</th>
+            <th><span class="en-only">Status</span><span class="ko-only">상태</span></th>
+            <th><span class="en-only">Covering SPs</span><span class="ko-only">담당 SP</span></th></tr></thead>
+            <tbody><tr><td>O1</td><td><span class="en-only">Extract prerequisite-concept + citation-lineage signals from a new paper</span><span class="ko-only">새 논문에서 선행-개념 + 인용-계보 신호 추출</span></td><td>P1</td><td style="color:var(--green)"><span class="en-only">✓ answered</span><span class="ko-only">✓ 충족</span></td><td><a href="sp1_citation_intent.html">SP1</a> <a href="sp2_concept_relation_extraction.html">SP2</a> <a href="sp5_related_work_novelty.html">SP5</a> <a href="sp6_llm_agent_kg.html">SP6</a></td></tr>
+<tr><td>O2</td><td><span class="en-only">Match signals to existing nodes or spawn new nodes</span><span class="ko-only">신호를 기존 노드에 매칭하거나 신규 노드 생성</span></td><td>P1</td><td style="color:var(--green)"><span class="en-only">✓ answered</span><span class="ko-only">✓ 충족</span></td><td><a href="sp3_concept_prerequisite.html">SP3</a> <a href="sp4_entity_linking.html">SP4</a> <a href="sp5_related_work_novelty.html">SP5</a> <a href="sp6_llm_agent_kg.html">SP6</a> <a href="sp7_ontology_alignment.html">SP7</a></td></tr>
+<tr><td>O3</td><td><span class="en-only">Keep the growing dependency DAG globally consistent</span><span class="ko-only">성장하는 의존 DAG를 전역 일관 상태로 유지</span></td><td>P2</td><td style="color:var(--yellow)"><span class="en-only">◑ partial</span><span class="ko-only">◑ 부분</span></td><td><a href="sp6_llm_agent_kg.html">SP6</a> <a href="sp8_incremental_kg.html">SP8</a> <a href="sp9_link_prediction_dag.html">SP9</a></td></tr>
+</tbody></table>
+        </div>
+      </section>
+
+      <section id="papers" class="section-anchor">
+        <div class="card" style="margin-top:1.5rem">
+          <div class="en-only"><h3>All Sources Analyzed (69)</h3></div>
+          <div class="ko-only"><h3>분석된 전체 자료 (69편)</h3></div>
+          <div class="scroll-table-wrap">
+            <table><thead><tr><th>Ref</th><th><span class="en-only">Authors (year)</span><span class="ko-only">저자 (연도)</span></th>
+              <th><span class="en-only">Title</span><span class="ko-only">제목</span></th>
+              <th><span class="en-only">Venue</span><span class="ko-only">발표처</span></th><th>SP</th><th>Tier</th></tr></thead>
+              <tbody><tr><td>[1]</td><td>Cohan et al. (2019)</td><td><a href="papers/01_SciCite.html">Structural Scaffolds for Citation Intent Classification in Scientific Publications</a></td><td>NAACL 2019</td><td><a href="sp1_citation_intent.html">SP1</a></td><td><span class="pill pill-p0">P0</span></td></tr>
+<tr><td>[2]</td><td>Teufel et al. (2006)</td><td><a href="papers/02_Teufel2006.html">Automatic classification of citation function</a></td><td>EMNLP 2006</td><td><a href="sp1_citation_intent.html">SP1</a></td><td><span class="pill pill-p0">P0</span></td></tr>
+<tr><td>[3]</td><td>Jurgens et al. (2018)</td><td><a href="papers/03_ACLARC.html">Measuring the Evolution of a Scientific Field through Citation Frames</a></td><td>TACL 2018</td><td><a href="sp1_citation_intent.html">SP1</a></td><td><span class="pill pill-p0">P0</span></td></tr>
+<tr><td>[4]</td><td>Beltagy et al. (2019)</td><td><a href="papers/04_SciBERT.html">SciBERT: A Pretrained Language Model for Scientific Text</a></td><td>EMNLP 2019</td><td><a href="sp1_citation_intent.html">SP1</a> <a href="sp2_concept_relation_extraction.html">SP2</a></td><td><span class="pill pill-p0">P0</span></td></tr>
+<tr><td>[9]</td><td>Lahiri et al. (2023)</td><td><a href="papers/09_CitePrompt.html">CitePrompt: Using Prompts to Identify Citation Intent in Scientific Papers</a></td><td>JCDL 2023</td><td><a href="sp1_citation_intent.html">SP1</a></td><td><span class="pill pill-p0">P0</span></td></tr>
+<tr><td>[10]</td><td>Kunnath et al. (2023)</td><td><a href="papers/10_PromptStrategies.html">Prompting Strategies for Citation Classification</a></td><td>CIKM 2023</td><td><a href="sp1_citation_intent.html">SP1</a></td><td><span class="pill pill-p0">P0</span></td></tr>
+<tr><td>[16]</td><td>Luan et al. (2018)</td><td><a href="papers/16_SciERC.html">Multi-Task Identification of Entities, Relations, and Coreference for Scientific Knowledge Graph Construction</a></td><td>EMNLP 2018</td><td><a href="sp2_concept_relation_extraction.html">SP2</a></td><td><span class="pill pill-p0">P0</span></td></tr>
+<tr><td>[17]</td><td>Wadden et al. (2019)</td><td><a href="papers/17_DyGIEpp.html">Entity, Relation, and Event Extraction with Contextualized Span Representations</a></td><td>EMNLP 2019</td><td><a href="sp2_concept_relation_extraction.html">SP2</a></td><td><span class="pill pill-p0">P0</span></td></tr>
+<tr><td>[18]</td><td>Augenstein et al. (2017)</td><td><a href="papers/18_ScienceIE.html">SemEval 2017 Task 10: ScienceIE - Extracting Keyphrases and Relations from Scientific Publications</a></td><td>SemEval 2017 (ACL Workshop)</td><td><a href="sp2_concept_relation_extraction.html">SP2</a></td><td><span class="pill pill-p0">P0</span></td></tr>
+<tr><td>[19]</td><td>Zhong &amp; Chen (2021)</td><td><a href="papers/19_PURE.html">A Frustratingly Easy Approach for Entity and Relation Extraction</a></td><td>NAACL 2021</td><td><a href="sp2_concept_relation_extraction.html">SP2</a></td><td><span class="pill pill-p0">P0</span></td></tr>
+<tr><td>[21]</td><td>Ye et al. (2022)</td><td><a href="papers/21_PLMarker.html">Packed Levitated Marker for Entity and Relation Extraction</a></td><td>ACL 2022</td><td><a href="sp2_concept_relation_extraction.html">SP2</a></td><td><span class="pill pill-p0">P0</span></td></tr>
+<tr><td>[22]</td><td>Gabor et al. (2018)</td><td><a href="papers/22_SemEval2018Task7.html">SemEval-2018 Task 7: Semantic Relation Extraction and Classification in Scientific Papers</a></td><td>SemEval 2018 (ACL Workshop)</td><td><a href="sp2_concept_relation_extraction.html">SP2</a></td><td><span class="pill pill-p0">P0</span></td></tr>
+<tr><td>[23]</td><td>Zhang et al. (2024)</td><td><a href="papers/23_SciLLMSurvey.html">A Comprehensive Survey of Scientific Large Language Models and Their Applications in Scientific Discovery</a></td><td>EMNLP 2024</td><td><a href="sp2_concept_relation_extraction.html">SP2</a></td><td><span class="pill pill-p0">P0</span></td></tr>
+<tr><td>[27]</td><td>Miwa &amp; Bansal (2016)</td><td><a href="papers/27_MiwaBansal.html">End-to-End Relation Extraction using LSTMs on Sequences and Tree Structures</a></td><td>ACL 2016</td><td><a href="sp2_concept_relation_extraction.html">SP2</a></td><td><span class="pill pill-p0">P0</span></td></tr>
+<tr><td>[28]</td><td>Ammar et al. (2018)</td><td><a href="papers/28_LiteratureGraph.html">Construction of the Literature Graph in Semantic Scholar</a></td><td>NAACL 2018 (Industry)</td><td><a href="sp2_concept_relation_extraction.html">SP2</a></td><td><span class="pill pill-p0">P0</span></td></tr>
+<tr><td>[29]</td><td>Peng et al. (2017)</td><td><a href="papers/29_GraphLSTM.html">Cross-Sentence N-ary Relation Extraction with Graph LSTMs</a></td><td>TACL 2017</td><td><a href="sp2_concept_relation_extraction.html">SP2</a></td><td><span class="pill pill-p0">P0</span></td></tr>
+<tr><td>[30]</td><td>Irene Li et al. (2019)</td><td><a href="papers/30_LectureBank.html">What Should I Learn First: Introducing LectureBank for NLP Education and Prerequisite Chain Learning</a></td><td>AAAI 2019</td><td><a href="sp3_concept_prerequisite.html">SP3</a></td><td><span class="pill pill-p0">P0</span></td></tr>
+<tr><td>[31]</td><td>Chen Liang et al. (2018)</td><td><a href="papers/31_ActiveLearningCPL.html">Investigating Active Learning for Concept Prerequisite Learning</a></td><td>AAAI 2018 (EAAI)</td><td><a href="sp3_concept_prerequisite.html">SP3</a></td><td><span class="pill pill-p0">P0</span></td></tr>
+<tr><td>[32]</td><td>Sudeshna Roy et al. (2018)</td><td><a href="papers/32_PREREQ.html">Inferring Concept Prerequisite Relations from Online Educational Resources</a></td><td>IAAI-19</td><td><a href="sp3_concept_prerequisite.html">SP3</a></td><td><span class="pill pill-p0">P0</span></td></tr>
+<tr><td>[34]</td><td>Irene Li et al. (2021)</td><td><a href="papers/34_CrossDomainVGAE.html">Unsupervised Cross-Domain Prerequisite Chain Learning using Variational Graph Autoencoders</a></td><td>ACL 2021</td><td><a href="sp3_concept_prerequisite.html">SP3</a></td><td><span class="pill pill-p0">P0</span></td></tr>
+<tr><td>[35]</td><td>ACM Computing Surveys (2025) (2025)</td><td><a href="papers/35_PRLSurvey.html">Prerequisite Relation Learning: A Survey and Outlook</a></td><td>ACM Computing Surveys 2025</td><td><a href="sp3_concept_prerequisite.html">SP3</a></td><td><span class="pill pill-p1">P1</span></td></tr>
+<tr><td>[36]</td><td>Miao Zhang et al. (2025)</td><td><a href="papers/36_DGCPL.html">DGCPL: Dual Graph Distillation for Concept Prerequisite Relation Learning</a></td><td>IJCAI 2025</td><td><a href="sp3_concept_prerequisite.html">SP3</a></td><td><span class="pill pill-p0">P0</span></td></tr>
+<tr><td>[38]</td><td>AAAI 2025 (vol. 39, pp. 1638-1646) (2025)</td><td><a href="papers/38_GlobalKnowledgeCPR.html">Learning Concept Prerequisite Relation via Global Knowledge Relation Optimization</a></td><td>AAAI 2025</td><td><a href="sp3_concept_prerequisite.html">SP3</a></td><td><span class="pill pill-p0">P0</span></td></tr>
+<tr><td>[45]</td><td>Wu et al. (2019)</td><td><a href="papers/45_BLINK.html">Scalable Zero-shot Entity Linking with Dense Entity Retrieval</a></td><td>EMNLP 2020</td><td><a href="sp4_entity_linking.html">SP4</a></td><td><span class="pill pill-p0">P0</span></td></tr>
+<tr><td>[46]</td><td>De Cao et al. (2020)</td><td><a href="papers/46_GENRE.html">Autoregressive Entity Retrieval</a></td><td>ICLR 2021 (spotlight)</td><td><a href="sp4_entity_linking.html">SP4</a></td><td><span class="pill pill-p0">P0</span></td></tr>
+<tr><td>[47]</td><td>Liu et al. (2020)</td><td><a href="papers/47_SapBERT.html">Self-Alignment Pretraining for Biomedical Entity Representations</a></td><td>NAACL 2021</td><td><a href="sp4_entity_linking.html">SP4</a></td><td><span class="pill pill-p0">P0</span></td></tr>
+<tr><td>[48]</td><td>Logeswaran et al. (2019)</td><td><a href="papers/48_ZeroShotEL.html">Zero-Shot Entity Linking by Reading Entity Descriptions</a></td><td>ACL 2019</td><td><a href="sp4_entity_linking.html">SP4</a></td><td><span class="pill pill-p0">P0</span></td></tr>
+<tr><td>[49]</td><td>Sevgili et al. (2020)</td><td><a href="papers/49_NeuralELSurvey.html">Neural Entity Linking: A Survey of Models Based on Deep Learning</a></td><td>Semantic Web 2022</td><td><a href="sp4_entity_linking.html">SP4</a></td><td><span class="pill pill-p1">P1</span></td></tr>
+<tr><td>[52]</td><td>Lou et al. (2023)</td><td><a href="papers/52_S2abEL.html">S2abEL: A Dataset for Entity Linking from Scientific Tables</a></td><td>EMNLP 2023</td><td><a href="sp4_entity_linking.html">SP4</a></td><td><span class="pill pill-p0">P0</span></td></tr>
+<tr><td>[53]</td><td>Shen et al. (2018)</td><td><a href="papers/53_EntitySetSearch.html">Entity Set Search of Scientific Literature: An Unsupervised Ranking Approach</a></td><td>SIGIR 2018</td><td><a href="sp4_entity_linking.html">SP4</a></td><td><span class="pill pill-p0">P0</span></td></tr>
+<tr><td>[60]</td><td>Xiangci Li et al. (2024)</td><td><a href="papers/60_RWCitationSurvey.html">Related Work and Citation Text Generation: A Survey</a></td><td>EMNLP 2024</td><td><a href="sp5_related_work_novelty.html">SP5</a></td><td><span class="pill pill-p0">P0</span></td></tr>
+<tr><td>[61]</td><td>Michihiro Yasunaga et al. (2019)</td><td><a href="papers/61_ScisummNet.html">ScisummNet: A Large Annotated Corpus and Content-Impact Models for Scientific Paper Summarization with Citation Networks</a></td><td>AAAI 2019</td><td><a href="sp5_related_work_novelty.html">SP5</a></td><td><span class="pill pill-p0">P0</span></td></tr>
+<tr><td>[64]</td><td>Zheheng Luo et al. (2023)</td><td><a href="papers/64_CitationSum.html">CitationSum: Citation-aware Graph Contrastive Learning for Scientific Paper Summarization</a></td><td>WWW 2023</td><td><a href="sp5_related_work_novelty.html">SP5</a></td><td><span class="pill pill-p0">P0</span></td></tr>
+<tr><td>[65]</td><td>Xiuying Chen et al. (2022)</td><td><a href="papers/65_CitationGraphSumm.html">Scientific Paper Extractive Summarization Enhanced by Citation Graphs</a></td><td>EMNLP 2022</td><td><a href="sp5_related_work_novelty.html">SP5</a></td><td><span class="pill pill-p0">P0</span></td></tr>
+<tr><td>[67]</td><td>Xiaochuan Liu et al. (2025)</td><td><a href="papers/67_SelectReadWrite.html">Select, Read, and Write: A Multi-Agent Framework of Full-Text-based Related Work Generation</a></td><td>ACL 2025 Findings</td><td><a href="sp5_related_work_novelty.html">SP5</a></td><td><span class="pill pill-p0">P0</span></td></tr>
+<tr><td>[71]</td><td>Sandeep Kumar et al. (2024)</td><td><a href="papers/71_UnlockNovelIdeas.html">Can Large Language Models Unlock Novel Scientific Research Ideas?</a></td><td>EMNLP 2025</td><td><a href="sp5_related_work_novelty.html">SP5</a></td><td><span class="pill pill-p0">P0</span></td></tr>
+<tr><td>[72]</td><td>Italo Luis da Silva et al. (2025)</td><td><a href="papers/72_GraphMind.html">GraphMind: Interactive Novelty Assessment System for Accelerating Scientific Discovery</a></td><td>EMNLP 2025 (Demo)</td><td><a href="sp5_related_work_novelty.html">SP5</a></td><td><span class="pill pill-p0">P0</span></td></tr>
+<tr><td>[76]</td><td>Jimenez Gutierrez et al. (2024)</td><td><a href="papers/76_HippoRAG.html">HippoRAG: Neurobiologically Inspired Long-Term Memory for Large Language Models</a></td><td>NeurIPS 2024</td><td><a href="sp6_llm_agent_kg.html">SP6</a></td><td><span class="pill pill-p0">P0</span></td></tr>
+<tr><td>[77]</td><td>Zhang &amp; Soh (2024)</td><td><a href="papers/77_EDC.html">Extract, Define, Canonicalize: An LLM-based Framework for Knowledge Graph Construction</a></td><td>EMNLP 2024</td><td><a href="sp6_llm_agent_kg.html">SP6</a></td><td><span class="pill pill-p0">P0</span></td></tr>
+<tr><td>[78]</td><td>Baek et al. (2024)</td><td><a href="papers/78_ResearchAgent.html">ResearchAgent: Iterative Research Idea Generation over Scientific Literature with Large Language Models</a></td><td>NAACL 2025</td><td><a href="sp6_llm_agent_kg.html">SP6</a></td><td><span class="pill pill-p0">P0</span></td></tr>
+<tr><td>[81]</td><td>Han et al. (2024)</td><td><a href="papers/81_RAGGraphs.html">Retrieval-Augmented Generation with Graphs (GraphRAG)</a></td><td>arXiv</td><td><a href="sp6_llm_agent_kg.html">SP6</a></td><td><span class="pill pill-p1">P1</span></td></tr>
+<tr><td>[82]</td><td>Zhang et al. (2025)</td><td><a href="papers/82_GraphRAGSurvey.html">A Survey of Graph Retrieval-Augmented Generation for Customized Large Language Models</a></td><td>arXiv</td><td><a href="sp6_llm_agent_kg.html">SP6</a></td><td><span class="pill pill-p1">P1</span></td></tr>
+<tr><td>[83]</td><td> (2025)</td><td><a href="papers/83_KARMA.html">KARMA: Leveraging Multi-Agent LLMs for Automated Knowledge Graph Enrichment</a></td><td>NeurIPS 2025</td><td><a href="sp6_llm_agent_kg.html">SP6</a></td><td><span class="pill pill-p0">P0</span></td></tr>
+<tr><td>[90]</td><td>He, Chen, Antonyrajah, Horrocks (2021)</td><td><a href="papers/90_BERTMap.html">BERTMap: A BERT-based Ontology Alignment System</a></td><td>AAAI 2022</td><td><a href="sp7_ontology_alignment.html">SP7</a></td><td><span class="pill pill-p0">P0</span></td></tr>
+<tr><td>[91]</td><td>Shen, Shen, Xiong, Wang, Wang, Han (2020)</td><td><a href="papers/91_TaxoExpan.html">TaxoExpan: Self-supervised Taxonomy Expansion with Position-Enhanced Graph Neural Network</a></td><td>WWW 2020</td><td><a href="sp7_ontology_alignment.html">SP7</a></td><td><span class="pill pill-p0">P0</span></td></tr>
+<tr><td>[92]</td><td>Jiang, Wang, Zhou, Xiong, et al. (2022)</td><td><a href="papers/92_TaxoEnrich.html">TaxoEnrich: Self-Supervised Taxonomy Completion via Structure-Semantic Representations</a></td><td>WWW 2022</td><td><a href="sp7_ontology_alignment.html">SP7</a></td><td><span class="pill pill-p0">P0</span></td></tr>
+<tr><td>[95]</td><td>Rahm, Bernstein (2001)</td><td><a href="papers/95_SchemaMatchSurvey.html">A survey of approaches to automatic schema matching</a></td><td>VLDB Journal</td><td><a href="sp7_ontology_alignment.html">SP7</a></td><td><span class="pill pill-p1">P1</span></td></tr>
+<tr><td>[96]</td><td>Shvaiko, Euzenat (2005)</td><td><a href="papers/96_SchemaBasedMatching.html">A Survey of Schema-based Matching Approaches</a></td><td>Journal on Data Semantics IV</td><td><a href="sp7_ontology_alignment.html">SP7</a></td><td><span class="pill pill-p1">P1</span></td></tr>
+<tr><td>[98]</td><td>Qiang, Wang, Taylor, et al. (2023)</td><td><a href="papers/98_AgentOM.html">Agent-OM: Leveraging LLM Agents for Ontology Matching</a></td><td>VLDB 2025</td><td><a href="sp7_ontology_alignment.html">SP7</a></td><td><span class="pill pill-p0">P0</span></td></tr>
+<tr><td>[101]</td><td>Wang, Qiang, Taylor, et al. (2024)</td><td><a href="papers/101_OAEILLM.html">OAEI-LLM: A Benchmark Dataset for Understanding Large Language Model Hallucinations in Ontology Matching</a></td><td>EACL 2026 (Main)</td><td><a href="sp7_ontology_alignment.html">SP7</a></td><td><span class="pill pill-p0">P0</span></td></tr>
+<tr><td>[106]</td><td>Trivedi et al. (2017)</td><td><a href="papers/106_KnowEvolve.html">Know-Evolve: Deep Temporal Reasoning for Dynamic Knowledge Graphs</a></td><td>ICML 2017</td><td><a href="sp8_incremental_kg.html">SP8</a></td><td><span class="pill pill-p0">P0</span></td></tr>
+<tr><td>[107]</td><td>Li et al. (2021)</td><td><a href="papers/107_REGCN.html">Temporal Knowledge Graph Reasoning Based on Evolutional Representation Learning</a></td><td>SIGIR 2021</td><td><a href="sp8_incremental_kg.html">SP8</a></td><td><span class="pill pill-p0">P0</span></td></tr>
+<tr><td>[108]</td><td>Hogan et al. (2021)</td><td><a href="papers/108_KGSurveyHogan.html">Knowledge Graphs</a></td><td>ACM Computing Surveys 2021</td><td><a href="sp8_incremental_kg.html">SP8</a></td><td><span class="pill pill-p1">P1</span></td></tr>
+<tr><td>[109]</td><td>Cai et al. (2022)</td><td><a href="papers/109_TKGCSurvey.html">Temporal Knowledge Graph Completion: A Survey</a></td><td>IJCAI 2023</td><td><a href="sp8_incremental_kg.html">SP8</a> <a href="sp9_link_prediction_dag.html">SP9</a></td><td><span class="pill pill-p1">P1</span></td></tr>
+<tr><td>[118]</td><td>Zhang et al. (2019)</td><td><a href="papers/118_HAKE.html">Learning Hierarchy-Aware Knowledge Graph Embeddings for Link Prediction</a></td><td>AAAI 2020</td><td><a href="sp9_link_prediction_dag.html">SP9</a></td><td><span class="pill pill-p0">P0</span></td></tr>
+<tr><td>[121]</td><td>Goranci, Karczmarz, Momeni, Parotsidis (2025)</td><td><a href="papers/121_DynTransReduction.html">Fully Dynamic Algorithms for Transitive Reduction</a></td><td>ICALP 2025</td><td><a href="sp9_link_prediction_dag.html">SP9</a></td><td><span class="pill pill-p0">P0</span></td></tr>
+<tr><td>[122]</td><td>Wang et al. (2021)</td><td><a href="papers/122_STEAM.html">Enquire One's Parent and Child Before Decision: Fully Exploit Hierarchical Structure for Self-Supervised Taxonomy Expansion</a></td><td>WWW 2021</td><td><a href="sp9_link_prediction_dag.html">SP9</a></td><td><span class="pill pill-p0">P0</span></td></tr>
+<tr><td>[125]</td><td>Liu et al. (2025)</td><td><a href="papers/125_StructKGC-LLM.html">Enhancing Large Language Model for Knowledge Graph Completion via Structure-Aware Alignment-Tuning</a></td><td>EMNLP 2025</td><td><a href="sp9_link_prediction_dag.html">SP9</a></td><td><span class="pill pill-p0">P0</span></td></tr>
+<tr><td>[127]</td><td>Mishra, Arjun, Chakraborty (2025)</td><td><a href="papers/127_RankChunkExpand.html">Rank, Chunk and Expand: Lineage-Oriented Reasoning for Taxonomy Expansion</a></td><td>ACL 2025 Findings</td><td><a href="sp9_link_prediction_dag.html">SP9</a></td><td><span class="pill pill-p0">P0</span></td></tr>
+<tr><td>[130]</td><td></td><td><a href="papers/130_MicrosoftGraphRAG.html">microsoft/graphrag - modular graph-based Retrieval-Augmented Generation system</a></td><td></td><td><a href="sp6_llm_agent_kg.html">SP6</a></td><td><span class="pill pill-tool">Tool</span></td></tr>
+<tr><td>[131]</td><td></td><td><a href="papers/131_Graphiti.html">getzep/graphiti - real-time temporal knowledge graphs for AI agents</a></td><td></td><td><a href="sp6_llm_agent_kg.html">SP6</a></td><td><span class="pill pill-tool">Tool</span></td></tr>
+<tr><td>[132]</td><td></td><td><a href="papers/132_LightRAG.html">HKUDS/LightRAG - simple and fast graph-based retrieval-augmented generation</a></td><td></td><td><a href="sp6_llm_agent_kg.html">SP6</a></td><td><span class="pill pill-tool">Tool</span></td></tr>
+<tr><td>[133]</td><td></td><td><a href="papers/133_Cognee.html">topoteretes/cognee - open-source AI memory engine (ECL knowledge-graph pipeline)</a></td><td></td><td><a href="sp6_llm_agent_kg.html">SP6</a></td><td><span class="pill pill-tool">Tool</span></td></tr>
+<tr><td>[134]</td><td></td><td><a href="papers/134_Neo4jLLMGraphBuilder.html">neo4j-labs/llm-graph-builder - Neo4j graph construction from unstructured data via LLMs</a></td><td></td><td><a href="sp6_llm_agent_kg.html">SP6</a></td><td><span class="pill pill-tool">Tool</span></td></tr>
+<tr><td>[135]</td><td></td><td><a href="papers/135_iText2KGRepo.html">AuvaLab/itext2kg - incremental knowledge graph construction with LLMs</a></td><td></td><td><a href="sp6_llm_agent_kg.html">SP6</a></td><td><span class="pill pill-tool">Tool</span></td></tr>
+<tr><td>[136]</td><td></td><td><a href="papers/136_WeKnora.html">Tencent/WeKnora - LLM knowledge platform with agent mode and self-maintaining wiki</a></td><td></td><td><a href="sp6_llm_agent_kg.html">SP6</a></td><td><span class="pill pill-tool">Tool</span></td></tr>
+<tr><td>[137]</td><td></td><td><a href="papers/137_AutomaticKGLLM.html">fusion-jena/automatic-KG-creation-with-LLM - ontology + KG construction pipeline</a></td><td></td><td><a href="sp6_llm_agent_kg.html">SP6</a></td><td><span class="pill pill-tool">Tool</span></td></tr>
+<tr><td>[138]</td><td></td><td><a href="papers/138_AwesomeLLMKG.html">RManLuo/Awesome-LLM-KG - curated registry of LLM + knowledge graph papers/resources</a></td><td></td><td><a href="sp6_llm_agent_kg.html">SP6</a></td><td><span class="pill pill-tool">Tool</span></td></tr>
+<tr><td>[139]</td><td></td><td><a href="papers/139_AwesomeGraphRAG.html">DEEP-PolyU/Awesome-GraphRAG - curated registry of graph-based RAG resources</a></td><td></td><td><a href="sp6_llm_agent_kg.html">SP6</a></td><td><span class="pill pill-tool">Tool</span></td></tr>
+</tbody></table>
+          </div>
+        </div>
+        <p style="color:var(--muted);font-size:0.8em;text-align:right;margin-top:2rem">Generated: 2026-07-04 KST · 69 of 129 papers + 10 tools analyzed at skim depth</p>
+      </section>
+    </div>
+  </div>
+  <nav class="bd-sidebar-secondary">
+    <div class="mini-toc-label en-only">On this page</div>
+    <div class="mini-toc-label ko-only">이 페이지</div>
+    <ul class="mini-toc">
+      <li><a href="#overview"><span class="en-only">Overview</span><span class="ko-only">개요</span></a></li>
+      <li><a href="#answers"><span class="en-only">What literature says</span><span class="ko-only">문헌의 답변</span></a></li>
+      <li><a href="#todo"><span class="en-only">What we should do</span><span class="ko-only">해야 할 것</span></a></li>
+      <li><a href="#gaps"><span class="en-only">Open gaps</span><span class="ko-only">미해결 gap</span></a></li>
+      <li><a href="#sps"><span class="en-only">Sub-Problems</span><span class="ko-only">세부 문제</span></a></li>
+      <li><a href="#papers"><span class="en-only">All sources</span><span class="ko-only">전체 자료</span></a></li>
+    </ul>
+  </nav>
+</div>
+</body>
+</html>

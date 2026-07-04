@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SP6: LLM-Agent and RAG Pipelines for KG Construction — Dependency Extraction &amp; KB Construction Survey</title>
+<style>
+:root {
+  --bg: #0d1117; --card: #161b22; --border: #30363d;
+  --text: #e6edf3; --muted: #7d8590; --accent: #58a6ff;
+  --teal: #39d0c7; --green: #3fb950; --yellow: #d29922;
+  --red: #f85149; --purple: #bc8cff; --orange: #e3b341;
+  --sidebar-w: 262px; --toc-w: 210px; --hdr-h: 48px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+body { font-family: -apple-system, sans-serif; background: var(--bg);
+       color: var(--text); line-height: 1.6; }
+.bd-root { display: flex; height: 100vh; overflow: hidden; }
+.bd-sidebar-primary {
+  width: var(--sidebar-w); min-width: var(--sidebar-w);
+  overflow-y: auto; background: var(--card);
+  border-right: 1px solid var(--border);
+  padding: 0.75rem 0; flex-shrink: 0;
+}
+.bd-sidebar-primary::-webkit-scrollbar { width: 4px; }
+.bd-sidebar-primary::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+.bd-main { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-width: 0; }
+.article-header-bar {
+  height: var(--hdr-h); background: var(--card);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; padding: 0 1.5rem;
+  gap: 1rem; flex-shrink: 0;
+}
+.header-brand { color: var(--teal); font-weight: bold; font-size: 0.95em;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 1; }
+.header-brand a { color: inherit; text-decoration: none; }
+.breadcrumb { color: var(--muted); font-size: 0.82em; display: flex;
+  align-items: center; gap: 0.3rem; flex-shrink: 0; }
+.breadcrumb a { color: var(--accent); text-decoration: none; }
+.breadcrumb span { color: var(--border); }
+.bd-article { flex: 1; overflow-y: auto; padding: 2rem 2.5rem; }
+.bd-article::-webkit-scrollbar { width: 6px; }
+.bd-article::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+.bd-sidebar-secondary {
+  width: var(--toc-w); min-width: var(--toc-w);
+  overflow-y: auto; border-left: 1px solid var(--border);
+  padding: 1rem 0.75rem; flex-shrink: 0;
+}
+.bd-sidebar-secondary::-webkit-scrollbar { width: 4px; }
+.bd-sidebar-secondary::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+.sidebar-logo { padding: 0.5rem 1rem 0.75rem;
+  border-bottom: 1px solid var(--border); margin-bottom: 0.5rem; }
+.sidebar-logo a { color: var(--teal); font-weight: bold; font-size: 0.95em;
+  text-decoration: none; display: block; }
+.sidebar-section { color: var(--muted); font-size: 0.72em; font-weight: bold;
+  text-transform: uppercase; letter-spacing: 0.07em;
+  padding: 0.7rem 1rem 0.25rem; }
+.sidebar-nav-link { display: block; padding: 0.28rem 1rem 0.28rem 1.25rem;
+  color: var(--muted); font-size: 0.875em; text-decoration: none; }
+.sidebar-nav-link:hover { color: var(--text); background: rgba(255,255,255,0.03); }
+.sidebar-nav-link.active { color: var(--teal);
+  border-left: 2px solid var(--teal);
+  padding-left: calc(1.25rem - 2px); background: rgba(57,208,199,0.05); }
+.mini-toc-label { color: var(--muted); font-size: 0.72em; font-weight: bold;
+  text-transform: uppercase; letter-spacing: 0.07em; padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border); margin-bottom: 0.5rem; }
+.mini-toc { list-style: none; }
+.mini-toc li a { display: block; padding: 0.22rem 0;
+  color: var(--muted); font-size: 0.83em; text-decoration: none;
+  border-left: 2px solid transparent; padding-left: 0.5rem; }
+.mini-toc li a:hover { color: var(--text); }
+.mini-toc li a.toc-active { color: var(--teal); border-left-color: var(--teal); }
+.section-anchor { scroll-margin-top: calc(var(--hdr-h) + 8px); }
+h1 { color: var(--teal); font-size: 1.7em; margin-bottom: 0.5rem; }
+h2 { color: var(--teal); font-size: 1.25em; margin: 1.5rem 0 0.6rem; }
+h3 { color: var(--teal); font-size: 1.05em; margin: 1.2rem 0 0.4rem; }
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+p { margin-bottom: 0.8rem; }
+.card { background: var(--card); border: 1px solid var(--border);
+        border-radius: 8px; padding: 1.2rem; margin-bottom: 1rem; }
+table { width: 100%; border-collapse: collapse; font-size: 0.9em; }
+th { background: var(--card); color: var(--teal); padding: 8px;
+     border: 1px solid var(--border); text-align: left; }
+td { padding: 8px; border: 1px solid var(--border); vertical-align: top; }
+tr:nth-child(even) td { background: rgba(0,0,0,0.2); }
+.stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+             gap: 1rem; margin-bottom: 1.5rem; }
+.stat-box { background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+            padding: 1rem; text-align: center; }
+.stat-num { font-size: 2rem; font-weight: bold; color: var(--teal); }
+.stat-label { color: var(--muted); font-size: 0.85em; margin-top: 0.2rem; }
+.sp-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+           gap: 1rem; margin: 1rem 0; }
+.sp-card { background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+           padding: 1.2rem; cursor: pointer; transition: border-color 0.15s; }
+.sp-card:hover { border-color: var(--teal); }
+.sp-card h3 { margin: 0 0 0.5rem; color: var(--teal); font-size: 1em; }
+.sp-card p { margin: 0; color: var(--muted); font-size: 0.88em; }
+.sp-badge { display: inline-block; background: rgba(57,208,199,0.1); color: var(--teal);
+            border-radius: 4px; padding: 2px 8px; font-size: 0.8em; margin-bottom: 0.5rem; }
+.paper-meta { color: var(--muted); font-size: 0.9em; margin-bottom: 1.5rem; }
+.paper-meta a { color: var(--accent); }
+.section-label { color: var(--teal); font-weight: bold; font-size: 0.85em;
+                 text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.4rem; }
+.pill { display: inline-block; border-radius: 4px; padding: 0.15rem 0.6rem;
+        font-size: 0.8em; font-weight: bold; margin-right: 0.4rem; }
+.pill-p0 { background: rgba(63,185,80,0.2); color: var(--green); }
+.pill-p1 { background: rgba(57,208,199,0.15); color: var(--teal); }
+.pill-p2 { background: rgba(210,153,34,0.2); color: var(--yellow); }
+.pill-p4 { background: rgba(125,133,144,0.2); color: var(--muted); }
+.pill-tool { background: rgba(188,140,255,0.2); color: var(--purple); }
+.delta-row { margin: 0.4rem 0; padding: 0.4rem 0.8rem;
+             border-left: 3px solid var(--border); border-radius: 0 4px 4px 0; }
+.delta-resolved { border-left-color: var(--green); }
+.delta-missing  { border-left-color: var(--yellow); }
+.delta-ref      { border-left-color: var(--muted); }
+.chain { position: relative; padding-left: 2rem; }
+.chain::before { content: ''; position: absolute; left: 0.95rem; top: 0;
+                 bottom: 0; width: 2px; background: var(--border); }
+.chain-node { position: relative; margin-bottom: 2rem; }
+.chain-node::before { content: ''; position: absolute; left: -1.55rem;
+                      top: 1.1rem; width: 12px; height: 12px;
+                      border-radius: 50%; background: var(--teal); }
+.chain-num { display: inline-block; width: 28px; height: 28px; background: var(--teal);
+             color: #000; border-radius: 50%; text-align: center; line-height: 28px;
+             font-weight: bold; font-size: 0.85em; margin-right: 0.6rem; flex-shrink: 0; }
+.chain-q { font-weight: bold; color: var(--text); margin: 0.4rem 0 0.3rem; font-size: 1em; }
+.chain-papers { color: var(--muted); font-size: 0.85em; margin-bottom: 0.6rem; }
+.chain-start { background: var(--card); border: 1px solid var(--teal);
+               border-radius: 8px; padding: 1rem; margin-bottom: 2rem; }
+.chain-start h3 { margin: 0 0 0.5rem; color: var(--teal); }
+.chain-converge { background: var(--card); border: 1px solid var(--green);
+                  border-radius: 8px; padding: 1rem; margin-top: 1rem; }
+.chain-converge h3 { margin: 0 0 0.5rem; color: var(--green); }
+.chain-label { display: inline-block; border-radius: 4px; padding: 0.15rem 0.6rem;
+               font-size: 0.8em; font-weight: bold; margin-right: 0.4rem; }
+.chain-status { border-radius: 0 4px 4px 0; padding: 0.5rem 0.8rem;
+                margin: 0.35rem 0; font-size: 0.88em; }
+.chain-status ul { margin: 0.3rem 0 0 1.2rem; padding: 0; }
+.chain-status li { margin-bottom: 0.25rem; }
+.chain-status.solved  { background: rgba(63,185,80,0.07);  border-left: 3px solid var(--green); }
+.chain-status.remains { background: rgba(210,153,34,0.07); border-left: 3px solid var(--yellow); }
+.chain-status.added   { background: rgba(248,81,73,0.07);  border-left: 3px solid var(--red); }
+.chain-status.pivoted { background: rgba(188,140,255,0.1); border-left: 3px solid var(--purple); }
+.chain-label.solved   { background: rgba(63,185,80,0.2);  color: var(--green); }
+.chain-label.remains  { background: rgba(210,153,34,0.2); color: var(--yellow); }
+.chain-label.added    { background: rgba(248,81,73,0.2);  color: var(--red); }
+.chain-label.pivoted  { background: rgba(188,140,255,0.2); color: var(--purple); }
+.chain-status.expected { background: rgba(88,166,255,0.07);  border-left: 3px solid var(--accent); }
+.chain-label.expected  { background: rgba(88,166,255,0.2);   color: var(--accent); }
+.chain-status.revised  { background: rgba(57,208,199,0.07);  border-left: 3px solid var(--teal); }
+.chain-label.revised   { background: rgba(57,208,199,0.2);   color: var(--teal); }
+.concept-box { border-left: 4px solid var(--teal); background: #0d1f1f;
+               border-radius: 4px; padding: 1.2rem; margin-bottom: 1.2rem; }
+.concept-name { font-weight: bold; color: var(--teal); font-size: 1.05em; margin-bottom: 0.5rem; }
+.concept-field { margin: 0.3rem 0; }
+.concept-label { color: var(--muted); font-size: 0.85em; }
+.hypothesis { border-left: 4px solid var(--teal); background: #0d1f1f;
+              border-radius: 4px; padding: 1rem; margin: 1rem 0; }
+.recommendation { border-left: 4px solid var(--purple); background: #1a0f2e;
+                  border-radius: 4px; padding: 1rem; margin: 1rem 0; }
+.rq-row { background: rgba(88,166,255,0.05); border-left: 3px solid var(--accent);
+          padding: 0.4rem 0.8rem; margin-bottom: 0.5rem; border-radius: 0 4px 4px 0; }
+.scroll-table-wrap { max-height: 420px; overflow-y: auto; border: 1px solid var(--border);
+                     border-radius: 4px; }
+.scroll-table-wrap thead th { position: sticky; top: 0; background: #161b22; z-index: 1; }
+.page-nav { display: flex; justify-content: space-between; margin-top: 2rem;
+            padding-top: 1rem; border-top: 1px solid var(--border); gap: 1rem; }
+.page-nav a { color: var(--accent); font-size: 0.9em; }
+html.ko-active .en-only { display: none !important; }
+html.ko-active .ko-only { display: block !important; }
+.ko-only { display: none; }
+span.ko-only, span.en-only { display: inline; }
+html.ko-active span.en-only { display: none !important; }
+html.ko-active span.ko-only { display: inline !important; }
+.lang-btn { background: transparent; color: var(--muted); border: 1px solid var(--border);
+            border-radius: 4px; padding: 3px 9px; font-size: 0.8em; cursor: pointer; }
+.lang-btn.active { border-color: var(--teal); color: var(--teal); }
+@media (max-width: 1024px) { .bd-sidebar-secondary { display: none; } }
+@media (max-width: 768px) {
+  .bd-sidebar-primary { display: none; }
+  .bd-root { flex-direction: column; height: auto; overflow: visible; }
+  .bd-main { overflow: visible; }
+  .bd-article { overflow: visible; padding: 1rem; }
+  .stat-grid { grid-template-columns: repeat(2, 1fr); }
+  .sp-grid { grid-template-columns: 1fr; }
+}
+</style>
+<script>
+function toggleLanguage() {
+  const html = document.documentElement;
+  const isKo = html.classList.toggle('ko-active');
+  document.querySelectorAll('.lang-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.lang === (isKo ? 'ko' : 'en'));
+  });
+  localStorage.setItem('survey-lang', isKo ? 'ko' : 'en');
+}
+document.addEventListener('DOMContentLoaded', function() {
+  const saved = localStorage.getItem('survey-lang');
+  if (saved === 'ko') {
+    document.documentElement.classList.add('ko-active');
+    document.querySelectorAll('.lang-btn').forEach(b =>
+      b.classList.toggle('active', b.dataset.lang === 'ko'));
+  } else {
+    document.querySelectorAll('[data-lang="en"]').forEach(b => b.classList.add('active'));
+  }
+  const article = document.querySelector('.bd-article');
+  const sections = Array.from(document.querySelectorAll('.section-anchor[id]'));
+  const sideLinks = Array.from(document.querySelectorAll('.bd-sidebar-primary .sidebar-nav-link'));
+  const tocLinks = Array.from(document.querySelectorAll('.bd-sidebar-secondary .mini-toc a'));
+  if (!article || !sections.length) return;
+  function current() {
+    let id = sections[0].id;
+    const scrollTop = article.scrollTop + 60;
+    sections.forEach(function(s) { if (s.offsetTop <= scrollTop) id = s.id; });
+    return id;
+  }
+  function update() {
+    const id = current();
+    sideLinks.forEach(function(a) { a.classList.toggle('active', a.getAttribute('href') === '#' + id); });
+    tocLinks.forEach(function(a) { a.classList.toggle('toc-active', a.getAttribute('href') === '#' + id); });
+  }
+  article.addEventListener('scroll', update, { passive: true });
+  update();
+});
+</script>
+</head>
+<body>
+<div class="bd-root">
+  <nav class="bd-sidebar-primary">
+  <div class="sidebar-logo">
+    <a href="./index.html">&#x2b21; <span class="en-only">Dependency Extraction &amp; KB Construction Survey</span><span class="ko-only">의존성 추출 및 지식베이스 구축 문헌 조사</span></a>
+  </div>
+  <div class="sidebar-section en-only">Overview</div>
+  <div class="sidebar-section ko-only">개요</div>
+  <a href="./index.html#overview" class="sidebar-nav-link"><span class="en-only">Survey Hub</span><span class="ko-only">조사 허브</span></a>
+  <a href="./index.html#answers" class="sidebar-nav-link"><span class="en-only">Key Answers</span><span class="ko-only">핵심 답변</span></a>
+  <div class="sidebar-section en-only">Sub-Problems</div>
+  <div class="sidebar-section ko-only">세부 문제</div>
+  <a href="./sp1_citation_intent.html" class="sidebar-nav-link">SP1: <span class="en-only">Citation Intent</span><span class="ko-only">인용 의도</span></a>
+  <a href="./sp2_concept_relation_extraction.html" class="sidebar-nav-link">SP2: <span class="en-only">Concept/Relation Extraction</span><span class="ko-only">개념·관계 추출</span></a>
+  <a href="./sp3_concept_prerequisite.html" class="sidebar-nav-link">SP3: <span class="en-only">Concept Prerequisite</span><span class="ko-only">개념 선행관계</span></a>
+  <a href="./sp4_entity_linking.html" class="sidebar-nav-link">SP4: <span class="en-only">Entity Linking</span><span class="ko-only">개체 링킹</span></a>
+  <a href="./sp5_related_work_novelty.html" class="sidebar-nav-link">SP5: <span class="en-only">Related Work / Novelty</span><span class="ko-only">관련연구·신규성</span></a>
+  <a href="./sp6_llm_agent_kg.html" class="sidebar-nav-link active">SP6: <span class="en-only">LLM-Agent KG</span><span class="ko-only">LLM 에이전트 KG</span></a>
+  <a href="./sp7_ontology_alignment.html" class="sidebar-nav-link">SP7: <span class="en-only">Ontology Alignment</span><span class="ko-only">온톨로지 정렬</span></a>
+  <a href="./sp8_incremental_kg.html" class="sidebar-nav-link">SP8: <span class="en-only">Incremental KG</span><span class="ko-only">증분 KG</span></a>
+  <a href="./sp9_link_prediction_dag.html" class="sidebar-nav-link">SP9: <span class="en-only">DAG Link Prediction</span><span class="ko-only">DAG 링크 예측</span></a>
+  <div class="sidebar-section en-only">Synthesis</div>
+  <div class="sidebar-section ko-only">종합</div>
+  <a href="./conclusion.html" class="sidebar-nav-link"><span class="en-only">Conclusion</span><span class="ko-only">결론</span></a>
+  <a href="./thinking-process.html" class="sidebar-nav-link"><span class="en-only">Thinking Process</span><span class="ko-only">추론 과정</span></a>
+</nav>
+  <div class="bd-main">
+    <div class="article-header-bar">
+  <div class="header-brand"><a href="./index.html"><span class="en-only">Dependency Extraction &amp; KB Construction Survey</span><span class="ko-only">의존성 추출 및 지식베이스 구축 문헌 조사</span></a></div>
+  <nav class="breadcrumb"><a href="index.html"><span class="en-only">Survey</span><span class="ko-only">조사</span></a><span>›</span><span><span class="en-only">SP6: LLM-Agent KG</span><span class="ko-only">SP6: LLM 에이전트 KG</span></span></nav>
+  <button class="lang-btn" data-lang="en" onclick="toggleLanguage()">EN</button>
+  <button class="lang-btn" data-lang="ko" onclick="toggleLanguage()">KO</button>
+</div>
+    <div class="bd-article">
+      <section id="intro" class="section-anchor">
+  <div class="en-only"><h1>SP6: LLM-Agent and RAG Pipelines for KG Construction</h1>
+    <p style="color:var(--muted)">16 papers · targets O1, O2, O3</p>
+    <p>SP6 is the cross-cutting SP (O1/O2/O3): does the LLM-agent/RAG-for-KG-construction field give a working end-to-end blueprint — extraction, link-vs-spawn, incremental maintenance — and where does it stop short of a consistent dependency DAG?</p></div>
+  <div class="ko-only"><h1>SP6: 지식그래프 구성을 위한 LLM 에이전트·RAG 파이프라인</h1>
+    <p style="color:var(--muted)">16편 논문 · O1, O2, O3 목표 대상</p>
+    <p>SP6는 교차 SP(O1/O2/O3)이다. LLM 에이전트/RAG 기반 KG 구성 분야가 추출·링크-대-생성·증분 유지의 작동하는 종단간 청사진을 제공하는지, 그리고 어디서 일관된 의존 DAG에 못 미치는지를 묻는다.</p></div>
+</section>
+
+<section id="rationale" class="section-anchor">
+  <div class="card" style="border-color:var(--accent)">
+    <div class="en-only">
+      <h2 style="margin-top:0">Entry Assumption vs. What Was Found</h2>
+      <p><strong>Expected (revised after SP2, SP3, SP5)</strong>: This field directly demonstrates end-to-end LLM-agent-driven KG/KB construction pipelines combining extraction, linking, and graph updates, matching the target architecture across O1–O3. (Revised after SP2/SP3/SP5: probe whether prompting matches supervised prerequisite SOTA, whether pipelines OUTPUT typed edges, and note the toolchain provides zero citation-lineage extraction.)</p>
+      <p><strong>Found:</strong> A single dominant spine recurs across every system: (1) prompt an instruction-tuned LLM for open-schema extraction, (2) decide link-vs-spawn by embedding-similarity threshold (optionally LLM-verified), (3) merge incrementally. It is operationalized by a mature toolchain (GraphRAG, LightRAG, Graphiti, KARMA, EDC, iText2KG) and the link-or-spawn threshold converges independently (KARMA ρ, iText2KG θ_E=0.8, Neo4j 0.97+edit-5, EDC verify).</p>
+      <p><strong>Assessment:</strong> Surprised — 'graph updates' universally means incremental append/merge; every tool lacks DAG structural invariants (no cycle avoidance, no transitive-redundant pruning, no stale-link detection), because these are property graphs built for retrieval where cycles are harmless. And extraction is uniformly generic body-text entity/relation — none extracts citation-lineage. O3 is only half-answered here.</p>
+    </div>
+    <div class="ko-only">
+      <h2 style="margin-top:0">사전 가정과 실제 발견</h2>
+      <p><strong>기대 (SP2, SP3, SP5 이후 수정됨)</strong>: 이 분야가 추출·링킹·그래프 갱신을 결합한 종단간 LLM 에이전트 KG/KB 구성 파이프라인을 직접 시연하여 O1–O3에 걸친 목표 아키텍처와 부합한다고 기대하였다. (SP2/SP3/SP5 이후 수정: prompting이 지도 선행 SOTA에 필적하는지, 파이프라인이 유형 edge를 출력하는지 탐색하고, 툴체인이 인용-계보 추출을 전혀 제공하지 않음을 명시.)</p>
+      <p><strong>발견</strong>: 단일 지배적 척추가 모든 시스템에서 반복된다: (1) instruction-tuned LLM으로 open-schema 추출, (2) 임베딩 유사도 임계값으로 링크-대-생성 결정(선택적 LLM 검증), (3) 증분 병합. 성숙한 툴체인(GraphRAG, LightRAG, Graphiti, KARMA, EDC, iText2KG)이 이를 구현하며 링크-대-생성 임계값이 독립적으로 수렴한다(KARMA ρ, iText2KG θ_E=0.8, Neo4j 0.97+edit-5, EDC 검증).</p>
+      <p><strong>평가</strong>: 예상과 다름 — '그래프 갱신'은 보편적으로 증분 추가/병합을 뜻하며, 모든 도구가 DAG 구조 불변식을 결여한다(cycle 회피 없음, 이행-중복 pruning 없음, stale-link 검출 없음). 이는 cycle이 무해한 검색용 property graph이기 때문이다. 또한 추출은 일률적으로 일반 본문 개체/관계이며 인용-계보를 추출하지 않는다. O3는 여기서 절반만 답해진다.</p>
+    </div>
+  </div>
+</section>
+
+<section id="establishes" class="section-anchor">
+  <div class="card" style="border-color:var(--teal)">
+    <div class="en-only"><h2 style="margin-top:0">What SP6 Establishes</h2><p>The dominant family is open-schema LLM extraction plus post-hoc canonicalization (EDC), which broke the constraint that valid triplets require the schema in-prompt. The load-bearing move is the LLM verifier that lets similarity search reject over-merges. KARMA extends this to a verify-by-decomposition agent making link-or-spawn a first-class step; iText2KG/Graphiti close the loop on incremental append. But every tool ships a property-graph builder, not a DAG builder — the O3 consistency layer must be sourced from SP8/SP9.</p></div>
+    <div class="ko-only"><h2 style="margin-top:0">SP6이 확립한 것</h2><p>지배적 계열은 open-schema LLM 추출과 사후 정규화(EDC)이며, 유효 삼중항이 스키마를 프롬프트에 요구한다는 제약을 깼다. 핵심은 유사도 검색이 과병합을 기각하게 하는 LLM 검증기이다. KARMA는 이를 분해-검증 에이전트로 확장해 링크-대-생성을 일급 단계로 만들고, iText2KG/Graphiti가 증분 추가의 고리를 닫는다. 그러나 모든 도구는 DAG 빌더가 아닌 property-graph 빌더를 배포하며, O3 일관성 층은 SP8/SP9에서 와야 한다.</p></div>
+  </div>
+</section>
+
+<section id="concepts" class="section-anchor">
+  <div class="en-only"><h2>Key Concepts</h2></div>
+  <div class="ko-only"><h2>핵심 개념</h2></div>
+  <div class="concept-box">
+  <div class="concept-name">Open-schema (schema-free) LLM extraction</div>
+  <div class="concept-field"><span class="concept-label en-only">What it is: </span><span class="concept-label ko-only">정의: </span><span class="en-only">An instruction-tuned LLM emits free-form (entity, type, description) / (src, dst, relation, description) records with no schema in the prompt; conformance is deferred to canonicalization.</span><span class="ko-only">instruction-tuned LLM이 프롬프트에 스키마 없이 자유형 (개체, 유형, 설명) / (출발, 도착, 관계, 설명) 레코드를 방출하고, 준수는 정규화로 미룬다.</span></div>
+  <div class="concept-field"><span class="concept-label en-only">Why it matters here: </span><span class="concept-label ko-only">이 조사에서의 역할: </span><span class="en-only">The O1 mechanism shared by ≥7 systems; the 'adoptable via prompting, no training' path.</span><span class="ko-only">7개 이상 시스템이 공유하는 O1 메커니즘이며 'prompting으로 채택 가능, 학습 불필요' 경로이다.</span></div>
+</div><div class="concept-box">
+  <div class="concept-name">Link-or-spawn by embedding threshold</div>
+  <div class="concept-field"><span class="concept-label en-only">What it is: </span><span class="concept-label ko-only">정의: </span><span class="en-only">Embed a new mention, find the nearest KB node; link if within threshold, spawn if best distance > ρ; optionally an LLM confirms borderline matches.</span><span class="ko-only">새 mention을 임베딩해 가장 가까운 KB 노드를 찾고, 임계값 내면 링크, 최선 거리가 ρ 초과면 생성하며, 선택적으로 LLM이 경계 사례를 확인한다.</span></div>
+  <div class="concept-field"><span class="concept-label en-only">Why it matters here: </span><span class="concept-label ko-only">이 조사에서의 역할: </span><span class="en-only">The O2 mechanism converged on independently by four systems.</span><span class="ko-only">네 시스템이 독립적으로 수렴한 O2 메커니즘이다.</span></div>
+</div><div class="concept-box">
+  <div class="concept-name">Bi-temporal validity window</div>
+  <div class="concept-field"><span class="concept-label en-only">What it is: </span><span class="concept-label ko-only">정의: </span><span class="en-only">Record event time and ingestion time; a superseded fact is invalidated, not deleted, so the graph answers point-in-time queries.</span><span class="ko-only">사건 시각과 수집 시각을 기록하고, 대체된 사실은 삭제가 아닌 무효화하여 그래프가 시점 질의에 답하게 한다.</span></div>
+  <div class="concept-field"><span class="concept-label en-only">Why it matters here: </span><span class="concept-label ko-only">이 조사에서의 역할: </span><span class="en-only">The closest thing here to stale-link handling (O3) — but at fact-freshness level, not the DAG-invariant level.</span><span class="ko-only">여기서 stale-link 처리(O3)에 가장 가까우나, DAG 불변식 수준이 아닌 사실-신선도 수준이다.</span></div>
+</div>
+</section>
+
+<section id="rqs" class="section-anchor">
+  <div class="en-only"><h2>Research Questions Extracted</h2></div>
+  <div class="ko-only"><h2>추출된 연구 질문</h2></div>
+  <div class="rq-row"><strong>RQ6.1</strong><span class="en-only"> — What is the standard prompting-adoptable mechanism for deciding link-to-existing-node vs. spawn-new-node?</span><span class="ko-only"> — 기존-노드 링크 대 신규-노드 생성을 결정하는 표준 prompting 채택 메커니즘은 무엇인가?</span></div>
+<div class="rq-row"><strong>RQ6.2</strong><span class="en-only"> — How can an LLM pipeline extract typed entities/relations without an in-prompt schema, and recover conformance afterward?</span><span class="ko-only"> — LLM 파이프라인이 프롬프트 스키마 없이 유형 개체/관계를 추출하고 이후 준수를 회복하는 방법은?</span></div>
+<div class="rq-row"><strong>RQ6.3</strong><span class="en-only"> — What mechanisms let a KB absorb a new document incrementally without full rebuild, and how are superseded facts handled?</span><span class="ko-only"> — KB가 전면 재구축 없이 새 문서를 증분 흡수하는 메커니즘과 대체 사실 처리는?</span></div>
+<div class="rq-row"><strong>RQ6.4</strong><span class="en-only"> — How do agent pipelines mitigate extraction hallucination and schema drift?</span><span class="ko-only"> — 에이전트 파이프라인은 추출 환각과 스키마 표류를 어떻게 완화하는가?</span></div>
+<div class="rq-row"><strong>RQ6.5</strong><span class="en-only"> — What agent-architecture decomposition supports end-to-end construction, and which stages are ablation-justified?</span><span class="ko-only"> — 어떤 에이전트 아키텍처 분해가 종단간 구성을 지원하며 어느 단계가 절제로 정당화되는가?</span></div>
+
+</section>
+
+<section id="papers" class="section-anchor">
+  <div class="card" style="margin-top:1.5rem">
+    <div class="en-only"><h3>Papers in SP6 (16 papers)</h3></div>
+    <div class="ko-only"><h3>SP6 논문 목록 (16편)</h3></div>
+    <div class="scroll-table-wrap">
+      <table><thead><tr>
+        <th>Ref</th><th><span class="en-only">Authors (year)</span><span class="ko-only">저자 (연도)</span></th>
+        <th><span class="en-only">Title</span><span class="ko-only">제목</span></th><th>Tier</th>
+        <th><span class="en-only">Fit</span><span class="ko-only">적합도</span></th>
+        <th><span class="en-only">Gap / Risk</span><span class="ko-only">Gap/위험</span></th>
+      </tr></thead><tbody>
+      <tr><td>[76]</td><td>Jimenez Gutierrez et al. (2024)</td><td><a href="papers/76_HippoRAG.html">HippoRAG: Neurobiologically Inspired Long-Term Memory for Large Language Models</a></td><td><span class="pill pill-p0">P0</span></td><td>OpenIE recipe for corpus→KG (O1)</td><td>Untyped noun-phrase associations; retrieval-optimized</td></tr>
+<tr><td>[77]</td><td>Zhang &amp; Soh (2024)</td><td><a href="papers/77_EDC.html">Extract, Define, Canonicalize: An LLM-based Framework for Knowledge Graph Construction</a></td><td><span class="pill pill-p0">P0</span></td><td>The O1→O2 canonicalization/linking recipe (schema-free + LLM verify)</td><td>Relation-focused; entity-linking depth limited</td></tr>
+<tr><td>[78]</td><td>Baek et al. (2024)</td><td><a href="papers/78_ResearchAgent.html">ResearchAgent: Iterative Research Idea Generation over Scientific Literature with Large Language Models</a></td><td><span class="pill pill-p0">P0</span></td><td>Lightweight paper→entity-KB baseline (O1/O2)</td><td>Co-occurrence only, no typed relations; no KB-quality eval</td></tr>
+<tr><td>[81]</td><td>Han et al. (2024)</td><td><a href="papers/81_RAGGraphs.html">Retrieval-Augmented Generation with Graphs (GraphRAG)</a></td><td><span class="pill pill-p1">P1</span></td><td>Situates construction-vs-retrieval design space</td><td>Survey; construction-side depth unverified</td></tr>
+<tr><td>[82]</td><td>Zhang et al. (2025)</td><td><a href="papers/82_GraphRAGSurvey.html">A Survey of Graph Retrieval-Augmented Generation for Customized Large Language Models</a></td><td><span class="pill pill-p1">P1</span></td><td>Maps the extraction+linking sub-pipeline</td><td>Survey; optimizes for retrieval, not construction accuracy</td></tr>
+<tr><td>[83]</td><td> (2025)</td><td><a href="papers/83_KARMA.html">KARMA: Leveraging Multi-Agent LLMs for Automated Knowledge Graph Enrichment</a></td><td><span class="pill pill-p0">P0</span></td><td>Closest end-to-end agentic incremental construction (O1/O2/O3)</td><td>Correctness LLM-self-judged; biomedical only; no structural DAG maintenance</td></tr>
+<tr><td>[130]</td><td></td><td><a href="papers/130_MicrosoftGraphRAG.html">microsoft/graphrag - modular graph-based Retrieval-Augmented Generation system</a></td><td><span class="pill pill-tool">Tool</span></td><td>Canonical construction pipeline; entity-merge dedup primitive</td><td>Property graph not DAG; batch re-index; no citation lineage</td></tr>
+<tr><td>[131]</td><td></td><td><a href="papers/131_Graphiti.html">getzep/graphiti - real-time temporal knowledge graphs for AI agents</a></td><td><span class="pill pill-tool">Tool</span></td><td>Strong O2/O3 incremental-update blueprint (bi-temporal)</td><td>Generic agent-memory extraction; no dependency schema</td></tr>
+<tr><td>[132]</td><td></td><td><a href="papers/132_LightRAG.html">HKUDS/LightRAG - simple and fast graph-based retrieval-augmented generation</a></td><td><span class="pill pill-tool">Tool</span></td><td>Directly borrowable O3 incremental merge (set-merge)</td><td>Description-merge dedup (not identity linking); no completeness audit</td></tr>
+<tr><td>[133]</td><td></td><td><a href="papers/133_Cognee.html">topoteretes/cognee - open-source AI memory engine (ECL knowledge-graph pipeline)</a></td><td><span class="pill pill-tool">Tool</span></td><td>Schema-constrainable KB-construction skeleton</td><td>Extraction internals opaque; no DAG consistency</td></tr>
+<tr><td>[134]</td><td></td><td><a href="papers/134_Neo4jLLMGraphBuilder.html">neo4j-labs/llm-graph-builder - Neo4j graph construction from unstructured data via LLMs</a></td><td><span class="pill pill-tool">Tool</span></td><td>Operational reuse-vs-create rule (0.97 + edit-distance 5)</td><td>No citation-intent; no acyclicity/cycle detection</td></tr>
+<tr><td>[135]</td><td></td><td><a href="papers/135_iText2KGRepo.html">AuvaLab/itext2kg - incremental knowledge graph construction with LLMs</a></td><td><span class="pill pill-tool">Tool</span></td><td>Core incremental merge gate for O2/O3 (θ_E=0.8)</td><td>Ontology-free; open-domain thresholds; no DAG invariants</td></tr>
+<tr><td>[136]</td><td></td><td><a href="papers/136_WeKnora.html">Tencent/WeKnora - LLM knowledge platform with agent mode and self-maintaining wiki</a></td><td><span class="pill pill-tool">Tool</span></td><td>System-level agent-driven maintenance template</td><td>Generic relatedness links; no DAG invariants; O1 not addressed</td></tr>
+<tr><td>[137]</td><td></td><td><a href="papers/137_AutomaticKGLLM.html">fusion-jena/automatic-KG-creation-with-LLM - ontology + KG construction pipeline</a></td><td><span class="pill pill-tool">Tool</span></td><td>Schema-first grounding + CQ acceptance-test template</td><td>Batch/single-corpus; no cross-paper linking; no incremental/DAG maintenance</td></tr>
+<tr><td>[138]</td><td></td><td><a href="papers/138_AwesomeLLMKG.html">RManLuo/Awesome-LLM-KG - curated registry of LLM + knowledge graph papers/resources</a></td><td><span class="pill pill-tool">Tool</span></td><td>Seed-expansion index for O2/O3 completion methods</td><td>No O1 citation-intent coverage; not DAG-specific</td></tr>
+<tr><td>[139]</td><td></td><td><a href="papers/139_AwesomeGraphRAG.html">DEEP-PolyU/Awesome-GraphRAG - curated registry of graph-based RAG resources</a></td><td><span class="pill pill-tool">Tool</span></td><td>Seed list for O1 construction + O3 incremental tools</td><td>Registry only; lists but does not evaluate maintenance quality</td></tr>
+</tbody></table>
+    </div>
+  </div>
+</section>
+
+<section id="open" class="section-anchor">
+  <div class="card">
+    <div class="en-only"><h3>Open Questions After SP6</h3><ul><li>DAG structural consistency is unaddressed by every system — cycle avoidance, transitive-edge pruning, stale-link detection are all flagged missing (→ SP8/SP9).</li><li>Citation-lineage / derivation extraction is out of scope for the whole toolchain — extraction is uniformly generic body-text entity/relation (→ SP1/SP5).</li><li>No gold-standard evaluation of KB-construction accuracy for dependency graphs — correctness is LLM-self-judged or retrieval-proxied.</li></ul></div>
+    <div class="ko-only"><h3>SP6 이후 미해결 질문</h3><ul><li>DAG 구조 일관성이 모든 시스템에서 다루어지지 않는다 — cycle 회피, 이행-edge pruning, stale-link 검출 모두 미해결로 표시된다(→ SP8/SP9).</li><li>인용-계보/파생 추출이 전체 툴체인의 범위 밖이다 — 추출은 일률적으로 일반 본문 개체/관계이다(→ SP1/SP5).</li><li>의존 그래프에 대한 KB 구성 정확도의 gold 표준 평가가 없다 — 정확도는 LLM 자체 판정 또는 검색 대리로 측정된다.</li></ul></div>
+  </div>
+</section>
+
+<div class="page-nav"><a href="sp5_related_work_novelty.html">← <span class="en-only">SP5: Related Work / Novelty</span><span class="ko-only">SP5: 관련연구·신규성</span></a><a href="index.html"><span class="en-only">↑ Survey Hub</span><span class="ko-only">↑ 조사 허브</span></a><a href="sp7_ontology_alignment.html"><span class="en-only">SP7: Ontology Alignment</span><span class="ko-only">SP7: 온톨로지 정렬</span> →</a></div>
+    </div>
+  </div>
+  <nav class="bd-sidebar-secondary">
+    <div class="mini-toc-label en-only">On this page</div>
+    <div class="mini-toc-label ko-only">이 페이지</div>
+    <ul class="mini-toc">
+      <li><a href="#intro"><span class="en-only">Introduction</span><span class="ko-only">개요</span></a></li>
+      <li><a href="#rationale"><span class="en-only">Entry Assumption</span><span class="ko-only">사전 가정</span></a></li>
+      <li><a href="#establishes"><span class="en-only">What SP6 Establishes</span><span class="ko-only">확립한 것</span></a></li>
+      <li><a href="#concepts"><span class="en-only">Key Concepts</span><span class="ko-only">핵심 개념</span></a></li>
+      <li><a href="#rqs"><span class="en-only">Research Questions</span><span class="ko-only">연구 질문</span></a></li>
+      <li><a href="#papers"><span class="en-only">Papers</span><span class="ko-only">논문</span></a></li>
+      <li><a href="#open"><span class="en-only">Open Questions</span><span class="ko-only">미해결 질문</span></a></li>
+    </ul>
+  </nav>
+</div>
+</body>
+</html>

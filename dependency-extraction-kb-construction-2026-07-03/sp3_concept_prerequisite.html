@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SP3: Concept Prerequisite Learning and Prediction — Dependency Extraction &amp; KB Construction Survey</title>
+<style>
+:root {
+  --bg: #0d1117; --card: #161b22; --border: #30363d;
+  --text: #e6edf3; --muted: #7d8590; --accent: #58a6ff;
+  --teal: #39d0c7; --green: #3fb950; --yellow: #d29922;
+  --red: #f85149; --purple: #bc8cff; --orange: #e3b341;
+  --sidebar-w: 262px; --toc-w: 210px; --hdr-h: 48px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+body { font-family: -apple-system, sans-serif; background: var(--bg);
+       color: var(--text); line-height: 1.6; }
+.bd-root { display: flex; height: 100vh; overflow: hidden; }
+.bd-sidebar-primary {
+  width: var(--sidebar-w); min-width: var(--sidebar-w);
+  overflow-y: auto; background: var(--card);
+  border-right: 1px solid var(--border);
+  padding: 0.75rem 0; flex-shrink: 0;
+}
+.bd-sidebar-primary::-webkit-scrollbar { width: 4px; }
+.bd-sidebar-primary::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+.bd-main { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-width: 0; }
+.article-header-bar {
+  height: var(--hdr-h); background: var(--card);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; padding: 0 1.5rem;
+  gap: 1rem; flex-shrink: 0;
+}
+.header-brand { color: var(--teal); font-weight: bold; font-size: 0.95em;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 1; }
+.header-brand a { color: inherit; text-decoration: none; }
+.breadcrumb { color: var(--muted); font-size: 0.82em; display: flex;
+  align-items: center; gap: 0.3rem; flex-shrink: 0; }
+.breadcrumb a { color: var(--accent); text-decoration: none; }
+.breadcrumb span { color: var(--border); }
+.bd-article { flex: 1; overflow-y: auto; padding: 2rem 2.5rem; }
+.bd-article::-webkit-scrollbar { width: 6px; }
+.bd-article::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+.bd-sidebar-secondary {
+  width: var(--toc-w); min-width: var(--toc-w);
+  overflow-y: auto; border-left: 1px solid var(--border);
+  padding: 1rem 0.75rem; flex-shrink: 0;
+}
+.bd-sidebar-secondary::-webkit-scrollbar { width: 4px; }
+.bd-sidebar-secondary::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+.sidebar-logo { padding: 0.5rem 1rem 0.75rem;
+  border-bottom: 1px solid var(--border); margin-bottom: 0.5rem; }
+.sidebar-logo a { color: var(--teal); font-weight: bold; font-size: 0.95em;
+  text-decoration: none; display: block; }
+.sidebar-section { color: var(--muted); font-size: 0.72em; font-weight: bold;
+  text-transform: uppercase; letter-spacing: 0.07em;
+  padding: 0.7rem 1rem 0.25rem; }
+.sidebar-nav-link { display: block; padding: 0.28rem 1rem 0.28rem 1.25rem;
+  color: var(--muted); font-size: 0.875em; text-decoration: none; }
+.sidebar-nav-link:hover { color: var(--text); background: rgba(255,255,255,0.03); }
+.sidebar-nav-link.active { color: var(--teal);
+  border-left: 2px solid var(--teal);
+  padding-left: calc(1.25rem - 2px); background: rgba(57,208,199,0.05); }
+.mini-toc-label { color: var(--muted); font-size: 0.72em; font-weight: bold;
+  text-transform: uppercase; letter-spacing: 0.07em; padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border); margin-bottom: 0.5rem; }
+.mini-toc { list-style: none; }
+.mini-toc li a { display: block; padding: 0.22rem 0;
+  color: var(--muted); font-size: 0.83em; text-decoration: none;
+  border-left: 2px solid transparent; padding-left: 0.5rem; }
+.mini-toc li a:hover { color: var(--text); }
+.mini-toc li a.toc-active { color: var(--teal); border-left-color: var(--teal); }
+.section-anchor { scroll-margin-top: calc(var(--hdr-h) + 8px); }
+h1 { color: var(--teal); font-size: 1.7em; margin-bottom: 0.5rem; }
+h2 { color: var(--teal); font-size: 1.25em; margin: 1.5rem 0 0.6rem; }
+h3 { color: var(--teal); font-size: 1.05em; margin: 1.2rem 0 0.4rem; }
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+p { margin-bottom: 0.8rem; }
+.card { background: var(--card); border: 1px solid var(--border);
+        border-radius: 8px; padding: 1.2rem; margin-bottom: 1rem; }
+table { width: 100%; border-collapse: collapse; font-size: 0.9em; }
+th { background: var(--card); color: var(--teal); padding: 8px;
+     border: 1px solid var(--border); text-align: left; }
+td { padding: 8px; border: 1px solid var(--border); vertical-align: top; }
+tr:nth-child(even) td { background: rgba(0,0,0,0.2); }
+.stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+             gap: 1rem; margin-bottom: 1.5rem; }
+.stat-box { background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+            padding: 1rem; text-align: center; }
+.stat-num { font-size: 2rem; font-weight: bold; color: var(--teal); }
+.stat-label { color: var(--muted); font-size: 0.85em; margin-top: 0.2rem; }
+.sp-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+           gap: 1rem; margin: 1rem 0; }
+.sp-card { background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+           padding: 1.2rem; cursor: pointer; transition: border-color 0.15s; }
+.sp-card:hover { border-color: var(--teal); }
+.sp-card h3 { margin: 0 0 0.5rem; color: var(--teal); font-size: 1em; }
+.sp-card p { margin: 0; color: var(--muted); font-size: 0.88em; }
+.sp-badge { display: inline-block; background: rgba(57,208,199,0.1); color: var(--teal);
+            border-radius: 4px; padding: 2px 8px; font-size: 0.8em; margin-bottom: 0.5rem; }
+.paper-meta { color: var(--muted); font-size: 0.9em; margin-bottom: 1.5rem; }
+.paper-meta a { color: var(--accent); }
+.section-label { color: var(--teal); font-weight: bold; font-size: 0.85em;
+                 text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.4rem; }
+.pill { display: inline-block; border-radius: 4px; padding: 0.15rem 0.6rem;
+        font-size: 0.8em; font-weight: bold; margin-right: 0.4rem; }
+.pill-p0 { background: rgba(63,185,80,0.2); color: var(--green); }
+.pill-p1 { background: rgba(57,208,199,0.15); color: var(--teal); }
+.pill-p2 { background: rgba(210,153,34,0.2); color: var(--yellow); }
+.pill-p4 { background: rgba(125,133,144,0.2); color: var(--muted); }
+.pill-tool { background: rgba(188,140,255,0.2); color: var(--purple); }
+.delta-row { margin: 0.4rem 0; padding: 0.4rem 0.8rem;
+             border-left: 3px solid var(--border); border-radius: 0 4px 4px 0; }
+.delta-resolved { border-left-color: var(--green); }
+.delta-missing  { border-left-color: var(--yellow); }
+.delta-ref      { border-left-color: var(--muted); }
+.chain { position: relative; padding-left: 2rem; }
+.chain::before { content: ''; position: absolute; left: 0.95rem; top: 0;
+                 bottom: 0; width: 2px; background: var(--border); }
+.chain-node { position: relative; margin-bottom: 2rem; }
+.chain-node::before { content: ''; position: absolute; left: -1.55rem;
+                      top: 1.1rem; width: 12px; height: 12px;
+                      border-radius: 50%; background: var(--teal); }
+.chain-num { display: inline-block; width: 28px; height: 28px; background: var(--teal);
+             color: #000; border-radius: 50%; text-align: center; line-height: 28px;
+             font-weight: bold; font-size: 0.85em; margin-right: 0.6rem; flex-shrink: 0; }
+.chain-q { font-weight: bold; color: var(--text); margin: 0.4rem 0 0.3rem; font-size: 1em; }
+.chain-papers { color: var(--muted); font-size: 0.85em; margin-bottom: 0.6rem; }
+.chain-start { background: var(--card); border: 1px solid var(--teal);
+               border-radius: 8px; padding: 1rem; margin-bottom: 2rem; }
+.chain-start h3 { margin: 0 0 0.5rem; color: var(--teal); }
+.chain-converge { background: var(--card); border: 1px solid var(--green);
+                  border-radius: 8px; padding: 1rem; margin-top: 1rem; }
+.chain-converge h3 { margin: 0 0 0.5rem; color: var(--green); }
+.chain-label { display: inline-block; border-radius: 4px; padding: 0.15rem 0.6rem;
+               font-size: 0.8em; font-weight: bold; margin-right: 0.4rem; }
+.chain-status { border-radius: 0 4px 4px 0; padding: 0.5rem 0.8rem;
+                margin: 0.35rem 0; font-size: 0.88em; }
+.chain-status ul { margin: 0.3rem 0 0 1.2rem; padding: 0; }
+.chain-status li { margin-bottom: 0.25rem; }
+.chain-status.solved  { background: rgba(63,185,80,0.07);  border-left: 3px solid var(--green); }
+.chain-status.remains { background: rgba(210,153,34,0.07); border-left: 3px solid var(--yellow); }
+.chain-status.added   { background: rgba(248,81,73,0.07);  border-left: 3px solid var(--red); }
+.chain-status.pivoted { background: rgba(188,140,255,0.1); border-left: 3px solid var(--purple); }
+.chain-label.solved   { background: rgba(63,185,80,0.2);  color: var(--green); }
+.chain-label.remains  { background: rgba(210,153,34,0.2); color: var(--yellow); }
+.chain-label.added    { background: rgba(248,81,73,0.2);  color: var(--red); }
+.chain-label.pivoted  { background: rgba(188,140,255,0.2); color: var(--purple); }
+.chain-status.expected { background: rgba(88,166,255,0.07);  border-left: 3px solid var(--accent); }
+.chain-label.expected  { background: rgba(88,166,255,0.2);   color: var(--accent); }
+.chain-status.revised  { background: rgba(57,208,199,0.07);  border-left: 3px solid var(--teal); }
+.chain-label.revised   { background: rgba(57,208,199,0.2);   color: var(--teal); }
+.concept-box { border-left: 4px solid var(--teal); background: #0d1f1f;
+               border-radius: 4px; padding: 1.2rem; margin-bottom: 1.2rem; }
+.concept-name { font-weight: bold; color: var(--teal); font-size: 1.05em; margin-bottom: 0.5rem; }
+.concept-field { margin: 0.3rem 0; }
+.concept-label { color: var(--muted); font-size: 0.85em; }
+.hypothesis { border-left: 4px solid var(--teal); background: #0d1f1f;
+              border-radius: 4px; padding: 1rem; margin: 1rem 0; }
+.recommendation { border-left: 4px solid var(--purple); background: #1a0f2e;
+                  border-radius: 4px; padding: 1rem; margin: 1rem 0; }
+.rq-row { background: rgba(88,166,255,0.05); border-left: 3px solid var(--accent);
+          padding: 0.4rem 0.8rem; margin-bottom: 0.5rem; border-radius: 0 4px 4px 0; }
+.scroll-table-wrap { max-height: 420px; overflow-y: auto; border: 1px solid var(--border);
+                     border-radius: 4px; }
+.scroll-table-wrap thead th { position: sticky; top: 0; background: #161b22; z-index: 1; }
+.page-nav { display: flex; justify-content: space-between; margin-top: 2rem;
+            padding-top: 1rem; border-top: 1px solid var(--border); gap: 1rem; }
+.page-nav a { color: var(--accent); font-size: 0.9em; }
+html.ko-active .en-only { display: none !important; }
+html.ko-active .ko-only { display: block !important; }
+.ko-only { display: none; }
+span.ko-only, span.en-only { display: inline; }
+html.ko-active span.en-only { display: none !important; }
+html.ko-active span.ko-only { display: inline !important; }
+.lang-btn { background: transparent; color: var(--muted); border: 1px solid var(--border);
+            border-radius: 4px; padding: 3px 9px; font-size: 0.8em; cursor: pointer; }
+.lang-btn.active { border-color: var(--teal); color: var(--teal); }
+@media (max-width: 1024px) { .bd-sidebar-secondary { display: none; } }
+@media (max-width: 768px) {
+  .bd-sidebar-primary { display: none; }
+  .bd-root { flex-direction: column; height: auto; overflow: visible; }
+  .bd-main { overflow: visible; }
+  .bd-article { overflow: visible; padding: 1rem; }
+  .stat-grid { grid-template-columns: repeat(2, 1fr); }
+  .sp-grid { grid-template-columns: 1fr; }
+}
+</style>
+<script>
+function toggleLanguage() {
+  const html = document.documentElement;
+  const isKo = html.classList.toggle('ko-active');
+  document.querySelectorAll('.lang-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.lang === (isKo ? 'ko' : 'en'));
+  });
+  localStorage.setItem('survey-lang', isKo ? 'ko' : 'en');
+}
+document.addEventListener('DOMContentLoaded', function() {
+  const saved = localStorage.getItem('survey-lang');
+  if (saved === 'ko') {
+    document.documentElement.classList.add('ko-active');
+    document.querySelectorAll('.lang-btn').forEach(b =>
+      b.classList.toggle('active', b.dataset.lang === 'ko'));
+  } else {
+    document.querySelectorAll('[data-lang="en"]').forEach(b => b.classList.add('active'));
+  }
+  const article = document.querySelector('.bd-article');
+  const sections = Array.from(document.querySelectorAll('.section-anchor[id]'));
+  const sideLinks = Array.from(document.querySelectorAll('.bd-sidebar-primary .sidebar-nav-link'));
+  const tocLinks = Array.from(document.querySelectorAll('.bd-sidebar-secondary .mini-toc a'));
+  if (!article || !sections.length) return;
+  function current() {
+    let id = sections[0].id;
+    const scrollTop = article.scrollTop + 60;
+    sections.forEach(function(s) { if (s.offsetTop <= scrollTop) id = s.id; });
+    return id;
+  }
+  function update() {
+    const id = current();
+    sideLinks.forEach(function(a) { a.classList.toggle('active', a.getAttribute('href') === '#' + id); });
+    tocLinks.forEach(function(a) { a.classList.toggle('toc-active', a.getAttribute('href') === '#' + id); });
+  }
+  article.addEventListener('scroll', update, { passive: true });
+  update();
+});
+</script>
+</head>
+<body>
+<div class="bd-root">
+  <nav class="bd-sidebar-primary">
+  <div class="sidebar-logo">
+    <a href="./index.html">&#x2b21; <span class="en-only">Dependency Extraction &amp; KB Construction Survey</span><span class="ko-only">의존성 추출 및 지식베이스 구축 문헌 조사</span></a>
+  </div>
+  <div class="sidebar-section en-only">Overview</div>
+  <div class="sidebar-section ko-only">개요</div>
+  <a href="./index.html#overview" class="sidebar-nav-link"><span class="en-only">Survey Hub</span><span class="ko-only">조사 허브</span></a>
+  <a href="./index.html#answers" class="sidebar-nav-link"><span class="en-only">Key Answers</span><span class="ko-only">핵심 답변</span></a>
+  <div class="sidebar-section en-only">Sub-Problems</div>
+  <div class="sidebar-section ko-only">세부 문제</div>
+  <a href="./sp1_citation_intent.html" class="sidebar-nav-link">SP1: <span class="en-only">Citation Intent</span><span class="ko-only">인용 의도</span></a>
+  <a href="./sp2_concept_relation_extraction.html" class="sidebar-nav-link">SP2: <span class="en-only">Concept/Relation Extraction</span><span class="ko-only">개념·관계 추출</span></a>
+  <a href="./sp3_concept_prerequisite.html" class="sidebar-nav-link active">SP3: <span class="en-only">Concept Prerequisite</span><span class="ko-only">개념 선행관계</span></a>
+  <a href="./sp4_entity_linking.html" class="sidebar-nav-link">SP4: <span class="en-only">Entity Linking</span><span class="ko-only">개체 링킹</span></a>
+  <a href="./sp5_related_work_novelty.html" class="sidebar-nav-link">SP5: <span class="en-only">Related Work / Novelty</span><span class="ko-only">관련연구·신규성</span></a>
+  <a href="./sp6_llm_agent_kg.html" class="sidebar-nav-link">SP6: <span class="en-only">LLM-Agent KG</span><span class="ko-only">LLM 에이전트 KG</span></a>
+  <a href="./sp7_ontology_alignment.html" class="sidebar-nav-link">SP7: <span class="en-only">Ontology Alignment</span><span class="ko-only">온톨로지 정렬</span></a>
+  <a href="./sp8_incremental_kg.html" class="sidebar-nav-link">SP8: <span class="en-only">Incremental KG</span><span class="ko-only">증분 KG</span></a>
+  <a href="./sp9_link_prediction_dag.html" class="sidebar-nav-link">SP9: <span class="en-only">DAG Link Prediction</span><span class="ko-only">DAG 링크 예측</span></a>
+  <div class="sidebar-section en-only">Synthesis</div>
+  <div class="sidebar-section ko-only">종합</div>
+  <a href="./conclusion.html" class="sidebar-nav-link"><span class="en-only">Conclusion</span><span class="ko-only">결론</span></a>
+  <a href="./thinking-process.html" class="sidebar-nav-link"><span class="en-only">Thinking Process</span><span class="ko-only">추론 과정</span></a>
+</nav>
+  <div class="bd-main">
+    <div class="article-header-bar">
+  <div class="header-brand"><a href="./index.html"><span class="en-only">Dependency Extraction &amp; KB Construction Survey</span><span class="ko-only">의존성 추출 및 지식베이스 구축 문헌 조사</span></a></div>
+  <nav class="breadcrumb"><a href="index.html"><span class="en-only">Survey</span><span class="ko-only">조사</span></a><span>›</span><span><span class="en-only">SP3: Concept Prerequisite</span><span class="ko-only">SP3: 개념 선행관계</span></span></nav>
+  <button class="lang-btn" data-lang="en" onclick="toggleLanguage()">EN</button>
+  <button class="lang-btn" data-lang="ko" onclick="toggleLanguage()">KO</button>
+</div>
+    <div class="bd-article">
+      <section id="intro" class="section-anchor">
+  <div class="en-only"><h1>SP3: Concept Prerequisite Learning and Prediction</h1>
+    <p style="color:var(--muted)">7 papers · targets O2, O1</p>
+    <p>SP3 covers the subfield that formally defines the 'is A a prerequisite of B?' task — its benchmarks, metrics, and the asymmetry constraint. It is the direct source of matching logic for the O2 decision and a secondary source of prerequisite signals for O1.</p></div>
+  <div class="ko-only"><h1>SP3: 개념 선행관계 학습 및 예측</h1>
+    <p style="color:var(--muted)">7편 논문 · O2, O1 목표 대상</p>
+    <p>SP3는 'A가 B의 선행인가?' 과제를 공식적으로 정의하는 하위 분야, 즉 그 벤치마크·척도·비대칭 제약을 다룬다. 이는 O2 결정을 위한 매칭 논리의 직접 원천이며 O1을 위한 선행 신호의 부차적 원천이다.</p></div>
+</section>
+
+<section id="rationale" class="section-anchor">
+  <div class="card" style="border-color:var(--accent)">
+    <div class="en-only">
+      <h2 style="margin-top:0">Entry Assumption vs. What Was Found</h2>
+      <p><strong>Expected (original rationale — no revisions)</strong>: This field defines the prerequisite-relation task itself, with benchmarks and matching criteria for deciding whether a concept is a prerequisite of another node — and GNN/embedding methods should be usable as similarity-threshold decision criteria.</p>
+      <p><strong>Found:</strong> The task is precisely defined and benchmarked (LectureBank, LectureBankCD, MOOC/NPTEL). The central, repeatedly-confirmed finding is that <em>asymmetry</em> is mandatory: symmetric similarity gives precision 0.98 / recall 0.16 — it captures relatedness, not order — so a directional stage (RefD, asymmetric Siamese, DistMult) is what recovers prerequisite direction. Graph structure also matters: pairwise classifiers ignoring the graph score below random cross-domain.</p>
+      <p><strong>Assessment:</strong> Surprised — the query conflated 'produces embeddings' with 'provides an agent-usable threshold'. Every method is a supervised classifier trained on a fixed, pre-given concept vocabulary; none offers a training-free decision criterion or extracts its own concepts. The field has also plateaued (SOTA ~0.82; a plain SVM beat the 2019 VGAE).</p>
+    </div>
+    <div class="ko-only">
+      <h2 style="margin-top:0">사전 가정과 실제 발견</h2>
+      <p><strong>기대 (최초 rationale — 수정 없음)</strong>: 이 분야는 선행관계 과제 자체를 정의하며, 한 개념이 다른 노드의 선행인지 결정하는 벤치마크와 매칭 기준을 갖고, GNN/임베딩 방법이 유사도-임계값 결정 기준으로 사용될 수 있으리라 기대하였다.</p>
+      <p><strong>발견</strong>: 과제는 정밀히 정의·벤치마크되어 있다(LectureBank, LectureBankCD, MOOC/NPTEL). 반복 확인된 핵심 발견은 <em>비대칭성</em>이 필수라는 것이다. 대칭 유사도는 정밀도 0.98/재현율 0.16으로 관련도만 포착할 뿐 순서를 포착하지 못하므로, 방향 단계(RefD, 비대칭 Siamese, DistMult)가 선행 방향을 회복한다. 그래프 구조도 중요하여, 그래프를 무시한 pairwise 분류기는 교차 도메인에서 무작위 이하이다.</p>
+      <p><strong>평가</strong>: 예상과 다름 — 질의가 '임베딩을 생성함'과 '에이전트가 쓸 수 있는 임계값을 제공함'을 혼동하였다. 모든 방법이 고정된 사전 개념 어휘로 학습된 지도 분류기이며, 학습-free 결정 기준을 제공하거나 스스로 개념을 추출하지 않는다. 분야는 또한 정체되었다(SOTA ~0.82; 단순 SVM이 2019 VGAE를 능가).</p>
+    </div>
+  </div>
+</section>
+
+<section id="establishes" class="section-anchor">
+  <div class="card" style="border-color:var(--teal)">
+    <div class="en-only"><h2 style="margin-top:0">What SP3 Establishes</h2><p>The dominant family is supervised graph representation learning over a concept(-document) graph with an asymmetric scorer. It hands the pipeline: (a) the task formalization and metrics; (b) a hard design constraint — the decision criterion must be asymmetric; (c) a plateau warning that even supervised SOTA tops out ~0.82; and (d) transferable signals (RefD asymmetry, domain-neighbor transfer, transitive-closure consistency) rather than a ready-made prompting method. The agent-usable reuse-vs-new threshold must come from SP4.</p></div>
+    <div class="ko-only"><h2 style="margin-top:0">SP3이 확립한 것</h2><p>지배적 계열은 비대칭 채점기를 가진 개념(-문서) 그래프 위의 지도 그래프 표상 학습이다. 파이프라인에 (a) 과제 형식화와 척도, (b) 결정 기준이 비대칭이어야 한다는 강한 설계 제약, (c) 지도 SOTA조차 ~0.82에서 정체된다는 경고, (d) 즉시 쓸 prompting 방법이 아닌 전이 가능 신호(RefD 비대칭, 도메인-이웃 전이, 이행폐포 일관성)를 넘긴다. 에이전트가 쓸 재사용-대-신규 임계값은 SP4에서 와야 한다.</p></div>
+  </div>
+</section>
+
+<section id="concepts" class="section-anchor">
+  <div class="en-only"><h2>Key Concepts</h2></div>
+  <div class="ko-only"><h2>핵심 개념</h2></div>
+  <div class="concept-box">
+  <div class="concept-name">Concept prerequisite relation (PR)</div>
+  <div class="concept-field"><span class="concept-label en-only">What it is: </span><span class="concept-label ko-only">정의: </span><span class="en-only">An ordered concept pair (A,B) → directed edge A→B meaning 'A must be learned before B'; aggregated it induces a strict partial order (directed, irreflexive, transitive).</span><span class="ko-only">순서 있는 개념 쌍 (A,B) → 'A를 B보다 먼저 배워야 함'을 뜻하는 방향 edge A→B; 집계하면 엄격 부분순서(방향·비반사·이행)를 유도한다.</span></div>
+  <div class="concept-field"><span class="concept-label en-only">Why it matters here: </span><span class="concept-label ko-only">이 조사에서의 역할: </span><span class="en-only">The education-domain instance of directed dependency-edge extraction — the 'Requires: [[topic]]' edge the agent must write.</span><span class="ko-only">방향 의존 edge 추출의 교육 도메인 사례로, 에이전트가 써야 할 'Requires: [[topic]]' edge이다.</span></div>
+</div><div class="concept-box">
+  <div class="concept-name">RefD (Reference Distance)</div>
+  <div class="concept-field"><span class="concept-label en-only">What it is: </span><span class="concept-label ko-only">정의: </span><span class="en-only">An asymmetric scalar over two concepts and the sets of concepts each references, indicating prerequisite direction; RefD(A,B) ≠ RefD(B,A) by construction.</span><span class="ko-only">두 개념과 각자가 참조하는 개념 집합에 대한 비대칭 스칼라로 선행 방향을 나타내며, 구성상 RefD(A,B) ≠ RefD(B,A)이다.</span></div>
+  <div class="concept-field"><span class="concept-label en-only">Why it matters here: </span><span class="concept-label ko-only">이 조사에서의 역할: </span><span class="en-only">The canonical training-light directional signal — the closest thing in SP3 to an agent-usable criterion.</span><span class="ko-only">정본 학습-경량 방향 신호로, SP3에서 에이전트가 쓸 수 있는 기준에 가장 가깝다.</span></div>
+</div><div class="concept-box">
+  <div class="concept-name">Domain-neighbor aggregation</div>
+  <div class="concept-field"><span class="concept-label en-only">What it is: </span><span class="concept-label ko-only">정의: </span><span class="en-only">Adds a second GCN aggregation over cross-domain 'domain neighbors' (top-10% cosine matches) so source-domain relational structure flows to unlabeled target concepts.</span><span class="ko-only">교차 도메인 '도메인 이웃'(상위 10% 코사인)에 대한 두 번째 GCN 집계를 추가해 원천 도메인 관계 구조가 라벨 없는 대상 개념으로 흐르게 한다.</span></div>
+  <div class="concept-field"><span class="concept-label en-only">Why it matters here: </span><span class="concept-label ko-only">이 조사에서의 역할: </span><span class="en-only">The only mechanism here for predicting prerequisites in a domain with no target labels.</span><span class="ko-only">대상 라벨이 없는 도메인에서 선행을 예측하는 이곳의 유일한 메커니즘이다.</span></div>
+</div>
+</section>
+
+<section id="rqs" class="section-anchor">
+  <div class="en-only"><h2>Research Questions Extracted</h2></div>
+  <div class="ko-only"><h2>추출된 연구 질문</h2></div>
+  <div class="rq-row"><strong>RQ3.1</strong><span class="en-only"> — How is the prerequisite task formalized, and which benchmarks/metrics define a correct 'A is a prerequisite of B' decision?</span><span class="ko-only"> — 선행 과제는 어떻게 형식화되며 어떤 벤치마크/척도가 올바른 'A는 B의 선행' 결정을 정의하는가?</span></div>
+<div class="rq-row"><strong>RQ3.2</strong><span class="en-only"> — Which signals capture prerequisite directionality vs. relatedness, and how much does modeling asymmetry help?</span><span class="ko-only"> — 어떤 신호가 관련도가 아닌 선행 방향성을 포착하며 비대칭 모델링은 얼마나 도움이 되는가?</span></div>
+<div class="rq-row"><strong>RQ3.3</strong><span class="en-only"> — Which method family gives the best accuracy, and where is the SOTA ceiling?</span><span class="ko-only"> — 어떤 방법 계열이 최고 정확도를 내며 SOTA 상한은 어디인가?</span></div>
+<div class="rq-row"><strong>RQ3.4</strong><span class="en-only"> — Can prerequisites be predicted for a domain with no target labels, and at what cost?</span><span class="ko-only"> — 대상 라벨이 없는 도메인에서 선행을 예측할 수 있으며 그 비용은 얼마인가?</span></div>
+<div class="rq-row"><strong>RQ3.5</strong><span class="en-only"> — What techniques reduce the labeling cost of bootstrapping a prerequisite classifier?</span><span class="ko-only"> — 선행 분류기 부트스트랩의 라벨 비용을 줄이는 기법은 무엇인가?</span></div>
+
+</section>
+
+<section id="papers" class="section-anchor">
+  <div class="card" style="margin-top:1.5rem">
+    <div class="en-only"><h3>Papers in SP3 (7 papers)</h3></div>
+    <div class="ko-only"><h3>SP3 논문 목록 (7편)</h3></div>
+    <div class="scroll-table-wrap">
+      <table><thead><tr>
+        <th>Ref</th><th><span class="en-only">Authors (year)</span><span class="ko-only">저자 (연도)</span></th>
+        <th><span class="en-only">Title</span><span class="ko-only">제목</span></th><th>Tier</th>
+        <th><span class="en-only">Fit</span><span class="ko-only">적합도</span></th>
+        <th><span class="en-only">Gap / Risk</span><span class="ko-only">Gap/위험</span></th>
+      </tr></thead><tbody>
+      <tr><td>[30]</td><td>Irene Li et al. (2019)</td><td><a href="papers/30_LectureBank.html">What Should I Learn First: Introducing LectureBank for NLP Education and Prerequisite Chain Learning</a></td><td><span class="pill pill-p0">P0</span></td><td>Defines the standard evaluation dataset &amp; metrics for O2</td><td>Closed 208-concept set; binary-only; SVM &gt; neural at small scale</td></tr>
+<tr><td>[31]</td><td>Chen Liang et al. (2018)</td><td><a href="papers/31_ActiveLearningCPL.html">Investigating Active Learning for Concept Prerequisite Learning</a></td><td><span class="pill pill-p0">P0</span></td><td>Label-efficient bootstrapping; asymmetric RefD signal</td><td>Wikipedia-link-dependent features; in-domain only</td></tr>
+<tr><td>[32]</td><td>Sudeshna Roy et al. (2018)</td><td><a href="papers/32_PREREQ.html">Inferring Concept Prerequisite Relations from Online Educational Resources</a></td><td><span class="pill pill-p0">P0</span></td><td>Directionality mechanism; temporal-order proxy idea</td><td>Assumes fixed concept set + document prereq graph</td></tr>
+<tr><td>[34]</td><td>Irene Li et al. (2021)</td><td><a href="papers/34_CrossDomainVGAE.html">Unsupervised Cross-Domain Prerequisite Chain Learning using Variational Graph Autoencoders</a></td><td><span class="pill pill-p0">P0</span></td><td>Only unsupervised cross-domain transfer method</td><td>Needs shared concepts; F1 0.68 vs 0.82 supervised ceiling</td></tr>
+<tr><td>[35]</td><td>ACM Computing Surveys (2025) (2025)</td><td><a href="papers/35_PRLSurvey.html">Prerequisite Relation Learning: A Survey and Outlook</a></td><td><span class="pill pill-p1">P1</span></td><td>Landscape + evaluation vocabulary (4-family taxonomy)</td><td>Abstract-only read; education-specific; assumes labeled PR data</td></tr>
+<tr><td>[36]</td><td>Miao Zhang et al. (2025)</td><td><a href="papers/36_DGCPL.html">DGCPL: Dual Graph Distillation for Concept Prerequisite Relation Learning</a></td><td><span class="pill pill-p0">P0</span></td><td>SOTA claim on 3 benchmarks; high-order concept structure</td><td>Requires learner behavior logs (absent for us); supervised</td></tr>
+<tr><td>[38]</td><td>AAAI 2025 (vol. 39, pp. 1638-1646) (2025)</td><td><a href="papers/38_GlobalKnowledgeCPR.html">Learning Concept Prerequisite Relation via Global Knowledge Relation Optimization</a></td><td><span class="pill pill-p0">P0</span></td><td>Best current anchor (LectureBank ACC 0.82); transitive-closure framing</td><td>Needs D-C/D-D auxiliary labels; margins 0.3–1.2%; closed vocab</td></tr>
+</tbody></table>
+    </div>
+  </div>
+</section>
+
+<section id="open" class="section-anchor">
+  <div class="card">
+    <div class="en-only"><h3>Open Questions After SP3</h3><ul><li>No training-free / prompting-based prerequisite decision criterion exists — every method requires supervised training. The single biggest gap between SP3 and the objective, carried into SP4/SP6.</li><li>The closed-concept-set assumption is never relaxed; no paper predicts prerequisites over concepts it also had to extract.</li><li>Transfer outside education, to a corpus lacking a dense reference graph (Wikipedia-style links), is untested.</li></ul></div>
+    <div class="ko-only"><h3>SP3 이후 미해결 질문</h3><ul><li>학습-free / prompting 기반 선행 결정 기준이 존재하지 않으며 모든 방법이 지도 학습을 요구한다. SP3와 목표 사이 최대 gap으로 SP4/SP6로 이월된다.</li><li>닫힌 개념 집합 가정이 결코 완화되지 않으며, 스스로 추출해야 하는 개념 위에서 선행을 예측하는 논문이 없다.</li><li>교육 외부로의 전이, 특히 밀집 참조 그래프(위키피디아식 링크)가 없는 코퍼스로의 전이가 미검증이다.</li></ul></div>
+  </div>
+</section>
+
+<div class="page-nav"><a href="sp2_concept_relation_extraction.html">← <span class="en-only">SP2: Concept/Relation Extraction</span><span class="ko-only">SP2: 개념·관계 추출</span></a><a href="index.html"><span class="en-only">↑ Survey Hub</span><span class="ko-only">↑ 조사 허브</span></a><a href="sp4_entity_linking.html"><span class="en-only">SP4: Entity Linking</span><span class="ko-only">SP4: 개체 링킹</span> →</a></div>
+    </div>
+  </div>
+  <nav class="bd-sidebar-secondary">
+    <div class="mini-toc-label en-only">On this page</div>
+    <div class="mini-toc-label ko-only">이 페이지</div>
+    <ul class="mini-toc">
+      <li><a href="#intro"><span class="en-only">Introduction</span><span class="ko-only">개요</span></a></li>
+      <li><a href="#rationale"><span class="en-only">Entry Assumption</span><span class="ko-only">사전 가정</span></a></li>
+      <li><a href="#establishes"><span class="en-only">What SP3 Establishes</span><span class="ko-only">확립한 것</span></a></li>
+      <li><a href="#concepts"><span class="en-only">Key Concepts</span><span class="ko-only">핵심 개념</span></a></li>
+      <li><a href="#rqs"><span class="en-only">Research Questions</span><span class="ko-only">연구 질문</span></a></li>
+      <li><a href="#papers"><span class="en-only">Papers</span><span class="ko-only">논문</span></a></li>
+      <li><a href="#open"><span class="en-only">Open Questions</span><span class="ko-only">미해결 질문</span></a></li>
+    </ul>
+  </nav>
+</div>
+</body>
+</html>

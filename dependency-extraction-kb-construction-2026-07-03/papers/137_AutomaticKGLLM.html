@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>[137] fusion-jena/automatic-KG-creation-with-LLM - ontology + KG c — Dependency Extraction &amp; KB Construction Survey</title>
+<style>
+:root {
+  --bg: #0d1117; --card: #161b22; --border: #30363d;
+  --text: #e6edf3; --muted: #7d8590; --accent: #58a6ff;
+  --teal: #39d0c7; --green: #3fb950; --yellow: #d29922;
+  --red: #f85149; --purple: #bc8cff; --orange: #e3b341;
+  --sidebar-w: 262px; --toc-w: 210px; --hdr-h: 48px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+body { font-family: -apple-system, sans-serif; background: var(--bg);
+       color: var(--text); line-height: 1.6; }
+.bd-root { display: flex; height: 100vh; overflow: hidden; }
+.bd-sidebar-primary {
+  width: var(--sidebar-w); min-width: var(--sidebar-w);
+  overflow-y: auto; background: var(--card);
+  border-right: 1px solid var(--border);
+  padding: 0.75rem 0; flex-shrink: 0;
+}
+.bd-sidebar-primary::-webkit-scrollbar { width: 4px; }
+.bd-sidebar-primary::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+.bd-main { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-width: 0; }
+.article-header-bar {
+  height: var(--hdr-h); background: var(--card);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; padding: 0 1.5rem;
+  gap: 1rem; flex-shrink: 0;
+}
+.header-brand { color: var(--teal); font-weight: bold; font-size: 0.95em;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 1; }
+.header-brand a { color: inherit; text-decoration: none; }
+.breadcrumb { color: var(--muted); font-size: 0.82em; display: flex;
+  align-items: center; gap: 0.3rem; flex-shrink: 0; }
+.breadcrumb a { color: var(--accent); text-decoration: none; }
+.breadcrumb span { color: var(--border); }
+.bd-article { flex: 1; overflow-y: auto; padding: 2rem 2.5rem; }
+.bd-article::-webkit-scrollbar { width: 6px; }
+.bd-article::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+.bd-sidebar-secondary {
+  width: var(--toc-w); min-width: var(--toc-w);
+  overflow-y: auto; border-left: 1px solid var(--border);
+  padding: 1rem 0.75rem; flex-shrink: 0;
+}
+.bd-sidebar-secondary::-webkit-scrollbar { width: 4px; }
+.bd-sidebar-secondary::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+.sidebar-logo { padding: 0.5rem 1rem 0.75rem;
+  border-bottom: 1px solid var(--border); margin-bottom: 0.5rem; }
+.sidebar-logo a { color: var(--teal); font-weight: bold; font-size: 0.95em;
+  text-decoration: none; display: block; }
+.sidebar-section { color: var(--muted); font-size: 0.72em; font-weight: bold;
+  text-transform: uppercase; letter-spacing: 0.07em;
+  padding: 0.7rem 1rem 0.25rem; }
+.sidebar-nav-link { display: block; padding: 0.28rem 1rem 0.28rem 1.25rem;
+  color: var(--muted); font-size: 0.875em; text-decoration: none; }
+.sidebar-nav-link:hover { color: var(--text); background: rgba(255,255,255,0.03); }
+.sidebar-nav-link.active { color: var(--teal);
+  border-left: 2px solid var(--teal);
+  padding-left: calc(1.25rem - 2px); background: rgba(57,208,199,0.05); }
+.mini-toc-label { color: var(--muted); font-size: 0.72em; font-weight: bold;
+  text-transform: uppercase; letter-spacing: 0.07em; padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border); margin-bottom: 0.5rem; }
+.mini-toc { list-style: none; }
+.mini-toc li a { display: block; padding: 0.22rem 0;
+  color: var(--muted); font-size: 0.83em; text-decoration: none;
+  border-left: 2px solid transparent; padding-left: 0.5rem; }
+.mini-toc li a:hover { color: var(--text); }
+.mini-toc li a.toc-active { color: var(--teal); border-left-color: var(--teal); }
+.section-anchor { scroll-margin-top: calc(var(--hdr-h) + 8px); }
+h1 { color: var(--teal); font-size: 1.7em; margin-bottom: 0.5rem; }
+h2 { color: var(--teal); font-size: 1.25em; margin: 1.5rem 0 0.6rem; }
+h3 { color: var(--teal); font-size: 1.05em; margin: 1.2rem 0 0.4rem; }
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+p { margin-bottom: 0.8rem; }
+.card { background: var(--card); border: 1px solid var(--border);
+        border-radius: 8px; padding: 1.2rem; margin-bottom: 1rem; }
+table { width: 100%; border-collapse: collapse; font-size: 0.9em; }
+th { background: var(--card); color: var(--teal); padding: 8px;
+     border: 1px solid var(--border); text-align: left; }
+td { padding: 8px; border: 1px solid var(--border); vertical-align: top; }
+tr:nth-child(even) td { background: rgba(0,0,0,0.2); }
+.stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+             gap: 1rem; margin-bottom: 1.5rem; }
+.stat-box { background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+            padding: 1rem; text-align: center; }
+.stat-num { font-size: 2rem; font-weight: bold; color: var(--teal); }
+.stat-label { color: var(--muted); font-size: 0.85em; margin-top: 0.2rem; }
+.sp-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+           gap: 1rem; margin: 1rem 0; }
+.sp-card { background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+           padding: 1.2rem; cursor: pointer; transition: border-color 0.15s; }
+.sp-card:hover { border-color: var(--teal); }
+.sp-card h3 { margin: 0 0 0.5rem; color: var(--teal); font-size: 1em; }
+.sp-card p { margin: 0; color: var(--muted); font-size: 0.88em; }
+.sp-badge { display: inline-block; background: rgba(57,208,199,0.1); color: var(--teal);
+            border-radius: 4px; padding: 2px 8px; font-size: 0.8em; margin-bottom: 0.5rem; }
+.paper-meta { color: var(--muted); font-size: 0.9em; margin-bottom: 1.5rem; }
+.paper-meta a { color: var(--accent); }
+.section-label { color: var(--teal); font-weight: bold; font-size: 0.85em;
+                 text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.4rem; }
+.pill { display: inline-block; border-radius: 4px; padding: 0.15rem 0.6rem;
+        font-size: 0.8em; font-weight: bold; margin-right: 0.4rem; }
+.pill-p0 { background: rgba(63,185,80,0.2); color: var(--green); }
+.pill-p1 { background: rgba(57,208,199,0.15); color: var(--teal); }
+.pill-p2 { background: rgba(210,153,34,0.2); color: var(--yellow); }
+.pill-p4 { background: rgba(125,133,144,0.2); color: var(--muted); }
+.pill-tool { background: rgba(188,140,255,0.2); color: var(--purple); }
+.delta-row { margin: 0.4rem 0; padding: 0.4rem 0.8rem;
+             border-left: 3px solid var(--border); border-radius: 0 4px 4px 0; }
+.delta-resolved { border-left-color: var(--green); }
+.delta-missing  { border-left-color: var(--yellow); }
+.delta-ref      { border-left-color: var(--muted); }
+.chain { position: relative; padding-left: 2rem; }
+.chain::before { content: ''; position: absolute; left: 0.95rem; top: 0;
+                 bottom: 0; width: 2px; background: var(--border); }
+.chain-node { position: relative; margin-bottom: 2rem; }
+.chain-node::before { content: ''; position: absolute; left: -1.55rem;
+                      top: 1.1rem; width: 12px; height: 12px;
+                      border-radius: 50%; background: var(--teal); }
+.chain-num { display: inline-block; width: 28px; height: 28px; background: var(--teal);
+             color: #000; border-radius: 50%; text-align: center; line-height: 28px;
+             font-weight: bold; font-size: 0.85em; margin-right: 0.6rem; flex-shrink: 0; }
+.chain-q { font-weight: bold; color: var(--text); margin: 0.4rem 0 0.3rem; font-size: 1em; }
+.chain-papers { color: var(--muted); font-size: 0.85em; margin-bottom: 0.6rem; }
+.chain-start { background: var(--card); border: 1px solid var(--teal);
+               border-radius: 8px; padding: 1rem; margin-bottom: 2rem; }
+.chain-start h3 { margin: 0 0 0.5rem; color: var(--teal); }
+.chain-converge { background: var(--card); border: 1px solid var(--green);
+                  border-radius: 8px; padding: 1rem; margin-top: 1rem; }
+.chain-converge h3 { margin: 0 0 0.5rem; color: var(--green); }
+.chain-label { display: inline-block; border-radius: 4px; padding: 0.15rem 0.6rem;
+               font-size: 0.8em; font-weight: bold; margin-right: 0.4rem; }
+.chain-status { border-radius: 0 4px 4px 0; padding: 0.5rem 0.8rem;
+                margin: 0.35rem 0; font-size: 0.88em; }
+.chain-status ul { margin: 0.3rem 0 0 1.2rem; padding: 0; }
+.chain-status li { margin-bottom: 0.25rem; }
+.chain-status.solved  { background: rgba(63,185,80,0.07);  border-left: 3px solid var(--green); }
+.chain-status.remains { background: rgba(210,153,34,0.07); border-left: 3px solid var(--yellow); }
+.chain-status.added   { background: rgba(248,81,73,0.07);  border-left: 3px solid var(--red); }
+.chain-status.pivoted { background: rgba(188,140,255,0.1); border-left: 3px solid var(--purple); }
+.chain-label.solved   { background: rgba(63,185,80,0.2);  color: var(--green); }
+.chain-label.remains  { background: rgba(210,153,34,0.2); color: var(--yellow); }
+.chain-label.added    { background: rgba(248,81,73,0.2);  color: var(--red); }
+.chain-label.pivoted  { background: rgba(188,140,255,0.2); color: var(--purple); }
+.chain-status.expected { background: rgba(88,166,255,0.07);  border-left: 3px solid var(--accent); }
+.chain-label.expected  { background: rgba(88,166,255,0.2);   color: var(--accent); }
+.chain-status.revised  { background: rgba(57,208,199,0.07);  border-left: 3px solid var(--teal); }
+.chain-label.revised   { background: rgba(57,208,199,0.2);   color: var(--teal); }
+.concept-box { border-left: 4px solid var(--teal); background: #0d1f1f;
+               border-radius: 4px; padding: 1.2rem; margin-bottom: 1.2rem; }
+.concept-name { font-weight: bold; color: var(--teal); font-size: 1.05em; margin-bottom: 0.5rem; }
+.concept-field { margin: 0.3rem 0; }
+.concept-label { color: var(--muted); font-size: 0.85em; }
+.hypothesis { border-left: 4px solid var(--teal); background: #0d1f1f;
+              border-radius: 4px; padding: 1rem; margin: 1rem 0; }
+.recommendation { border-left: 4px solid var(--purple); background: #1a0f2e;
+                  border-radius: 4px; padding: 1rem; margin: 1rem 0; }
+.rq-row { background: rgba(88,166,255,0.05); border-left: 3px solid var(--accent);
+          padding: 0.4rem 0.8rem; margin-bottom: 0.5rem; border-radius: 0 4px 4px 0; }
+.scroll-table-wrap { max-height: 420px; overflow-y: auto; border: 1px solid var(--border);
+                     border-radius: 4px; }
+.scroll-table-wrap thead th { position: sticky; top: 0; background: #161b22; z-index: 1; }
+.page-nav { display: flex; justify-content: space-between; margin-top: 2rem;
+            padding-top: 1rem; border-top: 1px solid var(--border); gap: 1rem; }
+.page-nav a { color: var(--accent); font-size: 0.9em; }
+html.ko-active .en-only { display: none !important; }
+html.ko-active .ko-only { display: block !important; }
+.ko-only { display: none; }
+span.ko-only, span.en-only { display: inline; }
+html.ko-active span.en-only { display: none !important; }
+html.ko-active span.ko-only { display: inline !important; }
+.lang-btn { background: transparent; color: var(--muted); border: 1px solid var(--border);
+            border-radius: 4px; padding: 3px 9px; font-size: 0.8em; cursor: pointer; }
+.lang-btn.active { border-color: var(--teal); color: var(--teal); }
+@media (max-width: 1024px) { .bd-sidebar-secondary { display: none; } }
+@media (max-width: 768px) {
+  .bd-sidebar-primary { display: none; }
+  .bd-root { flex-direction: column; height: auto; overflow: visible; }
+  .bd-main { overflow: visible; }
+  .bd-article { overflow: visible; padding: 1rem; }
+  .stat-grid { grid-template-columns: repeat(2, 1fr); }
+  .sp-grid { grid-template-columns: 1fr; }
+}
+</style>
+<script>
+function toggleLanguage() {
+  const html = document.documentElement;
+  const isKo = html.classList.toggle('ko-active');
+  document.querySelectorAll('.lang-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.lang === (isKo ? 'ko' : 'en'));
+  });
+  localStorage.setItem('survey-lang', isKo ? 'ko' : 'en');
+}
+document.addEventListener('DOMContentLoaded', function() {
+  const saved = localStorage.getItem('survey-lang');
+  if (saved === 'ko') {
+    document.documentElement.classList.add('ko-active');
+    document.querySelectorAll('.lang-btn').forEach(b =>
+      b.classList.toggle('active', b.dataset.lang === 'ko'));
+  } else {
+    document.querySelectorAll('[data-lang="en"]').forEach(b => b.classList.add('active'));
+  }
+  const article = document.querySelector('.bd-article');
+  const sections = Array.from(document.querySelectorAll('.section-anchor[id]'));
+  const sideLinks = Array.from(document.querySelectorAll('.bd-sidebar-primary .sidebar-nav-link'));
+  const tocLinks = Array.from(document.querySelectorAll('.bd-sidebar-secondary .mini-toc a'));
+  if (!article || !sections.length) return;
+  function current() {
+    let id = sections[0].id;
+    const scrollTop = article.scrollTop + 60;
+    sections.forEach(function(s) { if (s.offsetTop <= scrollTop) id = s.id; });
+    return id;
+  }
+  function update() {
+    const id = current();
+    sideLinks.forEach(function(a) { a.classList.toggle('active', a.getAttribute('href') === '#' + id); });
+    tocLinks.forEach(function(a) { a.classList.toggle('toc-active', a.getAttribute('href') === '#' + id); });
+  }
+  article.addEventListener('scroll', update, { passive: true });
+  update();
+});
+</script>
+</head>
+<body>
+<div class="bd-root">
+  <nav class="bd-sidebar-primary">
+  <div class="sidebar-logo">
+    <a href="../index.html">&#x2b21; <span class="en-only">Dependency Extraction &amp; KB Construction Survey</span><span class="ko-only">의존성 추출 및 지식베이스 구축 문헌 조사</span></a>
+  </div>
+  <div class="sidebar-section en-only">Overview</div>
+  <div class="sidebar-section ko-only">개요</div>
+  <a href="../index.html#overview" class="sidebar-nav-link"><span class="en-only">Survey Hub</span><span class="ko-only">조사 허브</span></a>
+  <a href="../index.html#answers" class="sidebar-nav-link"><span class="en-only">Key Answers</span><span class="ko-only">핵심 답변</span></a>
+  <div class="sidebar-section en-only">Sub-Problems</div>
+  <div class="sidebar-section ko-only">세부 문제</div>
+  <a href="../sp1_citation_intent.html" class="sidebar-nav-link">SP1: <span class="en-only">Citation Intent</span><span class="ko-only">인용 의도</span></a>
+  <a href="../sp2_concept_relation_extraction.html" class="sidebar-nav-link">SP2: <span class="en-only">Concept/Relation Extraction</span><span class="ko-only">개념·관계 추출</span></a>
+  <a href="../sp3_concept_prerequisite.html" class="sidebar-nav-link">SP3: <span class="en-only">Concept Prerequisite</span><span class="ko-only">개념 선행관계</span></a>
+  <a href="../sp4_entity_linking.html" class="sidebar-nav-link">SP4: <span class="en-only">Entity Linking</span><span class="ko-only">개체 링킹</span></a>
+  <a href="../sp5_related_work_novelty.html" class="sidebar-nav-link">SP5: <span class="en-only">Related Work / Novelty</span><span class="ko-only">관련연구·신규성</span></a>
+  <a href="../sp6_llm_agent_kg.html" class="sidebar-nav-link active">SP6: <span class="en-only">LLM-Agent KG</span><span class="ko-only">LLM 에이전트 KG</span></a>
+  <a href="../sp7_ontology_alignment.html" class="sidebar-nav-link">SP7: <span class="en-only">Ontology Alignment</span><span class="ko-only">온톨로지 정렬</span></a>
+  <a href="../sp8_incremental_kg.html" class="sidebar-nav-link">SP8: <span class="en-only">Incremental KG</span><span class="ko-only">증분 KG</span></a>
+  <a href="../sp9_link_prediction_dag.html" class="sidebar-nav-link">SP9: <span class="en-only">DAG Link Prediction</span><span class="ko-only">DAG 링크 예측</span></a>
+  <div class="sidebar-section en-only">Synthesis</div>
+  <div class="sidebar-section ko-only">종합</div>
+  <a href="../conclusion.html" class="sidebar-nav-link"><span class="en-only">Conclusion</span><span class="ko-only">결론</span></a>
+  <a href="../thinking-process.html" class="sidebar-nav-link"><span class="en-only">Thinking Process</span><span class="ko-only">추론 과정</span></a>
+</nav>
+  <div class="bd-main">
+    <div class="article-header-bar">
+  <div class="header-brand"><a href="../index.html"><span class="en-only">Dependency Extraction &amp; KB Construction Survey</span><span class="ko-only">의존성 추출 및 지식베이스 구축 문헌 조사</span></a></div>
+  <nav class="breadcrumb"><a href="../index.html"><span class="en-only">Survey</span><span class="ko-only">조사</span></a><span>›</span><a href="../sp6_llm_agent_kg.html">SP6</a><span>›</span><span>[137] fusion-jena/automatic-KG-creation-with</span></nav>
+  <button class="lang-btn" data-lang="en" onclick="toggleLanguage()">EN</button>
+  <button class="lang-btn" data-lang="ko" onclick="toggleLanguage()">KO</button>
+</div>
+    <div class="bd-article">
+      <section id="header" class="section-anchor">
+  <div class="paper-meta">
+    <h1 style="margin-bottom:0.3rem">fusion-jena/automatic-KG-creation-with-LLM - ontology + KG construction pipeline</h1>
+    <p style="margin:0.3rem 0;color:var(--muted)"></p>
+    <p style="margin:0.3rem 0">SP: <a href="../sp6_llm_agent_kg.html">SP6</a></p>
+    <p><span class="pill pill-tool">Tool</span><span class="pill" style="background:rgba(255,255,255,0.05);color:var(--muted)">Track -</span></p>
+  </div>
+</section><section id="problem" class="section-anchor"><div class="card"><div class="section-label en-only">Problem</div><div class="section-label ko-only">해결하려는 문제</div><div class="en-only"><p>A semi-automatic pipeline that turns scholarly publication PDFs into an ontology-grounded knowledge graph in four sequential LLM stages: <strong>(1) formulate competency questions (CQs) → (2) develop an ontology (TBox) from the CQs → (3) construct the KG (ABox) using that ontology → (4) evaluate the resulting KG</strong> (including human evaluation of RAG-generated answers to the CQs). Backs the Kommineni et al. paper; demonstrated on the deep-learning-methodology domain.</p></div><div class="ko-only"><p>LLM으로 온톨로지와 KG를 스키마 우선으로 구성·평가할 필요가 있다.</p></div></div></section><section id="solution" class="section-anchor"><div class="card"><div class="section-label en-only">Solution / Contribution</div><div class="section-label ko-only">해결책 / 기여</div><div class="en-only"><ul><li><strong>Invocation</strong>: <code>python main.py</code>, with all variables/paths set in <code>config.ini</code>. Requires a Hugging Face access token (added to <code>helper_functions.py</code> / env var), a venv from <code>requirements.txt</code>, Python 3.10.16 on Linux.</li><li><strong>Inputs</strong>: scholarly publication PDFs + their metadata.</li><li><strong>Processing</strong>: CQ generation → TBox generation → KG (ABox) population + named-entity recognition → RAG over the corpus to answer CQs → evaluation metrics + human scoring.</li><li><strong>Outputs</strong>: competency questions, ontology (TBox), knowledge graph, NER results, and evaluation statistics.</li><li><strong>Models compared</strong>: Mixtral 8x22B Instruct v0.1, GPT-4o, GPT-3.5, Gemini.</li></ul></div><div class="ko-only"><p>CQ→TBox→KG→평가의 스키마 우선 파이프라인과 human-in-loop CQ 채점을 제공하는 자동 KG 생성 도구로 CQ 수용 테스트 템플릿을 제시한다.</p></div></div><div class="card"><div class="section-label en-only">Key Results</div><div class="section-label ko-only">주요 결과</div><p>351 GitHub stars. Peer-reviewed backing (NLP4KGC @ SEMANTiCS 2024, CEUR-WS Vol. 3874, pp. 19–34; arXiv:2403.08345). Reproducible artifact: code + prompts + data released. From the fusion-jena group (König-Ries lab).</p></div></section><section id="results" class="section-anchor"><details style="margin-top:0.6rem"><summary style="color:var(--muted);cursor:pointer"><span class="en-only">Concepts Introduced</span><span class="ko-only">도입된 개념</span></summary><div class="card" style="margin-top:0.5rem"><p><strong>Competency Questions (CQs)</strong></p>
+<ul><li><strong>What it computes</strong>: input = scholarly PDF + metadata → LLM generates a set of natural-language questions the target ontology/KG must be able to answer → output = list of CQs that scope the schema. </li><li><strong>Why it was created</strong>: gives the ontology a grounded, verifiable requirements spec instead of ad-hoc schema design.</li><li><strong>Concrete example</strong>: e.g. "What dataset was used to train the model?" → drives an ontology property <code>usesDataset</code>.</li><li><strong>How it is used in this paper</strong>: Stage 1 of the four-stage pipeline; CQs seed the TBox in Stage 2 and become the human-evaluation targets in Stage 4 (RAG answers the CQs, humans score them).</li></ul>
+<p><strong>TBox (terminological box / ontology schema)</strong></p>
+<ul><li><strong>What it computes</strong>: input = CQs → LLM proposes classes + properties → output = ontology (TBox). </li><li><strong>Why it was created</strong>: schema-first grounding so the KG (ABox) has controlled vocabulary rather than free-form triples.</li><li><strong>Concrete example</strong>: classes <code>{Method, Dataset, Metric}</code>, property <code>evaluatedOn</code>.</li><li><strong>How it is used in this paper</strong>: Stage 2 output; constrains Stage 3 KG population.</li></ul>
+<p><strong>Semi-automatic ontology+KG pipeline (CQ → TBox → KG → eval)</strong></p>
+<ul><li><strong>What it computes</strong>: four sequential LLM stages turning papers into an evaluated KG with minimal human involvement.</li><li><strong>Why it was created</strong>: manual ontology engineering is expensive; automate it while keeping a human check at evaluation.</li><li><strong>Concrete example</strong>: run <code>main.py</code>, configured via <code>config.ini</code>.</li><li><strong>How it is used in this paper</strong>: the whole tool; compares 4 LLMs across all stages.</li></ul>
+<p>---</p></div></details><details style="margin-top:0.6rem"><summary style="color:var(--muted);cursor:pointer"><span class="en-only">Implementation Feasibility</span><span class="ko-only">구현 실현가능성</span></summary><div class="card" style="margin-top:0.5rem"><ul><li><strong>Needs</strong>: Python 3.10.16 (Linux), venv from <code>requirements.txt</code>, Hugging Face token, API access for GPT-4o/GPT-3.5/Gemini; PDFs + metadata as input.</li><li><strong>Code</strong>: available at https://github.com/fusion-jena/automatic-KG-creation-with-LLM (prompts + data included).</li><li><strong>Modifications</strong>: to serve our pipeline, would need (a) a cross-paper dependency-edge target instead of intra-paper ontology facts, (b) entity linking against an existing KB, (c) an incremental add-one-paper loop with DAG-consistency checks.</li><li><strong>Unknowns</strong>: <code>missing link</code> — exact CQ/TBox prompt templates and evaluation metrics not read in skim; Linux-only, single-corpus batch assumptions unverified for streaming use.</li></ul></div></details><details style="margin-top:0.6rem"><summary style="color:var(--muted);cursor:pointer"><span class="en-only">Borrow Potential</span><span class="ko-only">차용 가능성</span></summary><div class="card" style="margin-top:0.5rem"><ul><li><strong>Schema-first grounding</strong>: force the agent to derive a controlled vocabulary (TBox) from competency questions before populating edges — reduces free-form triple noise. Adoptable as a pre-extraction step.</li><li><strong>CQ-driven evaluation loop</strong>: use competency questions ("what does a correct dependency link answer?") as the acceptance test for extracted links, with RAG+human scoring. Directly transplantable to validate O1/O2 output.</li><li><strong>Not adoptable as-is</strong>: no incremental/linking/DAG-maintenance machinery — the parts most central to O2/O3.</li></ul></div></details><details style="margin-top:0.6rem"><summary style="color:var(--muted);cursor:pointer"><span class="en-only">Follow-up Papers</span><span class="ko-only">관련 후속 논문</span></summary><div class="card" style="margin-top:0.5rem"><ul><li>Kommineni, König-Ries &amp; Samuel (2024), "Towards the Automation of Knowledge Graph Construction Using Large Language Models" (NLP4KGC @ SEMANTiCS 2024) — the paper this repo implements; read for CQ/TBox prompt and evaluation detail.</li><li>Kommineni et al. (2024), arXiv:2403.08345, "From human experts to machines: An LLM supported approach to ontology and knowledge graph construction" — v1.0 version with fuller methodology.</li></ul></div></details></section><section id="delta" class="section-anchor"><div class="card"><div class="section-label en-only">Condition Delta — transfer to our setting</div><div class="section-label ko-only">조건 차이 — 우리 환경으로의 전이</div><p><strong>Tool's setting</strong>: inputs = scholarly PDFs + metadata (deep-learning domain); outputs = ontology + intra-corpus KG; conditions = batch run over a fixed corpus, schema-first (CQ→TBox), human eval at the end. <strong>Our setting</strong>: inputs = a newly-added paper arriving over time; outputs = prerequisite/derivation dependency links to existing KB nodes in a growing DAG; conditions = incremental, agent-driven, prompting/retrieval-first. <strong>Differences</strong>:</p>
+<ul><li>Construction target (intra-paper ontology facts vs. inter-paper dependency edges): <code>reference only</code> — different edge semantics.</li><li>Batch vs. incremental: <code>missing link</code> — no add-one-paper update path.</li><li>No entity linking against a pre-existing graph: <code>missing link</code> — our O2 core is absent.</li><li>No DAG-consistency maintenance (cycles, pruning, stale links): <code>missing link</code> — our O3 core is absent.</li><li>Reusable: the <strong>CQ → TBox → populate → evaluate</strong> staging and the schema-first grounding discipline: <code>resolved: as a design template for grounding an agent's extraction in a controlled vocabulary before writing links</code>.</li></ul></div></section>
+      <div class="page-nav"><a href="136_WeKnora.html">← [136] WeKnora</a><a href="../sp6_llm_agent_kg.html">↑ SP6</a><a href="138_AwesomeLLMKG.html">[138] AwesomeLLMKG →</a></div>
+    </div>
+  </div>
+  <nav class="bd-sidebar-secondary">
+    <div class="mini-toc-label en-only">On this page</div>
+    <div class="mini-toc-label ko-only">이 페이지</div>
+    <ul class="mini-toc">
+      <li><a href="#header"><span class="en-only">Paper info</span><span class="ko-only">논문 정보</span></a></li>
+      <li><a href="#problem"><span class="en-only">Problem</span><span class="ko-only">문제</span></a></li>
+      <li><a href="#solution"><span class="en-only">Solution</span><span class="ko-only">해결책</span></a></li>
+      <li><a href="#results"><span class="en-only">Concepts &amp; Analysis</span><span class="ko-only">개념·분석</span></a></li>
+      <li><a href="#delta"><span class="en-only">Condition Delta</span><span class="ko-only">조건 차이</span></a></li>
+    </ul>
+  </nav>
+</div>
+</body>
+</html>

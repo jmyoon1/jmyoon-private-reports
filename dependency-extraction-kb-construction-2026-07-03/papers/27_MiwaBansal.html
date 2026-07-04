@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>[27] End-to-End Relation Extraction using LSTMs on Sequences and  — Dependency Extraction &amp; KB Construction Survey</title>
+<style>
+:root {
+  --bg: #0d1117; --card: #161b22; --border: #30363d;
+  --text: #e6edf3; --muted: #7d8590; --accent: #58a6ff;
+  --teal: #39d0c7; --green: #3fb950; --yellow: #d29922;
+  --red: #f85149; --purple: #bc8cff; --orange: #e3b341;
+  --sidebar-w: 262px; --toc-w: 210px; --hdr-h: 48px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+body { font-family: -apple-system, sans-serif; background: var(--bg);
+       color: var(--text); line-height: 1.6; }
+.bd-root { display: flex; height: 100vh; overflow: hidden; }
+.bd-sidebar-primary {
+  width: var(--sidebar-w); min-width: var(--sidebar-w);
+  overflow-y: auto; background: var(--card);
+  border-right: 1px solid var(--border);
+  padding: 0.75rem 0; flex-shrink: 0;
+}
+.bd-sidebar-primary::-webkit-scrollbar { width: 4px; }
+.bd-sidebar-primary::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+.bd-main { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-width: 0; }
+.article-header-bar {
+  height: var(--hdr-h); background: var(--card);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; padding: 0 1.5rem;
+  gap: 1rem; flex-shrink: 0;
+}
+.header-brand { color: var(--teal); font-weight: bold; font-size: 0.95em;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 1; }
+.header-brand a { color: inherit; text-decoration: none; }
+.breadcrumb { color: var(--muted); font-size: 0.82em; display: flex;
+  align-items: center; gap: 0.3rem; flex-shrink: 0; }
+.breadcrumb a { color: var(--accent); text-decoration: none; }
+.breadcrumb span { color: var(--border); }
+.bd-article { flex: 1; overflow-y: auto; padding: 2rem 2.5rem; }
+.bd-article::-webkit-scrollbar { width: 6px; }
+.bd-article::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+.bd-sidebar-secondary {
+  width: var(--toc-w); min-width: var(--toc-w);
+  overflow-y: auto; border-left: 1px solid var(--border);
+  padding: 1rem 0.75rem; flex-shrink: 0;
+}
+.bd-sidebar-secondary::-webkit-scrollbar { width: 4px; }
+.bd-sidebar-secondary::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+.sidebar-logo { padding: 0.5rem 1rem 0.75rem;
+  border-bottom: 1px solid var(--border); margin-bottom: 0.5rem; }
+.sidebar-logo a { color: var(--teal); font-weight: bold; font-size: 0.95em;
+  text-decoration: none; display: block; }
+.sidebar-section { color: var(--muted); font-size: 0.72em; font-weight: bold;
+  text-transform: uppercase; letter-spacing: 0.07em;
+  padding: 0.7rem 1rem 0.25rem; }
+.sidebar-nav-link { display: block; padding: 0.28rem 1rem 0.28rem 1.25rem;
+  color: var(--muted); font-size: 0.875em; text-decoration: none; }
+.sidebar-nav-link:hover { color: var(--text); background: rgba(255,255,255,0.03); }
+.sidebar-nav-link.active { color: var(--teal);
+  border-left: 2px solid var(--teal);
+  padding-left: calc(1.25rem - 2px); background: rgba(57,208,199,0.05); }
+.mini-toc-label { color: var(--muted); font-size: 0.72em; font-weight: bold;
+  text-transform: uppercase; letter-spacing: 0.07em; padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border); margin-bottom: 0.5rem; }
+.mini-toc { list-style: none; }
+.mini-toc li a { display: block; padding: 0.22rem 0;
+  color: var(--muted); font-size: 0.83em; text-decoration: none;
+  border-left: 2px solid transparent; padding-left: 0.5rem; }
+.mini-toc li a:hover { color: var(--text); }
+.mini-toc li a.toc-active { color: var(--teal); border-left-color: var(--teal); }
+.section-anchor { scroll-margin-top: calc(var(--hdr-h) + 8px); }
+h1 { color: var(--teal); font-size: 1.7em; margin-bottom: 0.5rem; }
+h2 { color: var(--teal); font-size: 1.25em; margin: 1.5rem 0 0.6rem; }
+h3 { color: var(--teal); font-size: 1.05em; margin: 1.2rem 0 0.4rem; }
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+p { margin-bottom: 0.8rem; }
+.card { background: var(--card); border: 1px solid var(--border);
+        border-radius: 8px; padding: 1.2rem; margin-bottom: 1rem; }
+table { width: 100%; border-collapse: collapse; font-size: 0.9em; }
+th { background: var(--card); color: var(--teal); padding: 8px;
+     border: 1px solid var(--border); text-align: left; }
+td { padding: 8px; border: 1px solid var(--border); vertical-align: top; }
+tr:nth-child(even) td { background: rgba(0,0,0,0.2); }
+.stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+             gap: 1rem; margin-bottom: 1.5rem; }
+.stat-box { background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+            padding: 1rem; text-align: center; }
+.stat-num { font-size: 2rem; font-weight: bold; color: var(--teal); }
+.stat-label { color: var(--muted); font-size: 0.85em; margin-top: 0.2rem; }
+.sp-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+           gap: 1rem; margin: 1rem 0; }
+.sp-card { background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+           padding: 1.2rem; cursor: pointer; transition: border-color 0.15s; }
+.sp-card:hover { border-color: var(--teal); }
+.sp-card h3 { margin: 0 0 0.5rem; color: var(--teal); font-size: 1em; }
+.sp-card p { margin: 0; color: var(--muted); font-size: 0.88em; }
+.sp-badge { display: inline-block; background: rgba(57,208,199,0.1); color: var(--teal);
+            border-radius: 4px; padding: 2px 8px; font-size: 0.8em; margin-bottom: 0.5rem; }
+.paper-meta { color: var(--muted); font-size: 0.9em; margin-bottom: 1.5rem; }
+.paper-meta a { color: var(--accent); }
+.section-label { color: var(--teal); font-weight: bold; font-size: 0.85em;
+                 text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.4rem; }
+.pill { display: inline-block; border-radius: 4px; padding: 0.15rem 0.6rem;
+        font-size: 0.8em; font-weight: bold; margin-right: 0.4rem; }
+.pill-p0 { background: rgba(63,185,80,0.2); color: var(--green); }
+.pill-p1 { background: rgba(57,208,199,0.15); color: var(--teal); }
+.pill-p2 { background: rgba(210,153,34,0.2); color: var(--yellow); }
+.pill-p4 { background: rgba(125,133,144,0.2); color: var(--muted); }
+.pill-tool { background: rgba(188,140,255,0.2); color: var(--purple); }
+.delta-row { margin: 0.4rem 0; padding: 0.4rem 0.8rem;
+             border-left: 3px solid var(--border); border-radius: 0 4px 4px 0; }
+.delta-resolved { border-left-color: var(--green); }
+.delta-missing  { border-left-color: var(--yellow); }
+.delta-ref      { border-left-color: var(--muted); }
+.chain { position: relative; padding-left: 2rem; }
+.chain::before { content: ''; position: absolute; left: 0.95rem; top: 0;
+                 bottom: 0; width: 2px; background: var(--border); }
+.chain-node { position: relative; margin-bottom: 2rem; }
+.chain-node::before { content: ''; position: absolute; left: -1.55rem;
+                      top: 1.1rem; width: 12px; height: 12px;
+                      border-radius: 50%; background: var(--teal); }
+.chain-num { display: inline-block; width: 28px; height: 28px; background: var(--teal);
+             color: #000; border-radius: 50%; text-align: center; line-height: 28px;
+             font-weight: bold; font-size: 0.85em; margin-right: 0.6rem; flex-shrink: 0; }
+.chain-q { font-weight: bold; color: var(--text); margin: 0.4rem 0 0.3rem; font-size: 1em; }
+.chain-papers { color: var(--muted); font-size: 0.85em; margin-bottom: 0.6rem; }
+.chain-start { background: var(--card); border: 1px solid var(--teal);
+               border-radius: 8px; padding: 1rem; margin-bottom: 2rem; }
+.chain-start h3 { margin: 0 0 0.5rem; color: var(--teal); }
+.chain-converge { background: var(--card); border: 1px solid var(--green);
+                  border-radius: 8px; padding: 1rem; margin-top: 1rem; }
+.chain-converge h3 { margin: 0 0 0.5rem; color: var(--green); }
+.chain-label { display: inline-block; border-radius: 4px; padding: 0.15rem 0.6rem;
+               font-size: 0.8em; font-weight: bold; margin-right: 0.4rem; }
+.chain-status { border-radius: 0 4px 4px 0; padding: 0.5rem 0.8rem;
+                margin: 0.35rem 0; font-size: 0.88em; }
+.chain-status ul { margin: 0.3rem 0 0 1.2rem; padding: 0; }
+.chain-status li { margin-bottom: 0.25rem; }
+.chain-status.solved  { background: rgba(63,185,80,0.07);  border-left: 3px solid var(--green); }
+.chain-status.remains { background: rgba(210,153,34,0.07); border-left: 3px solid var(--yellow); }
+.chain-status.added   { background: rgba(248,81,73,0.07);  border-left: 3px solid var(--red); }
+.chain-status.pivoted { background: rgba(188,140,255,0.1); border-left: 3px solid var(--purple); }
+.chain-label.solved   { background: rgba(63,185,80,0.2);  color: var(--green); }
+.chain-label.remains  { background: rgba(210,153,34,0.2); color: var(--yellow); }
+.chain-label.added    { background: rgba(248,81,73,0.2);  color: var(--red); }
+.chain-label.pivoted  { background: rgba(188,140,255,0.2); color: var(--purple); }
+.chain-status.expected { background: rgba(88,166,255,0.07);  border-left: 3px solid var(--accent); }
+.chain-label.expected  { background: rgba(88,166,255,0.2);   color: var(--accent); }
+.chain-status.revised  { background: rgba(57,208,199,0.07);  border-left: 3px solid var(--teal); }
+.chain-label.revised   { background: rgba(57,208,199,0.2);   color: var(--teal); }
+.concept-box { border-left: 4px solid var(--teal); background: #0d1f1f;
+               border-radius: 4px; padding: 1.2rem; margin-bottom: 1.2rem; }
+.concept-name { font-weight: bold; color: var(--teal); font-size: 1.05em; margin-bottom: 0.5rem; }
+.concept-field { margin: 0.3rem 0; }
+.concept-label { color: var(--muted); font-size: 0.85em; }
+.hypothesis { border-left: 4px solid var(--teal); background: #0d1f1f;
+              border-radius: 4px; padding: 1rem; margin: 1rem 0; }
+.recommendation { border-left: 4px solid var(--purple); background: #1a0f2e;
+                  border-radius: 4px; padding: 1rem; margin: 1rem 0; }
+.rq-row { background: rgba(88,166,255,0.05); border-left: 3px solid var(--accent);
+          padding: 0.4rem 0.8rem; margin-bottom: 0.5rem; border-radius: 0 4px 4px 0; }
+.scroll-table-wrap { max-height: 420px; overflow-y: auto; border: 1px solid var(--border);
+                     border-radius: 4px; }
+.scroll-table-wrap thead th { position: sticky; top: 0; background: #161b22; z-index: 1; }
+.page-nav { display: flex; justify-content: space-between; margin-top: 2rem;
+            padding-top: 1rem; border-top: 1px solid var(--border); gap: 1rem; }
+.page-nav a { color: var(--accent); font-size: 0.9em; }
+html.ko-active .en-only { display: none !important; }
+html.ko-active .ko-only { display: block !important; }
+.ko-only { display: none; }
+span.ko-only, span.en-only { display: inline; }
+html.ko-active span.en-only { display: none !important; }
+html.ko-active span.ko-only { display: inline !important; }
+.lang-btn { background: transparent; color: var(--muted); border: 1px solid var(--border);
+            border-radius: 4px; padding: 3px 9px; font-size: 0.8em; cursor: pointer; }
+.lang-btn.active { border-color: var(--teal); color: var(--teal); }
+@media (max-width: 1024px) { .bd-sidebar-secondary { display: none; } }
+@media (max-width: 768px) {
+  .bd-sidebar-primary { display: none; }
+  .bd-root { flex-direction: column; height: auto; overflow: visible; }
+  .bd-main { overflow: visible; }
+  .bd-article { overflow: visible; padding: 1rem; }
+  .stat-grid { grid-template-columns: repeat(2, 1fr); }
+  .sp-grid { grid-template-columns: 1fr; }
+}
+</style>
+<script>
+function toggleLanguage() {
+  const html = document.documentElement;
+  const isKo = html.classList.toggle('ko-active');
+  document.querySelectorAll('.lang-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.lang === (isKo ? 'ko' : 'en'));
+  });
+  localStorage.setItem('survey-lang', isKo ? 'ko' : 'en');
+}
+document.addEventListener('DOMContentLoaded', function() {
+  const saved = localStorage.getItem('survey-lang');
+  if (saved === 'ko') {
+    document.documentElement.classList.add('ko-active');
+    document.querySelectorAll('.lang-btn').forEach(b =>
+      b.classList.toggle('active', b.dataset.lang === 'ko'));
+  } else {
+    document.querySelectorAll('[data-lang="en"]').forEach(b => b.classList.add('active'));
+  }
+  const article = document.querySelector('.bd-article');
+  const sections = Array.from(document.querySelectorAll('.section-anchor[id]'));
+  const sideLinks = Array.from(document.querySelectorAll('.bd-sidebar-primary .sidebar-nav-link'));
+  const tocLinks = Array.from(document.querySelectorAll('.bd-sidebar-secondary .mini-toc a'));
+  if (!article || !sections.length) return;
+  function current() {
+    let id = sections[0].id;
+    const scrollTop = article.scrollTop + 60;
+    sections.forEach(function(s) { if (s.offsetTop <= scrollTop) id = s.id; });
+    return id;
+  }
+  function update() {
+    const id = current();
+    sideLinks.forEach(function(a) { a.classList.toggle('active', a.getAttribute('href') === '#' + id); });
+    tocLinks.forEach(function(a) { a.classList.toggle('toc-active', a.getAttribute('href') === '#' + id); });
+  }
+  article.addEventListener('scroll', update, { passive: true });
+  update();
+});
+</script>
+</head>
+<body>
+<div class="bd-root">
+  <nav class="bd-sidebar-primary">
+  <div class="sidebar-logo">
+    <a href="../index.html">&#x2b21; <span class="en-only">Dependency Extraction &amp; KB Construction Survey</span><span class="ko-only">의존성 추출 및 지식베이스 구축 문헌 조사</span></a>
+  </div>
+  <div class="sidebar-section en-only">Overview</div>
+  <div class="sidebar-section ko-only">개요</div>
+  <a href="../index.html#overview" class="sidebar-nav-link"><span class="en-only">Survey Hub</span><span class="ko-only">조사 허브</span></a>
+  <a href="../index.html#answers" class="sidebar-nav-link"><span class="en-only">Key Answers</span><span class="ko-only">핵심 답변</span></a>
+  <div class="sidebar-section en-only">Sub-Problems</div>
+  <div class="sidebar-section ko-only">세부 문제</div>
+  <a href="../sp1_citation_intent.html" class="sidebar-nav-link">SP1: <span class="en-only">Citation Intent</span><span class="ko-only">인용 의도</span></a>
+  <a href="../sp2_concept_relation_extraction.html" class="sidebar-nav-link active">SP2: <span class="en-only">Concept/Relation Extraction</span><span class="ko-only">개념·관계 추출</span></a>
+  <a href="../sp3_concept_prerequisite.html" class="sidebar-nav-link">SP3: <span class="en-only">Concept Prerequisite</span><span class="ko-only">개념 선행관계</span></a>
+  <a href="../sp4_entity_linking.html" class="sidebar-nav-link">SP4: <span class="en-only">Entity Linking</span><span class="ko-only">개체 링킹</span></a>
+  <a href="../sp5_related_work_novelty.html" class="sidebar-nav-link">SP5: <span class="en-only">Related Work / Novelty</span><span class="ko-only">관련연구·신규성</span></a>
+  <a href="../sp6_llm_agent_kg.html" class="sidebar-nav-link">SP6: <span class="en-only">LLM-Agent KG</span><span class="ko-only">LLM 에이전트 KG</span></a>
+  <a href="../sp7_ontology_alignment.html" class="sidebar-nav-link">SP7: <span class="en-only">Ontology Alignment</span><span class="ko-only">온톨로지 정렬</span></a>
+  <a href="../sp8_incremental_kg.html" class="sidebar-nav-link">SP8: <span class="en-only">Incremental KG</span><span class="ko-only">증분 KG</span></a>
+  <a href="../sp9_link_prediction_dag.html" class="sidebar-nav-link">SP9: <span class="en-only">DAG Link Prediction</span><span class="ko-only">DAG 링크 예측</span></a>
+  <div class="sidebar-section en-only">Synthesis</div>
+  <div class="sidebar-section ko-only">종합</div>
+  <a href="../conclusion.html" class="sidebar-nav-link"><span class="en-only">Conclusion</span><span class="ko-only">결론</span></a>
+  <a href="../thinking-process.html" class="sidebar-nav-link"><span class="en-only">Thinking Process</span><span class="ko-only">추론 과정</span></a>
+</nav>
+  <div class="bd-main">
+    <div class="article-header-bar">
+  <div class="header-brand"><a href="../index.html"><span class="en-only">Dependency Extraction &amp; KB Construction Survey</span><span class="ko-only">의존성 추출 및 지식베이스 구축 문헌 조사</span></a></div>
+  <nav class="breadcrumb"><a href="../index.html"><span class="en-only">Survey</span><span class="ko-only">조사</span></a><span>›</span><a href="../sp2_concept_relation_extraction.html">SP2</a><span>›</span><span>[27] End-to-End Relation Extraction using L</span></nav>
+  <button class="lang-btn" data-lang="en" onclick="toggleLanguage()">EN</button>
+  <button class="lang-btn" data-lang="ko" onclick="toggleLanguage()">KO</button>
+</div>
+    <div class="bd-article">
+      <section id="header" class="section-anchor">
+  <div class="paper-meta">
+    <h1 style="margin-bottom:0.3rem">End-to-End Relation Extraction using LSTMs on Sequences and Tree Structures</h1>
+    <p style="margin:0.3rem 0;color:var(--muted)">Miwa &amp; Bansal · ACL 2016 · 2016 · <span class="en-only">1263 citations</span><span class="ko-only">인용 1263회</span></p>
+    <p style="margin:0.3rem 0"><a href="https://arxiv.org/abs/1601.00770" target="_blank">arXiv:1601.00770</a> · <a href="https://arxiv.org/pdf/1601.00770.pdf" target="_blank">PDF</a> · SP: <a href="../sp2_concept_relation_extraction.html">SP2</a></p>
+    <p><span class="pill pill-p0">P0</span><span class="pill" style="background:rgba(255,255,255,0.05);color:var(--muted)">Track C</span></p>
+  </div>
+</section><section id="problem" class="section-anchor"><div class="card"><div class="section-label en-only">Problem</div><div class="section-label ko-only">해결하려는 문제</div><div class="en-only"><p>Before this work, extracting entities and their relations was done either as a two-stage pipeline (NER then relation classification), which propagates entity errors and ignores that relations inform entity types, or as feature-based joint structured-prediction models requiring hand-engineered features. Neural models existed for relation <em>classification</em> but (a) used only one linguistic structure — word sequence OR dependency tree, not both — and (b) no NN model performed end-to-end joint entity+relation extraction at all. LSTM-based relation classifiers also underperformed CNN-based ones.</p></div><div class="ko-only"><p>개체·관계를 종단간으로 공동 추출하는 신경망 패러다임이 정립되지 않았다.</p></div></div></section><section id="solution" class="section-anchor"><div class="card"><div class="section-label en-only">Solution / Contribution</div><div class="section-label ko-only">해결책 / 기여</div><div class="en-only"><p>A single end-to-end neural model stacking a bidirectional tree-structured LSTM-RNN (dependency layer) on top of a bidirectional sequential LSTM-RNN (sequence layer), with shared embedding/sequence parameters updated by both entity and relation labels.</p>
+<ul><li><strong>Sequence layer</strong>: standard Bi-LSTM over word+POS embeddings → $s_t=[\overrightarrow{h_t};\overleftarrow{h_t}]$.</li><li><strong>Entity detection</strong>: greedy left-to-right BILOU tagging via a 2-layer NN over $[s_t; v^{(e)}_{t-1}]$ (previous-word label embedding), Eqs. 2–3.</li><li><strong>Dependency layer</strong>: new typed-child bidirectional Tree-LSTM (Eq. 4) over the <strong>shortest dependency path</strong> between a candidate entity pair; relation-candidate vector $d_p=[\uparrow h_{pA};\downarrow h_{p1};\downarrow h_{p2}]$, optionally augmented with averaged entity hidden states (Pair).</li><li><strong>Relation classification</strong>: 2-layer NN + softmax over $d_p$ (Eqs. 5–6), predicting type+direction; both directions predicted, more-confident positive label kept.</li><li><strong>Training</strong>: BPTT + Adam, gradient clipping, L2, dropout, plus entity pretraining and scheduled sampling.</li></ul></div><div class="ko-only"><p>sequence BiLSTM과 dependency-tree LSTM을 쌓은 최초의 신경 joint 개체·관계 추출 모델을 제시하여 이후 과학 IE의 종단간 공동 추출 패러다임을 확립한다.</p></div></div><div class="card"><div class="section-label en-only">Key Results</div><div class="section-label ko-only">주요 결과</div><ul><li>End-to-end RE on ACE05: relation F1 0.556 vs. Li &amp; Ji (2014) feature-based 0.495 (+6.1 abs; 12.1% relative error reduction). Entity F1 0.834 vs 0.808.</li><li>ACE04: relation F1 0.484 vs 0.453 (5.7% relative error reduction). Entity F1 0.818 vs 0.797.</li><li>SemEval-2010 Task 8 relation classification: Macro-F1 0.844 (no external resources) vs dos Santos CNN 0.841; 0.855 with WordNet — first LSTM model competitive with CNNs on this task.</li><li>Ablation (ACE05 dev): removing entity pretraining drops relation F1 0.518→0.492 (p&lt;0.05); removing all enhancements →0.484 (p&lt;0.01).</li><li>Structure finding: FullTree(-SP) hurts significantly; SPTree ≈ SubTree ≈ FullTree when shortest-path nodes are type-distinguished — "selecting the appropriate tree structure (shortest path) is more important than the choice of LSTM-RNN structure."</li></ul></div></section><section id="results" class="section-anchor"><details style="margin-top:0.6rem"><summary style="color:var(--muted);cursor:pointer"><span class="en-only">Concepts Introduced</span><span class="ko-only">도입된 개념</span></summary><div class="card" style="margin-top:0.5rem"><p><strong>Stacked sequence + tree LSTM-RNN architecture (SPTree model)</strong></p>
+<ul><li><strong>What it computes</strong>: input = tokenized sentence + POS tags + dependency parse (Stanford neural parser) → a bidirectional sequential LSTM (sequence layer) produces per-word contextual vectors $s_t=[\overrightarrow{h_t};\overleftarrow{h_t}]$, on top of which a bidirectional tree-structured LSTM (dependency layer) over the dependency subtree produces relation-candidate vectors → output = BILOU entity tags (sequence layer) + relation type+direction labels per detected entity pair (dependency layer).</li><li><strong>Why it was created</strong>: prior RNN relation-classification models used only one linguistic structure (either word sequence OR parse tree), and no NN model did end-to-end joint entity+relation extraction — all joint models were feature-based structured-prediction systems.</li><li><strong>Concrete example</strong>: for "In 1909, Sidney Yates was born in Chicago", the sequence layer tags <em>Sidney Yates</em> as B-PER/L-PER; the dependency layer walks the shortest path <em>Yates → born → in → Chicago</em> to classify the PHYS relation.</li><li><strong>How it is used in this paper</strong>: it is the core model; entity detection and relation classification share the embedding + sequence layers, and parameters are jointly updated by BPTT.</li></ul>
+<p><strong>Bidirectional tree-structured LSTM-RNN (new typed-child variant)</strong></p>
+<ul><li><strong>What it computes</strong>: at each tree node with children set $C(t)$, gates aggregate child hidden states via type-specific weight matrices $U_{m(l)}$ (Eq. 4), shared across same-type children, allowing a variable number of typed children; run both bottom-up and top-down → node hidden states.</li><li><strong>Why it was created</strong>: Tai et al. (2015) Child-Sum Tree-LSTM ignores edge types and N-ary Tree-LSTM assumes a fixed number of children — neither fits a typed dependency tree with arbitrary arity; standard bottom-up-only trees fail to send root info to near-leaf argument nodes.</li><li><strong>Concrete example</strong>: relation-candidate vector $d_p=[\uparrow h_{pA};\downarrow h_{p1};\downarrow h_{p2}]$ concatenates the lowest-common-ancestor node (bottom-up) with the two target-word nodes (top-down).</li><li><strong>How it is used in this paper</strong>: builds relation representations along the shortest dependency path (SPTree); ablations compare SubTree/FullTree and Child-Sum variants.</li></ul>
+<p><strong>Entity pretraining + scheduled sampling (training enhancements)</strong></p>
+<ul><li><strong>What it computes</strong>: entity pretraining first trains the entity-detection submodel on training data before joint training; scheduled sampling replaces predicted labels with gold labels with probability $\epsilon_i=k/(k+\exp(i/k))$ (inverse-sigmoid decay over epoch $i$).</li><li><strong>Why it was created</strong>: in early joint training, unreliable entity predictions mean few/no correct entity pairs are formed, starving relation classification of positive instances.</li><li><strong>Concrete example</strong>: removing entity pretraining drops relation F1 from 0.518 to 0.492 (p&lt;0.05) on ACE05 dev.</li><li><strong>How it is used in this paper</strong>: applied during joint training; ablated in Table 2.</li></ul>
+<p>---</p></div></details><details style="margin-top:0.6rem"><summary style="color:var(--muted);cursor:pointer"><span class="en-only">5Cs Analysis</span><span class="ko-only">5Cs 분석</span></summary><div class="card" style="margin-top:0.5rem"><p><strong>Category</strong>: new method (neural architecture for joint IE) <strong>Context</strong>: builds on tree-LSTMs (Tai et al. 2015), shortest-path relation classification (Bunescu &amp; Mooney 2005; Xu et al. 2015a/b), and feature-based joint models (Li &amp; Ji 2014; Miwa &amp; Sasaki 2014). Foundational to SP2 (dependency-based extraction) as the paper that established the neural end-to-end joint-extraction paradigm underlying later scientific IE systems. <strong>Correctness</strong>: statistical significance via Approximate Randomization test; ablations report significance markers (p&lt;0.05, p&lt;0.01). Results on 3 datasets (ACE05, ACE04, SemEval-2010 Task 8). Solid empirical rigor. <strong>Contributions</strong>: (1) first NN end-to-end joint entity+relation model; (2) new typed-child bidirectional Tree-LSTM; (3) finding that input tree <em>structure choice</em> (shortest path) matters more than LSTM <em>cell type</em> (sequential vs tree). <strong>Clarity</strong>: highly reproducible — equations, hyperparameter ranges, data splits, and code library (cnn, clab) all given.</p></div></details><details style="margin-top:0.6rem"><summary style="color:var(--muted);cursor:pointer"><span class="en-only">Contribution vs. Claim</span><span class="ko-only">기여 대 주장</span></summary><div class="card" style="margin-top:0.5rem"><ul><li><strong>Stated claims</strong>: a single end-to-end neural model jointly represents entities and relations with shared parameters, improving over SOTA feature-based end-to-end RE and matching SOTA CNN relation classification.</li><li><strong>Demonstrated results</strong>: gains shown on ACE05, ACE04 (end-to-end), and SemEval-2010 Task 8 (relation classification only) with significance tests and extensive ablations.</li><li><strong>Gap</strong>: entity detection is still greedy left-to-right (beam search "did not help" per footnote — not deeply explored); relation candidates enumerate all detected-entity pairs (quadratic), scalability to long documents / many entities not evaluated. Evaluated only on English newswire (ACE) and short single-relation sentences (SemEval) — no cross-domain or scientific-text validation. </li></ul></div></details><details style="margin-top:0.6rem"><summary style="color:var(--muted);cursor:pointer"><span class="en-only">Implementation Feasibility</span><span class="ko-only">구현 실현가능성</span></summary><div class="card" style="margin-top:0.5rem"><ul><li><strong>Needs</strong>: dependency parser (Stanford neural parser), POS tagger, word2vec embeddings, the <code>cnn</code> (clab) neural library, ACE05/ACE04 (LDC-licensed) or SemEval-2010 Task 8 data; modest single-GPU/CPU compute (100-dim LSTMs).</li><li><strong>Code</strong>: implementation built on https://github.com/clab/cnn ; parser at Stanford CoreNLP. Original model code widely re-implemented (e.g., in later frameworks). </li><li><strong>Modifications</strong>: replace word2vec sequence encoder with a contextual encoder for modern use; retrain on domain-specific relation schema; extend to cross-sentence candidate generation for KB construction.</li><li><strong>Unknowns</strong>: missing link — behavior on scientific text and on parses with high error rates; scalability of all-pairs relation candidate enumeration on entity-dense documents.</li></ul></div></details><details style="margin-top:0.6rem"><summary style="color:var(--muted);cursor:pointer"><span class="en-only">Follow-up Papers</span><span class="ko-only">관련 후속 논문</span></summary><div class="card" style="margin-top:0.5rem"><ul><li>Zhang et al., "Graph Convolution over Pruned Dependency Trees" (2018) — extends dependency-tree relation extraction with GCNs, directly building on the shortest-path idea.</li><li>Bekoulis et al., "Joint entity recognition and relation extraction as a multi-head selection problem" (2018) — later neural joint-extraction paradigm this paper seeded.</li><li>Eberts &amp; Ulges, "SpERT: Span-based Joint Entity and Relation Extraction with Transformers" (2020) — transformer successor to the joint end-to-end framing.</li></ul></div></details></section><section id="delta" class="section-anchor"><div class="card"><div class="section-label en-only">Condition Delta — transfer to our setting</div><div class="section-label ko-only">조건 차이 — 우리 환경으로의 전이</div><p><strong>Paper's setting</strong>: inputs = single English sentences with gold or Stanford-parsed dependency trees + POS; outputs = coarse-grained entities (7 ACE types) and relations (6–7 ACE types / 9 SemEval nominal types); conditions = supervised, sentence-level, newswire/general domain, ~350-doc training sets. <strong>Our setting</strong> (SP2, dependency-based extraction for scientific KB construction): inputs = scientific text (papers/abstracts), likely long multi-sentence spans; outputs = domain-specific entities and dependency/mechanism relations for KB construction; conditions = specialized vocabulary, possibly few labeled examples, cross-sentence relations. <strong>Differences</strong>:</p>
+<ul><li>Domain (newswire → scientific text): missing link — no scientific-domain evaluation; dependency parser quality on scientific text unverified.</li><li>Sentence-level vs document-level: missing link — model builds candidates within one dependency tree; cross-sentence relations not supported.</li><li>Relation schema (ACE/SemEval fixed types → scientific mechanism/dependency relations): reference only — architecture is schema-agnostic but needs re-labeled training data.</li><li>Reliance on shortest dependency path: reference only — a transferable inductive bias for SP2, but depends on parser accuracy in-domain.</li><li>Pre-transformer embeddings (word2vec): resolved/superseded — the sequence layer can be swapped for contextual encoders in modern re-implementations.</li></ul></div></section>
+      <div class="page-nav"><a href="23_SciLLMSurvey.html">← [23] SciLLMSurvey</a><a href="../sp2_concept_relation_extraction.html">↑ SP2</a><a href="28_LiteratureGraph.html">[28] LiteratureGraph →</a></div>
+    </div>
+  </div>
+  <nav class="bd-sidebar-secondary">
+    <div class="mini-toc-label en-only">On this page</div>
+    <div class="mini-toc-label ko-only">이 페이지</div>
+    <ul class="mini-toc">
+      <li><a href="#header"><span class="en-only">Paper info</span><span class="ko-only">논문 정보</span></a></li>
+      <li><a href="#problem"><span class="en-only">Problem</span><span class="ko-only">문제</span></a></li>
+      <li><a href="#solution"><span class="en-only">Solution</span><span class="ko-only">해결책</span></a></li>
+      <li><a href="#results"><span class="en-only">Concepts &amp; Analysis</span><span class="ko-only">개념·분석</span></a></li>
+      <li><a href="#delta"><span class="en-only">Condition Delta</span><span class="ko-only">조건 차이</span></a></li>
+    </ul>
+  </nav>
+</div>
+</body>
+</html>

@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>[28] Construction of the Literature Graph in Semantic Scholar — Dependency Extraction &amp; KB Construction Survey</title>
+<style>
+:root {
+  --bg: #0d1117; --card: #161b22; --border: #30363d;
+  --text: #e6edf3; --muted: #7d8590; --accent: #58a6ff;
+  --teal: #39d0c7; --green: #3fb950; --yellow: #d29922;
+  --red: #f85149; --purple: #bc8cff; --orange: #e3b341;
+  --sidebar-w: 262px; --toc-w: 210px; --hdr-h: 48px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+body { font-family: -apple-system, sans-serif; background: var(--bg);
+       color: var(--text); line-height: 1.6; }
+.bd-root { display: flex; height: 100vh; overflow: hidden; }
+.bd-sidebar-primary {
+  width: var(--sidebar-w); min-width: var(--sidebar-w);
+  overflow-y: auto; background: var(--card);
+  border-right: 1px solid var(--border);
+  padding: 0.75rem 0; flex-shrink: 0;
+}
+.bd-sidebar-primary::-webkit-scrollbar { width: 4px; }
+.bd-sidebar-primary::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+.bd-main { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-width: 0; }
+.article-header-bar {
+  height: var(--hdr-h); background: var(--card);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; padding: 0 1.5rem;
+  gap: 1rem; flex-shrink: 0;
+}
+.header-brand { color: var(--teal); font-weight: bold; font-size: 0.95em;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 1; }
+.header-brand a { color: inherit; text-decoration: none; }
+.breadcrumb { color: var(--muted); font-size: 0.82em; display: flex;
+  align-items: center; gap: 0.3rem; flex-shrink: 0; }
+.breadcrumb a { color: var(--accent); text-decoration: none; }
+.breadcrumb span { color: var(--border); }
+.bd-article { flex: 1; overflow-y: auto; padding: 2rem 2.5rem; }
+.bd-article::-webkit-scrollbar { width: 6px; }
+.bd-article::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+.bd-sidebar-secondary {
+  width: var(--toc-w); min-width: var(--toc-w);
+  overflow-y: auto; border-left: 1px solid var(--border);
+  padding: 1rem 0.75rem; flex-shrink: 0;
+}
+.bd-sidebar-secondary::-webkit-scrollbar { width: 4px; }
+.bd-sidebar-secondary::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+.sidebar-logo { padding: 0.5rem 1rem 0.75rem;
+  border-bottom: 1px solid var(--border); margin-bottom: 0.5rem; }
+.sidebar-logo a { color: var(--teal); font-weight: bold; font-size: 0.95em;
+  text-decoration: none; display: block; }
+.sidebar-section { color: var(--muted); font-size: 0.72em; font-weight: bold;
+  text-transform: uppercase; letter-spacing: 0.07em;
+  padding: 0.7rem 1rem 0.25rem; }
+.sidebar-nav-link { display: block; padding: 0.28rem 1rem 0.28rem 1.25rem;
+  color: var(--muted); font-size: 0.875em; text-decoration: none; }
+.sidebar-nav-link:hover { color: var(--text); background: rgba(255,255,255,0.03); }
+.sidebar-nav-link.active { color: var(--teal);
+  border-left: 2px solid var(--teal);
+  padding-left: calc(1.25rem - 2px); background: rgba(57,208,199,0.05); }
+.mini-toc-label { color: var(--muted); font-size: 0.72em; font-weight: bold;
+  text-transform: uppercase; letter-spacing: 0.07em; padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border); margin-bottom: 0.5rem; }
+.mini-toc { list-style: none; }
+.mini-toc li a { display: block; padding: 0.22rem 0;
+  color: var(--muted); font-size: 0.83em; text-decoration: none;
+  border-left: 2px solid transparent; padding-left: 0.5rem; }
+.mini-toc li a:hover { color: var(--text); }
+.mini-toc li a.toc-active { color: var(--teal); border-left-color: var(--teal); }
+.section-anchor { scroll-margin-top: calc(var(--hdr-h) + 8px); }
+h1 { color: var(--teal); font-size: 1.7em; margin-bottom: 0.5rem; }
+h2 { color: var(--teal); font-size: 1.25em; margin: 1.5rem 0 0.6rem; }
+h3 { color: var(--teal); font-size: 1.05em; margin: 1.2rem 0 0.4rem; }
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+p { margin-bottom: 0.8rem; }
+.card { background: var(--card); border: 1px solid var(--border);
+        border-radius: 8px; padding: 1.2rem; margin-bottom: 1rem; }
+table { width: 100%; border-collapse: collapse; font-size: 0.9em; }
+th { background: var(--card); color: var(--teal); padding: 8px;
+     border: 1px solid var(--border); text-align: left; }
+td { padding: 8px; border: 1px solid var(--border); vertical-align: top; }
+tr:nth-child(even) td { background: rgba(0,0,0,0.2); }
+.stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+             gap: 1rem; margin-bottom: 1.5rem; }
+.stat-box { background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+            padding: 1rem; text-align: center; }
+.stat-num { font-size: 2rem; font-weight: bold; color: var(--teal); }
+.stat-label { color: var(--muted); font-size: 0.85em; margin-top: 0.2rem; }
+.sp-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+           gap: 1rem; margin: 1rem 0; }
+.sp-card { background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+           padding: 1.2rem; cursor: pointer; transition: border-color 0.15s; }
+.sp-card:hover { border-color: var(--teal); }
+.sp-card h3 { margin: 0 0 0.5rem; color: var(--teal); font-size: 1em; }
+.sp-card p { margin: 0; color: var(--muted); font-size: 0.88em; }
+.sp-badge { display: inline-block; background: rgba(57,208,199,0.1); color: var(--teal);
+            border-radius: 4px; padding: 2px 8px; font-size: 0.8em; margin-bottom: 0.5rem; }
+.paper-meta { color: var(--muted); font-size: 0.9em; margin-bottom: 1.5rem; }
+.paper-meta a { color: var(--accent); }
+.section-label { color: var(--teal); font-weight: bold; font-size: 0.85em;
+                 text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.4rem; }
+.pill { display: inline-block; border-radius: 4px; padding: 0.15rem 0.6rem;
+        font-size: 0.8em; font-weight: bold; margin-right: 0.4rem; }
+.pill-p0 { background: rgba(63,185,80,0.2); color: var(--green); }
+.pill-p1 { background: rgba(57,208,199,0.15); color: var(--teal); }
+.pill-p2 { background: rgba(210,153,34,0.2); color: var(--yellow); }
+.pill-p4 { background: rgba(125,133,144,0.2); color: var(--muted); }
+.pill-tool { background: rgba(188,140,255,0.2); color: var(--purple); }
+.delta-row { margin: 0.4rem 0; padding: 0.4rem 0.8rem;
+             border-left: 3px solid var(--border); border-radius: 0 4px 4px 0; }
+.delta-resolved { border-left-color: var(--green); }
+.delta-missing  { border-left-color: var(--yellow); }
+.delta-ref      { border-left-color: var(--muted); }
+.chain { position: relative; padding-left: 2rem; }
+.chain::before { content: ''; position: absolute; left: 0.95rem; top: 0;
+                 bottom: 0; width: 2px; background: var(--border); }
+.chain-node { position: relative; margin-bottom: 2rem; }
+.chain-node::before { content: ''; position: absolute; left: -1.55rem;
+                      top: 1.1rem; width: 12px; height: 12px;
+                      border-radius: 50%; background: var(--teal); }
+.chain-num { display: inline-block; width: 28px; height: 28px; background: var(--teal);
+             color: #000; border-radius: 50%; text-align: center; line-height: 28px;
+             font-weight: bold; font-size: 0.85em; margin-right: 0.6rem; flex-shrink: 0; }
+.chain-q { font-weight: bold; color: var(--text); margin: 0.4rem 0 0.3rem; font-size: 1em; }
+.chain-papers { color: var(--muted); font-size: 0.85em; margin-bottom: 0.6rem; }
+.chain-start { background: var(--card); border: 1px solid var(--teal);
+               border-radius: 8px; padding: 1rem; margin-bottom: 2rem; }
+.chain-start h3 { margin: 0 0 0.5rem; color: var(--teal); }
+.chain-converge { background: var(--card); border: 1px solid var(--green);
+                  border-radius: 8px; padding: 1rem; margin-top: 1rem; }
+.chain-converge h3 { margin: 0 0 0.5rem; color: var(--green); }
+.chain-label { display: inline-block; border-radius: 4px; padding: 0.15rem 0.6rem;
+               font-size: 0.8em; font-weight: bold; margin-right: 0.4rem; }
+.chain-status { border-radius: 0 4px 4px 0; padding: 0.5rem 0.8rem;
+                margin: 0.35rem 0; font-size: 0.88em; }
+.chain-status ul { margin: 0.3rem 0 0 1.2rem; padding: 0; }
+.chain-status li { margin-bottom: 0.25rem; }
+.chain-status.solved  { background: rgba(63,185,80,0.07);  border-left: 3px solid var(--green); }
+.chain-status.remains { background: rgba(210,153,34,0.07); border-left: 3px solid var(--yellow); }
+.chain-status.added   { background: rgba(248,81,73,0.07);  border-left: 3px solid var(--red); }
+.chain-status.pivoted { background: rgba(188,140,255,0.1); border-left: 3px solid var(--purple); }
+.chain-label.solved   { background: rgba(63,185,80,0.2);  color: var(--green); }
+.chain-label.remains  { background: rgba(210,153,34,0.2); color: var(--yellow); }
+.chain-label.added    { background: rgba(248,81,73,0.2);  color: var(--red); }
+.chain-label.pivoted  { background: rgba(188,140,255,0.2); color: var(--purple); }
+.chain-status.expected { background: rgba(88,166,255,0.07);  border-left: 3px solid var(--accent); }
+.chain-label.expected  { background: rgba(88,166,255,0.2);   color: var(--accent); }
+.chain-status.revised  { background: rgba(57,208,199,0.07);  border-left: 3px solid var(--teal); }
+.chain-label.revised   { background: rgba(57,208,199,0.2);   color: var(--teal); }
+.concept-box { border-left: 4px solid var(--teal); background: #0d1f1f;
+               border-radius: 4px; padding: 1.2rem; margin-bottom: 1.2rem; }
+.concept-name { font-weight: bold; color: var(--teal); font-size: 1.05em; margin-bottom: 0.5rem; }
+.concept-field { margin: 0.3rem 0; }
+.concept-label { color: var(--muted); font-size: 0.85em; }
+.hypothesis { border-left: 4px solid var(--teal); background: #0d1f1f;
+              border-radius: 4px; padding: 1rem; margin: 1rem 0; }
+.recommendation { border-left: 4px solid var(--purple); background: #1a0f2e;
+                  border-radius: 4px; padding: 1rem; margin: 1rem 0; }
+.rq-row { background: rgba(88,166,255,0.05); border-left: 3px solid var(--accent);
+          padding: 0.4rem 0.8rem; margin-bottom: 0.5rem; border-radius: 0 4px 4px 0; }
+.scroll-table-wrap { max-height: 420px; overflow-y: auto; border: 1px solid var(--border);
+                     border-radius: 4px; }
+.scroll-table-wrap thead th { position: sticky; top: 0; background: #161b22; z-index: 1; }
+.page-nav { display: flex; justify-content: space-between; margin-top: 2rem;
+            padding-top: 1rem; border-top: 1px solid var(--border); gap: 1rem; }
+.page-nav a { color: var(--accent); font-size: 0.9em; }
+html.ko-active .en-only { display: none !important; }
+html.ko-active .ko-only { display: block !important; }
+.ko-only { display: none; }
+span.ko-only, span.en-only { display: inline; }
+html.ko-active span.en-only { display: none !important; }
+html.ko-active span.ko-only { display: inline !important; }
+.lang-btn { background: transparent; color: var(--muted); border: 1px solid var(--border);
+            border-radius: 4px; padding: 3px 9px; font-size: 0.8em; cursor: pointer; }
+.lang-btn.active { border-color: var(--teal); color: var(--teal); }
+@media (max-width: 1024px) { .bd-sidebar-secondary { display: none; } }
+@media (max-width: 768px) {
+  .bd-sidebar-primary { display: none; }
+  .bd-root { flex-direction: column; height: auto; overflow: visible; }
+  .bd-main { overflow: visible; }
+  .bd-article { overflow: visible; padding: 1rem; }
+  .stat-grid { grid-template-columns: repeat(2, 1fr); }
+  .sp-grid { grid-template-columns: 1fr; }
+}
+</style>
+<script>
+function toggleLanguage() {
+  const html = document.documentElement;
+  const isKo = html.classList.toggle('ko-active');
+  document.querySelectorAll('.lang-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.lang === (isKo ? 'ko' : 'en'));
+  });
+  localStorage.setItem('survey-lang', isKo ? 'ko' : 'en');
+}
+document.addEventListener('DOMContentLoaded', function() {
+  const saved = localStorage.getItem('survey-lang');
+  if (saved === 'ko') {
+    document.documentElement.classList.add('ko-active');
+    document.querySelectorAll('.lang-btn').forEach(b =>
+      b.classList.toggle('active', b.dataset.lang === 'ko'));
+  } else {
+    document.querySelectorAll('[data-lang="en"]').forEach(b => b.classList.add('active'));
+  }
+  const article = document.querySelector('.bd-article');
+  const sections = Array.from(document.querySelectorAll('.section-anchor[id]'));
+  const sideLinks = Array.from(document.querySelectorAll('.bd-sidebar-primary .sidebar-nav-link'));
+  const tocLinks = Array.from(document.querySelectorAll('.bd-sidebar-secondary .mini-toc a'));
+  if (!article || !sections.length) return;
+  function current() {
+    let id = sections[0].id;
+    const scrollTop = article.scrollTop + 60;
+    sections.forEach(function(s) { if (s.offsetTop <= scrollTop) id = s.id; });
+    return id;
+  }
+  function update() {
+    const id = current();
+    sideLinks.forEach(function(a) { a.classList.toggle('active', a.getAttribute('href') === '#' + id); });
+    tocLinks.forEach(function(a) { a.classList.toggle('toc-active', a.getAttribute('href') === '#' + id); });
+  }
+  article.addEventListener('scroll', update, { passive: true });
+  update();
+});
+</script>
+</head>
+<body>
+<div class="bd-root">
+  <nav class="bd-sidebar-primary">
+  <div class="sidebar-logo">
+    <a href="../index.html">&#x2b21; <span class="en-only">Dependency Extraction &amp; KB Construction Survey</span><span class="ko-only">의존성 추출 및 지식베이스 구축 문헌 조사</span></a>
+  </div>
+  <div class="sidebar-section en-only">Overview</div>
+  <div class="sidebar-section ko-only">개요</div>
+  <a href="../index.html#overview" class="sidebar-nav-link"><span class="en-only">Survey Hub</span><span class="ko-only">조사 허브</span></a>
+  <a href="../index.html#answers" class="sidebar-nav-link"><span class="en-only">Key Answers</span><span class="ko-only">핵심 답변</span></a>
+  <div class="sidebar-section en-only">Sub-Problems</div>
+  <div class="sidebar-section ko-only">세부 문제</div>
+  <a href="../sp1_citation_intent.html" class="sidebar-nav-link">SP1: <span class="en-only">Citation Intent</span><span class="ko-only">인용 의도</span></a>
+  <a href="../sp2_concept_relation_extraction.html" class="sidebar-nav-link active">SP2: <span class="en-only">Concept/Relation Extraction</span><span class="ko-only">개념·관계 추출</span></a>
+  <a href="../sp3_concept_prerequisite.html" class="sidebar-nav-link">SP3: <span class="en-only">Concept Prerequisite</span><span class="ko-only">개념 선행관계</span></a>
+  <a href="../sp4_entity_linking.html" class="sidebar-nav-link">SP4: <span class="en-only">Entity Linking</span><span class="ko-only">개체 링킹</span></a>
+  <a href="../sp5_related_work_novelty.html" class="sidebar-nav-link">SP5: <span class="en-only">Related Work / Novelty</span><span class="ko-only">관련연구·신규성</span></a>
+  <a href="../sp6_llm_agent_kg.html" class="sidebar-nav-link">SP6: <span class="en-only">LLM-Agent KG</span><span class="ko-only">LLM 에이전트 KG</span></a>
+  <a href="../sp7_ontology_alignment.html" class="sidebar-nav-link">SP7: <span class="en-only">Ontology Alignment</span><span class="ko-only">온톨로지 정렬</span></a>
+  <a href="../sp8_incremental_kg.html" class="sidebar-nav-link">SP8: <span class="en-only">Incremental KG</span><span class="ko-only">증분 KG</span></a>
+  <a href="../sp9_link_prediction_dag.html" class="sidebar-nav-link">SP9: <span class="en-only">DAG Link Prediction</span><span class="ko-only">DAG 링크 예측</span></a>
+  <div class="sidebar-section en-only">Synthesis</div>
+  <div class="sidebar-section ko-only">종합</div>
+  <a href="../conclusion.html" class="sidebar-nav-link"><span class="en-only">Conclusion</span><span class="ko-only">결론</span></a>
+  <a href="../thinking-process.html" class="sidebar-nav-link"><span class="en-only">Thinking Process</span><span class="ko-only">추론 과정</span></a>
+</nav>
+  <div class="bd-main">
+    <div class="article-header-bar">
+  <div class="header-brand"><a href="../index.html"><span class="en-only">Dependency Extraction &amp; KB Construction Survey</span><span class="ko-only">의존성 추출 및 지식베이스 구축 문헌 조사</span></a></div>
+  <nav class="breadcrumb"><a href="../index.html"><span class="en-only">Survey</span><span class="ko-only">조사</span></a><span>›</span><a href="../sp2_concept_relation_extraction.html">SP2</a><span>›</span><span>[28] Construction of the Literature Graph i</span></nav>
+  <button class="lang-btn" data-lang="en" onclick="toggleLanguage()">EN</button>
+  <button class="lang-btn" data-lang="ko" onclick="toggleLanguage()">KO</button>
+</div>
+    <div class="bd-article">
+      <section id="header" class="section-anchor">
+  <div class="paper-meta">
+    <h1 style="margin-bottom:0.3rem">Construction of the Literature Graph in Semantic Scholar</h1>
+    <p style="margin:0.3rem 0;color:var(--muted)">Ammar et al. · NAACL 2018 (Industry) · 2018 · <span class="en-only">440 citations</span><span class="ko-only">인용 440회</span></p>
+    <p style="margin:0.3rem 0"><a href="https://arxiv.org/abs/1805.02262" target="_blank">arXiv:1805.02262</a> · <a href="https://arxiv.org/pdf/1805.02262.pdf" target="_blank">PDF</a> · SP: <a href="../sp2_concept_relation_extraction.html">SP2</a></p>
+    <p><span class="pill pill-p0">P0</span><span class="pill" style="background:rgba(255,255,255,0.05);color:var(--muted)">Track C</span></p>
+  </div>
+</section><section id="problem" class="section-anchor"><div class="card"><div class="section-label en-only">Problem</div><div class="section-label ko-only">해결하려는 문제</div><div class="en-only"><p>Scientific search engines store papers as opaque documents, so researchers cannot answer structured questions ("percentage of female subjects in depression trials", "which co-authors worked on coreference"). Extracting structured data from scientific PDFs is hard because (a) papers often arrive with missing/no metadata, and (b) standard NLP formulations (NER on CoNLL/ACE) assume large in-domain labeled data and fixed entity-type sets that match at train/test — unrealistic across many scientific domains and at production scale.</p></div><div class="ko-only"><p>대규모 과학 문헌 그래프를 실서비스 규모로 구축하는 방법이 필요하였다.</p></div></div></section><section id="solution" class="section-anchor"><div class="card"><div class="section-label en-only">Solution / Contribution</div><div class="section-label ko-only">해결책 / 기여</div><div class="en-only"><p>Empirical/system contribution: reduce literature-graph construction to a pipeline of familiar NLP tasks, each addressing an unrealistic standard-benchmark assumption, deployed at Semantic Scholar scale.</p>
+<ol><li><strong>Structure</strong>: directed property graph with 4 node types (papers, authors, entities, entity mentions) and 5 edge types (citations, authorship, entity-linking, mention–mention relations, entity–entity relations). Property-graph (not RDF) chosen for richer internal node/edge structure.</li><li><strong>Metadata (§3)</strong>: ScienceParse BiLSTM+CRF over PDF-layout token features to recover title/authors/references from raw PDFs; trained on 1.4M PubMed Central PDFs with heuristic distant labeling (76% of docs successfully labeled).</li><li><strong>Entity extraction + linking (§4)</strong>: BILOU BiLSTM with fixed LM embeddings for mention spans (no type prediction), then a neural pair-scoring linker grounding mentions in UMLS (biomedical) and a CS-filtered DBpedia. Three approaches (statistical, hybrid rule-based, off-the-shelf TagMe/MetaMap Lite) are <strong>pooled</strong> in production because each catches entities the others miss.</li><li><strong>Open research problems (§5)</strong>: author disambiguation (supervised pairwise merge → incremental clustering), ontology matching, limited-KB-coverage via distant supervision for definitions/relations, figure/table extraction, citation understanding/prediction.</li></ol></div><div class="ko-only"><p>Semantic Scholar의 문헌 그래프를 개체 추출·링킹·관계 구성으로 대규모 구축한 배포 파이프라인을 기술하여 과학 KB 구성·유지의 참조 아키텍처를 제공한다.</p></div></div><div class="card"><div class="section-label en-only">Key Results</div><div class="section-label ko-only">주요 결과</div><ul><li>ScienceParse metadata (54K PubMed Central held-out, exact match): title F1 85.5, authors F1 92.1, bibliography titles 89.3, authors 97.0, venues 90.7, years 98.0 (Table 1).</li><li>Entity extraction (SemEval-2017 Task 10 dev): 49.9 F1 without LM → 54.1 with LM (+4.2) → 55.2 with 15-model ensemble (+1.1) (Table 3).</li><li>Entity linking (Bag-of-Concepts F1): CS 84.2 baseline → 84.6 neural; Bio 54.2 baseline → 85.8 neural (+31.6) (Table 4).</li><li>Extract/link approach tradeoff (500 papers, Table 2): statistical highest precision/lowest yield (CS 98.4 prec / 712 yield); hybrid highest yield lowest precision (CS 91.5 / 1990); pooling all approaches gives higher yield than any single one while keeping precision reasonable.</li><li>Deployed graph scale: &gt;280M nodes (37M papers, 12M authors, 0.4M entities, 237M mentions).</li></ul></div></section><section id="results" class="section-anchor"><details style="margin-top:0.6rem"><summary style="color:var(--muted);cursor:pointer"><span class="en-only">Concepts Introduced</span><span class="ko-only">도입된 개념</span></summary><div class="card" style="margin-top:0.5rem"><p><strong>Literature graph (heterogeneous property graph)</strong></p>
+<ul><li><strong>What it computes</strong>: input = corpus of scientific papers (PDFs + metadata) → operation = extract nodes (papers, authors, entities, entity mentions) and directed edges (citations, authorship, entity-linking, mention–mention relations, entity–entity relations) → output = a directed property graph (&gt;280M nodes; 37M papers, 12M authors, 0.4M entities, 237M mentions).</li><li><strong>Why it was created</strong>: existing scientific search engines cannot answer structured queries (e.g., "which co-authors published on coreference resolution?"); a symbolic graph enables algorithmic discovery over the literature.</li><li><strong>Concrete example</strong>: computing an author's Erdős number = shortest undirected path over edges labeled "authored" between that author and Paul Erdős.</li><li><strong>How it is used in this paper</strong>: the organizing framework; the whole paper reduces its construction to NLP subtasks (metadata extraction, entity extraction, entity linking, relation extraction). </li></ul>
+<p><strong>ScienceParse metadata extraction (BiLSTM+CRF over PDF tokens)</strong></p>
+<ul><li><strong>What it computes</strong>: input = PDF pages tokenized via PDFBox, each token carrying visual/positional features (font size, space width normalized -0.5..0.5, XY position, case features, page-number bucket) + GloVe word embedding → operation = 2-layer BiLSTM with label-bigram (CRF-style) layer, Viterbi decoding → output = paper title, authors, and structured references (title/authors/venue/year).</li><li><strong>Why it was created</strong>: many papers arrive with incomplete or no metadata (web-crawled); metadata must be recovered from raw PDF layout.</li><li><strong>Concrete example</strong>: title F1 = 85.5, authors F1 = 92.1, bibliography years F1 = 98.0 (Table 1). Failure mode: "Clinical review: Foo Bar" → extracts only "Foo Bar".</li><li><strong>How it is used in this paper</strong>: §3, populates paper nodes, author nodes, authorship + citation edges. </li></ul>
+<p><strong>Entity extraction + linking pipeline (statistical / hybrid / off-the-shelf pooled)</strong></p>
+<ul><li><strong>What it computes</strong>: input = paper title+abstract tokens → operation = BILOU sequence labeling (CNN char embeddings + GloVe + fixed bidirectional RNN-LM embeddings, 2-layer BiLSTM) to find mention spans (no entity typing), then a neural linker scores mention–candidate pairs against a curated KB → output = entity mentions grounded to KB entity IDs.</li><li><strong>Why it was created</strong>: standard NER assumes fixed entity types and matching train/test type sets — unrealistic across scientific domains; grounding in a curated KB avoids concept-typing and boosts user trust.</li><li><strong>Concrete example</strong>: entity extraction dev F1 rises 49.9 (no LM) → 54.1 (with LM) → 55.2 (ensemble of 15) on SemEval-2017 Task 10. Linking "ILP" → "Inductive_Logic_Programming" over distractors.</li><li><strong>How it is used in this paper</strong>: §4, populates the 237M mention nodes and entity-linking edges. </li></ul>
+<p>---</p></div></details><details style="margin-top:0.6rem"><summary style="color:var(--muted);cursor:pointer"><span class="en-only">5Cs Analysis</span><span class="ko-only">5Cs 분석</span></summary><div class="card" style="margin-top:0.5rem"><p><strong>Category</strong>: system / engineering (deployed production pipeline with empirical evaluations per component) <strong>Context</strong>: builds on neural sequence tagging (Lample 2016; Collobert 2011), semi-supervised LM embeddings (Peters 2017; Ammar 2017 — precursor to ELMo), distant supervision (Mintz 2009), entity linking (Ling 2015; Bhagavatula 2015). Directly relevant SP2 neighbors: relation-extraction and KB-construction papers in this survey. <strong>Correctness</strong>: per-task evaluations with precision/recall/F1 and human CrowdFlower annotation (3+ annotator agreement). Reports "yield" instead of recall — honestly flags that true recall is unmeasurable at scale. No CIs/error bars. Relation-extraction models omitted "due to space constraints", so that edge type is unvalidated here. <strong>Contributions</strong>: (1) a reference architecture for scientific KB construction as pooled NLP subtasks; (2) ScienceParse layout-aware metadata extraction; (3) KB-grounded entity extraction/linking that drops the fixed-entity-type assumption. <strong>Clarity</strong>: architecture and features described concretely (reproducible for metadata + entity models); linking model equations given. But relation extraction and exact pooling/merge thresholds are underspecified.</p></div></details><details style="margin-top:0.6rem"><summary style="color:var(--muted);cursor:pointer"><span class="en-only">Contribution vs. Claim</span><span class="ko-only">기여 대 주장</span></summary><div class="card" style="margin-top:0.5rem"><p></p>
+<ul><li><strong>Stated claims</strong>: a scalable deployed system organizing 280M+ nodes; reduces graph construction to familiar NLP tasks while fixing their impractical benchmark assumptions.</li><li><strong>Demonstrated</strong>: strong component-level metrics for metadata extraction and entity extraction/linking on held-out academic benchmarks; honest per-approach precision/yield tradeoffs.</li><li><strong>Gap</strong>: relation extraction models (mention–mention, entity–entity edges) are explicitly not described or evaluated here, yet those edges are part of the graph structure — the "relation construction" implied by the abstract is unvalidated in this paper. Author disambiguation, ontology matching, and KB-coverage models are described as active work, not evaluated. "Yield" substitutes for recall, so end-to-end coverage of the graph is not quantified.</li></ul></div></details><details style="margin-top:0.6rem"><summary style="color:var(--muted);cursor:pointer"><span class="en-only">Implementation Feasibility</span><span class="ko-only">구현 실현가능성</span></summary><div class="card" style="margin-top:0.5rem"><ul><li><strong>Needs</strong>: PDF token features (Apache PDFBox), GloVe embeddings, BiLSTM+CRF sequence taggers, RNN-LM embeddings, curated KBs (UMLS license, DBpedia), CrowdFlower-style annotation for eval, large training corpora (1.4M PubMed Central PDFs).</li><li><strong>Code</strong>: available — ScienceParse (github.com/allenai/science-parse), deepfigures-open, citeomatic; corpus metadata at labs.semanticscholar.org/corpus. </li><li><strong>Modifications</strong>: for SP2 dependency extraction we would need the (absent) relation-extraction component; extend from title+abstract to full text; adapt KB grounding to the target domain's ontology.</li><li><strong>Unknowns</strong>: missing link: relation-extraction model architecture and its evaluation; missing link: exact pooling and author-merge thresholds.</li></ul></div></details><details style="margin-top:0.6rem"><summary style="color:var(--muted);cursor:pointer"><span class="en-only">Follow-up Papers</span><span class="ko-only">관련 후속 논문</span></summary><div class="card" style="margin-top:0.5rem"><ul><li>Peters et al. 2017, "Semi-supervised sequence tagging with bidirectional LMs" (ACL) — the LM-embedding technique that gives +4.2 F1 here; ELMo precursor.</li><li>Bhagavatula et al. 2018, "Content-based citation recommendation" (NAACL) — cite-prediction over the graph's citation edges.</li><li>Siegel et al. 2018, "Extracting scientific figures with distantly supervised neural networks" (JCDL) — figure/table extraction subtask.</li><li>Valenzuela et al. 2015, "Identifying meaningful citations" (AAAI Workshop) — important-vs-incidental citation classification, enriching citation edges.</li></ul></div></details></section><section id="delta" class="section-anchor"><div class="card"><div class="section-label en-only">Condition Delta — transfer to our setting</div><div class="section-label ko-only">조건 차이 — 우리 환경으로의 전이</div><p><strong>Paper's setting</strong>: inputs = scientific-paper PDFs + partial publisher metadata; outputs = a heterogeneous property graph; conditions = production scale (280M nodes), CS + biomedical domains, curated KBs (UMLS, DBpedia) as grounding targets, English scientific text, title+abstract only for entities. <strong>Our setting</strong>: dependency extraction and KB construction (SP2) — extracting structured dependencies/relations among scientific concepts and building/maintaining a KB from literature. <strong>Differences</strong>:</p>
+<ul><li>Relation/dependency extraction: <strong>missing link</strong> — the paper omits its relation-extraction models entirely, which is exactly SP2's core interest; only node/citation backbone is validated.</li><li>Full-text vs. title+abstract: reference only — paper restricts entity extraction to title+abstract for salience; dependency extraction may need full text.</li><li>KB grounding to fixed curated ontologies (UMLS/DBpedia): resolved/reference — shows a working pattern for grounding, but flags KB coverage gap for novel scientific concepts (distant-supervision remedy proposed, not evaluated).</li><li>Deployed scale + pooling of heterogeneous extractors: resolved/pattern reusable — pooling multiple extractors to raise yield is a directly transferable design decision.</li><li>Domain scope (CS/Bio only, no physics/affiliations): reference only — coverage limits acknowledged.</li></ul></div></section>
+      <div class="page-nav"><a href="27_MiwaBansal.html">← [27] MiwaBansal</a><a href="../sp2_concept_relation_extraction.html">↑ SP2</a><a href="29_GraphLSTM.html">[29] GraphLSTM →</a></div>
+    </div>
+  </div>
+  <nav class="bd-sidebar-secondary">
+    <div class="mini-toc-label en-only">On this page</div>
+    <div class="mini-toc-label ko-only">이 페이지</div>
+    <ul class="mini-toc">
+      <li><a href="#header"><span class="en-only">Paper info</span><span class="ko-only">논문 정보</span></a></li>
+      <li><a href="#problem"><span class="en-only">Problem</span><span class="ko-only">문제</span></a></li>
+      <li><a href="#solution"><span class="en-only">Solution</span><span class="ko-only">해결책</span></a></li>
+      <li><a href="#results"><span class="en-only">Concepts &amp; Analysis</span><span class="ko-only">개념·분석</span></a></li>
+      <li><a href="#delta"><span class="en-only">Condition Delta</span><span class="ko-only">조건 차이</span></a></li>
+    </ul>
+  </nav>
+</div>
+</body>
+</html>

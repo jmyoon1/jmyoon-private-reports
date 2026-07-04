@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>[2] Automatic classification of citation function — Dependency Extraction &amp; KB Construction Survey</title>
+<style>
+:root {
+  --bg: #0d1117; --card: #161b22; --border: #30363d;
+  --text: #e6edf3; --muted: #7d8590; --accent: #58a6ff;
+  --teal: #39d0c7; --green: #3fb950; --yellow: #d29922;
+  --red: #f85149; --purple: #bc8cff; --orange: #e3b341;
+  --sidebar-w: 262px; --toc-w: 210px; --hdr-h: 48px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+body { font-family: -apple-system, sans-serif; background: var(--bg);
+       color: var(--text); line-height: 1.6; }
+.bd-root { display: flex; height: 100vh; overflow: hidden; }
+.bd-sidebar-primary {
+  width: var(--sidebar-w); min-width: var(--sidebar-w);
+  overflow-y: auto; background: var(--card);
+  border-right: 1px solid var(--border);
+  padding: 0.75rem 0; flex-shrink: 0;
+}
+.bd-sidebar-primary::-webkit-scrollbar { width: 4px; }
+.bd-sidebar-primary::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+.bd-main { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-width: 0; }
+.article-header-bar {
+  height: var(--hdr-h); background: var(--card);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; padding: 0 1.5rem;
+  gap: 1rem; flex-shrink: 0;
+}
+.header-brand { color: var(--teal); font-weight: bold; font-size: 0.95em;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 1; }
+.header-brand a { color: inherit; text-decoration: none; }
+.breadcrumb { color: var(--muted); font-size: 0.82em; display: flex;
+  align-items: center; gap: 0.3rem; flex-shrink: 0; }
+.breadcrumb a { color: var(--accent); text-decoration: none; }
+.breadcrumb span { color: var(--border); }
+.bd-article { flex: 1; overflow-y: auto; padding: 2rem 2.5rem; }
+.bd-article::-webkit-scrollbar { width: 6px; }
+.bd-article::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+.bd-sidebar-secondary {
+  width: var(--toc-w); min-width: var(--toc-w);
+  overflow-y: auto; border-left: 1px solid var(--border);
+  padding: 1rem 0.75rem; flex-shrink: 0;
+}
+.bd-sidebar-secondary::-webkit-scrollbar { width: 4px; }
+.bd-sidebar-secondary::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+.sidebar-logo { padding: 0.5rem 1rem 0.75rem;
+  border-bottom: 1px solid var(--border); margin-bottom: 0.5rem; }
+.sidebar-logo a { color: var(--teal); font-weight: bold; font-size: 0.95em;
+  text-decoration: none; display: block; }
+.sidebar-section { color: var(--muted); font-size: 0.72em; font-weight: bold;
+  text-transform: uppercase; letter-spacing: 0.07em;
+  padding: 0.7rem 1rem 0.25rem; }
+.sidebar-nav-link { display: block; padding: 0.28rem 1rem 0.28rem 1.25rem;
+  color: var(--muted); font-size: 0.875em; text-decoration: none; }
+.sidebar-nav-link:hover { color: var(--text); background: rgba(255,255,255,0.03); }
+.sidebar-nav-link.active { color: var(--teal);
+  border-left: 2px solid var(--teal);
+  padding-left: calc(1.25rem - 2px); background: rgba(57,208,199,0.05); }
+.mini-toc-label { color: var(--muted); font-size: 0.72em; font-weight: bold;
+  text-transform: uppercase; letter-spacing: 0.07em; padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border); margin-bottom: 0.5rem; }
+.mini-toc { list-style: none; }
+.mini-toc li a { display: block; padding: 0.22rem 0;
+  color: var(--muted); font-size: 0.83em; text-decoration: none;
+  border-left: 2px solid transparent; padding-left: 0.5rem; }
+.mini-toc li a:hover { color: var(--text); }
+.mini-toc li a.toc-active { color: var(--teal); border-left-color: var(--teal); }
+.section-anchor { scroll-margin-top: calc(var(--hdr-h) + 8px); }
+h1 { color: var(--teal); font-size: 1.7em; margin-bottom: 0.5rem; }
+h2 { color: var(--teal); font-size: 1.25em; margin: 1.5rem 0 0.6rem; }
+h3 { color: var(--teal); font-size: 1.05em; margin: 1.2rem 0 0.4rem; }
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+p { margin-bottom: 0.8rem; }
+.card { background: var(--card); border: 1px solid var(--border);
+        border-radius: 8px; padding: 1.2rem; margin-bottom: 1rem; }
+table { width: 100%; border-collapse: collapse; font-size: 0.9em; }
+th { background: var(--card); color: var(--teal); padding: 8px;
+     border: 1px solid var(--border); text-align: left; }
+td { padding: 8px; border: 1px solid var(--border); vertical-align: top; }
+tr:nth-child(even) td { background: rgba(0,0,0,0.2); }
+.stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+             gap: 1rem; margin-bottom: 1.5rem; }
+.stat-box { background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+            padding: 1rem; text-align: center; }
+.stat-num { font-size: 2rem; font-weight: bold; color: var(--teal); }
+.stat-label { color: var(--muted); font-size: 0.85em; margin-top: 0.2rem; }
+.sp-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+           gap: 1rem; margin: 1rem 0; }
+.sp-card { background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+           padding: 1.2rem; cursor: pointer; transition: border-color 0.15s; }
+.sp-card:hover { border-color: var(--teal); }
+.sp-card h3 { margin: 0 0 0.5rem; color: var(--teal); font-size: 1em; }
+.sp-card p { margin: 0; color: var(--muted); font-size: 0.88em; }
+.sp-badge { display: inline-block; background: rgba(57,208,199,0.1); color: var(--teal);
+            border-radius: 4px; padding: 2px 8px; font-size: 0.8em; margin-bottom: 0.5rem; }
+.paper-meta { color: var(--muted); font-size: 0.9em; margin-bottom: 1.5rem; }
+.paper-meta a { color: var(--accent); }
+.section-label { color: var(--teal); font-weight: bold; font-size: 0.85em;
+                 text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.4rem; }
+.pill { display: inline-block; border-radius: 4px; padding: 0.15rem 0.6rem;
+        font-size: 0.8em; font-weight: bold; margin-right: 0.4rem; }
+.pill-p0 { background: rgba(63,185,80,0.2); color: var(--green); }
+.pill-p1 { background: rgba(57,208,199,0.15); color: var(--teal); }
+.pill-p2 { background: rgba(210,153,34,0.2); color: var(--yellow); }
+.pill-p4 { background: rgba(125,133,144,0.2); color: var(--muted); }
+.pill-tool { background: rgba(188,140,255,0.2); color: var(--purple); }
+.delta-row { margin: 0.4rem 0; padding: 0.4rem 0.8rem;
+             border-left: 3px solid var(--border); border-radius: 0 4px 4px 0; }
+.delta-resolved { border-left-color: var(--green); }
+.delta-missing  { border-left-color: var(--yellow); }
+.delta-ref      { border-left-color: var(--muted); }
+.chain { position: relative; padding-left: 2rem; }
+.chain::before { content: ''; position: absolute; left: 0.95rem; top: 0;
+                 bottom: 0; width: 2px; background: var(--border); }
+.chain-node { position: relative; margin-bottom: 2rem; }
+.chain-node::before { content: ''; position: absolute; left: -1.55rem;
+                      top: 1.1rem; width: 12px; height: 12px;
+                      border-radius: 50%; background: var(--teal); }
+.chain-num { display: inline-block; width: 28px; height: 28px; background: var(--teal);
+             color: #000; border-radius: 50%; text-align: center; line-height: 28px;
+             font-weight: bold; font-size: 0.85em; margin-right: 0.6rem; flex-shrink: 0; }
+.chain-q { font-weight: bold; color: var(--text); margin: 0.4rem 0 0.3rem; font-size: 1em; }
+.chain-papers { color: var(--muted); font-size: 0.85em; margin-bottom: 0.6rem; }
+.chain-start { background: var(--card); border: 1px solid var(--teal);
+               border-radius: 8px; padding: 1rem; margin-bottom: 2rem; }
+.chain-start h3 { margin: 0 0 0.5rem; color: var(--teal); }
+.chain-converge { background: var(--card); border: 1px solid var(--green);
+                  border-radius: 8px; padding: 1rem; margin-top: 1rem; }
+.chain-converge h3 { margin: 0 0 0.5rem; color: var(--green); }
+.chain-label { display: inline-block; border-radius: 4px; padding: 0.15rem 0.6rem;
+               font-size: 0.8em; font-weight: bold; margin-right: 0.4rem; }
+.chain-status { border-radius: 0 4px 4px 0; padding: 0.5rem 0.8rem;
+                margin: 0.35rem 0; font-size: 0.88em; }
+.chain-status ul { margin: 0.3rem 0 0 1.2rem; padding: 0; }
+.chain-status li { margin-bottom: 0.25rem; }
+.chain-status.solved  { background: rgba(63,185,80,0.07);  border-left: 3px solid var(--green); }
+.chain-status.remains { background: rgba(210,153,34,0.07); border-left: 3px solid var(--yellow); }
+.chain-status.added   { background: rgba(248,81,73,0.07);  border-left: 3px solid var(--red); }
+.chain-status.pivoted { background: rgba(188,140,255,0.1); border-left: 3px solid var(--purple); }
+.chain-label.solved   { background: rgba(63,185,80,0.2);  color: var(--green); }
+.chain-label.remains  { background: rgba(210,153,34,0.2); color: var(--yellow); }
+.chain-label.added    { background: rgba(248,81,73,0.2);  color: var(--red); }
+.chain-label.pivoted  { background: rgba(188,140,255,0.2); color: var(--purple); }
+.chain-status.expected { background: rgba(88,166,255,0.07);  border-left: 3px solid var(--accent); }
+.chain-label.expected  { background: rgba(88,166,255,0.2);   color: var(--accent); }
+.chain-status.revised  { background: rgba(57,208,199,0.07);  border-left: 3px solid var(--teal); }
+.chain-label.revised   { background: rgba(57,208,199,0.2);   color: var(--teal); }
+.concept-box { border-left: 4px solid var(--teal); background: #0d1f1f;
+               border-radius: 4px; padding: 1.2rem; margin-bottom: 1.2rem; }
+.concept-name { font-weight: bold; color: var(--teal); font-size: 1.05em; margin-bottom: 0.5rem; }
+.concept-field { margin: 0.3rem 0; }
+.concept-label { color: var(--muted); font-size: 0.85em; }
+.hypothesis { border-left: 4px solid var(--teal); background: #0d1f1f;
+              border-radius: 4px; padding: 1rem; margin: 1rem 0; }
+.recommendation { border-left: 4px solid var(--purple); background: #1a0f2e;
+                  border-radius: 4px; padding: 1rem; margin: 1rem 0; }
+.rq-row { background: rgba(88,166,255,0.05); border-left: 3px solid var(--accent);
+          padding: 0.4rem 0.8rem; margin-bottom: 0.5rem; border-radius: 0 4px 4px 0; }
+.scroll-table-wrap { max-height: 420px; overflow-y: auto; border: 1px solid var(--border);
+                     border-radius: 4px; }
+.scroll-table-wrap thead th { position: sticky; top: 0; background: #161b22; z-index: 1; }
+.page-nav { display: flex; justify-content: space-between; margin-top: 2rem;
+            padding-top: 1rem; border-top: 1px solid var(--border); gap: 1rem; }
+.page-nav a { color: var(--accent); font-size: 0.9em; }
+html.ko-active .en-only { display: none !important; }
+html.ko-active .ko-only { display: block !important; }
+.ko-only { display: none; }
+span.ko-only, span.en-only { display: inline; }
+html.ko-active span.en-only { display: none !important; }
+html.ko-active span.ko-only { display: inline !important; }
+.lang-btn { background: transparent; color: var(--muted); border: 1px solid var(--border);
+            border-radius: 4px; padding: 3px 9px; font-size: 0.8em; cursor: pointer; }
+.lang-btn.active { border-color: var(--teal); color: var(--teal); }
+@media (max-width: 1024px) { .bd-sidebar-secondary { display: none; } }
+@media (max-width: 768px) {
+  .bd-sidebar-primary { display: none; }
+  .bd-root { flex-direction: column; height: auto; overflow: visible; }
+  .bd-main { overflow: visible; }
+  .bd-article { overflow: visible; padding: 1rem; }
+  .stat-grid { grid-template-columns: repeat(2, 1fr); }
+  .sp-grid { grid-template-columns: 1fr; }
+}
+</style>
+<script>
+function toggleLanguage() {
+  const html = document.documentElement;
+  const isKo = html.classList.toggle('ko-active');
+  document.querySelectorAll('.lang-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.lang === (isKo ? 'ko' : 'en'));
+  });
+  localStorage.setItem('survey-lang', isKo ? 'ko' : 'en');
+}
+document.addEventListener('DOMContentLoaded', function() {
+  const saved = localStorage.getItem('survey-lang');
+  if (saved === 'ko') {
+    document.documentElement.classList.add('ko-active');
+    document.querySelectorAll('.lang-btn').forEach(b =>
+      b.classList.toggle('active', b.dataset.lang === 'ko'));
+  } else {
+    document.querySelectorAll('[data-lang="en"]').forEach(b => b.classList.add('active'));
+  }
+  const article = document.querySelector('.bd-article');
+  const sections = Array.from(document.querySelectorAll('.section-anchor[id]'));
+  const sideLinks = Array.from(document.querySelectorAll('.bd-sidebar-primary .sidebar-nav-link'));
+  const tocLinks = Array.from(document.querySelectorAll('.bd-sidebar-secondary .mini-toc a'));
+  if (!article || !sections.length) return;
+  function current() {
+    let id = sections[0].id;
+    const scrollTop = article.scrollTop + 60;
+    sections.forEach(function(s) { if (s.offsetTop <= scrollTop) id = s.id; });
+    return id;
+  }
+  function update() {
+    const id = current();
+    sideLinks.forEach(function(a) { a.classList.toggle('active', a.getAttribute('href') === '#' + id); });
+    tocLinks.forEach(function(a) { a.classList.toggle('toc-active', a.getAttribute('href') === '#' + id); });
+  }
+  article.addEventListener('scroll', update, { passive: true });
+  update();
+});
+</script>
+</head>
+<body>
+<div class="bd-root">
+  <nav class="bd-sidebar-primary">
+  <div class="sidebar-logo">
+    <a href="../index.html">&#x2b21; <span class="en-only">Dependency Extraction &amp; KB Construction Survey</span><span class="ko-only">의존성 추출 및 지식베이스 구축 문헌 조사</span></a>
+  </div>
+  <div class="sidebar-section en-only">Overview</div>
+  <div class="sidebar-section ko-only">개요</div>
+  <a href="../index.html#overview" class="sidebar-nav-link"><span class="en-only">Survey Hub</span><span class="ko-only">조사 허브</span></a>
+  <a href="../index.html#answers" class="sidebar-nav-link"><span class="en-only">Key Answers</span><span class="ko-only">핵심 답변</span></a>
+  <div class="sidebar-section en-only">Sub-Problems</div>
+  <div class="sidebar-section ko-only">세부 문제</div>
+  <a href="../sp1_citation_intent.html" class="sidebar-nav-link active">SP1: <span class="en-only">Citation Intent</span><span class="ko-only">인용 의도</span></a>
+  <a href="../sp2_concept_relation_extraction.html" class="sidebar-nav-link">SP2: <span class="en-only">Concept/Relation Extraction</span><span class="ko-only">개념·관계 추출</span></a>
+  <a href="../sp3_concept_prerequisite.html" class="sidebar-nav-link">SP3: <span class="en-only">Concept Prerequisite</span><span class="ko-only">개념 선행관계</span></a>
+  <a href="../sp4_entity_linking.html" class="sidebar-nav-link">SP4: <span class="en-only">Entity Linking</span><span class="ko-only">개체 링킹</span></a>
+  <a href="../sp5_related_work_novelty.html" class="sidebar-nav-link">SP5: <span class="en-only">Related Work / Novelty</span><span class="ko-only">관련연구·신규성</span></a>
+  <a href="../sp6_llm_agent_kg.html" class="sidebar-nav-link">SP6: <span class="en-only">LLM-Agent KG</span><span class="ko-only">LLM 에이전트 KG</span></a>
+  <a href="../sp7_ontology_alignment.html" class="sidebar-nav-link">SP7: <span class="en-only">Ontology Alignment</span><span class="ko-only">온톨로지 정렬</span></a>
+  <a href="../sp8_incremental_kg.html" class="sidebar-nav-link">SP8: <span class="en-only">Incremental KG</span><span class="ko-only">증분 KG</span></a>
+  <a href="../sp9_link_prediction_dag.html" class="sidebar-nav-link">SP9: <span class="en-only">DAG Link Prediction</span><span class="ko-only">DAG 링크 예측</span></a>
+  <div class="sidebar-section en-only">Synthesis</div>
+  <div class="sidebar-section ko-only">종합</div>
+  <a href="../conclusion.html" class="sidebar-nav-link"><span class="en-only">Conclusion</span><span class="ko-only">결론</span></a>
+  <a href="../thinking-process.html" class="sidebar-nav-link"><span class="en-only">Thinking Process</span><span class="ko-only">추론 과정</span></a>
+</nav>
+  <div class="bd-main">
+    <div class="article-header-bar">
+  <div class="header-brand"><a href="../index.html"><span class="en-only">Dependency Extraction &amp; KB Construction Survey</span><span class="ko-only">의존성 추출 및 지식베이스 구축 문헌 조사</span></a></div>
+  <nav class="breadcrumb"><a href="../index.html"><span class="en-only">Survey</span><span class="ko-only">조사</span></a><span>›</span><a href="../sp1_citation_intent.html">SP1</a><span>›</span><span>[2] Automatic classification of citation f</span></nav>
+  <button class="lang-btn" data-lang="en" onclick="toggleLanguage()">EN</button>
+  <button class="lang-btn" data-lang="ko" onclick="toggleLanguage()">KO</button>
+</div>
+    <div class="bd-article">
+      <section id="header" class="section-anchor">
+  <div class="paper-meta">
+    <h1 style="margin-bottom:0.3rem">Automatic classification of citation function</h1>
+    <p style="margin:0.3rem 0;color:var(--muted)">Teufel et al. · EMNLP 2006 · 2006 · <span class="en-only">512 citations</span><span class="ko-only">인용 512회</span></p>
+    <p style="margin:0.3rem 0">SP: <a href="../sp1_citation_intent.html">SP1</a></p>
+    <p><span class="pill pill-p0">P0</span><span class="pill" style="background:rgba(255,255,255,0.05);color:var(--muted)">Track C</span></p>
+  </div>
+</section><section id="problem" class="section-anchor"><div class="card"><div class="section-label en-only">Problem</div><div class="section-label ko-only">해결하려는 문제</div><div class="en-only"><p>Bibliometric impact metrics (and early automatic citation indexers like CiteSeer/ISI) count citations as undifferentiated links, ignoring <em>why</em> a paper is cited — whether it is criticised, used, extended, or merely mentioned in passing. Prior citation-motivation schemes from discourse studies were (a) never validated for inter-annotator reliability, (b) applied only to a few hundred citations by hand, and (c) never automated. There was no reliable, reproducible, machine-applicable scheme for the rhetorical function of a citation.</p></div><div class="ko-only"><p>인용을 단순 카운트로 취급하면 저자가 특정 논문을 왜 인용했는지를 구분하지 못하며, 실질적 방법 의존과 형식적 언급을 나눌 수 없다.</p></div></div></section><section id="solution" class="section-anchor"><div class="card"><div class="section-label en-only">Solution / Contribution</div><div class="section-label ko-only">해결책 / 기여</div><div class="en-only"><p>Two-part contribution (empirical + system):</p>
+<ol><li><strong>A 12-category annotation scheme</strong> for citation function, adapted from Spiegel-Rüsing (1977), with 25-page / ~150-rule guidelines, a decision tree, and a rule that only <em>explicitly signalled</em> functions may be tagged (annotator must cite textual evidence). Shown reliably annotatable.</li><li><strong>A supervised classifier</strong> (memory-based learning, Weka IBk, k=3, 10-fold CV) using shallow + linguistically-inspired features: cue-phrase grammar (1762 phrases), annotator-contributed cues (892), agent/action recognisers, plus verb tense/voice and sentence-location features. </li></ol></div><div class="ko-only"><p>인용 function(저자의 인용 이유)을 정의하고 12개 범주의 수사적 주석 체계와 최초의 자동 분류기를 제시하여, 이후 citation function 연구의 어휘 표준을 확립한다.</p></div></div><div class="card"><div class="section-label en-only">Key Results</div><div class="section-label ko-only">주요 결과</div><ul><li>Human inter-annotator agreement: <strong>κ = 0.72</strong> (n=12, N=548, k=3) on the full 12-category scheme.</li><li>Automatic classification (IBk, 10-fold CV): <strong>κ = 0.57, accuracy = 0.77</strong> on the full 12-way scheme.</li><li>Collapsed 3-way (Weak / Positive / Neutral): <strong>κ = 0.58, accuracy = 0.83</strong>; precision &gt; 0.75 for all top-level categories.</li><li>Category distribution is strongly skewed: <code>Neut</code> 62.7%, usage categories (<code>PUse</code>+<code>PModi</code>+<code>PBas</code>) 18.9%, clearly negative only 4.1%.</li><li>Strong empirical relationship found between citation function and sentiment classification.</li></ul></div></section><section id="results" class="section-anchor"><details style="margin-top:0.6rem"><summary style="color:var(--muted);cursor:pointer"><span class="en-only">Concepts Introduced</span><span class="ko-only">도입된 개념</span></summary><div class="card" style="margin-top:0.5rem"><p><strong>Citation function</strong></p>
+<ul><li><strong>What it computes</strong>: input = a citation instance in running text (formal citation or a cited author's name outside a formal citation) → assign exactly one of 12 rhetorical categories describing the author's <em>reason</em> for citing → output = a single categorical label per citation.</li><li><strong>Why it was created</strong>: purely quantitative citation counting treats all citations equally, but many are "politeness, policy or piety" (perfunctory) rather than substantive; prior sociology-of-science schemes were never cross-validated with independent annotators and never automated.</li><li><strong>Concrete example</strong>: category <code>PUse</code> = "author uses cited work's tools/algorithms/data/definitions"; <code>Weak</code> = "weakness of cited approach"; <code>CoCoXY</code> = "contrast between two <em>other</em> cited methods".</li><li><strong>How it is used in this paper</strong>: it is the target label space for both the human annotation study (κ agreement) and the supervised classifier.</li></ul>
+<p><strong>The 12-category annotation scheme (Teufel scheme)</strong> </p>
+<ul><li><strong>What it computes</strong>: a flat 12-way tagset organized under a top-level 4-way distinction — Weakness (<code>Weak</code>); Contrast/comparison (<code>CoCoGM</code>, <code>CoCo-</code>, <code>CoCoR0</code>, <code>CoCoXY</code>); Positive/agreement/usage (<code>PBas</code>, <code>PUse</code>, <code>PModi</code>, <code>PMot</code>, <code>PSim</code>, <code>PSup</code>); and Neutral (<code>Neut</code>).</li><li><strong>Why it was created</strong>: adapted from Spiegel-Rüsing (1977), redefined to be reliably annotatable (avoids sociological distinctions like "paying homage to pioneers" that need deep field knowledge) while staying informative for citation-indexing / bibliometric applications.</li><li><strong>Concrete example</strong>: distribution is highly skewed — <code>Neut</code> = 62.7%, <code>PUse</code> = 15.8%, negative categories (<code>Weak</code>+<code>CoCo-</code>) only 4.1%.</li><li><strong>How it is used in this paper</strong>: it is the "vocabulary standard" the SP builds on; each citation gets exactly one tag, annotators must point to explicit textual evidence.</li></ul>
+<p><strong>Meta-discourse cue phrases / agent–action model</strong> </p>
+<ul><li><strong>What it computes</strong>: input = sentence → finite grammar of 1762 cue phrases + 185 POS patterns for 2 agent types (self vs. others) + 20 verb "action" clusters → feature vector signalling rhetorical intent.</li><li><strong>Why it was created</strong>: citation function is signalled by <em>how</em> research is talked about (meta-discourse) rather than object-level content; shallow bag-of-words misses this.</li><li><strong>Concrete example</strong>: continuation-of-ideas verb cluster ("adopt, be based on, be inspired by, build on…") co-occurs with <code>PBas</code>; failing verbs ("be limited to, be incapable of…") signal <code>Weak</code>.</li><li><strong>How it is used in this paper</strong>: primary linguistically-inspired feature family fed to the memory-based (IBk) classifier.</li></ul>
+<p>---</p></div></details><details style="margin-top:0.6rem"><summary style="color:var(--muted);cursor:pointer"><span class="en-only">5Cs Analysis</span><span class="ko-only">5Cs 분석</span></summary><div class="card" style="margin-top:0.5rem"><p><strong>Category</strong>: benchmark/annotation-scheme + system (new task definition + supervised baseline) <strong>Context</strong>: builds on Spiegel-Rüsing (1977), Moravcsik &amp; Murugesan (1975), and the author's own Argumentative Zoning work (Teufel &amp; Moens 2002); corpus = 360 CL conference papers from the cmp-lg archive. Foundational upstream node for SP1 (citation-function classification lineage → ACL-ARC / Jurgens 2018, ref 3). <strong>Correctness</strong>: reports κ with n/N/k specified; human κ=.72 vs. chance-corrected machine κ — statistically careful (uses Macro-F + Kappa precisely because accuracy over-rewards the dominant <code>Neut</code> class).  <strong>Contributions</strong>: (1) reliable citation-function scheme; (2) first automatic classifier for it; (3) empirical link between citation function and sentiment classification. <strong>Clarity</strong>: scheme defined at category level in-text; full reproducibility needs the 25-page guideline document (not in paper). Feature engineering is manual and partly proprietary to the group's toolchain. </p></div></details><details style="margin-top:0.6rem"><summary style="color:var(--muted);cursor:pointer"><span class="en-only">Contribution vs. Claim</span><span class="ko-only">기여 대 주장</span></summary><div class="card" style="margin-top:0.5rem"><p> Abstract claims the scheme is "reliable" and that supervised ML can "replicate human annotation." Demonstrated: κ=.72 human reliability and κ=.57/.77 machine on one CL corpus (360 papers, one language/domain). Gap to check in deep read: generalization beyond computational-linguistics text is asserted by the application framing (citation indexing broadly) but only evaluated on the cmp-lg corpus; per-category performance on rare classes (Macro-F) is the weak point and needs the results tables to assess.</p></div></details><details style="margin-top:0.6rem"><summary style="color:var(--muted);cursor:pointer"><span class="en-only">Implementation Feasibility</span><span class="ko-only">구현 실현가능성</span></summary><div class="card" style="margin-top:0.5rem"><ul><li><strong>Needs</strong>: full-text papers with parsed citations (citation processor, ~94% recognition), a POS tagger, the cue-phrase grammar + verb clusters, Weka (IBk). Annotation requires the 25-page guideline document.</li><li><strong>Code</strong>: not available (2006; group-internal toolchain). PDF obtained from ACL Anthology (W06-1613); no arXiv, no S2 open-access PDF — <strong>access limited to the ACL Anthology PDF, read in skim mode (pages 1–5 + results grep)</strong>.</li><li><strong>Modifications</strong>: for our KB setting, replace hand-engineered features with modern encoders and map the 12 categories onto KB relation types; validate cross-domain.</li><li><strong>Unknowns</strong>: <code>missing link:</code> full per-category Macro-F numbers and the complete feature ablation (need the results tables, §4–5, in a deep read); the exact 25-page annotation guideline rules.</li></ul></div></details><details style="margin-top:0.6rem"><summary style="color:var(--muted);cursor:pointer"><span class="en-only">Follow-up Papers</span><span class="ko-only">관련 후속 논문</span></summary><div class="card" style="margin-top:0.5rem"><ul><li><em>Measuring the Evolution of a Scientific Field through Citation Frames</em> (Jurgens et al., 2018 — ACL-ARC, ref 3) — directly extends this line into a modern citation-function/frame corpus and classifier; core SP1 successor.</li><li><em>The ACL Anthology Network / citation-context corpora</em> — provide the scaled data this scheme was designed to be applied over.</li></ul></div></details></section><section id="delta" class="section-anchor"><div class="card"><div class="section-label en-only">Condition Delta — transfer to our setting</div><div class="section-label ko-only">조건 차이 — 우리 환경으로의 전이</div><p><strong>Paper's setting</strong>: inputs = citations in full-text CL conference papers (XML-converted, citation-parsed); outputs = one of 12 rhetorical function labels per citation; conditions = supervised, English, single narrow domain (computational linguistics), hand-engineered cue/agent/verb features, memory-based learner. <strong>Our setting</strong> (SP1, dependency extraction for KB construction): inputs = scientific-paper citation contexts; outputs = typed <em>dependency/relation</em> labels between works (e.g., uses / extends / contrasts) for knowledge-base edges; conditions = likely cross-domain, aiming at scalable/automatic extraction feeding a structured KB. <strong>Differences</strong>:</p>
+<ul><li>Label space: paper's 12 rhetorical categories vs. our KB relation types — reference only (the scheme is the vocabulary standard we may map onto KB edge types); <code>resolved: top-level 4-way (Weak/Contrast/Positive/Neutral) maps cleanly onto contrast/usage KB edges</code>.</li><li>Feature approach: hand-built cue grammar (2006) vs. modern neural/LLM extraction — missing link (needs updating; features are pre-neural).</li><li>Domain: single CL corpus vs. multi-domain KB — missing link (generalization unverified here).</li><li>Unit: citation instance incl. bare author names vs. entity-pair relation — reference only.</li></ul></div></section>
+      <div class="page-nav"><a href="01_SciCite.html">← [1] SciCite</a><a href="../sp1_citation_intent.html">↑ SP1</a><a href="03_ACLARC.html">[3] ACLARC →</a></div>
+    </div>
+  </div>
+  <nav class="bd-sidebar-secondary">
+    <div class="mini-toc-label en-only">On this page</div>
+    <div class="mini-toc-label ko-only">이 페이지</div>
+    <ul class="mini-toc">
+      <li><a href="#header"><span class="en-only">Paper info</span><span class="ko-only">논문 정보</span></a></li>
+      <li><a href="#problem"><span class="en-only">Problem</span><span class="ko-only">문제</span></a></li>
+      <li><a href="#solution"><span class="en-only">Solution</span><span class="ko-only">해결책</span></a></li>
+      <li><a href="#results"><span class="en-only">Concepts &amp; Analysis</span><span class="ko-only">개념·분석</span></a></li>
+      <li><a href="#delta"><span class="en-only">Condition Delta</span><span class="ko-only">조건 차이</span></a></li>
+    </ul>
+  </nav>
+</div>
+</body>
+</html>

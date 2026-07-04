@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SP8: Incremental Knowledge Graph Construction and Maintenance — Dependency Extraction &amp; KB Construction Survey</title>
+<style>
+:root {
+  --bg: #0d1117; --card: #161b22; --border: #30363d;
+  --text: #e6edf3; --muted: #7d8590; --accent: #58a6ff;
+  --teal: #39d0c7; --green: #3fb950; --yellow: #d29922;
+  --red: #f85149; --purple: #bc8cff; --orange: #e3b341;
+  --sidebar-w: 262px; --toc-w: 210px; --hdr-h: 48px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+body { font-family: -apple-system, sans-serif; background: var(--bg);
+       color: var(--text); line-height: 1.6; }
+.bd-root { display: flex; height: 100vh; overflow: hidden; }
+.bd-sidebar-primary {
+  width: var(--sidebar-w); min-width: var(--sidebar-w);
+  overflow-y: auto; background: var(--card);
+  border-right: 1px solid var(--border);
+  padding: 0.75rem 0; flex-shrink: 0;
+}
+.bd-sidebar-primary::-webkit-scrollbar { width: 4px; }
+.bd-sidebar-primary::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+.bd-main { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-width: 0; }
+.article-header-bar {
+  height: var(--hdr-h); background: var(--card);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; padding: 0 1.5rem;
+  gap: 1rem; flex-shrink: 0;
+}
+.header-brand { color: var(--teal); font-weight: bold; font-size: 0.95em;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 1; }
+.header-brand a { color: inherit; text-decoration: none; }
+.breadcrumb { color: var(--muted); font-size: 0.82em; display: flex;
+  align-items: center; gap: 0.3rem; flex-shrink: 0; }
+.breadcrumb a { color: var(--accent); text-decoration: none; }
+.breadcrumb span { color: var(--border); }
+.bd-article { flex: 1; overflow-y: auto; padding: 2rem 2.5rem; }
+.bd-article::-webkit-scrollbar { width: 6px; }
+.bd-article::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+.bd-sidebar-secondary {
+  width: var(--toc-w); min-width: var(--toc-w);
+  overflow-y: auto; border-left: 1px solid var(--border);
+  padding: 1rem 0.75rem; flex-shrink: 0;
+}
+.bd-sidebar-secondary::-webkit-scrollbar { width: 4px; }
+.bd-sidebar-secondary::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+.sidebar-logo { padding: 0.5rem 1rem 0.75rem;
+  border-bottom: 1px solid var(--border); margin-bottom: 0.5rem; }
+.sidebar-logo a { color: var(--teal); font-weight: bold; font-size: 0.95em;
+  text-decoration: none; display: block; }
+.sidebar-section { color: var(--muted); font-size: 0.72em; font-weight: bold;
+  text-transform: uppercase; letter-spacing: 0.07em;
+  padding: 0.7rem 1rem 0.25rem; }
+.sidebar-nav-link { display: block; padding: 0.28rem 1rem 0.28rem 1.25rem;
+  color: var(--muted); font-size: 0.875em; text-decoration: none; }
+.sidebar-nav-link:hover { color: var(--text); background: rgba(255,255,255,0.03); }
+.sidebar-nav-link.active { color: var(--teal);
+  border-left: 2px solid var(--teal);
+  padding-left: calc(1.25rem - 2px); background: rgba(57,208,199,0.05); }
+.mini-toc-label { color: var(--muted); font-size: 0.72em; font-weight: bold;
+  text-transform: uppercase; letter-spacing: 0.07em; padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border); margin-bottom: 0.5rem; }
+.mini-toc { list-style: none; }
+.mini-toc li a { display: block; padding: 0.22rem 0;
+  color: var(--muted); font-size: 0.83em; text-decoration: none;
+  border-left: 2px solid transparent; padding-left: 0.5rem; }
+.mini-toc li a:hover { color: var(--text); }
+.mini-toc li a.toc-active { color: var(--teal); border-left-color: var(--teal); }
+.section-anchor { scroll-margin-top: calc(var(--hdr-h) + 8px); }
+h1 { color: var(--teal); font-size: 1.7em; margin-bottom: 0.5rem; }
+h2 { color: var(--teal); font-size: 1.25em; margin: 1.5rem 0 0.6rem; }
+h3 { color: var(--teal); font-size: 1.05em; margin: 1.2rem 0 0.4rem; }
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+p { margin-bottom: 0.8rem; }
+.card { background: var(--card); border: 1px solid var(--border);
+        border-radius: 8px; padding: 1.2rem; margin-bottom: 1rem; }
+table { width: 100%; border-collapse: collapse; font-size: 0.9em; }
+th { background: var(--card); color: var(--teal); padding: 8px;
+     border: 1px solid var(--border); text-align: left; }
+td { padding: 8px; border: 1px solid var(--border); vertical-align: top; }
+tr:nth-child(even) td { background: rgba(0,0,0,0.2); }
+.stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+             gap: 1rem; margin-bottom: 1.5rem; }
+.stat-box { background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+            padding: 1rem; text-align: center; }
+.stat-num { font-size: 2rem; font-weight: bold; color: var(--teal); }
+.stat-label { color: var(--muted); font-size: 0.85em; margin-top: 0.2rem; }
+.sp-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+           gap: 1rem; margin: 1rem 0; }
+.sp-card { background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+           padding: 1.2rem; cursor: pointer; transition: border-color 0.15s; }
+.sp-card:hover { border-color: var(--teal); }
+.sp-card h3 { margin: 0 0 0.5rem; color: var(--teal); font-size: 1em; }
+.sp-card p { margin: 0; color: var(--muted); font-size: 0.88em; }
+.sp-badge { display: inline-block; background: rgba(57,208,199,0.1); color: var(--teal);
+            border-radius: 4px; padding: 2px 8px; font-size: 0.8em; margin-bottom: 0.5rem; }
+.paper-meta { color: var(--muted); font-size: 0.9em; margin-bottom: 1.5rem; }
+.paper-meta a { color: var(--accent); }
+.section-label { color: var(--teal); font-weight: bold; font-size: 0.85em;
+                 text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.4rem; }
+.pill { display: inline-block; border-radius: 4px; padding: 0.15rem 0.6rem;
+        font-size: 0.8em; font-weight: bold; margin-right: 0.4rem; }
+.pill-p0 { background: rgba(63,185,80,0.2); color: var(--green); }
+.pill-p1 { background: rgba(57,208,199,0.15); color: var(--teal); }
+.pill-p2 { background: rgba(210,153,34,0.2); color: var(--yellow); }
+.pill-p4 { background: rgba(125,133,144,0.2); color: var(--muted); }
+.pill-tool { background: rgba(188,140,255,0.2); color: var(--purple); }
+.delta-row { margin: 0.4rem 0; padding: 0.4rem 0.8rem;
+             border-left: 3px solid var(--border); border-radius: 0 4px 4px 0; }
+.delta-resolved { border-left-color: var(--green); }
+.delta-missing  { border-left-color: var(--yellow); }
+.delta-ref      { border-left-color: var(--muted); }
+.chain { position: relative; padding-left: 2rem; }
+.chain::before { content: ''; position: absolute; left: 0.95rem; top: 0;
+                 bottom: 0; width: 2px; background: var(--border); }
+.chain-node { position: relative; margin-bottom: 2rem; }
+.chain-node::before { content: ''; position: absolute; left: -1.55rem;
+                      top: 1.1rem; width: 12px; height: 12px;
+                      border-radius: 50%; background: var(--teal); }
+.chain-num { display: inline-block; width: 28px; height: 28px; background: var(--teal);
+             color: #000; border-radius: 50%; text-align: center; line-height: 28px;
+             font-weight: bold; font-size: 0.85em; margin-right: 0.6rem; flex-shrink: 0; }
+.chain-q { font-weight: bold; color: var(--text); margin: 0.4rem 0 0.3rem; font-size: 1em; }
+.chain-papers { color: var(--muted); font-size: 0.85em; margin-bottom: 0.6rem; }
+.chain-start { background: var(--card); border: 1px solid var(--teal);
+               border-radius: 8px; padding: 1rem; margin-bottom: 2rem; }
+.chain-start h3 { margin: 0 0 0.5rem; color: var(--teal); }
+.chain-converge { background: var(--card); border: 1px solid var(--green);
+                  border-radius: 8px; padding: 1rem; margin-top: 1rem; }
+.chain-converge h3 { margin: 0 0 0.5rem; color: var(--green); }
+.chain-label { display: inline-block; border-radius: 4px; padding: 0.15rem 0.6rem;
+               font-size: 0.8em; font-weight: bold; margin-right: 0.4rem; }
+.chain-status { border-radius: 0 4px 4px 0; padding: 0.5rem 0.8rem;
+                margin: 0.35rem 0; font-size: 0.88em; }
+.chain-status ul { margin: 0.3rem 0 0 1.2rem; padding: 0; }
+.chain-status li { margin-bottom: 0.25rem; }
+.chain-status.solved  { background: rgba(63,185,80,0.07);  border-left: 3px solid var(--green); }
+.chain-status.remains { background: rgba(210,153,34,0.07); border-left: 3px solid var(--yellow); }
+.chain-status.added   { background: rgba(248,81,73,0.07);  border-left: 3px solid var(--red); }
+.chain-status.pivoted { background: rgba(188,140,255,0.1); border-left: 3px solid var(--purple); }
+.chain-label.solved   { background: rgba(63,185,80,0.2);  color: var(--green); }
+.chain-label.remains  { background: rgba(210,153,34,0.2); color: var(--yellow); }
+.chain-label.added    { background: rgba(248,81,73,0.2);  color: var(--red); }
+.chain-label.pivoted  { background: rgba(188,140,255,0.2); color: var(--purple); }
+.chain-status.expected { background: rgba(88,166,255,0.07);  border-left: 3px solid var(--accent); }
+.chain-label.expected  { background: rgba(88,166,255,0.2);   color: var(--accent); }
+.chain-status.revised  { background: rgba(57,208,199,0.07);  border-left: 3px solid var(--teal); }
+.chain-label.revised   { background: rgba(57,208,199,0.2);   color: var(--teal); }
+.concept-box { border-left: 4px solid var(--teal); background: #0d1f1f;
+               border-radius: 4px; padding: 1.2rem; margin-bottom: 1.2rem; }
+.concept-name { font-weight: bold; color: var(--teal); font-size: 1.05em; margin-bottom: 0.5rem; }
+.concept-field { margin: 0.3rem 0; }
+.concept-label { color: var(--muted); font-size: 0.85em; }
+.hypothesis { border-left: 4px solid var(--teal); background: #0d1f1f;
+              border-radius: 4px; padding: 1rem; margin: 1rem 0; }
+.recommendation { border-left: 4px solid var(--purple); background: #1a0f2e;
+                  border-radius: 4px; padding: 1rem; margin: 1rem 0; }
+.rq-row { background: rgba(88,166,255,0.05); border-left: 3px solid var(--accent);
+          padding: 0.4rem 0.8rem; margin-bottom: 0.5rem; border-radius: 0 4px 4px 0; }
+.scroll-table-wrap { max-height: 420px; overflow-y: auto; border: 1px solid var(--border);
+                     border-radius: 4px; }
+.scroll-table-wrap thead th { position: sticky; top: 0; background: #161b22; z-index: 1; }
+.page-nav { display: flex; justify-content: space-between; margin-top: 2rem;
+            padding-top: 1rem; border-top: 1px solid var(--border); gap: 1rem; }
+.page-nav a { color: var(--accent); font-size: 0.9em; }
+html.ko-active .en-only { display: none !important; }
+html.ko-active .ko-only { display: block !important; }
+.ko-only { display: none; }
+span.ko-only, span.en-only { display: inline; }
+html.ko-active span.en-only { display: none !important; }
+html.ko-active span.ko-only { display: inline !important; }
+.lang-btn { background: transparent; color: var(--muted); border: 1px solid var(--border);
+            border-radius: 4px; padding: 3px 9px; font-size: 0.8em; cursor: pointer; }
+.lang-btn.active { border-color: var(--teal); color: var(--teal); }
+@media (max-width: 1024px) { .bd-sidebar-secondary { display: none; } }
+@media (max-width: 768px) {
+  .bd-sidebar-primary { display: none; }
+  .bd-root { flex-direction: column; height: auto; overflow: visible; }
+  .bd-main { overflow: visible; }
+  .bd-article { overflow: visible; padding: 1rem; }
+  .stat-grid { grid-template-columns: repeat(2, 1fr); }
+  .sp-grid { grid-template-columns: 1fr; }
+}
+</style>
+<script>
+function toggleLanguage() {
+  const html = document.documentElement;
+  const isKo = html.classList.toggle('ko-active');
+  document.querySelectorAll('.lang-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.lang === (isKo ? 'ko' : 'en'));
+  });
+  localStorage.setItem('survey-lang', isKo ? 'ko' : 'en');
+}
+document.addEventListener('DOMContentLoaded', function() {
+  const saved = localStorage.getItem('survey-lang');
+  if (saved === 'ko') {
+    document.documentElement.classList.add('ko-active');
+    document.querySelectorAll('.lang-btn').forEach(b =>
+      b.classList.toggle('active', b.dataset.lang === 'ko'));
+  } else {
+    document.querySelectorAll('[data-lang="en"]').forEach(b => b.classList.add('active'));
+  }
+  const article = document.querySelector('.bd-article');
+  const sections = Array.from(document.querySelectorAll('.section-anchor[id]'));
+  const sideLinks = Array.from(document.querySelectorAll('.bd-sidebar-primary .sidebar-nav-link'));
+  const tocLinks = Array.from(document.querySelectorAll('.bd-sidebar-secondary .mini-toc a'));
+  if (!article || !sections.length) return;
+  function current() {
+    let id = sections[0].id;
+    const scrollTop = article.scrollTop + 60;
+    sections.forEach(function(s) { if (s.offsetTop <= scrollTop) id = s.id; });
+    return id;
+  }
+  function update() {
+    const id = current();
+    sideLinks.forEach(function(a) { a.classList.toggle('active', a.getAttribute('href') === '#' + id); });
+    tocLinks.forEach(function(a) { a.classList.toggle('toc-active', a.getAttribute('href') === '#' + id); });
+  }
+  article.addEventListener('scroll', update, { passive: true });
+  update();
+});
+</script>
+</head>
+<body>
+<div class="bd-root">
+  <nav class="bd-sidebar-primary">
+  <div class="sidebar-logo">
+    <a href="./index.html">&#x2b21; <span class="en-only">Dependency Extraction &amp; KB Construction Survey</span><span class="ko-only">의존성 추출 및 지식베이스 구축 문헌 조사</span></a>
+  </div>
+  <div class="sidebar-section en-only">Overview</div>
+  <div class="sidebar-section ko-only">개요</div>
+  <a href="./index.html#overview" class="sidebar-nav-link"><span class="en-only">Survey Hub</span><span class="ko-only">조사 허브</span></a>
+  <a href="./index.html#answers" class="sidebar-nav-link"><span class="en-only">Key Answers</span><span class="ko-only">핵심 답변</span></a>
+  <div class="sidebar-section en-only">Sub-Problems</div>
+  <div class="sidebar-section ko-only">세부 문제</div>
+  <a href="./sp1_citation_intent.html" class="sidebar-nav-link">SP1: <span class="en-only">Citation Intent</span><span class="ko-only">인용 의도</span></a>
+  <a href="./sp2_concept_relation_extraction.html" class="sidebar-nav-link">SP2: <span class="en-only">Concept/Relation Extraction</span><span class="ko-only">개념·관계 추출</span></a>
+  <a href="./sp3_concept_prerequisite.html" class="sidebar-nav-link">SP3: <span class="en-only">Concept Prerequisite</span><span class="ko-only">개념 선행관계</span></a>
+  <a href="./sp4_entity_linking.html" class="sidebar-nav-link">SP4: <span class="en-only">Entity Linking</span><span class="ko-only">개체 링킹</span></a>
+  <a href="./sp5_related_work_novelty.html" class="sidebar-nav-link">SP5: <span class="en-only">Related Work / Novelty</span><span class="ko-only">관련연구·신규성</span></a>
+  <a href="./sp6_llm_agent_kg.html" class="sidebar-nav-link">SP6: <span class="en-only">LLM-Agent KG</span><span class="ko-only">LLM 에이전트 KG</span></a>
+  <a href="./sp7_ontology_alignment.html" class="sidebar-nav-link">SP7: <span class="en-only">Ontology Alignment</span><span class="ko-only">온톨로지 정렬</span></a>
+  <a href="./sp8_incremental_kg.html" class="sidebar-nav-link active">SP8: <span class="en-only">Incremental KG</span><span class="ko-only">증분 KG</span></a>
+  <a href="./sp9_link_prediction_dag.html" class="sidebar-nav-link">SP9: <span class="en-only">DAG Link Prediction</span><span class="ko-only">DAG 링크 예측</span></a>
+  <div class="sidebar-section en-only">Synthesis</div>
+  <div class="sidebar-section ko-only">종합</div>
+  <a href="./conclusion.html" class="sidebar-nav-link"><span class="en-only">Conclusion</span><span class="ko-only">결론</span></a>
+  <a href="./thinking-process.html" class="sidebar-nav-link"><span class="en-only">Thinking Process</span><span class="ko-only">추론 과정</span></a>
+</nav>
+  <div class="bd-main">
+    <div class="article-header-bar">
+  <div class="header-brand"><a href="./index.html"><span class="en-only">Dependency Extraction &amp; KB Construction Survey</span><span class="ko-only">의존성 추출 및 지식베이스 구축 문헌 조사</span></a></div>
+  <nav class="breadcrumb"><a href="index.html"><span class="en-only">Survey</span><span class="ko-only">조사</span></a><span>›</span><span><span class="en-only">SP8: Incremental KG</span><span class="ko-only">SP8: 증분 KG</span></span></nav>
+  <button class="lang-btn" data-lang="en" onclick="toggleLanguage()">EN</button>
+  <button class="lang-btn" data-lang="ko" onclick="toggleLanguage()">KO</button>
+</div>
+    <div class="bd-article">
+      <section id="intro" class="section-anchor">
+  <div class="en-only"><h1>SP8: Incremental Knowledge Graph Construction and Maintenance</h1>
+    <p style="color:var(--muted)">4 papers · targets O3</p>
+    <p>SP8 investigates how a knowledge graph is updated as new nodes/edges arrive over time while preserving global consistency (O3) — the DAG-maintenance layer of the target pipeline.</p></div>
+  <div class="ko-only"><h1>SP8: 증분 지식그래프 구성 및 유지</h1>
+    <p style="color:var(--muted)">4편 논문 · O3 목표 대상</p>
+    <p>SP8은 새 노드/edge가 시간에 따라 도착할 때 전역 일관성을 보존하며 지식그래프가 어떻게 갱신되는지(O3), 즉 목표 파이프라인의 DAG 유지 층을 조사한다.</p></div>
+</section>
+
+<section id="rationale" class="section-anchor">
+  <div class="card" style="border-color:var(--accent)">
+    <div class="en-only">
+      <h2 style="margin-top:0">Entry Assumption vs. What Was Found</h2>
+      <p><strong>Expected (revised after SP6, SP7)</strong>: This field addresses how to update a knowledge graph as new nodes/edges arrive while preserving consistency, directly informing DAG-maintenance procedures. (Revised after SP6/SP7: add explicit queries for structural DAG consistency, bi-temporal stale-fact handling, and the autonomous three-way reuse/insert/merge decision.)</p>
+      <p><strong>Found:</strong> The retrieved literature does <em>not</em> directly answer the SP question. The paper set clusters around temporal knowledge graph (TKG) reasoning on event data (ICEWS/GDELT), where 'temporal' means <em>forecasting facts at future timestamps</em>, not maintaining consistent structure. The consensus mechanism is to make the timestamp a first-class input to the score function (Know-Evolve point process; RE-GCN snapshot GCNs).</p>
+      <p><strong>Assessment:</strong> Surprised — 'temporal KG' means time-stamped <em>event</em> data where edges recur, not a monotonically-growing dependency DAG; they share the quadruple formalism but not the maintenance problem. Both surveys explicitly flag evolutionary/incremental KG maintenance as an <em>open future direction</em>. The nearest maintenance answer is framing vocabulary (Hogan's consistency/validity), not algorithms.</p>
+    </div>
+    <div class="ko-only">
+      <h2 style="margin-top:0">사전 가정과 실제 발견</h2>
+      <p><strong>기대 (SP6, SP7 이후 수정됨)</strong>: 이 분야가 새 노드/edge 도착 시 일관성을 보존하며 KG를 갱신하는 방법을 다루어 DAG 유지 절차에 직접 정보를 준다고 기대하였다. (SP6/SP7 이후 수정: 구조적 DAG 일관성, bi-temporal stale-fact 처리, 자율 3-way 재사용/삽입/병합 결정에 대한 명시적 질의 추가.)</p>
+      <p><strong>발견</strong>: 검색된 문헌은 SP 질문에 직접 답하지 <em>않는다</em>. 논문 집합은 사건 데이터(ICEWS/GDELT) 위의 시계열 KG(TKG) 추론에 몰려 있으며, 여기서 '시계열'은 일관 구조 유지가 아니라 <em>미래 시점의 사실 예측</em>을 뜻한다. 합의 메커니즘은 timestamp를 채점 함수의 일급 입력으로 만드는 것이다(Know-Evolve point process; RE-GCN 스냅샷 GCN).</p>
+      <p><strong>평가</strong>: 예상과 다름 — '시계열 KG'는 edge가 재발하는 시각-표시 <em>사건</em> 데이터를 뜻하며 단조 성장 의존 DAG가 아니다; quadruple 형식은 공유하나 유지 문제는 공유하지 않는다. 두 서베이 모두 진화/증분 KG 유지를 <em>미해결 미래 방향</em>으로 명시한다. 가장 근접한 유지 답은 알고리즘이 아닌 프레이밍 어휘(Hogan의 consistency/validity)이다.</p>
+    </div>
+  </div>
+</section>
+
+<section id="establishes" class="section-anchor">
+  <div class="card" style="border-color:var(--teal)">
+    <div class="en-only"><h2 style="margin-top:0">What SP8 Establishes</h2><p>For the problem the papers actually solve — reasoning over time-varying KGs — the dominant family is snapshot-based evolutional representation learning (RE-GCN: relation-aware GCN + GRU, +11.46% MRR, 82× speedup). SP8 contributes specification and partial mechanism, not solution: the consistency/validity vocabulary tells us what to enforce; snapshot-evolution tells us how structure re-encodes as the KB grows; and the total absence of cycle/redundancy/staleness handling defines the boundary SP9 must cross.</p></div>
+    <div class="ko-only"><h2 style="margin-top:0">SP8이 확립한 것</h2><p>논문들이 실제 푸는 문제 — 시변 KG 추론 — 에서 지배적 계열은 스냅샷 기반 진화 표상 학습이다(RE-GCN: 관계 인식 GCN + GRU, +11.46% MRR, 82배 속도). SP8은 해결이 아닌 명세와 부분 메커니즘을 제공한다: consistency/validity 어휘가 무엇을 강제할지 알려주고, 스냅샷 진화가 KB 성장 시 구조 재인코딩 방법을 알려주며, cycle/중복/staleness 처리의 전면 부재가 SP9가 넘어야 할 경계를 정의한다.</p></div>
+  </div>
+</section>
+
+<section id="concepts" class="section-anchor">
+  <div class="en-only"><h2>Key Concepts</h2></div>
+  <div class="ko-only"><h2>핵심 개념</h2></div>
+  <div class="concept-box">
+  <div class="concept-name">Temporal Knowledge Graph (TKG)</div>
+  <div class="concept-field"><span class="concept-label en-only">What it is: </span><span class="concept-label ko-only">정의: </span><span class="en-only">Represents data as quadruples (subject, relation, object, timestamp); an edge may recur at different times.</span><span class="ko-only">데이터를 quadruple(주어, 관계, 목적어, 시각)로 표현하며 edge가 다른 시점에 재발할 수 있다.</span></div>
+  <div class="concept-field"><span class="concept-label en-only">Why it matters here: </span><span class="concept-label ko-only">이 조사에서의 역할: </span><span class="en-only">The closest existing formalism to 'a KB tracking how dependencies change over versions' — but its edges recur whereas dependency edges do not.</span><span class="ko-only">'버전별 의존 변화를 추적하는 KB'에 가장 가까운 형식이나, 그 edge는 재발하는 반면 의존 edge는 재발하지 않는다.</span></div>
+</div><div class="concept-box">
+  <div class="concept-name">Consistency vs. validity (KG quality)</div>
+  <div class="concept-field"><span class="concept-label en-only">What it is: </span><span class="concept-label ko-only">정의: </span><span class="en-only">Consistency = no logical contradictions under the ontology; validity = no shape/cardinality violations (SHACL/ShEx).</span><span class="ko-only">consistency는 온톨로지 하 논리 모순 없음, validity는 shape/cardinality 위반 없음(SHACL/ShEx)이다.</span></div>
+  <div class="concept-field"><span class="concept-label en-only">Why it matters here: </span><span class="concept-label ko-only">이 조사에서의 역할: </span><span class="en-only">The vocabulary O3 should adopt to specify what 'globally consistent DAG' means — but no incremental checking algorithm is given.</span><span class="ko-only">'전역 일관 DAG'의 의미를 명세하기 위해 O3가 채택할 어휘이나, 증분 검사 알고리즘은 주어지지 않는다.</span></div>
+</div><div class="concept-box">
+  <div class="concept-name">Snapshot-based evolution</div>
+  <div class="concept-field"><span class="concept-label en-only">What it is: </span><span class="concept-label ko-only">정의: </span><span class="en-only">Split the TKG into per-timestamp subgraphs; a relation-aware GCN encodes intra-snapshot structure and a GRU passes state across snapshots.</span><span class="ko-only">TKG를 시각별 하위그래프로 나누고, 관계 인식 GCN이 스냅샷 내 구조를, GRU가 스냅샷 간 상태를 전달한다.</span></div>
+  <div class="concept-field"><span class="concept-label en-only">Why it matters here: </span><span class="concept-label ko-only">이 조사에서의 역할: </span><span class="en-only">The most transferable idea for encoding how KB structure evolves across versions — but it forecasts, it does not validate acyclicity.</span><span class="ko-only">KB 구조가 버전별로 진화하는 방식을 인코딩하는 가장 전이 가능한 아이디어이나, 예측할 뿐 비순환성을 검증하지 않는다.</span></div>
+</div>
+</section>
+
+<section id="rqs" class="section-anchor">
+  <div class="en-only"><h2>Research Questions Extracted</h2></div>
+  <div class="ko-only"><h2>추출된 연구 질문</h2></div>
+  <div class="rq-row"><strong>RQ8.1</strong><span class="en-only"> — What mechanisms represent how a KG's structure evolves across snapshots, and how do continuous-time vs. discrete-snapshot families compare?</span><span class="ko-only"> — KG 구조가 스냅샷별로 진화하는 방식을 표현하는 메커니즘과 연속시간 대 이산스냅샷 계열 비교는?</span></div>
+<div class="rq-row"><strong>RQ8.2</strong><span class="en-only"> — What quality dimensions define a 'consistent' KB, and what refinement repairs an inconsistency from a new edge?</span><span class="ko-only"> — 어떤 품질 차원이 '일관' KB를 정의하며 새 edge의 비일관을 어떤 refinement가 수리하는가?</span></div>
+<div class="rq-row"><strong>RQ8.3</strong><span class="en-only"> — What incremental/continual-learning techniques update a temporal KG under fact insertion without full retraining?</span><span class="ko-only"> — 전면 재학습 없이 사실 삽입 하 시계열 KG를 갱신하는 증분/연속 학습 기법은?</span></div>
+<div class="rq-row"><strong>RQ8.4</strong><span class="en-only"> — For temporal link prediction on event KGs, does snapshot-GCN or point-process yield better extrapolation?</span><span class="ko-only"> — 사건 KG의 시계열 링크 예측에서 스냅샷-GCN과 point-process 중 무엇이 더 나은 외삽을 내는가?</span></div>
+
+</section>
+
+<section id="papers" class="section-anchor">
+  <div class="card" style="margin-top:1.5rem">
+    <div class="en-only"><h3>Papers in SP8 (4 papers)</h3></div>
+    <div class="ko-only"><h3>SP8 논문 목록 (4편)</h3></div>
+    <div class="scroll-table-wrap">
+      <table><thead><tr>
+        <th>Ref</th><th><span class="en-only">Authors (year)</span><span class="ko-only">저자 (연도)</span></th>
+        <th><span class="en-only">Title</span><span class="ko-only">제목</span></th><th>Tier</th>
+        <th><span class="en-only">Fit</span><span class="ko-only">적합도</span></th>
+        <th><span class="en-only">Gap / Risk</span><span class="ko-only">Gap/위험</span></th>
+      </tr></thead><tbody>
+      <tr><td>[106]</td><td>Trivedi et al. (2017)</td><td><a href="papers/106_KnowEvolve.html">Know-Evolve: Deep Temporal Reasoning for Dynamic Knowledge Graphs</a></td><td><span class="pill pill-p0">P0</span></td><td>Dynamic embeddings support open-world KB growth</td><td>Event-recurrence assumption; no consistency/DAG notion; heavy training</td></tr>
+<tr><td>[107]</td><td>Li et al. (2021)</td><td><a href="papers/107_REGCN.html">Temporal Knowledge Graph Reasoning Based on Evolutional Representation Learning</a></td><td><span class="pill pill-p0">P0</span></td><td>Best mechanism for encoding structure evolution across versions</td><td>Forecasts next snapshot, does not maintain acyclicity; event-KG only</td></tr>
+<tr><td>[108]</td><td>Hogan et al. (2021)</td><td><a href="papers/108_KGSurveyHogan.html">Knowledge Graphs</a></td><td><span class="pill pill-p1">P1</span></td><td>Only paper naming the maintenance/consistency target; vocabulary source</td><td>Taxonomy not algorithm; defers all methods to cited primaries</td></tr>
+<tr><td>[109]</td><td>Cai et al. (2022)</td><td><a href="papers/109_TKGCSurvey.html">Temporal Knowledge Graph Completion: A Survey</a></td><td><span class="pill pill-p1">P1</span></td><td>Maps the mechanism landscape; identifies the incremental-maintenance gap</td><td>No experiments; assumes completed quadruple set; no DAG maintenance</td></tr>
+</tbody></table>
+    </div>
+  </div>
+</section>
+
+<section id="open" class="section-anchor">
+  <div class="card">
+    <div class="en-only"><h3>Open Questions After SP8</h3><ul><li>DAG-consistency maintenance (cycle avoidance, redundant-edge pruning, stale-link detection) is addressed by no paper here — squarely SP9's territory.</li><li>Do event-KG temporal methods transfer to non-recurring dependency graphs? Dependency edges are asserted once and do not recur.</li><li>Where does extraction end and maintenance begin? The completion methods assume a completed quadruple set (→ SP2/SP4).</li></ul></div>
+    <div class="ko-only"><h3>SP8 이후 미해결 질문</h3><ul><li>DAG 일관성 유지(cycle 회피, 중복-edge pruning, stale-link 검출)를 다루는 논문이 이곳에 없다 — 명백히 SP9의 영역이다.</li><li>사건-KG 시계열 방법이 비재발 의존 그래프로 전이되는가? 의존 edge는 한 번 주장되고 재발하지 않는다.</li><li>추출은 어디서 끝나고 유지는 어디서 시작하는가? 완성 방법들은 완결된 quadruple 집합을 가정한다(→ SP2/SP4).</li></ul></div>
+  </div>
+</section>
+
+<div class="page-nav"><a href="sp7_ontology_alignment.html">← <span class="en-only">SP7: Ontology Alignment</span><span class="ko-only">SP7: 온톨로지 정렬</span></a><a href="index.html"><span class="en-only">↑ Survey Hub</span><span class="ko-only">↑ 조사 허브</span></a><a href="sp9_link_prediction_dag.html"><span class="en-only">SP9: DAG Link Prediction</span><span class="ko-only">SP9: DAG 링크 예측</span> →</a></div>
+    </div>
+  </div>
+  <nav class="bd-sidebar-secondary">
+    <div class="mini-toc-label en-only">On this page</div>
+    <div class="mini-toc-label ko-only">이 페이지</div>
+    <ul class="mini-toc">
+      <li><a href="#intro"><span class="en-only">Introduction</span><span class="ko-only">개요</span></a></li>
+      <li><a href="#rationale"><span class="en-only">Entry Assumption</span><span class="ko-only">사전 가정</span></a></li>
+      <li><a href="#establishes"><span class="en-only">What SP8 Establishes</span><span class="ko-only">확립한 것</span></a></li>
+      <li><a href="#concepts"><span class="en-only">Key Concepts</span><span class="ko-only">핵심 개념</span></a></li>
+      <li><a href="#rqs"><span class="en-only">Research Questions</span><span class="ko-only">연구 질문</span></a></li>
+      <li><a href="#papers"><span class="en-only">Papers</span><span class="ko-only">논문</span></a></li>
+      <li><a href="#open"><span class="en-only">Open Questions</span><span class="ko-only">미해결 질문</span></a></li>
+    </ul>
+  </nav>
+</div>
+</body>
+</html>
