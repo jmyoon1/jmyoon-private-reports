@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>[71] Percentile Risk-Constrained Budget Pacing for Guaranteed Dis — Exposure-Frequency Control Survey</title>
+
+<style>
+:root {
+  --bg: #0d1117; --card: #161b22; --border: #30363d;
+  --text: #e6edf3; --muted: #7d8590; --accent: #58a6ff;
+  --teal: #39d0c7; --green: #3fb950; --yellow: #d29922;
+  --red: #f85149; --purple: #bc8cff; --orange: #e3b341;
+  --sidebar-w: 262px; --toc-w: 210px; --hdr-h: 48px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+body { font-family: -apple-system, sans-serif; background: var(--bg);
+       color: var(--text); line-height: 1.6; }
+.bd-root { display: flex; height: 100vh; overflow: hidden; }
+.bd-sidebar-primary {
+  width: var(--sidebar-w); min-width: var(--sidebar-w);
+  overflow-y: auto; background: var(--card);
+  border-right: 1px solid var(--border);
+  padding: 0.75rem 0; flex-shrink: 0;
+}
+.bd-sidebar-primary::-webkit-scrollbar { width: 4px; }
+.bd-sidebar-primary::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+.bd-main { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-width: 0; }
+.article-header-bar {
+  height: var(--hdr-h); background: var(--card);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; padding: 0 1.5rem;
+  gap: 1rem; flex-shrink: 0;
+}
+.header-brand { color: var(--teal); font-weight: bold; font-size: 0.95em;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 1; }
+.header-brand a { color: inherit; text-decoration: none; }
+.breadcrumb { color: var(--muted); font-size: 0.82em; display: flex;
+  align-items: center; gap: 0.3rem; flex-shrink: 0; }
+.breadcrumb a { color: var(--accent); text-decoration: none; }
+.breadcrumb span { color: var(--border); }
+.bd-article { flex: 1; overflow-y: auto; padding: 2rem 2.5rem; }
+.bd-article::-webkit-scrollbar { width: 6px; }
+.bd-article::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+.bd-sidebar-secondary {
+  width: var(--toc-w); min-width: var(--toc-w);
+  overflow-y: auto; border-left: 1px solid var(--border);
+  padding: 1rem 0.75rem; flex-shrink: 0;
+}
+.bd-sidebar-secondary::-webkit-scrollbar { width: 4px; }
+.bd-sidebar-secondary::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+.sidebar-logo { padding: 0.5rem 1rem 0.75rem;
+  border-bottom: 1px solid var(--border); margin-bottom: 0.5rem; }
+.sidebar-logo a { color: var(--teal); font-weight: bold; font-size: 0.95em;
+  text-decoration: none; display: block; }
+.sidebar-section { color: var(--muted); font-size: 0.72em; font-weight: bold;
+  text-transform: uppercase; letter-spacing: 0.07em;
+  padding: 0.7rem 1rem 0.25rem; }
+.sidebar-nav-link { display: block; padding: 0.28rem 1rem 0.28rem 1.25rem;
+  color: var(--muted); font-size: 0.875em; text-decoration: none; }
+.sidebar-nav-link:hover { color: var(--text); background: rgba(255,255,255,0.03); }
+.sidebar-nav-link.active { color: var(--teal);
+  border-left: 2px solid var(--teal);
+  padding-left: calc(1.25rem - 2px); background: rgba(57,208,199,0.05); }
+.mini-toc-label { color: var(--muted); font-size: 0.72em; font-weight: bold;
+  text-transform: uppercase; letter-spacing: 0.07em; padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border); margin-bottom: 0.5rem; }
+.mini-toc { list-style: none; }
+.mini-toc li a { display: block; padding: 0.22rem 0;
+  color: var(--muted); font-size: 0.83em; text-decoration: none;
+  border-left: 2px solid transparent; padding-left: 0.5rem; }
+.mini-toc li a:hover { color: var(--text); }
+.mini-toc li a.toc-active { color: var(--teal); border-left-color: var(--teal); }
+.section-anchor { scroll-margin-top: calc(var(--hdr-h) + 8px); }
+h1 { color: var(--teal); font-size: 1.7em; margin-bottom: 0.5rem; line-height:1.3; }
+h2 { color: var(--teal); font-size: 1.25em; margin: 1.5rem 0 0.6rem; }
+h3 { color: var(--teal); font-size: 1.05em; margin: 1.2rem 0 0.4rem; }
+h4 { color: var(--teal); font-size: 0.95em; margin: 1rem 0 0.3rem; }
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+p { margin-bottom: 0.8rem; }
+ul, ol { margin: 0 0 0.8rem 1.4rem; }
+li { margin-bottom: 0.3rem; }
+code { background: rgba(255,255,255,0.06); border-radius: 3px; padding: 1px 4px; font-size: 0.9em; }
+blockquote { border-left: 3px solid var(--border); color: var(--muted);
+  padding: 0.2rem 0.8rem; margin-bottom: 0.8rem; }
+.card { background: var(--card); border: 1px solid var(--border);
+        border-radius: 8px; padding: 1.2rem; margin-bottom: 1rem; }
+table { width: 100%; border-collapse: collapse; font-size: 0.9em; margin-bottom: 0.8rem; }
+th { background: var(--card); color: var(--teal); padding: 8px;
+     border: 1px solid var(--border); text-align: left; }
+td { padding: 8px; border: 1px solid var(--border); vertical-align: top; }
+tr:nth-child(even) td { background: rgba(0,0,0,0.2); }
+.stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+             gap: 1rem; margin-bottom: 1.5rem; }
+.stat-box { background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+            padding: 1rem; text-align: center; }
+.stat-num { font-size: 2rem; font-weight: bold; color: var(--teal); }
+.stat-label { color: var(--muted); font-size: 0.85em; margin-top: 0.2rem; }
+.sp-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+           gap: 1rem; margin: 1rem 0; }
+.sp-card { background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+           padding: 1.2rem; cursor: pointer; transition: border-color 0.15s; height:100%; }
+.sp-card:hover { border-color: var(--teal); }
+.sp-card h3 { margin: 0 0 0.5rem; color: var(--teal); font-size: 1em; }
+.sp-card p { margin: 0; color: var(--muted); font-size: 0.88em; }
+.sp-badge { display: inline-block; background: rgba(57,208,199,0.1); color: var(--teal);
+            border-radius: 4px; padding: 2px 8px; font-size: 0.8em; margin-bottom: 0.5rem; }
+.paper-meta { color: var(--muted); font-size: 0.9em; margin-bottom: 1.5rem; }
+.paper-meta a { color: var(--accent); }
+.section-label { color: var(--teal); font-weight: bold; font-size: 0.85em;
+                 text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.4rem; }
+.pill { display: inline-block; border-radius: 4px; padding: 0.15rem 0.6rem;
+        font-size: 0.8em; font-weight: bold; margin-right: 0.4rem; }
+.pill-p0 { background: rgba(63,185,80,0.2); color: var(--green); }
+.pill-p1 { background: rgba(57,208,199,0.15); color: var(--teal); }
+.pill-p2 { background: rgba(210,153,34,0.2); color: var(--yellow); }
+.pill-p3 { background: rgba(188,140,255,0.2); color: var(--purple); }
+.pill-p4 { background: rgba(125,133,144,0.2); color: var(--muted); }
+.delta-row { margin: 0.4rem 0; padding: 0.4rem 0.8rem;
+             border-left: 3px solid var(--border); border-radius: 0 4px 4px 0; }
+.chain { position: relative; padding-left: 2rem; }
+.chain::before { content: ''; position: absolute; left: 0.95rem; top: 0;
+                 bottom: 0; width: 2px; background: var(--border); }
+.chain-node { position: relative; margin-bottom: 2rem; }
+.chain-node::before { content: ''; position: absolute; left: -1.55rem;
+                      top: 1.1rem; width: 12px; height: 12px;
+                      border-radius: 50%; background: var(--teal); }
+.chain-num { display: inline-block; width: 28px; height: 28px; background: var(--teal);
+             color: #000; border-radius: 50%; text-align: center; line-height: 28px;
+             font-weight: bold; font-size: 0.85em; margin-right: 0.6rem; flex-shrink: 0; }
+.chain-q { font-weight: bold; color: var(--text); margin: 0.4rem 0 0.3rem; font-size: 1em; }
+.chain-papers { color: var(--muted); font-size: 0.85em; margin-bottom: 0.6rem; }
+.chain-start { background: var(--card); border: 1px solid var(--teal);
+               border-radius: 8px; padding: 1rem; margin-bottom: 2rem; }
+.chain-start h3 { margin: 0 0 0.5rem; color: var(--teal); }
+.chain-converge { background: var(--card); border: 1px solid var(--green);
+                  border-radius: 8px; padding: 1rem; margin-top: 1rem; }
+.chain-converge h3 { margin: 0 0 0.5rem; color: var(--green); }
+.chain-label { display: inline-block; border-radius: 4px; padding: 0.15rem 0.6rem;
+               font-size: 0.8em; font-weight: bold; margin-right: 0.4rem; }
+.chain-status { border-radius: 0 4px 4px 0; padding: 0.5rem 0.8rem;
+                margin: 0.35rem 0; font-size: 0.88em; }
+.chain-status ul { margin: 0.3rem 0 0 1.2rem; padding: 0; }
+.chain-status li { margin-bottom: 0.25rem; }
+.chain-status.solved  { background: rgba(63,185,80,0.07);  border-left: 3px solid var(--green); }
+.chain-status.remains { background: rgba(210,153,34,0.07); border-left: 3px solid var(--yellow); }
+.chain-status.added   { background: rgba(248,81,73,0.07);  border-left: 3px solid var(--red); }
+.chain-status.pivoted { background: rgba(188,140,255,0.1); border-left: 3px solid var(--purple); }
+.chain-label.solved   { background: rgba(63,185,80,0.2);  color: var(--green); }
+.chain-label.remains  { background: rgba(210,153,34,0.2); color: var(--yellow); }
+.chain-label.added    { background: rgba(248,81,73,0.2);  color: var(--red); }
+.chain-label.pivoted  { background: rgba(188,140,255,0.2); color: var(--purple); }
+.chain-status.expected { background: rgba(88,166,255,0.07);  border-left: 3px solid var(--accent); }
+.chain-label.expected  { background: rgba(88,166,255,0.2);   color: var(--accent); }
+.chain-status.revised  { background: rgba(57,208,199,0.07);  border-left: 3px solid var(--teal); }
+.chain-label.revised   { background: rgba(57,208,199,0.2);   color: var(--teal); }
+.concept-box { border-left: 4px solid var(--teal); background: #0d1f1f;
+               border-radius: 4px; padding: 1.2rem; margin-bottom: 1.2rem; }
+.concept-name { font-weight: bold; color: var(--teal); font-size: 1.05em; margin-bottom: 0.5rem; }
+.hypothesis { border-left: 4px solid var(--teal); background: #0d1f1f;
+              border-radius: 4px; padding: 1rem; margin: 1rem 0; }
+.recommendation { border-left: 4px solid var(--purple); background: #1a0f2e;
+                  border-radius: 4px; padding: 1rem; margin: 1rem 0; }
+.rq-row { background: rgba(88,166,255,0.05); border-left: 3px solid var(--accent);
+          padding: 0.4rem 0.8rem; margin-bottom: 0.5rem; border-radius: 0 4px 4px 0; }
+.scroll-table-wrap { max-height: 420px; overflow-y: auto; border: 1px solid var(--border);
+                     border-radius: 4px; }
+.scroll-table-wrap table { margin-bottom: 0; }
+.scroll-table-wrap thead th { position: sticky; top: 0; background: #161b22; z-index: 1; }
+.page-nav { display: flex; justify-content: space-between; margin-top: 2rem;
+            padding-top: 1rem; border-top: 1px solid var(--border); gap: 1rem; }
+.page-nav a { color: var(--accent); font-size: 0.9em; }
+html.ko-active .en-only { display: none !important; }
+html.ko-active .ko-only { display: block !important; }
+.ko-only { display: none; }
+span.ko-only, .sidebar-logo a span.ko-only { display: none; }
+html.ko-active span.ko-only { display: inline !important; }
+.lang-btn { background: transparent; color: var(--muted); border: 1px solid var(--border);
+            border-radius: 4px; padding: 3px 9px; font-size: 0.8em; cursor: pointer; }
+.lang-btn.active { border-color: var(--teal); color: var(--teal); }
+details { margin-bottom: 0.8rem; }
+details summary { color: var(--muted); cursor: pointer; }
+@media (max-width: 1024px) { .bd-sidebar-secondary { display: none; } }
+@media (max-width: 768px) {
+  .bd-sidebar-primary { display: none; }
+  .bd-root { flex-direction: column; height: auto; overflow: visible; }
+  .bd-main { overflow: visible; }
+  .bd-article { overflow: visible; padding: 1rem; }
+  .stat-grid { grid-template-columns: repeat(2, 1fr); }
+  .sp-grid { grid-template-columns: 1fr; }
+}
+</style>
+
+<script>
+MathJax = { tex: { inlineMath: [['$','$']], displayMath: [['$$','$$']] },
+            options: { skipHtmlTags: ['script','noscript','style','textarea','pre','code'] } };
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<script>
+function toggleLanguage() {
+  const html = document.documentElement;
+  const isKo = html.classList.toggle('ko-active');
+  document.querySelectorAll('.lang-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.lang === (isKo ? 'ko' : 'en'));
+  });
+  localStorage.setItem('survey-lang', isKo ? 'ko' : 'en');
+}
+document.addEventListener('DOMContentLoaded', function() {
+  const saved = localStorage.getItem('survey-lang');
+  if (saved === 'ko') {
+    document.documentElement.classList.add('ko-active');
+    document.querySelectorAll('.lang-btn').forEach(b =>
+      b.classList.toggle('active', b.dataset.lang === 'ko'));
+  } else {
+    document.querySelectorAll('[data-lang="en"]').forEach(b => b.classList.add('active'));
+  }
+  const article = document.querySelector('.bd-article');
+  const sections = Array.from(document.querySelectorAll('.section-anchor[id]'));
+  const sideLinks = Array.from(document.querySelectorAll('.bd-sidebar-primary .sidebar-nav-link'));
+  const tocLinks = Array.from(document.querySelectorAll('.bd-sidebar-secondary .mini-toc a'));
+  if (!article || !sections.length) return;
+  function current() {
+    let id = sections[0].id;
+    const scrollTop = article.scrollTop + 60;
+    sections.forEach(function(s) { if (s.offsetTop <= scrollTop) id = s.id; });
+    return id;
+  }
+  function update() {
+    const id = current();
+    sideLinks.forEach(function(a) {
+      a.classList.toggle('active', a.getAttribute('href') === '#' + id);
+    });
+    tocLinks.forEach(function(a) {
+      a.classList.toggle('toc-active', a.getAttribute('href') === '#' + id);
+    });
+  }
+  article.addEventListener('scroll', update, { passive: true });
+  update();
+});
+</script>
+
+</head>
+<body>
+<div class="bd-root">
+
+<nav class="bd-sidebar-primary">
+  <div class="sidebar-logo">
+    <a href="../index.html">&#x2B21; <span class="en-only">Exposure-Frequency Control Survey</span><span class="ko-only">Exposure-빈도 제어 문헌 조사</span></a>
+  </div>
+  <div class="sidebar-section"><span class="en-only">Overview</span><span class="ko-only">개요</span></div>
+  <a href="../index.html#overview" class="sidebar-nav-link"><span class="en-only">Survey Hub</span><span class="ko-only">조사 허브</span></a>
+  <a href="../index.html#answers" class="sidebar-nav-link"><span class="en-only">Key Answers</span><span class="ko-only">핵심 답변</span></a>
+  <div class="sidebar-section"><span class="en-only">Sub-Problems</span><span class="ko-only">세부 문제</span></div>
+<a href="../sp1_fairness-of-exposure-fixed-scores.html" class="sidebar-nav-link">SP1: <span class="en-only">Exposure fairness</span><span class="ko-only">Exposure 공정성</span></a>
+<a href="../sp2_2024-2026-frontier-llm-era.html" class="sidebar-nav-link">SP2: <span class="en-only">2024–26 frontier / LLM</span><span class="ko-only">2024–26 최전선 / LLM</span></a>
+<a href="../sp3_postproc-rerank-blackbox.html" class="sidebar-nav-link">SP3: <span class="en-only">Post-proc re-ranking</span><span class="ko-only">Post-proc re-ranking</span></a>
+<a href="../sp4_stochastic-ranking-policies.html" class="sidebar-nav-link">SP4: <span class="en-only">Stochastic policies</span><span class="ko-only">확률적 정책</span></a>
+<a href="../sp5_amortized-equity-attention.html" class="sidebar-nav-link">SP5: <span class="en-only">Amortized fairness</span><span class="ko-only">Amortized 공정성</span></a>
+<a href="../sp6_bandit-exposure-allocation.html" class="sidebar-nav-link">SP6: <span class="en-only">Bandit allocation</span><span class="ko-only">Bandit 배분</span></a>
+<a href="../sp7_capping-pacing-feeds-ads.html" class="sidebar-nav-link active">SP7: <span class="en-only">Capping &amp; pacing</span><span class="ko-only">Capping·pacing</span></a>
+<a href="../sp8_popularity-debias-calibration.html" class="sidebar-nav-link">SP8: <span class="en-only">Debiasing &amp; calibration</span><span class="ko-only">Debiasing·calibration</span></a>
+<a href="../sp9_ecosystems-creator-incentives.html" class="sidebar-nav-link">SP9: <span class="en-only">Ecosystems &amp; creators</span><span class="ko-only">생태계·creator</span></a>
+<a href="../sp10_llm-exposure-feedback-loops.html" class="sidebar-nav-link">SP10: <span class="en-only">LLM feedback loops</span><span class="ko-only">LLM feedback loop</span></a>
+<a href="../sp11_strategyproof-exposure.html" class="sidebar-nav-link">SP11: <span class="en-only">Strategy-proofness</span><span class="ko-only">Strategy-proofness</span></a>
+
+  <div class="sidebar-section"><span class="en-only">Synthesis</span><span class="ko-only">종합</span></div>
+  <a href="../conclusion.html" class="sidebar-nav-link"><span class="en-only">Conclusion</span><span class="ko-only">결론</span></a>
+  <a href="../thinking-process.html" class="sidebar-nav-link"><span class="en-only">Thinking Process</span><span class="ko-only">추론 과정</span></a>
+</nav>
+  <div class="bd-main">
+<div class="article-header-bar"><div class="header-brand"><a href="../index.html"><span class="en-only">Exposure-Frequency Control Survey</span><span class="ko-only">Exposure-빈도 제어 문헌 조사</span></a></div><nav class="breadcrumb"><a href="../index.html"><span class="en-only">Survey</span><span class="ko-only">조사</span></a><span>&rsaquo;</span><a href="../sp7_capping-pacing-feeds-ads.html">SP7</a><span>&rsaquo;</span><span>[71] Percentile Risk-Constrained Budget Pacin</span></nav><button class="lang-btn" data-lang="en" onclick="toggleLanguage()">EN</button><button class="lang-btn" data-lang="ko" onclick="toggleLanguage()">KO</button></div>
+    <div class="bd-article">
+<section id="header" class="section-anchor"><div class="paper-meta">
+<h1 style="margin-bottom:0.3rem">Percentile Risk-Constrained Budget Pacing for Guaranteed Display Advertising in Online Optimization</h1>
+<p style="margin:0.3rem 0;color:var(--muted)">Dai et al. · arXiv · 2023 · 5 citations</p>
+<p style="margin:0.3rem 0"><a href="https://arxiv.org/abs/2312.06174" target="_blank">arXiv:2312.06174</a> · <a href="https://arxiv.org/pdf/2312.06174.pdf" target="_blank">PDF</a> · SP: <a href="../sp7_capping-pacing-feeds-ads.html">SP7</a></p>
+<p><span class="pill pill-p4">P4</span><span class="pill" style="background:rgba(255,255,255,0.05);color:var(--muted)">Track A</span></p>
+</div>
+<div class="card ko-only" style="border-color:var(--teal)"><div class="section-label">한 줄 요약</div><p style="margin:0">보장형 디스플레이 광고의 percentile 위험 제약 budget pacing(RCPacing). 명시적으로 Dual Mirror Descent이며 O(√T) regret — 조사에서 pacing=dual-targeting 등가성의 결정적 증거이자, percentile 공간 dual이라는 드리프트 강건화 장치를 제공한다.</p></div>
+</section>
+<section id="problem" class="section-anchor">
+<div class="card"><div class="section-label"><span class="en-only">Problem</span><span class="ko-only">해결하려는 문제</span></div><p>Smooth pacing control for guaranteed-display (GD) ad campaigns: publishers must deliver each campaign's contracted impression count evenly over the period, but existing techniques fail under (a) huge budget disparities across campaigns (thousands to millions of daily impressions), (b) drift in the user-arrival distribution, and (c) dynamic supply/demand shifts (campaigns going on/offline). Existing smooth-pacing work targets RTB ads and is incompatible with guaranteed allocation; GD-allocation work treats smoothness as a fixed side term, never dynamically adjusted or evaluated as a key metric. Dual-based methods (DMD) are additionally risky because a campaign whose dual variable sits at a high percentile of the impression-quality distribution suffers disproportionate participation-rate swings from small dual shifts or distribution drift (Theorems 2–3).</p></div>
+</section>
+<section id="solution" class="section-anchor">
+<div class="card"><div class="section-label"><span class="en-only">Solution / Contribution</span><span class="ko-only">해결책 / 기여</span></div><p>RCPacing = DMD-style dual allocation where dual variables live in the percentile space of each campaign's impression-performance (CTR) distribution, jointly with probabilistic throttling that keeps duals inside a low-risk percentile region. Components (Algorithm 2):</p>
+<ol><li>Parametric percentile transformation: Box-Cox + normal CDF maps CTRs to uniform percentile space (forward, eq. 11); duals are updated in percentile space and mapped back for serving (backward, eq. 12).</li><li>PTR factor decoupling: $PTR_{ij} = PTR^{base}_j \cdot fp(\bar\alpha_j) \cdot fv(\bar\alpha_j,\bar v_{ij})$ — base rate from budget/audience-size, exponential decay above the safety bound $P_{ub}$, linear performance-based non-uniform pacing (eqs. 13–18).</li><li>Emergency PTR (ePTR) proportional controller capping spend speed at 2x expected (eqs. 20–21), plus cold-start initial trial rate.</li><li>Adaptive gradient clipping using an importance-sampling bound $\psi_j^{-1}$ on the percentile update (eqs. 22–26).</li><li>Modified Itakura-Saito Bregman divergence so dual steps shrink near percentile 1.0 (eq. 28).</li></ol>
+<p>Theory: $O(\sqrt T)$ dynamic regret when horizon and budgets scale proportionally (Theorem 1); Theorems 2–3 prove higher percentile ⇒ greater PR fluctuation under dual shift and under Beta-distribution drift.</p></div>
+<div class="card"><div class="section-label"><span class="en-only">Key Results</span><span class="ko-only">주요 결과</span></div><ul><li>Offline (600K impressions, 300 GD ads, 50 periods): unsmoothness 6.37 ± 0.72 vs PDOA 15.70 (−59.4%) and AUAF 12.95 (−50.8%), at 99.8% delivery rate.</li><li>Offline CTR 7.46% vs PDOA 6.06% (+23.1%) and AUAF 5.14% (+45.1%); Smart Pacing has higher CTR (7.88%) but only 95.9% delivery — unacceptable for guaranteed contracts.</li><li>Online 2-week A/B on Taobao brand advertising: +35.3% UI and +23.4% CTR vs PDOA; all delivery rates &gt; 99.5%.</li><li>Ablations: Itakura-Saito divergence improves smoothness 3.74% over Euclidean at $P_{ub}=90\%$; gradient clipping cuts unsmoothness 11.54 → 8.26 at large step size $\eta=0.8$.</li></ul></div>
+<details><summary><span class="en-only">5Cs Analysis</span><span class="ko-only">5Cs 분석</span></summary><div class="card" style="margin-top:0.5rem"><p><strong>Category</strong>: new method (system/engineering with regret analysis) <strong>Context</strong>: builds directly on Dual Mirror Descent (Balseiro, Lu &amp; Mirrokni 2020); compared against Smart Pacing (Xu et al. 2015), AUAF (Cheng et al. 2022), PDOA (Zhou et al. 2021). Within this survey it is a Track-A foundation for exposure pacing / delivery-frequency control mechanisms. <strong>Correctness</strong>: offline results report mean ± std over 50 rounds with randomized budget scaling (0.8–1.2x); assumptions include known-IID arrivals and Beta-distributed impression quality — both stated. [SKIM - proofs not verified line-by-line] <strong>Contributions</strong>: (1) percentile-space dual pacing with risk analysis linking percentile position to non-smoothness risk; (2) $O(\sqrt T)$ regret in the transformed space; (3) deployed system with online A/B validation on Taobao. <strong>Clarity</strong>: algorithm pseudocode, hyper-parameter table, and public code/dataset make it largely reproducible.</p></div></details>
+<details><summary><span class="en-only">Contribution vs Claim</span><span class="ko-only">기여 대 주장</span></summary><div class="card" style="margin-top:0.5rem"><p>[SKIM - verify in deep read] Stated claims (regret bound, drift resilience) appear matched by an appendix proof and drift-motivated design, but whether the $O(\sqrt T)$ result covers the full deployed algorithm (with ePTR and clipping active) or only the idealized percentile-DMD core needs the appendix read; the drift-resilience claim is argued via Theorems 2–3 plus the skew factor $\epsilon$, with no dedicated drift-stress experiment visible in the main text.</p></div></details>
+</section>
+<section id="results" class="section-anchor">
+<details><summary><span class="en-only">Concepts Introduced</span><span class="ko-only">도입된 개념</span></summary><div class="card" style="margin-top:0.5rem"><p><strong>Probabilistic throttling / pass-through rate (PTR)</strong></p>
+<ul><li><strong>What it computes</strong>: for each (request i, campaign j) pair, a probability $PTR_{ij} \in [0,1]$ that the campaign is allowed to participate in the allocation auction at all; the campaign's bid is randomly zeroed with probability $1 - PTR_{ij}$.</li><li><strong>Why it was created</strong>: bid modification alone controls spend poorly under dramatic changes in the bid win-rate curve; throttling decouples spend control from bid calculation (prior work: Agarwal et al. 2014, Xu et al. 2015).</li><li><strong>Concrete example</strong>: eq. 13 decouples $PTR_{ij} = PTR^{base}_j \cdot fp(\bar\alpha_j) \cdot fv(\bar\alpha_j, \bar v_{ij})$, where $fv = 10(\bar v_{ij} - \bar\alpha_j) + 1$ gives higher pass-through to higher-CTR traffic.</li><li><strong>How it is used in this paper</strong>: the pacing-control knob that constrains dual variables inside the "low-risk" percentile region and implements smooth delivery.</li></ul>
+<p><strong>Percentile-space transformation of dual variables (RCPacing core)</strong></p>
+<ul><li><strong>What it computes</strong>: forward: predicted CTR $v_{ij}$ → Box-Cox transform (MLE-fitted $\lambda^*_j$) → standardize → normal CDF $\Phi$ → percentile value $\bar v_{ij} \in [0,1]$ (eq. 11, with a skew factor $\epsilon$ toward the middle percentiles for drift robustness). Backward: percentile dual $\bar\alpha_j$ → $\Phi^{-1}$ → inverse Box-Cox → original dual $\alpha_j$ (eq. 12).</li><li><strong>Why it was created</strong>: dual variables in raw CTR space have wildly different scales across campaigns and are risk-inhomogeneous — the same dual shift causes much larger participation-rate swings at high percentiles (proved as Theorems 2–3).</li><li><strong>Concrete example</strong>: figure 2 — under Beta(2,8), a dual at percentile giving 1.0% PR vs one giving 10.0% PR: shifting both left by 0.1 changes PR to 4.2% vs 25.8% respectively.</li><li><strong>How it is used in this paper</strong>: all dual updates and PTR fine-tuning happen in the uniform percentile space; a safe upper bound $P_{ub}$ (e.g. 90%) caps how deep into the high-risk percentile region a campaign's dual may sit.</li></ul>
+<p><strong>Dual Mirror Descent (DMD)</strong></p>
+<ul><li><strong>What it computes</strong>: online allocation via Lagrangian duals — assign each arriving impression to $\arg\max_j \{v_j^{(t)} - \alpha_j^{(t)}\}$ among non-exhausted campaigns, then mirror-descent-update $\alpha$ with stochastic subgradient $-\tilde x^{(t)} + \rho$ (Balseiro, Lu &amp; Mirrokni 2020).</li><li><strong>Why it was created</strong>: general online allocation under budget constraints with $O(\sqrt T)$ regret; prior paper's method, reused here as the backbone.</li><li><strong>Concrete example</strong>: Algorithm 1 in the paper.</li><li><strong>How it is used in this paper</strong>: RCPacing = DMD run in percentile space + throttling + clipping; also the primary baseline.</li></ul>
+<p><strong>Modified Itakura-Saito divergence for dual updates</strong></p>
+<ul><li><strong>What it computes</strong>: reference function $h(\alpha) = -\ln(1.5 - \alpha)$ in the mirror-descent update, which makes the effective step size shrink as $\bar\alpha_j \to 1$ (eq. 28). [SKIM - verify derivation details in deep read]</li><li><strong>Why it was created</strong>: PR fluctuates more per unit dual shift at high percentiles, so the update magnitude should decrease there; Euclidean $h(\alpha)=\alpha^2$ gives uniform steps.</li><li><strong>Concrete example</strong>: ablation — 3.74% smoothness improvement over Euclidean at $P_{ub}=90\%$.</li><li><strong>How it is used in this paper</strong>: the Bregman-divergence choice inside RCPacing's dual update.</li></ul>
+<p><strong>Unsmoothness index (UI)</strong></p>
+<ul><li><strong>What it computes</strong>: $\frac1M \sum_j \sqrt{\frac1T \sum_t (\tilde x^{(t)}_j - \rho_j)^2}$ — per-campaign RMS deviation of actual delivery from the ideal even-paced rate, averaged over campaigns (eq. 31).</li><li><strong>Why it was created</strong>: prior GD-allocation work treats smoothness as a fixed regularizer, not an evaluated metric.</li><li><strong>Concrete example</strong>: RCPacing 6.37 ± 0.72 vs DMD 15.71 ± 1.46 offline.</li><li><strong>How it is used in this paper</strong>: primary evaluation metric alongside delivery rate and average CTR.</li></ul></div></details>
+<details><summary><span class="en-only">Implementation Feasibility</span><span class="ko-only">구현 가능성</span></summary><div class="card" style="margin-top:0.5rem"><ul><li><strong>Needs</strong>: streaming request log with per-campaign predicted scores; historical logs to fit Box-Cox $\lambda^*_j$, $\mu_j$, $\sigma_j$; a feedback-control loop with periodic dual updates. Compute is light (closed-form transforms + bisection).</li><li><strong>Code</strong>: available at https://github.com/danifree/RCPacing (dataset + all baselines included).</li><li><strong>Modifications</strong>: replace campaign budgets with exposure-frequency targets; replace single-slot win-out with slot-position allocation for ranked lists; refit percentile transforms per item/provider group.</li><li><strong>Unknowns</strong>: missing link: behavior when the impression-quality distribution is far from Beta/Box-Cox-normalizable (e.g. heavy multimodality); missing link: regret guarantee under adversarial (non-IID) arrivals.</li></ul></div></details>
+<details><summary><span class="en-only">Follow-up Papers</span><span class="ko-only">관련 후속 논문</span></summary><div class="card" style="margin-top:0.5rem"><ul><li>Balseiro, Lu &amp; Mirrokni, "Dual Mirror Descent for Online Allocation Problems" (ICML 2020) — the backbone algorithm and regret framework RCPacing transforms into percentile space.</li><li>Xu et al., "Smart Pacing for Effective Online Ad Campaign Optimization" (KDD 2015) — the probabilistic-throttling predecessor whose performance-layered pacing RCPacing continuizes.</li><li>Cheng et al., "An Adaptive Unified Allocation Framework for Guaranteed Display Advertising" (WSDM 2022) — the fixed-smoothness-term dual baseline (AUAF) this paper beats on both UI and CTR.</li><li>Zhou et al., "A Primal-Dual Online Algorithm for Online Matching Problem in Dynamic Environments" (AAAI 2021) — bid-modification-based smoothness baseline (PDOA), the strongest dynamic-environment comparator.</li></ul></div></details>
+</section>
+<section id="delta" class="section-anchor">
+<div class="card"><div class="section-label"><span class="en-only">Condition Delta — transfer to our setting</span><span class="ko-only">조건 차이 — 우리 설정으로의 전이</span></div><p><strong>Paper's setting</strong>: inputs = streaming ad requests with DNN-predicted CTR per (impression, campaign); outputs = one-hot allocation of each impression to a GD campaign; conditions = known-IID arrivals, Beta-distributed impression quality, hard budget (impression-count) constraints, publisher-side control, billions of daily requests (Taobao). <strong>Our setting</strong> (SP7 — exposure/frequency control in ranking systems): exposure frequency as a controlled or proxy quantity in a general recommender/ranking pipeline; no guaranteed-contract structure; exposure targets may be soft (fairness/calibration) rather than hard contractual budgets. <strong>Differences</strong>:</p>
+<ul><li>Guaranteed hard budgets vs soft exposure targets: the throttling + dual machinery transfers, but the over-spend irreversibility framing weakens — missing link</li><li>Known-IID arrival assumption vs non-stationary user traffic in general ranking: paper partially addresses via skew factor and ePTR — resolved: percentile-space standardization is itself the drift-robustness device</li><li>CTR as the single quality score vs multi-objective ranking scores: reference only</li><li>Publisher-side impression allocation (one slot, one winner) vs top-k ranked lists: missing link — the one-hot single-slot assumption is load-bearing in the regret proof</li><li>[SKIM - verify] whether percentile standardization of score distributions transfers as an exposure-frequency normalization trick for heterogeneous item popularity</li></ul></div>
+</section>
+<div class="page-nav"><a href="70_SoftFreqCap.html">&larr; [70] SoftFreqCap</a><a href="../sp7_capping-pacing-feeds-ads.html">&uarr; SP7</a><a href="72_LinkedInJobsPacing.html">[72] LinkedInJobsPacing &rarr;</a></div>
+    </div>
+  </div>
+<nav class="bd-sidebar-secondary"><div class="mini-toc-label"><span class="en-only">On this page</span><span class="ko-only">이 페이지</span></div><ul class="mini-toc"><li><a href="#header"><span class="en-only">Paper info</span><span class="ko-only">논문 정보</span></a></li><li><a href="#problem"><span class="en-only">Problem</span><span class="ko-only">문제</span></a></li><li><a href="#solution"><span class="en-only">Solution &amp; Results</span><span class="ko-only">해결책 · 결과</span></a></li><li><a href="#results"><span class="en-only">Concepts &amp; Follow-ups</span><span class="ko-only">개념 · 후속</span></a></li><li><a href="#delta"><span class="en-only">Condition Delta</span><span class="ko-only">조건 차이</span></a></li></ul></nav>
+</div>
+</body>
+</html>

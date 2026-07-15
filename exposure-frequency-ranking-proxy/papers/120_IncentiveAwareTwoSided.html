@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>[120] Incentive-Aware Recommender Systems in Two-Sided Markets — Exposure-Frequency Control Survey</title>
+
+<style>
+:root {
+  --bg: #0d1117; --card: #161b22; --border: #30363d;
+  --text: #e6edf3; --muted: #7d8590; --accent: #58a6ff;
+  --teal: #39d0c7; --green: #3fb950; --yellow: #d29922;
+  --red: #f85149; --purple: #bc8cff; --orange: #e3b341;
+  --sidebar-w: 262px; --toc-w: 210px; --hdr-h: 48px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+body { font-family: -apple-system, sans-serif; background: var(--bg);
+       color: var(--text); line-height: 1.6; }
+.bd-root { display: flex; height: 100vh; overflow: hidden; }
+.bd-sidebar-primary {
+  width: var(--sidebar-w); min-width: var(--sidebar-w);
+  overflow-y: auto; background: var(--card);
+  border-right: 1px solid var(--border);
+  padding: 0.75rem 0; flex-shrink: 0;
+}
+.bd-sidebar-primary::-webkit-scrollbar { width: 4px; }
+.bd-sidebar-primary::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+.bd-main { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-width: 0; }
+.article-header-bar {
+  height: var(--hdr-h); background: var(--card);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; padding: 0 1.5rem;
+  gap: 1rem; flex-shrink: 0;
+}
+.header-brand { color: var(--teal); font-weight: bold; font-size: 0.95em;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 1; }
+.header-brand a { color: inherit; text-decoration: none; }
+.breadcrumb { color: var(--muted); font-size: 0.82em; display: flex;
+  align-items: center; gap: 0.3rem; flex-shrink: 0; }
+.breadcrumb a { color: var(--accent); text-decoration: none; }
+.breadcrumb span { color: var(--border); }
+.bd-article { flex: 1; overflow-y: auto; padding: 2rem 2.5rem; }
+.bd-article::-webkit-scrollbar { width: 6px; }
+.bd-article::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+.bd-sidebar-secondary {
+  width: var(--toc-w); min-width: var(--toc-w);
+  overflow-y: auto; border-left: 1px solid var(--border);
+  padding: 1rem 0.75rem; flex-shrink: 0;
+}
+.bd-sidebar-secondary::-webkit-scrollbar { width: 4px; }
+.bd-sidebar-secondary::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+.sidebar-logo { padding: 0.5rem 1rem 0.75rem;
+  border-bottom: 1px solid var(--border); margin-bottom: 0.5rem; }
+.sidebar-logo a { color: var(--teal); font-weight: bold; font-size: 0.95em;
+  text-decoration: none; display: block; }
+.sidebar-section { color: var(--muted); font-size: 0.72em; font-weight: bold;
+  text-transform: uppercase; letter-spacing: 0.07em;
+  padding: 0.7rem 1rem 0.25rem; }
+.sidebar-nav-link { display: block; padding: 0.28rem 1rem 0.28rem 1.25rem;
+  color: var(--muted); font-size: 0.875em; text-decoration: none; }
+.sidebar-nav-link:hover { color: var(--text); background: rgba(255,255,255,0.03); }
+.sidebar-nav-link.active { color: var(--teal);
+  border-left: 2px solid var(--teal);
+  padding-left: calc(1.25rem - 2px); background: rgba(57,208,199,0.05); }
+.mini-toc-label { color: var(--muted); font-size: 0.72em; font-weight: bold;
+  text-transform: uppercase; letter-spacing: 0.07em; padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border); margin-bottom: 0.5rem; }
+.mini-toc { list-style: none; }
+.mini-toc li a { display: block; padding: 0.22rem 0;
+  color: var(--muted); font-size: 0.83em; text-decoration: none;
+  border-left: 2px solid transparent; padding-left: 0.5rem; }
+.mini-toc li a:hover { color: var(--text); }
+.mini-toc li a.toc-active { color: var(--teal); border-left-color: var(--teal); }
+.section-anchor { scroll-margin-top: calc(var(--hdr-h) + 8px); }
+h1 { color: var(--teal); font-size: 1.7em; margin-bottom: 0.5rem; line-height:1.3; }
+h2 { color: var(--teal); font-size: 1.25em; margin: 1.5rem 0 0.6rem; }
+h3 { color: var(--teal); font-size: 1.05em; margin: 1.2rem 0 0.4rem; }
+h4 { color: var(--teal); font-size: 0.95em; margin: 1rem 0 0.3rem; }
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+p { margin-bottom: 0.8rem; }
+ul, ol { margin: 0 0 0.8rem 1.4rem; }
+li { margin-bottom: 0.3rem; }
+code { background: rgba(255,255,255,0.06); border-radius: 3px; padding: 1px 4px; font-size: 0.9em; }
+blockquote { border-left: 3px solid var(--border); color: var(--muted);
+  padding: 0.2rem 0.8rem; margin-bottom: 0.8rem; }
+.card { background: var(--card); border: 1px solid var(--border);
+        border-radius: 8px; padding: 1.2rem; margin-bottom: 1rem; }
+table { width: 100%; border-collapse: collapse; font-size: 0.9em; margin-bottom: 0.8rem; }
+th { background: var(--card); color: var(--teal); padding: 8px;
+     border: 1px solid var(--border); text-align: left; }
+td { padding: 8px; border: 1px solid var(--border); vertical-align: top; }
+tr:nth-child(even) td { background: rgba(0,0,0,0.2); }
+.stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+             gap: 1rem; margin-bottom: 1.5rem; }
+.stat-box { background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+            padding: 1rem; text-align: center; }
+.stat-num { font-size: 2rem; font-weight: bold; color: var(--teal); }
+.stat-label { color: var(--muted); font-size: 0.85em; margin-top: 0.2rem; }
+.sp-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+           gap: 1rem; margin: 1rem 0; }
+.sp-card { background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+           padding: 1.2rem; cursor: pointer; transition: border-color 0.15s; height:100%; }
+.sp-card:hover { border-color: var(--teal); }
+.sp-card h3 { margin: 0 0 0.5rem; color: var(--teal); font-size: 1em; }
+.sp-card p { margin: 0; color: var(--muted); font-size: 0.88em; }
+.sp-badge { display: inline-block; background: rgba(57,208,199,0.1); color: var(--teal);
+            border-radius: 4px; padding: 2px 8px; font-size: 0.8em; margin-bottom: 0.5rem; }
+.paper-meta { color: var(--muted); font-size: 0.9em; margin-bottom: 1.5rem; }
+.paper-meta a { color: var(--accent); }
+.section-label { color: var(--teal); font-weight: bold; font-size: 0.85em;
+                 text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.4rem; }
+.pill { display: inline-block; border-radius: 4px; padding: 0.15rem 0.6rem;
+        font-size: 0.8em; font-weight: bold; margin-right: 0.4rem; }
+.pill-p0 { background: rgba(63,185,80,0.2); color: var(--green); }
+.pill-p1 { background: rgba(57,208,199,0.15); color: var(--teal); }
+.pill-p2 { background: rgba(210,153,34,0.2); color: var(--yellow); }
+.pill-p3 { background: rgba(188,140,255,0.2); color: var(--purple); }
+.pill-p4 { background: rgba(125,133,144,0.2); color: var(--muted); }
+.delta-row { margin: 0.4rem 0; padding: 0.4rem 0.8rem;
+             border-left: 3px solid var(--border); border-radius: 0 4px 4px 0; }
+.chain { position: relative; padding-left: 2rem; }
+.chain::before { content: ''; position: absolute; left: 0.95rem; top: 0;
+                 bottom: 0; width: 2px; background: var(--border); }
+.chain-node { position: relative; margin-bottom: 2rem; }
+.chain-node::before { content: ''; position: absolute; left: -1.55rem;
+                      top: 1.1rem; width: 12px; height: 12px;
+                      border-radius: 50%; background: var(--teal); }
+.chain-num { display: inline-block; width: 28px; height: 28px; background: var(--teal);
+             color: #000; border-radius: 50%; text-align: center; line-height: 28px;
+             font-weight: bold; font-size: 0.85em; margin-right: 0.6rem; flex-shrink: 0; }
+.chain-q { font-weight: bold; color: var(--text); margin: 0.4rem 0 0.3rem; font-size: 1em; }
+.chain-papers { color: var(--muted); font-size: 0.85em; margin-bottom: 0.6rem; }
+.chain-start { background: var(--card); border: 1px solid var(--teal);
+               border-radius: 8px; padding: 1rem; margin-bottom: 2rem; }
+.chain-start h3 { margin: 0 0 0.5rem; color: var(--teal); }
+.chain-converge { background: var(--card); border: 1px solid var(--green);
+                  border-radius: 8px; padding: 1rem; margin-top: 1rem; }
+.chain-converge h3 { margin: 0 0 0.5rem; color: var(--green); }
+.chain-label { display: inline-block; border-radius: 4px; padding: 0.15rem 0.6rem;
+               font-size: 0.8em; font-weight: bold; margin-right: 0.4rem; }
+.chain-status { border-radius: 0 4px 4px 0; padding: 0.5rem 0.8rem;
+                margin: 0.35rem 0; font-size: 0.88em; }
+.chain-status ul { margin: 0.3rem 0 0 1.2rem; padding: 0; }
+.chain-status li { margin-bottom: 0.25rem; }
+.chain-status.solved  { background: rgba(63,185,80,0.07);  border-left: 3px solid var(--green); }
+.chain-status.remains { background: rgba(210,153,34,0.07); border-left: 3px solid var(--yellow); }
+.chain-status.added   { background: rgba(248,81,73,0.07);  border-left: 3px solid var(--red); }
+.chain-status.pivoted { background: rgba(188,140,255,0.1); border-left: 3px solid var(--purple); }
+.chain-label.solved   { background: rgba(63,185,80,0.2);  color: var(--green); }
+.chain-label.remains  { background: rgba(210,153,34,0.2); color: var(--yellow); }
+.chain-label.added    { background: rgba(248,81,73,0.2);  color: var(--red); }
+.chain-label.pivoted  { background: rgba(188,140,255,0.2); color: var(--purple); }
+.chain-status.expected { background: rgba(88,166,255,0.07);  border-left: 3px solid var(--accent); }
+.chain-label.expected  { background: rgba(88,166,255,0.2);   color: var(--accent); }
+.chain-status.revised  { background: rgba(57,208,199,0.07);  border-left: 3px solid var(--teal); }
+.chain-label.revised   { background: rgba(57,208,199,0.2);   color: var(--teal); }
+.concept-box { border-left: 4px solid var(--teal); background: #0d1f1f;
+               border-radius: 4px; padding: 1.2rem; margin-bottom: 1.2rem; }
+.concept-name { font-weight: bold; color: var(--teal); font-size: 1.05em; margin-bottom: 0.5rem; }
+.hypothesis { border-left: 4px solid var(--teal); background: #0d1f1f;
+              border-radius: 4px; padding: 1rem; margin: 1rem 0; }
+.recommendation { border-left: 4px solid var(--purple); background: #1a0f2e;
+                  border-radius: 4px; padding: 1rem; margin: 1rem 0; }
+.rq-row { background: rgba(88,166,255,0.05); border-left: 3px solid var(--accent);
+          padding: 0.4rem 0.8rem; margin-bottom: 0.5rem; border-radius: 0 4px 4px 0; }
+.scroll-table-wrap { max-height: 420px; overflow-y: auto; border: 1px solid var(--border);
+                     border-radius: 4px; }
+.scroll-table-wrap table { margin-bottom: 0; }
+.scroll-table-wrap thead th { position: sticky; top: 0; background: #161b22; z-index: 1; }
+.page-nav { display: flex; justify-content: space-between; margin-top: 2rem;
+            padding-top: 1rem; border-top: 1px solid var(--border); gap: 1rem; }
+.page-nav a { color: var(--accent); font-size: 0.9em; }
+html.ko-active .en-only { display: none !important; }
+html.ko-active .ko-only { display: block !important; }
+.ko-only { display: none; }
+span.ko-only, .sidebar-logo a span.ko-only { display: none; }
+html.ko-active span.ko-only { display: inline !important; }
+.lang-btn { background: transparent; color: var(--muted); border: 1px solid var(--border);
+            border-radius: 4px; padding: 3px 9px; font-size: 0.8em; cursor: pointer; }
+.lang-btn.active { border-color: var(--teal); color: var(--teal); }
+details { margin-bottom: 0.8rem; }
+details summary { color: var(--muted); cursor: pointer; }
+@media (max-width: 1024px) { .bd-sidebar-secondary { display: none; } }
+@media (max-width: 768px) {
+  .bd-sidebar-primary { display: none; }
+  .bd-root { flex-direction: column; height: auto; overflow: visible; }
+  .bd-main { overflow: visible; }
+  .bd-article { overflow: visible; padding: 1rem; }
+  .stat-grid { grid-template-columns: repeat(2, 1fr); }
+  .sp-grid { grid-template-columns: 1fr; }
+}
+</style>
+
+<script>
+MathJax = { tex: { inlineMath: [['$','$']], displayMath: [['$$','$$']] },
+            options: { skipHtmlTags: ['script','noscript','style','textarea','pre','code'] } };
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<script>
+function toggleLanguage() {
+  const html = document.documentElement;
+  const isKo = html.classList.toggle('ko-active');
+  document.querySelectorAll('.lang-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.lang === (isKo ? 'ko' : 'en'));
+  });
+  localStorage.setItem('survey-lang', isKo ? 'ko' : 'en');
+}
+document.addEventListener('DOMContentLoaded', function() {
+  const saved = localStorage.getItem('survey-lang');
+  if (saved === 'ko') {
+    document.documentElement.classList.add('ko-active');
+    document.querySelectorAll('.lang-btn').forEach(b =>
+      b.classList.toggle('active', b.dataset.lang === 'ko'));
+  } else {
+    document.querySelectorAll('[data-lang="en"]').forEach(b => b.classList.add('active'));
+  }
+  const article = document.querySelector('.bd-article');
+  const sections = Array.from(document.querySelectorAll('.section-anchor[id]'));
+  const sideLinks = Array.from(document.querySelectorAll('.bd-sidebar-primary .sidebar-nav-link'));
+  const tocLinks = Array.from(document.querySelectorAll('.bd-sidebar-secondary .mini-toc a'));
+  if (!article || !sections.length) return;
+  function current() {
+    let id = sections[0].id;
+    const scrollTop = article.scrollTop + 60;
+    sections.forEach(function(s) { if (s.offsetTop <= scrollTop) id = s.id; });
+    return id;
+  }
+  function update() {
+    const id = current();
+    sideLinks.forEach(function(a) {
+      a.classList.toggle('active', a.getAttribute('href') === '#' + id);
+    });
+    tocLinks.forEach(function(a) {
+      a.classList.toggle('toc-active', a.getAttribute('href') === '#' + id);
+    });
+  }
+  article.addEventListener('scroll', update, { passive: true });
+  update();
+});
+</script>
+
+</head>
+<body>
+<div class="bd-root">
+
+<nav class="bd-sidebar-primary">
+  <div class="sidebar-logo">
+    <a href="../index.html">&#x2B21; <span class="en-only">Exposure-Frequency Control Survey</span><span class="ko-only">Exposure-빈도 제어 문헌 조사</span></a>
+  </div>
+  <div class="sidebar-section"><span class="en-only">Overview</span><span class="ko-only">개요</span></div>
+  <a href="../index.html#overview" class="sidebar-nav-link"><span class="en-only">Survey Hub</span><span class="ko-only">조사 허브</span></a>
+  <a href="../index.html#answers" class="sidebar-nav-link"><span class="en-only">Key Answers</span><span class="ko-only">핵심 답변</span></a>
+  <div class="sidebar-section"><span class="en-only">Sub-Problems</span><span class="ko-only">세부 문제</span></div>
+<a href="../sp1_fairness-of-exposure-fixed-scores.html" class="sidebar-nav-link">SP1: <span class="en-only">Exposure fairness</span><span class="ko-only">Exposure 공정성</span></a>
+<a href="../sp2_2024-2026-frontier-llm-era.html" class="sidebar-nav-link">SP2: <span class="en-only">2024–26 frontier / LLM</span><span class="ko-only">2024–26 최전선 / LLM</span></a>
+<a href="../sp3_postproc-rerank-blackbox.html" class="sidebar-nav-link">SP3: <span class="en-only">Post-proc re-ranking</span><span class="ko-only">Post-proc re-ranking</span></a>
+<a href="../sp4_stochastic-ranking-policies.html" class="sidebar-nav-link">SP4: <span class="en-only">Stochastic policies</span><span class="ko-only">확률적 정책</span></a>
+<a href="../sp5_amortized-equity-attention.html" class="sidebar-nav-link">SP5: <span class="en-only">Amortized fairness</span><span class="ko-only">Amortized 공정성</span></a>
+<a href="../sp6_bandit-exposure-allocation.html" class="sidebar-nav-link">SP6: <span class="en-only">Bandit allocation</span><span class="ko-only">Bandit 배분</span></a>
+<a href="../sp7_capping-pacing-feeds-ads.html" class="sidebar-nav-link">SP7: <span class="en-only">Capping &amp; pacing</span><span class="ko-only">Capping·pacing</span></a>
+<a href="../sp8_popularity-debias-calibration.html" class="sidebar-nav-link">SP8: <span class="en-only">Debiasing &amp; calibration</span><span class="ko-only">Debiasing·calibration</span></a>
+<a href="../sp9_ecosystems-creator-incentives.html" class="sidebar-nav-link">SP9: <span class="en-only">Ecosystems &amp; creators</span><span class="ko-only">생태계·creator</span></a>
+<a href="../sp10_llm-exposure-feedback-loops.html" class="sidebar-nav-link">SP10: <span class="en-only">LLM feedback loops</span><span class="ko-only">LLM feedback loop</span></a>
+<a href="../sp11_strategyproof-exposure.html" class="sidebar-nav-link active">SP11: <span class="en-only">Strategy-proofness</span><span class="ko-only">Strategy-proofness</span></a>
+
+  <div class="sidebar-section"><span class="en-only">Synthesis</span><span class="ko-only">종합</span></div>
+  <a href="../conclusion.html" class="sidebar-nav-link"><span class="en-only">Conclusion</span><span class="ko-only">결론</span></a>
+  <a href="../thinking-process.html" class="sidebar-nav-link"><span class="en-only">Thinking Process</span><span class="ko-only">추론 과정</span></a>
+</nav>
+  <div class="bd-main">
+<div class="article-header-bar"><div class="header-brand"><a href="../index.html"><span class="en-only">Exposure-Frequency Control Survey</span><span class="ko-only">Exposure-빈도 제어 문헌 조사</span></a></div><nav class="breadcrumb"><a href="../index.html"><span class="en-only">Survey</span><span class="ko-only">조사</span></a><span>&rsaquo;</span><a href="../sp11_strategyproof-exposure.html">SP11</a><span>&rsaquo;</span><span>[120] Incentive-Aware Recommender Systems in T</span></nav><button class="lang-btn" data-lang="en" onclick="toggleLanguage()">EN</button><button class="lang-btn" data-lang="ko" onclick="toggleLanguage()">KO</button></div>
+    <div class="bd-article">
+<section id="header" class="section-anchor"><div class="paper-meta">
+<h1 style="margin-bottom:0.3rem">Incentive-Aware Recommender Systems in Two-Sided Markets</h1>
+<p style="margin:0.3rem 0;color:var(--muted)">Dai et al. · ACM Transactions on Recommender Systems 2024 · 2024 · 8 citations</p>
+<p style="margin:0.3rem 0"><a href="https://arxiv.org/abs/2211.15381" target="_blank">arXiv:2211.15381</a> · <a href="https://arxiv.org/pdf/2211.15381.pdf" target="_blank">PDF</a> · SP: <a href="../sp11_strategyproof-exposure.html">SP11</a></p>
+<p><span class="pill pill-p2">P2</span><span class="pill" style="background:rgba(255,255,255,0.05);color:var(--muted)">Track A</span></p>
+</div>
+<div class="card ko-only" style="border-color:var(--teal)"><div class="section-label">한 줄 요약</div><p style="margin:0">양면 시장의 인센티브 인지 recommender를 다룬다(ACM TORS 2024).</p></div>
+</section>
+<section id="problem" class="section-anchor">
+<div class="card"><div class="section-label"><span class="en-only">Problem</span><span class="ko-only">해결하려는 문제</span></div><p>Platforms need users to explore under-observed items (products, new creators), but myopic users only follow recommendations whose conditional expected reward beats their opportunity cost — so items whose current empirical estimate falls below that cost remain unexplored forever even if they are actually the best, and the exposure history compounds ("popular creators get recommended more often, reinforcing their popularity; new creators are never connected with an audience regardless of quality" — the paper's own Instagram framing of the popularity-feedback loop). Prior incentivized-exploration work (Kremer et al. 2014; Che &amp; Hörner 2018; Mansour et al. 2020) uses Bayesian incentive compatibility with priors on rewards, a fixed non-adaptive exploration pool, and no protection for returning agents from repeated exploration losses.</p></div>
+</section>
+<section id="solution" class="section-anchor">
+<div class="card"><div class="section-label"><span class="en-only">Solution / Contribution</span><span class="ko-only">해결책 / 기여</span></div><p>Two randomized recommendation algorithms under the opportunity-cost incentive constraint $\mathbb{E}[X_{I_t,t}|I_t=i,\mathcal{E}_t] \ge c_t$:</p>
+<ol><li><strong>ARP (known costs)</strong>: sample the known-good arm $k$ times to build credibility, then for each unknown arm pool it with the current exploit arm at adaptive rate $p_{i,t} = \frac{\lambda}{2(c_*-\widehat{M}_i)+\lambda}\mathbf{1}\{\widehat{M}_i &lt; c_*\} + \mathbf{1}\{\widehat{M}_i \ge c_*\}$, disclosing the exploration rate and the (arm-anonymized) reward history; finish with incentive-respecting active-arm elimination.</li><li><strong>MARP (private costs)</strong>: exponential-weights over all arms using importance-weighted cumulative loss from agents' binary follow/ignore actions as feedback; randomization over all arms prevents early elimination of the optimum.</li></ol>
+<p>Both wrap the fairness override: when a returning agent's unsatisfactory-recommendation ratio would exceed her tolerance $\gamma_t$, the exploit arm is recommended deterministically.</p></div>
+<div class="card"><div class="section-label"><span class="en-only">Key Results</span><span class="ko-only">주요 결과</span></div><ul><li>ARP guarantees the incentive constraint for every agent and every arm (Theorem 3.1) and achieves ex-post regret $R_T \le L^* + O(\sqrt{mT\ln(mT)})$ (Theorem 3.3).</li><li>MARP achieves $R_T \le \sqrt{(T/2)\ln m} + \sqrt{(T/2)\ln(1/\delta)}$ w.p. $1-\delta$ (Theorem 5.2), matching the minimax lower bound as $m, T \to \infty$ (Theorem 5.3); an anytime variant with $\eta_t = \sqrt{8\ln m/t}$ loses only a constant factor (Theorem 5.4).</li><li>Gaussian-reward simulation ($m=5$, $c_*=0.20$, $T=5000$, 500 reps): ARP mean regret 159.51 vs. UCB 462.19, Elimination 634.21, Thompson 1206.96; ARP's advantage grows with $c_*$.</li><li>Criteo Uplift real-data study ($K=20$ K-means arm clusters): ARP/MARP dominate UCB and Elimination at all tested cost levels; at $c_*=0.15$ baseline regret "skyrockets" (agents stop following once empirical means fall below cost) while ARP's plateaus.</li><li>Cold-start severity is parameterized by $(\mu_1, c_*)$: larger $\mu_1 - c_*$ permits a larger margin $\lambda$, smaller seed sample $k$, higher exploration capacity — quantifying how much credible randomized exposure of untested items a platform can afford.</li></ul></div>
+<details><summary><span class="en-only">5Cs Analysis</span><span class="ko-only">5Cs 분석</span></summary><div class="card" style="margin-top:0.5rem"><p><strong>Category</strong>: new method (theoretical: two algorithms with incentive/fairness/regret guarantees + simulations + one real-data study) <strong>Context</strong>: incentivized exploration (Kremer et al. 2014; Che &amp; Hörner 2018; Mansour et al. 2020 BIC bandit exploration; Sellke &amp; Slivkins 2021); relates in this survey to exposure/cold-start dynamics papers (Track A welfare/exposure-loop papers, e.g. dynamic-exposure and competing-creators refs). <strong>Correctness</strong>: [SKIM] proofs provided in appendix (Chernoff-Hoeffding / Hoeffding-Azuma / exponential-weights machinery, standard); simulations report 90% CIs over 500 replications — assumption Eq. 6 (one arm with known mean $\mu_1 &gt; c_*$) is load-bearing and acknowledged as necessary. <strong>Contributions</strong>: (1) incentive-compatible adaptive-rate randomized recommendation (ARP) with asymptotically optimal $L^* + O(\sqrt{mT\ln(mT)})$ regret; (2) MARP for private/heterogeneous costs with minimax-optimal $O(\sqrt{T\ln m})$ regret; (3) the ex-post fairness criterion protecting returning users from over-exploitation. <strong>Clarity</strong>: algorithms given as explicit pseudocode with all parameter formulas; reproducible; code released.</p></div></details>
+<details><summary><span class="en-only">Contribution vs Claim</span><span class="ko-only">기여 대 주장</span></summary><div class="card" style="margin-top:0.5rem"><p>[SKIM - verify in deep read] Headline claims (incentive compatibility, fairness, optimal regret) are all backed by stated theorems, and experiments cover three synthetic reward families plus one real dataset. Visible caveats even at skim depth: (a) MARP is claimed as the private-cost solution but explicitly does NOT guarantee the incentive constraint (only regret + fairness) — the abstract's "aligns with agents' incentives" applies fully only to ARP; (b) the real-data "application" is a semi-synthetic bandit reconstruction from Criteo uplift data (arms = K-means clusters), not a deployed recommender; (c) the multi-agent model assumes a common reward distribution across agents (homogeneous preferences), which understates real two-sided heterogeneity.</p></div></details>
+</section>
+<section id="results" class="section-anchor">
+<details><summary><span class="en-only">Concepts Introduced</span><span class="ko-only">도입된 개념</span></summary><div class="card" style="margin-top:0.5rem"><p><strong>Opportunity-cost incentive constraint (Eq. 1)</strong></p>
+<ul><li><strong>What it computes</strong>: given the recommended arm $I_t$ and the designer's disclosed message $\mathcal{E}_t$, checks whether $\mathbb{E}[X_{I_t,t} \mid I_t=i, \mathcal{E}_t] \ge c_t$ — the agent's conditional expected reward for the recommended arm must exceed her opportunity cost $c_t \in (0,1)$; the agent pulls ($y_t=1$) iff this holds.</li><li><strong>Why it was created</strong>: Bayesian Incentive Compatibility (Kremer et al. 2014; Mansour et al. 2020) requires each agent to evaluate all arms and assumes priors on mean rewards; in large marketplaces (Uber shows only recommended drivers) agents cannot evaluate all options, so a cost-threshold constraint is the more realistic incentive model.</li><li><strong>Concrete example</strong>: with $c_* = 0.3$ and known good arm $\mu_1 = 0.7$, exploration of an unknown arm is credible only if the pooled recommendation's conditional expected reward stays $\ge 0.3$.</li><li><strong>How it is used</strong>: it is the binding constraint that caps the exploration probability $p_{i,t}$ in both proposed algorithms.</li></ul>
+<p><strong>Adaptive Recommendation Policy (ARP)</strong></p>
+<ul><li><strong>What it computes</strong>: for each stage $i$, pools recommendations between the empirically best arm so far $a_i^*$ (exploit) and one unknown arm $i$ (explore), with exploration probability $p_{i,t} = \frac{\lambda}{2(c_* - \widehat{M}_i) + \lambda}$ when the historical mean reward $\widehat{M}_i &lt; c_*$, and $p_{i,t}=1$ otherwise; arm identities are hidden but the exploration rate and the reward history are disclosed.</li><li><strong>Why it was created</strong>: classical bandit algorithms (UCB, arm elimination) recommend arms agents have no incentive to pull; Mansour et al.'s BIC policy uses a fixed a-priori pool with a non-adaptive exploration rate, which is slower and cannot guarantee per-agent fairness.</li><li><strong>Concrete example</strong>: with margin $\lambda \le \frac{3}{4}(\mu_1 - c_*)$ and sample size $k \ge \max\{\frac{9}{2\lambda^2}\ln\frac{20m}{\lambda},\ \theta_\tau^2 \ln(T\theta_\tau)\}$, incentive compatibility holds for every agent (Theorem 3.1).</li><li><strong>How it is used</strong>: the main algorithm for the known-opportunity-cost regime; regret $R_T \le L^* + O(\sqrt{mT\ln(mT)})$ (Theorem 3.3).</li></ul>
+<p><strong>Modified Adaptive Recommendation Policy (MARP)</strong></p>
+<ul><li><strong>What it computes</strong>: an exponential-weights (Hedge-style) randomized recommendation over ALL arms: $p_{i,t} \propto \exp(-\eta \hat{L}_{i,t-1})$ with $\eta = \sqrt{8\ln m / T}$, where $\hat{L}_{i,t-1}$ is an importance-weighted estimate of arm $i$'s cumulative loss built from agents' follow/ignore actions.</li><li><strong>Why it was created</strong>: when opportunity costs are private and heterogeneous, an agent ignoring a recommendation does not reveal the arm's quality, so ARP's exploit-arm inference breaks; pooling across all arms prevents the optimal arm from being eliminated early.</li><li><strong>Concrete example</strong>: high-probability regret bound $R_T \le \sqrt{\frac{T}{2}\ln m} + \sqrt{\frac{T}{2}\ln\frac{1}{\delta}}$ (Theorem 5.2), matching the minimax lower bound asymptotically (Theorem 5.3).</li><li><strong>How it is used</strong>: the algorithm for the unknown-opportunity-cost regime; achieves optimal regret but, unlike ARP, does NOT guarantee the incentive constraint.</li></ul>
+<p><strong>Ex-post fairness criterion (Eq. 5)</strong></p>
+<ul><li><strong>What it computes</strong>: for a returning agent with $\alpha_t$ prior visits of which $\beta_t$ yielded reward below her opportunity cost, requires $\frac{\beta_t + \mathbf{1}\{\mathbb{E}[X_{I_t,t}] &lt; c_t\}}{\alpha_t + 1} \le \gamma_t$ — the lifetime fraction of "bad" (exploration-loss) recommendations never exceeds her tolerance $\gamma_t$.</li><li><strong>Why it was created</strong>: existing fairness notions (e.g., Kannan et al.'s fair exploration) protect arms from mis-ranking; nothing protected returning USERS from being repeatedly used as exploration fodder. Mansour et al.'s fixed-pool policy cannot guarantee this uniformly across agent sequences.</li><li><strong>Concrete example</strong>: an agent with $(\alpha_t,\beta_t)=(4,1)$ and tolerance $\gamma_t = 0.4$ can receive at most one more unsatisfactory recommendation before being routed to the exploit arm.</li><li><strong>How it is used</strong>: enforced as an override in the recommendation rule (Eq. 16/23: if the fairness check $\mathcal{H}(t)$ fails, recommend the exploit arm deterministically); both ARP and MARP satisfy it (Theorems 3.2, 5.1).</li></ul></div></details>
+<details><summary><span class="en-only">Implementation Feasibility</span><span class="ko-only">구현 가능성</span></summary><div class="card" style="margin-top:0.5rem"><ul><li><strong>Needs</strong>: only bandit-level machinery — arm reward logs, per-agent visit/dissatisfaction counters $(\alpha_t, \beta_t)$, and (for ARP) a known-good anchor arm $\mu_1$ and known opportunity cost $c_*$; simulations ran with $T \le 15000$, $m \le 20$, trivial compute.</li><li><strong>Code</strong>: available at https://github.com/WenluValor/ARP-MARP</li><li><strong>Modifications</strong>: for a general ranking-research setting, replace the single-recommendation protocol with slate/position-based exposure; relax the common-reward-distribution assumption to contextual rewards (paper flags contextual bandits as future work).</li><li><strong>Unknowns</strong>: missing link: how $\theta_\tau$ (Eq. 8) is set without a prior over $\mu_i$ in practice — it requires $\min_i P(\mu_i - c_* \ge \tau)$, i.e., distributional knowledge the "no priors needed" framing downplays; missing link: sensitivity when the announced exploration rate is not believed by users.</li></ul></div></details>
+<details><summary><span class="en-only">Follow-up Papers</span><span class="ko-only">관련 후속 논문</span></summary><div class="card" style="margin-top:0.5rem"><ul><li>Mansour, Slivkins &amp; Syrgkanis (2020), "Bayesian incentive-compatible bandit exploration" (Operations Research) — the BIC baseline this paper's incentive constraint and adaptive rate are defined against; four explicit contrasts in §3.3.</li><li>Kremer, Mansour &amp; Perry (2014), "Implementing the wisdom of the crowd" (JPE) — origin of information-asymmetry incentivized exploration; two-arm Bayesian-optimal policy.</li><li>Che &amp; Hörner (2018), "Recommender systems as mechanisms for social learning" (QJE) — the two-arm opportunity-cost-style incentive constraint this paper generalizes to $m \ge 2$.</li><li>Sellke &amp; Slivkins (2021), "The price of incentivizing exploration" (EC) — structural sibling (sampling/exploration/exploitation stages) via Thompson sampling; useful for quantifying the incentive cost SP11 attributes to exposure constraints.</li><li>Kannan et al. (2017), "Fairness incentives for myopic agents" (EC) — the arm-side fairness notion the ex-post (user-side) criterion is explicitly contrasted with.</li></ul></div></details>
+</section>
+<section id="delta" class="section-anchor">
+<div class="card"><div class="section-label"><span class="en-only">Condition Delta — transfer to our setting</span><span class="ko-only">조건 차이 — 우리 설정으로의 전이</span></div><p><strong>Paper's setting</strong>: inputs = sequential agents, $m$ arms with fixed unknown mean rewards, one arm with known $\mu_1 &gt; c_*$, binary follow/ignore actions; outputs = a per-round recommendation distribution $\mathbf{p}_t$; conditions = platform controls the information message $\mathcal{E}_t$ (arm-anonymized reward history), agents myopic, rewards i.i.d. in $[0,1]$, no monetary transfers. <strong>Our setting</strong> (SP11 — exposure frequency as ranking proxy): observational ranking/recommendation logs where exposure frequency both drives and is driven by estimated relevance; we care about whether exposure counts are a valid proxy for quality and how the feedback loop distorts them. <strong>Differences</strong>:</p>
+<ul><li>Paper assumes the platform can RANDOMIZE and DISCLOSE its exploration rate (information design); production ranking systems typically cannot commit to disclosed randomization: <strong>missing link</strong>.</li><li>Paper's incentive agent = the consuming user with an outside option; SP11's central strategic actor set also includes item/creator side responding to exposure — the paper treats arms as passive: <strong>reference only</strong> (models the user-side loop, not creator-side strategic behavior).</li><li>Explicit quantification of the exposure/cold-start feedback loop severity via $(\mu_1, c_*)$ and the exploration-capacity formula: <strong>resolved</strong> — gives a formal mechanism for why low-exposure items stay low (empirical mean below opportunity cost blocks all voluntary exploration), directly usable as the theoretical grounding for SP11's "exposure begets exposure" claim.</li><li>Reward means are stationary; SP11 scenarios involve quality drift and position bias: <strong>missing link</strong>.</li><li>Regret is designer-welfare oriented; SP11 needs item-side exposure-allocation metrics — the ex-post fairness notion is user-side, not item-side: <strong>reference only</strong>.</li></ul></div>
+<div class="card"><div class="section-label"><span class="en-only">Root-cause vs. Symptom</span><span class="ko-only">근본 원인 대 증상</span></div><p><code>Direct</code> — the paper identifies the structural cause of the under-exploration/cold-start loop (myopic agents' incentive constraint makes below-cost arms permanently unexplorable) and resolves it at that level, proving an incentive-compatible mechanism (pooled randomized recommendation + information design) with matching regret lower bounds, rather than heuristically boosting new-item exposure.</p></div>
+</section>
+<div class="page-nav"><a href="119_StrategicPublishers.html">&larr; [119] StrategicPublishers</a><a href="../sp11_strategyproof-exposure.html">&uarr; SP11</a><a href="121_SybilProofMech.html">[121] SybilProofMech &rarr;</a></div>
+    </div>
+  </div>
+<nav class="bd-sidebar-secondary"><div class="mini-toc-label"><span class="en-only">On this page</span><span class="ko-only">이 페이지</span></div><ul class="mini-toc"><li><a href="#header"><span class="en-only">Paper info</span><span class="ko-only">논문 정보</span></a></li><li><a href="#problem"><span class="en-only">Problem</span><span class="ko-only">문제</span></a></li><li><a href="#solution"><span class="en-only">Solution &amp; Results</span><span class="ko-only">해결책 · 결과</span></a></li><li><a href="#results"><span class="en-only">Concepts &amp; Follow-ups</span><span class="ko-only">개념 · 후속</span></a></li><li><a href="#delta"><span class="en-only">Condition Delta</span><span class="ko-only">조건 차이</span></a></li></ul></nav>
+</div>
+</body>
+</html>

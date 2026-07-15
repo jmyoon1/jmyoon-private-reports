@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>[30] Enhancing Recommendation Diversity by Re-ranking with Large  — Exposure-Frequency Control Survey</title>
+
+<style>
+:root {
+  --bg: #0d1117; --card: #161b22; --border: #30363d;
+  --text: #e6edf3; --muted: #7d8590; --accent: #58a6ff;
+  --teal: #39d0c7; --green: #3fb950; --yellow: #d29922;
+  --red: #f85149; --purple: #bc8cff; --orange: #e3b341;
+  --sidebar-w: 262px; --toc-w: 210px; --hdr-h: 48px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+body { font-family: -apple-system, sans-serif; background: var(--bg);
+       color: var(--text); line-height: 1.6; }
+.bd-root { display: flex; height: 100vh; overflow: hidden; }
+.bd-sidebar-primary {
+  width: var(--sidebar-w); min-width: var(--sidebar-w);
+  overflow-y: auto; background: var(--card);
+  border-right: 1px solid var(--border);
+  padding: 0.75rem 0; flex-shrink: 0;
+}
+.bd-sidebar-primary::-webkit-scrollbar { width: 4px; }
+.bd-sidebar-primary::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+.bd-main { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-width: 0; }
+.article-header-bar {
+  height: var(--hdr-h); background: var(--card);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; padding: 0 1.5rem;
+  gap: 1rem; flex-shrink: 0;
+}
+.header-brand { color: var(--teal); font-weight: bold; font-size: 0.95em;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 1; }
+.header-brand a { color: inherit; text-decoration: none; }
+.breadcrumb { color: var(--muted); font-size: 0.82em; display: flex;
+  align-items: center; gap: 0.3rem; flex-shrink: 0; }
+.breadcrumb a { color: var(--accent); text-decoration: none; }
+.breadcrumb span { color: var(--border); }
+.bd-article { flex: 1; overflow-y: auto; padding: 2rem 2.5rem; }
+.bd-article::-webkit-scrollbar { width: 6px; }
+.bd-article::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+.bd-sidebar-secondary {
+  width: var(--toc-w); min-width: var(--toc-w);
+  overflow-y: auto; border-left: 1px solid var(--border);
+  padding: 1rem 0.75rem; flex-shrink: 0;
+}
+.bd-sidebar-secondary::-webkit-scrollbar { width: 4px; }
+.bd-sidebar-secondary::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+.sidebar-logo { padding: 0.5rem 1rem 0.75rem;
+  border-bottom: 1px solid var(--border); margin-bottom: 0.5rem; }
+.sidebar-logo a { color: var(--teal); font-weight: bold; font-size: 0.95em;
+  text-decoration: none; display: block; }
+.sidebar-section { color: var(--muted); font-size: 0.72em; font-weight: bold;
+  text-transform: uppercase; letter-spacing: 0.07em;
+  padding: 0.7rem 1rem 0.25rem; }
+.sidebar-nav-link { display: block; padding: 0.28rem 1rem 0.28rem 1.25rem;
+  color: var(--muted); font-size: 0.875em; text-decoration: none; }
+.sidebar-nav-link:hover { color: var(--text); background: rgba(255,255,255,0.03); }
+.sidebar-nav-link.active { color: var(--teal);
+  border-left: 2px solid var(--teal);
+  padding-left: calc(1.25rem - 2px); background: rgba(57,208,199,0.05); }
+.mini-toc-label { color: var(--muted); font-size: 0.72em; font-weight: bold;
+  text-transform: uppercase; letter-spacing: 0.07em; padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border); margin-bottom: 0.5rem; }
+.mini-toc { list-style: none; }
+.mini-toc li a { display: block; padding: 0.22rem 0;
+  color: var(--muted); font-size: 0.83em; text-decoration: none;
+  border-left: 2px solid transparent; padding-left: 0.5rem; }
+.mini-toc li a:hover { color: var(--text); }
+.mini-toc li a.toc-active { color: var(--teal); border-left-color: var(--teal); }
+.section-anchor { scroll-margin-top: calc(var(--hdr-h) + 8px); }
+h1 { color: var(--teal); font-size: 1.7em; margin-bottom: 0.5rem; line-height:1.3; }
+h2 { color: var(--teal); font-size: 1.25em; margin: 1.5rem 0 0.6rem; }
+h3 { color: var(--teal); font-size: 1.05em; margin: 1.2rem 0 0.4rem; }
+h4 { color: var(--teal); font-size: 0.95em; margin: 1rem 0 0.3rem; }
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+p { margin-bottom: 0.8rem; }
+ul, ol { margin: 0 0 0.8rem 1.4rem; }
+li { margin-bottom: 0.3rem; }
+code { background: rgba(255,255,255,0.06); border-radius: 3px; padding: 1px 4px; font-size: 0.9em; }
+blockquote { border-left: 3px solid var(--border); color: var(--muted);
+  padding: 0.2rem 0.8rem; margin-bottom: 0.8rem; }
+.card { background: var(--card); border: 1px solid var(--border);
+        border-radius: 8px; padding: 1.2rem; margin-bottom: 1rem; }
+table { width: 100%; border-collapse: collapse; font-size: 0.9em; margin-bottom: 0.8rem; }
+th { background: var(--card); color: var(--teal); padding: 8px;
+     border: 1px solid var(--border); text-align: left; }
+td { padding: 8px; border: 1px solid var(--border); vertical-align: top; }
+tr:nth-child(even) td { background: rgba(0,0,0,0.2); }
+.stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+             gap: 1rem; margin-bottom: 1.5rem; }
+.stat-box { background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+            padding: 1rem; text-align: center; }
+.stat-num { font-size: 2rem; font-weight: bold; color: var(--teal); }
+.stat-label { color: var(--muted); font-size: 0.85em; margin-top: 0.2rem; }
+.sp-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+           gap: 1rem; margin: 1rem 0; }
+.sp-card { background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+           padding: 1.2rem; cursor: pointer; transition: border-color 0.15s; height:100%; }
+.sp-card:hover { border-color: var(--teal); }
+.sp-card h3 { margin: 0 0 0.5rem; color: var(--teal); font-size: 1em; }
+.sp-card p { margin: 0; color: var(--muted); font-size: 0.88em; }
+.sp-badge { display: inline-block; background: rgba(57,208,199,0.1); color: var(--teal);
+            border-radius: 4px; padding: 2px 8px; font-size: 0.8em; margin-bottom: 0.5rem; }
+.paper-meta { color: var(--muted); font-size: 0.9em; margin-bottom: 1.5rem; }
+.paper-meta a { color: var(--accent); }
+.section-label { color: var(--teal); font-weight: bold; font-size: 0.85em;
+                 text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.4rem; }
+.pill { display: inline-block; border-radius: 4px; padding: 0.15rem 0.6rem;
+        font-size: 0.8em; font-weight: bold; margin-right: 0.4rem; }
+.pill-p0 { background: rgba(63,185,80,0.2); color: var(--green); }
+.pill-p1 { background: rgba(57,208,199,0.15); color: var(--teal); }
+.pill-p2 { background: rgba(210,153,34,0.2); color: var(--yellow); }
+.pill-p3 { background: rgba(188,140,255,0.2); color: var(--purple); }
+.pill-p4 { background: rgba(125,133,144,0.2); color: var(--muted); }
+.delta-row { margin: 0.4rem 0; padding: 0.4rem 0.8rem;
+             border-left: 3px solid var(--border); border-radius: 0 4px 4px 0; }
+.chain { position: relative; padding-left: 2rem; }
+.chain::before { content: ''; position: absolute; left: 0.95rem; top: 0;
+                 bottom: 0; width: 2px; background: var(--border); }
+.chain-node { position: relative; margin-bottom: 2rem; }
+.chain-node::before { content: ''; position: absolute; left: -1.55rem;
+                      top: 1.1rem; width: 12px; height: 12px;
+                      border-radius: 50%; background: var(--teal); }
+.chain-num { display: inline-block; width: 28px; height: 28px; background: var(--teal);
+             color: #000; border-radius: 50%; text-align: center; line-height: 28px;
+             font-weight: bold; font-size: 0.85em; margin-right: 0.6rem; flex-shrink: 0; }
+.chain-q { font-weight: bold; color: var(--text); margin: 0.4rem 0 0.3rem; font-size: 1em; }
+.chain-papers { color: var(--muted); font-size: 0.85em; margin-bottom: 0.6rem; }
+.chain-start { background: var(--card); border: 1px solid var(--teal);
+               border-radius: 8px; padding: 1rem; margin-bottom: 2rem; }
+.chain-start h3 { margin: 0 0 0.5rem; color: var(--teal); }
+.chain-converge { background: var(--card); border: 1px solid var(--green);
+                  border-radius: 8px; padding: 1rem; margin-top: 1rem; }
+.chain-converge h3 { margin: 0 0 0.5rem; color: var(--green); }
+.chain-label { display: inline-block; border-radius: 4px; padding: 0.15rem 0.6rem;
+               font-size: 0.8em; font-weight: bold; margin-right: 0.4rem; }
+.chain-status { border-radius: 0 4px 4px 0; padding: 0.5rem 0.8rem;
+                margin: 0.35rem 0; font-size: 0.88em; }
+.chain-status ul { margin: 0.3rem 0 0 1.2rem; padding: 0; }
+.chain-status li { margin-bottom: 0.25rem; }
+.chain-status.solved  { background: rgba(63,185,80,0.07);  border-left: 3px solid var(--green); }
+.chain-status.remains { background: rgba(210,153,34,0.07); border-left: 3px solid var(--yellow); }
+.chain-status.added   { background: rgba(248,81,73,0.07);  border-left: 3px solid var(--red); }
+.chain-status.pivoted { background: rgba(188,140,255,0.1); border-left: 3px solid var(--purple); }
+.chain-label.solved   { background: rgba(63,185,80,0.2);  color: var(--green); }
+.chain-label.remains  { background: rgba(210,153,34,0.2); color: var(--yellow); }
+.chain-label.added    { background: rgba(248,81,73,0.2);  color: var(--red); }
+.chain-label.pivoted  { background: rgba(188,140,255,0.2); color: var(--purple); }
+.chain-status.expected { background: rgba(88,166,255,0.07);  border-left: 3px solid var(--accent); }
+.chain-label.expected  { background: rgba(88,166,255,0.2);   color: var(--accent); }
+.chain-status.revised  { background: rgba(57,208,199,0.07);  border-left: 3px solid var(--teal); }
+.chain-label.revised   { background: rgba(57,208,199,0.2);   color: var(--teal); }
+.concept-box { border-left: 4px solid var(--teal); background: #0d1f1f;
+               border-radius: 4px; padding: 1.2rem; margin-bottom: 1.2rem; }
+.concept-name { font-weight: bold; color: var(--teal); font-size: 1.05em; margin-bottom: 0.5rem; }
+.hypothesis { border-left: 4px solid var(--teal); background: #0d1f1f;
+              border-radius: 4px; padding: 1rem; margin: 1rem 0; }
+.recommendation { border-left: 4px solid var(--purple); background: #1a0f2e;
+                  border-radius: 4px; padding: 1rem; margin: 1rem 0; }
+.rq-row { background: rgba(88,166,255,0.05); border-left: 3px solid var(--accent);
+          padding: 0.4rem 0.8rem; margin-bottom: 0.5rem; border-radius: 0 4px 4px 0; }
+.scroll-table-wrap { max-height: 420px; overflow-y: auto; border: 1px solid var(--border);
+                     border-radius: 4px; }
+.scroll-table-wrap table { margin-bottom: 0; }
+.scroll-table-wrap thead th { position: sticky; top: 0; background: #161b22; z-index: 1; }
+.page-nav { display: flex; justify-content: space-between; margin-top: 2rem;
+            padding-top: 1rem; border-top: 1px solid var(--border); gap: 1rem; }
+.page-nav a { color: var(--accent); font-size: 0.9em; }
+html.ko-active .en-only { display: none !important; }
+html.ko-active .ko-only { display: block !important; }
+.ko-only { display: none; }
+span.ko-only, .sidebar-logo a span.ko-only { display: none; }
+html.ko-active span.ko-only { display: inline !important; }
+.lang-btn { background: transparent; color: var(--muted); border: 1px solid var(--border);
+            border-radius: 4px; padding: 3px 9px; font-size: 0.8em; cursor: pointer; }
+.lang-btn.active { border-color: var(--teal); color: var(--teal); }
+details { margin-bottom: 0.8rem; }
+details summary { color: var(--muted); cursor: pointer; }
+@media (max-width: 1024px) { .bd-sidebar-secondary { display: none; } }
+@media (max-width: 768px) {
+  .bd-sidebar-primary { display: none; }
+  .bd-root { flex-direction: column; height: auto; overflow: visible; }
+  .bd-main { overflow: visible; }
+  .bd-article { overflow: visible; padding: 1rem; }
+  .stat-grid { grid-template-columns: repeat(2, 1fr); }
+  .sp-grid { grid-template-columns: 1fr; }
+}
+</style>
+
+<script>
+MathJax = { tex: { inlineMath: [['$','$']], displayMath: [['$$','$$']] },
+            options: { skipHtmlTags: ['script','noscript','style','textarea','pre','code'] } };
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<script>
+function toggleLanguage() {
+  const html = document.documentElement;
+  const isKo = html.classList.toggle('ko-active');
+  document.querySelectorAll('.lang-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.lang === (isKo ? 'ko' : 'en'));
+  });
+  localStorage.setItem('survey-lang', isKo ? 'ko' : 'en');
+}
+document.addEventListener('DOMContentLoaded', function() {
+  const saved = localStorage.getItem('survey-lang');
+  if (saved === 'ko') {
+    document.documentElement.classList.add('ko-active');
+    document.querySelectorAll('.lang-btn').forEach(b =>
+      b.classList.toggle('active', b.dataset.lang === 'ko'));
+  } else {
+    document.querySelectorAll('[data-lang="en"]').forEach(b => b.classList.add('active'));
+  }
+  const article = document.querySelector('.bd-article');
+  const sections = Array.from(document.querySelectorAll('.section-anchor[id]'));
+  const sideLinks = Array.from(document.querySelectorAll('.bd-sidebar-primary .sidebar-nav-link'));
+  const tocLinks = Array.from(document.querySelectorAll('.bd-sidebar-secondary .mini-toc a'));
+  if (!article || !sections.length) return;
+  function current() {
+    let id = sections[0].id;
+    const scrollTop = article.scrollTop + 60;
+    sections.forEach(function(s) { if (s.offsetTop <= scrollTop) id = s.id; });
+    return id;
+  }
+  function update() {
+    const id = current();
+    sideLinks.forEach(function(a) {
+      a.classList.toggle('active', a.getAttribute('href') === '#' + id);
+    });
+    tocLinks.forEach(function(a) {
+      a.classList.toggle('toc-active', a.getAttribute('href') === '#' + id);
+    });
+  }
+  article.addEventListener('scroll', update, { passive: true });
+  update();
+});
+</script>
+
+</head>
+<body>
+<div class="bd-root">
+
+<nav class="bd-sidebar-primary">
+  <div class="sidebar-logo">
+    <a href="../index.html">&#x2B21; <span class="en-only">Exposure-Frequency Control Survey</span><span class="ko-only">Exposure-빈도 제어 문헌 조사</span></a>
+  </div>
+  <div class="sidebar-section"><span class="en-only">Overview</span><span class="ko-only">개요</span></div>
+  <a href="../index.html#overview" class="sidebar-nav-link"><span class="en-only">Survey Hub</span><span class="ko-only">조사 허브</span></a>
+  <a href="../index.html#answers" class="sidebar-nav-link"><span class="en-only">Key Answers</span><span class="ko-only">핵심 답변</span></a>
+  <div class="sidebar-section"><span class="en-only">Sub-Problems</span><span class="ko-only">세부 문제</span></div>
+<a href="../sp1_fairness-of-exposure-fixed-scores.html" class="sidebar-nav-link">SP1: <span class="en-only">Exposure fairness</span><span class="ko-only">Exposure 공정성</span></a>
+<a href="../sp2_2024-2026-frontier-llm-era.html" class="sidebar-nav-link">SP2: <span class="en-only">2024–26 frontier / LLM</span><span class="ko-only">2024–26 최전선 / LLM</span></a>
+<a href="../sp3_postproc-rerank-blackbox.html" class="sidebar-nav-link active">SP3: <span class="en-only">Post-proc re-ranking</span><span class="ko-only">Post-proc re-ranking</span></a>
+<a href="../sp4_stochastic-ranking-policies.html" class="sidebar-nav-link">SP4: <span class="en-only">Stochastic policies</span><span class="ko-only">확률적 정책</span></a>
+<a href="../sp5_amortized-equity-attention.html" class="sidebar-nav-link">SP5: <span class="en-only">Amortized fairness</span><span class="ko-only">Amortized 공정성</span></a>
+<a href="../sp6_bandit-exposure-allocation.html" class="sidebar-nav-link">SP6: <span class="en-only">Bandit allocation</span><span class="ko-only">Bandit 배분</span></a>
+<a href="../sp7_capping-pacing-feeds-ads.html" class="sidebar-nav-link">SP7: <span class="en-only">Capping &amp; pacing</span><span class="ko-only">Capping·pacing</span></a>
+<a href="../sp8_popularity-debias-calibration.html" class="sidebar-nav-link">SP8: <span class="en-only">Debiasing &amp; calibration</span><span class="ko-only">Debiasing·calibration</span></a>
+<a href="../sp9_ecosystems-creator-incentives.html" class="sidebar-nav-link">SP9: <span class="en-only">Ecosystems &amp; creators</span><span class="ko-only">생태계·creator</span></a>
+<a href="../sp10_llm-exposure-feedback-loops.html" class="sidebar-nav-link">SP10: <span class="en-only">LLM feedback loops</span><span class="ko-only">LLM feedback loop</span></a>
+<a href="../sp11_strategyproof-exposure.html" class="sidebar-nav-link">SP11: <span class="en-only">Strategy-proofness</span><span class="ko-only">Strategy-proofness</span></a>
+
+  <div class="sidebar-section"><span class="en-only">Synthesis</span><span class="ko-only">종합</span></div>
+  <a href="../conclusion.html" class="sidebar-nav-link"><span class="en-only">Conclusion</span><span class="ko-only">결론</span></a>
+  <a href="../thinking-process.html" class="sidebar-nav-link"><span class="en-only">Thinking Process</span><span class="ko-only">추론 과정</span></a>
+</nav>
+  <div class="bd-main">
+<div class="article-header-bar"><div class="header-brand"><a href="../index.html"><span class="en-only">Exposure-Frequency Control Survey</span><span class="ko-only">Exposure-빈도 제어 문헌 조사</span></a></div><nav class="breadcrumb"><a href="../index.html"><span class="en-only">Survey</span><span class="ko-only">조사</span></a><span>&rsaquo;</span><a href="../sp3_postproc-rerank-blackbox.html">SP3</a><span>&rsaquo;</span><span>[30] Enhancing Recommendation Diversity by Re</span></nav><button class="lang-btn" data-lang="en" onclick="toggleLanguage()">EN</button><button class="lang-btn" data-lang="ko" onclick="toggleLanguage()">KO</button></div>
+    <div class="bd-article">
+<section id="header" class="section-anchor"><div class="paper-meta">
+<h1 style="margin-bottom:0.3rem">Enhancing Recommendation Diversity by Re-ranking with Large Language Models</h1>
+<p style="margin:0.3rem 0;color:var(--muted)">Diego Carraro et al. · arXiv · 2024 · 62 citations</p>
+<p style="margin:0.3rem 0"><a href="https://arxiv.org/abs/2401.11506" target="_blank">arXiv:2401.11506</a> · <a href="https://arxiv.org/pdf/2401.11506.pdf" target="_blank">PDF</a> · SP: <a href="../sp3_postproc-rerank-blackbox.html">SP3</a></p>
+<p><span class="pill pill-p2">P2</span><span class="pill" style="background:rgba(255,255,255,0.05);color:var(--muted)">Track A</span></p>
+</div>
+<div class="card ko-only" style="border-color:var(--teal)"><div class="section-label">한 줄 요약</div><p style="margin:0">LLM을 re-ranker로 사용해 추천 다양성을 높이는 프롬프트 기반 접근을 제안한다. 제어 대상이 다양성인 re-ranking 사례로 O1의 목표 축을 채운다.</p></div>
+</section>
+<section id="problem" class="section-anchor">
+<div class="card"><div class="section-label"><span class="en-only">Problem</span><span class="ko-only">해결하려는 문제</span></div><p>Existing diversification methods for recommender systems (greedy re-rankers such as MMR, xQuAD, RxQuAD) require explicit item features and hand-designed objective functions. LLMs have been shown to re-rank for <em>relevance</em> in RS/IR, but no prior work tests whether general-purpose LLMs can perform <em>beyond-accuracy</em> (diversity) re-ranking zero-shot, nor what the performance/cost trade-offs against traditional re-rankers are.</p></div>
+</section>
+<section id="solution" class="section-anchor">
+<div class="card"><div class="section-label"><span class="en-only">Solution / Contribution</span><span class="ko-only">해결책 / 기여</span></div><p>Frame diversification re-ranking as zero-shot text generation: prompt the LLM with a relevance-ranked candidate list $CL$ ($m$=40/50 items with rank numbers) and instruct it to output a top-10 list that balances or maximizes diversity, using 8 prompt templates varying the goal string ($\lambda \in \{0, 0.5\}$ analogue) and optional per-item features (genres, plot summaries). Parse output; discard invalid items and random-fill. Compare 4 LLMs (ChatGPT, InstructGPT, Llama2-7B/13B-Chat) against Random, MMR, xQuAD, RxQuAD over an MF base recommender on Anime (17M ratings) and Goodreads (8M ratings).</p></div>
+<div class="card"><div class="section-label"><span class="en-only">Key Results</span><span class="ko-only">주요 결과</span></div><ul><li>Anime, avg over 8 templates: ChatGPT loses 10.1% NDCG vs MF baseline while gaining +4.7% ILD / +7.8% SRecall; traditional re-rankers lose only 4.6–6.5% NDCG (xQuAD: +7.9% α-NDCG, best). Best-template ChatGPT loses just 2.8% NDCG, beating all traditional re-rankers on that metric.</li><li>Goodreads is much worse for LLMs: ChatGPT −33.4% NDCG, InstructGPT −53.5%, Llama2-13B −61.3% (vs traditional −4.7 to −8.1%); ILD actually <em>drops</em> for all LLMs (−1.1 to −4.8%).</li><li>Invalid generations: 2.3% (Anime) vs 13.1% (Goodreads); feature-rich templates T7/T8 worst (18.0%/22.4%). LLMs also draw lower-ranked items from $CL$ (e.g., avg lowest rank 43.1 for Llama2-13B on Goodreads vs 15.9 for RxQuAD).</li><li>Ordering among LLMs: ChatGPT &gt; InstructGPT &gt; Llama2-7B &gt; Llama2-13B (13B worse than 7B, unexplained). Feature-aware templates (T5–T8) help on average despite more invalid outputs.</li><li>Cost: traditional re-rankers ~0.1s/user vs 12.6–31.6s/user (Llama2) or &lt;25s (OpenAI API, upper bound); total OpenAI API cost ~$161 for 500 users x 8 templates x 2 datasets.</li><li>RQ1 preliminary study: ChatGPT re-ranks by <em>popularity</em> with rank-biased-overlap 0.5–0.8 against ground truth, and by release date at 0.35–0.7 — direct evidence the LLM has internalized item popularity/exposure information from pretraining.</li></ul></div>
+<details><summary><span class="en-only">5Cs Analysis</span><span class="ko-only">5Cs 분석</span></summary><div class="card" style="margin-top:0.5rem"><p><strong>Category</strong>: benchmark / empirical evaluation (no new model; a feasibility study of LLM-based diversity re-ranking) <strong>Context</strong>: builds on greedy re-ranking (Carbonell &amp; Goldstein MMR 1998; Vargas xQuAD/RxQuAD) and LLM-as-ranker work (Dai et al. 2023; Hou et al. 2024; Sun et al. 2023 RankGPT). In this survey it covers the O1 diversity-objective axis for SP3. <strong>Correctness</strong>: 95% CIs reported (Appendix B) but explicitly wide — only 500 test users, so many comparisons lack confirmed significance; the authors flag this honestly. Preliminary study (RQ1) is explicitly informal. <strong>Contributions</strong>: (1) first LLM zero-shot <em>diversity</em> re-ranking methodology with 8 templates + explicit invalid-output handling; (2) quantitative comparison showing LLM re-rankers beat Random but trail traditional greedy re-rankers; (3) cost/trade-off analysis (money, latency, control, cold-start, valid-output guarantees). <strong>Clarity</strong>: reproducible — prompts, hyperparameters, and code are given (github.com/cdiego89phd/chat-reranking).</p></div></details>
+<details><summary><span class="en-only">Contribution vs Claim</span><span class="ko-only">기여 대 주장</span></summary><div class="card" style="margin-top:0.5rem"><ul><li><strong>Stated claims</strong>: LLMs "can interpret diversification re-ranking"; LLM re-ranking will "become more competitive soon" as costs fall.</li><li><strong>Demonstrated</strong>: LLM re-rankers statistically beat Random on relevance-aware metrics; they trail traditional re-rankers, with significance confirmed mainly where CIs don't overlap (Goodreads gaps; ILD wins for OpenAI models).</li><li><strong>Gap</strong>: the "will become competitive" claim is extrapolation from cost trends, not demonstrated. The domain-difference explanation (books harder than anime due to title similarity/prompt length) is explicitly labeled speculation. Only gpt-3.5-class and Llama2-class models tested (Oct 2023–Jan 2024); no GPT-4. <code>[SKIM - deep read would add little; results tables were read, but appendix CI-level significance per cell not exhaustively checked]</code></li></ul></div></details>
+</section>
+<section id="results" class="section-anchor">
+<details><summary><span class="en-only">Concepts Introduced</span><span class="ko-only">도입된 개념</span></summary><div class="card" style="margin-top:0.5rem"><p><strong>Greedy diversification re-ranking (framework the paper builds on)</strong></p>
+<ul><li><strong>What it computes</strong>: candidate list $CL$ of $m$ relevance-ranked items → iteratively select the item maximizing $f_{obj}(i, RL) = \lambda \cdot rel(i) + (1-\lambda) \cdot div(i, RL)$ → final list $RL$ of $n &lt; m$ items balancing relevance and diversity.</li><li><strong>Why it was created</strong>: relevance-only top-$n$ lists are redundant; post-processing lets any base recommender be diversified without retraining.</li><li><strong>Concrete example</strong>: $m=40$ anime candidates from MF, $n=10$, $\lambda=0.5$; MMR sets $div(i,RL)$ = negative of $i$'s max similarity to items already in $RL$.</li><li><strong>How it is used in this paper</strong>: the conceptual frame that LLM prompts "implement" implicitly — key terms ("balance", "maximize", "diversity") stand in for $\lambda$, $rel$, $div$.</li></ul>
+<p><strong>Zero-shot prompt-based diversity re-ranking (the paper's contribution)</strong></p>
+<ul><li><strong>What it computes</strong>: prompt containing instructions + output format + the ranked $CL$ (titles, optionally genres or plot summaries) → LLM text generation → parsed top-$n$ re-ranked list.</li><li><strong>Why it was created</strong>: prior LLM-in-RS re-ranking work (Dai et al. 2023, Hou et al. 2024, Sun et al. 2023) targets relevance only; this is claimed as the first LLM re-ranking work targeting a beyond-accuracy objective (diversity).</li><li><strong>Concrete example</strong>: 8 templates T1–T8; T1 = "balance relevance and diversity" ($\lambda \approx 0.5$), T2 = "maximize the items' diversity" ($\lambda \approx 0$), T5–T8 are feature-aware (append genres or plot summaries per item).</li><li><strong>How it is used in this paper</strong>: the entire experimental object, evaluated on Anime and Goodreads datasets against MMR/xQuAD/RxQuAD/Random.</li></ul>
+<p><strong>Invalid-generation handling by random fill</strong></p>
+<ul><li><strong>What it computes</strong>: LLM output items not matching any $CL$ title (hallucinations, title mismatches like "Naruto" vs "Naruto:Shippuden") are discarded; the incomplete $RL$ is padded with random items from $CL$ until $|RL| = n$.</li><li><strong>Why it was created</strong>: most LLM-RS papers ignore invalid outputs; this makes the evaluation methodology explicit and quantifies the problem.</li><li><strong>Concrete example</strong>: invalid-generation rate 2.3% (Anime) vs 13.1% (Goodreads); worst template T8 = 22.4%.</li><li><strong>How it is used in this paper</strong>: named as one of three factors explaining why LLM re-rankers lose relevance vs. traditional ones.</li></ul>
+<p>Diversity metrics ($\alpha$-NDCG, ILD, EILD, SRecall, rSRecall) are reused from Vargas &amp; Castells' framework — no new metrics introduced.</p></div></details>
+<details><summary><span class="en-only">Implementation Feasibility</span><span class="ko-only">구현 가능성</span></summary><div class="card" style="margin-top:0.5rem"><ul><li><strong>Needs</strong>: Anime Recommendation Database + Goodreads datasets (public); RankSys (Java) for MF + traditional re-rankers; OpenAI API (~$161 for the full study at 2023 prices) or 2x A40 48GB GPUs for Llama2.</li><li><strong>Code</strong>: available at https://github.com/cdiego89phd/chat-reranking</li><li><strong>Modifications</strong>: for our exposure-frequency question, replace the genre-diversity objective with per-item popularity/frequency covariates and correlate LLM re-rank positions with item exposure proxies (e.g., dataset popularity, which the RQ1 study shows the LLM tracks at RBO 0.5–0.8).</li><li><strong>Unknowns</strong>: missing link — whether the "lower-ranked items drawn by LLMs" effect (Table 5) is driven by item popularity in pretraining rather than list position; the paper does not decompose this.</li></ul></div></details>
+<details><summary><span class="en-only">Follow-up Papers</span><span class="ko-only">관련 후속 논문</span></summary><div class="card" style="margin-top:0.5rem"><ul><li>Hou et al., "Large Language Models are Zero-Shot Rankers for Recommender Systems" (ECIR 2024) — the closest relevance-ranking counterpart; documents position bias and popularity bias in LLM rankers, directly relevant to SP3.</li><li>Dai et al., "Uncovering ChatGPT's Capabilities in Recommender Systems" (2023) — ChatGPT ranking of unordered candidate sets; baseline for LLM-as-ranker behavior.</li><li>Sun et al., "Is ChatGPT Good at Search? Investigating LLMs as Re-Ranking Agents" (2023) — IR-side re-ranking methodology this paper's prompt/output format follows.</li><li>Li et al., "A Preliminary Study of ChatGPT on News Recommendation" (2023) — handles a relevance-vs-fairness (popular/unpopular item groups) trade-off via prompting, the closest existing exposure-frequency-aware LLM re-ranking instruction design.</li></ul></div></details>
+</section>
+<section id="delta" class="section-anchor">
+<div class="card"><div class="section-label"><span class="en-only">Condition Delta — transfer to our setting</span><span class="ko-only">조건 차이 — 우리 설정으로의 전이</span></div><p><strong>Paper's setting</strong>: inputs = MF-generated relevance-ranked candidate list ($m$=40/50) of anime/book titles; outputs = re-ranked top-10; conditions = zero-shot prompting, genre-based diversity metrics, 500 test users, 2023-era LLMs, items identified by natural-language titles the LLM plausibly saw in pretraining (post-2021/2018 items filtered out to ensure exposure). <strong>Our setting (SP3, exposure-frequency-as-ranking-proxy)</strong>: we ask whether an item's exposure frequency in the LLM's training corpus acts as an implicit ranking prior when LLMs rank/re-rank, and whether diversity objectives interact with that popularity prior. <strong>Differences</strong>:</p>
+<ul><li>The paper deliberately <em>maximizes</em> item exposure (filters unfamiliar items) rather than measuring exposure-frequency effects: <strong>missing link</strong> — no per-item popularity/frequency analysis of LLM ranking behavior.</li><li>Popularity signal is only probed in the informal RQ1 study (RBO 0.5–0.8 for popularity re-ranking): <strong>reference only</strong> — usable as evidence LLMs encode popularity, but not a controlled measurement.</li><li>Diversity objective (genre coverage) vs our exposure/frequency axis: <strong>resolved</strong> — the paper supplies the O1 diversity-objective baseline behavior (LLMs sacrifice relevance for diversity, drawing lower-ranked = less "relevant-popular" items) against which exposure effects can be contrasted.</li><li>Fixed upstream recommender (MF) supplies relevance; LLM never scores relevance itself: <strong>reference only</strong> for our setting where the LLM's own ranking prior is the object of study.</li></ul></div>
+<div class="card"><div class="section-label"><span class="en-only">Root-cause vs. Symptom</span><span class="ko-only">근본 원인 대 증상</span></div><p><code>Symptom</code> — the paper diversifies lists post-hoc over a fixed recommender and patches LLM failure modes (hallucinated titles) by random-filling, without addressing either why the base recommender under-diversifies or why LLMs hallucinate/degrade on less-exposed domains (the Goodreads gap is left as speculation); as an honest feasibility benchmark this is by design, but no underlying mechanism is resolved.</p></div>
+</section>
+<div class="page-nav"><a href="29_PairwiseFairness.html">&larr; [29] PairwiseFairness</a><a href="../sp3_postproc-rerank-blackbox.html">&uarr; SP3</a><a href="31_SPOFR.html">[31] SPOFR &rarr;</a></div>
+    </div>
+  </div>
+<nav class="bd-sidebar-secondary"><div class="mini-toc-label"><span class="en-only">On this page</span><span class="ko-only">이 페이지</span></div><ul class="mini-toc"><li><a href="#header"><span class="en-only">Paper info</span><span class="ko-only">논문 정보</span></a></li><li><a href="#problem"><span class="en-only">Problem</span><span class="ko-only">문제</span></a></li><li><a href="#solution"><span class="en-only">Solution &amp; Results</span><span class="ko-only">해결책 · 결과</span></a></li><li><a href="#results"><span class="en-only">Concepts &amp; Follow-ups</span><span class="ko-only">개념 · 후속</span></a></li><li><a href="#delta"><span class="en-only">Condition Delta</span><span class="ko-only">조건 차이</span></a></li></ul></nav>
+</div>
+</body>
+</html>

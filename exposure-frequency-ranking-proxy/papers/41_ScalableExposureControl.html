@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>[41] Scalable and Provably Fair Exposure Control for Large-Scale  — Exposure-Frequency Control Survey</title>
+
+<style>
+:root {
+  --bg: #0d1117; --card: #161b22; --border: #30363d;
+  --text: #e6edf3; --muted: #7d8590; --accent: #58a6ff;
+  --teal: #39d0c7; --green: #3fb950; --yellow: #d29922;
+  --red: #f85149; --purple: #bc8cff; --orange: #e3b341;
+  --sidebar-w: 262px; --toc-w: 210px; --hdr-h: 48px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+body { font-family: -apple-system, sans-serif; background: var(--bg);
+       color: var(--text); line-height: 1.6; }
+.bd-root { display: flex; height: 100vh; overflow: hidden; }
+.bd-sidebar-primary {
+  width: var(--sidebar-w); min-width: var(--sidebar-w);
+  overflow-y: auto; background: var(--card);
+  border-right: 1px solid var(--border);
+  padding: 0.75rem 0; flex-shrink: 0;
+}
+.bd-sidebar-primary::-webkit-scrollbar { width: 4px; }
+.bd-sidebar-primary::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+.bd-main { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-width: 0; }
+.article-header-bar {
+  height: var(--hdr-h); background: var(--card);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; padding: 0 1.5rem;
+  gap: 1rem; flex-shrink: 0;
+}
+.header-brand { color: var(--teal); font-weight: bold; font-size: 0.95em;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 1; }
+.header-brand a { color: inherit; text-decoration: none; }
+.breadcrumb { color: var(--muted); font-size: 0.82em; display: flex;
+  align-items: center; gap: 0.3rem; flex-shrink: 0; }
+.breadcrumb a { color: var(--accent); text-decoration: none; }
+.breadcrumb span { color: var(--border); }
+.bd-article { flex: 1; overflow-y: auto; padding: 2rem 2.5rem; }
+.bd-article::-webkit-scrollbar { width: 6px; }
+.bd-article::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+.bd-sidebar-secondary {
+  width: var(--toc-w); min-width: var(--toc-w);
+  overflow-y: auto; border-left: 1px solid var(--border);
+  padding: 1rem 0.75rem; flex-shrink: 0;
+}
+.bd-sidebar-secondary::-webkit-scrollbar { width: 4px; }
+.bd-sidebar-secondary::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+.sidebar-logo { padding: 0.5rem 1rem 0.75rem;
+  border-bottom: 1px solid var(--border); margin-bottom: 0.5rem; }
+.sidebar-logo a { color: var(--teal); font-weight: bold; font-size: 0.95em;
+  text-decoration: none; display: block; }
+.sidebar-section { color: var(--muted); font-size: 0.72em; font-weight: bold;
+  text-transform: uppercase; letter-spacing: 0.07em;
+  padding: 0.7rem 1rem 0.25rem; }
+.sidebar-nav-link { display: block; padding: 0.28rem 1rem 0.28rem 1.25rem;
+  color: var(--muted); font-size: 0.875em; text-decoration: none; }
+.sidebar-nav-link:hover { color: var(--text); background: rgba(255,255,255,0.03); }
+.sidebar-nav-link.active { color: var(--teal);
+  border-left: 2px solid var(--teal);
+  padding-left: calc(1.25rem - 2px); background: rgba(57,208,199,0.05); }
+.mini-toc-label { color: var(--muted); font-size: 0.72em; font-weight: bold;
+  text-transform: uppercase; letter-spacing: 0.07em; padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border); margin-bottom: 0.5rem; }
+.mini-toc { list-style: none; }
+.mini-toc li a { display: block; padding: 0.22rem 0;
+  color: var(--muted); font-size: 0.83em; text-decoration: none;
+  border-left: 2px solid transparent; padding-left: 0.5rem; }
+.mini-toc li a:hover { color: var(--text); }
+.mini-toc li a.toc-active { color: var(--teal); border-left-color: var(--teal); }
+.section-anchor { scroll-margin-top: calc(var(--hdr-h) + 8px); }
+h1 { color: var(--teal); font-size: 1.7em; margin-bottom: 0.5rem; line-height:1.3; }
+h2 { color: var(--teal); font-size: 1.25em; margin: 1.5rem 0 0.6rem; }
+h3 { color: var(--teal); font-size: 1.05em; margin: 1.2rem 0 0.4rem; }
+h4 { color: var(--teal); font-size: 0.95em; margin: 1rem 0 0.3rem; }
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+p { margin-bottom: 0.8rem; }
+ul, ol { margin: 0 0 0.8rem 1.4rem; }
+li { margin-bottom: 0.3rem; }
+code { background: rgba(255,255,255,0.06); border-radius: 3px; padding: 1px 4px; font-size: 0.9em; }
+blockquote { border-left: 3px solid var(--border); color: var(--muted);
+  padding: 0.2rem 0.8rem; margin-bottom: 0.8rem; }
+.card { background: var(--card); border: 1px solid var(--border);
+        border-radius: 8px; padding: 1.2rem; margin-bottom: 1rem; }
+table { width: 100%; border-collapse: collapse; font-size: 0.9em; margin-bottom: 0.8rem; }
+th { background: var(--card); color: var(--teal); padding: 8px;
+     border: 1px solid var(--border); text-align: left; }
+td { padding: 8px; border: 1px solid var(--border); vertical-align: top; }
+tr:nth-child(even) td { background: rgba(0,0,0,0.2); }
+.stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+             gap: 1rem; margin-bottom: 1.5rem; }
+.stat-box { background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+            padding: 1rem; text-align: center; }
+.stat-num { font-size: 2rem; font-weight: bold; color: var(--teal); }
+.stat-label { color: var(--muted); font-size: 0.85em; margin-top: 0.2rem; }
+.sp-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+           gap: 1rem; margin: 1rem 0; }
+.sp-card { background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+           padding: 1.2rem; cursor: pointer; transition: border-color 0.15s; height:100%; }
+.sp-card:hover { border-color: var(--teal); }
+.sp-card h3 { margin: 0 0 0.5rem; color: var(--teal); font-size: 1em; }
+.sp-card p { margin: 0; color: var(--muted); font-size: 0.88em; }
+.sp-badge { display: inline-block; background: rgba(57,208,199,0.1); color: var(--teal);
+            border-radius: 4px; padding: 2px 8px; font-size: 0.8em; margin-bottom: 0.5rem; }
+.paper-meta { color: var(--muted); font-size: 0.9em; margin-bottom: 1.5rem; }
+.paper-meta a { color: var(--accent); }
+.section-label { color: var(--teal); font-weight: bold; font-size: 0.85em;
+                 text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.4rem; }
+.pill { display: inline-block; border-radius: 4px; padding: 0.15rem 0.6rem;
+        font-size: 0.8em; font-weight: bold; margin-right: 0.4rem; }
+.pill-p0 { background: rgba(63,185,80,0.2); color: var(--green); }
+.pill-p1 { background: rgba(57,208,199,0.15); color: var(--teal); }
+.pill-p2 { background: rgba(210,153,34,0.2); color: var(--yellow); }
+.pill-p3 { background: rgba(188,140,255,0.2); color: var(--purple); }
+.pill-p4 { background: rgba(125,133,144,0.2); color: var(--muted); }
+.delta-row { margin: 0.4rem 0; padding: 0.4rem 0.8rem;
+             border-left: 3px solid var(--border); border-radius: 0 4px 4px 0; }
+.chain { position: relative; padding-left: 2rem; }
+.chain::before { content: ''; position: absolute; left: 0.95rem; top: 0;
+                 bottom: 0; width: 2px; background: var(--border); }
+.chain-node { position: relative; margin-bottom: 2rem; }
+.chain-node::before { content: ''; position: absolute; left: -1.55rem;
+                      top: 1.1rem; width: 12px; height: 12px;
+                      border-radius: 50%; background: var(--teal); }
+.chain-num { display: inline-block; width: 28px; height: 28px; background: var(--teal);
+             color: #000; border-radius: 50%; text-align: center; line-height: 28px;
+             font-weight: bold; font-size: 0.85em; margin-right: 0.6rem; flex-shrink: 0; }
+.chain-q { font-weight: bold; color: var(--text); margin: 0.4rem 0 0.3rem; font-size: 1em; }
+.chain-papers { color: var(--muted); font-size: 0.85em; margin-bottom: 0.6rem; }
+.chain-start { background: var(--card); border: 1px solid var(--teal);
+               border-radius: 8px; padding: 1rem; margin-bottom: 2rem; }
+.chain-start h3 { margin: 0 0 0.5rem; color: var(--teal); }
+.chain-converge { background: var(--card); border: 1px solid var(--green);
+                  border-radius: 8px; padding: 1rem; margin-top: 1rem; }
+.chain-converge h3 { margin: 0 0 0.5rem; color: var(--green); }
+.chain-label { display: inline-block; border-radius: 4px; padding: 0.15rem 0.6rem;
+               font-size: 0.8em; font-weight: bold; margin-right: 0.4rem; }
+.chain-status { border-radius: 0 4px 4px 0; padding: 0.5rem 0.8rem;
+                margin: 0.35rem 0; font-size: 0.88em; }
+.chain-status ul { margin: 0.3rem 0 0 1.2rem; padding: 0; }
+.chain-status li { margin-bottom: 0.25rem; }
+.chain-status.solved  { background: rgba(63,185,80,0.07);  border-left: 3px solid var(--green); }
+.chain-status.remains { background: rgba(210,153,34,0.07); border-left: 3px solid var(--yellow); }
+.chain-status.added   { background: rgba(248,81,73,0.07);  border-left: 3px solid var(--red); }
+.chain-status.pivoted { background: rgba(188,140,255,0.1); border-left: 3px solid var(--purple); }
+.chain-label.solved   { background: rgba(63,185,80,0.2);  color: var(--green); }
+.chain-label.remains  { background: rgba(210,153,34,0.2); color: var(--yellow); }
+.chain-label.added    { background: rgba(248,81,73,0.2);  color: var(--red); }
+.chain-label.pivoted  { background: rgba(188,140,255,0.2); color: var(--purple); }
+.chain-status.expected { background: rgba(88,166,255,0.07);  border-left: 3px solid var(--accent); }
+.chain-label.expected  { background: rgba(88,166,255,0.2);   color: var(--accent); }
+.chain-status.revised  { background: rgba(57,208,199,0.07);  border-left: 3px solid var(--teal); }
+.chain-label.revised   { background: rgba(57,208,199,0.2);   color: var(--teal); }
+.concept-box { border-left: 4px solid var(--teal); background: #0d1f1f;
+               border-radius: 4px; padding: 1.2rem; margin-bottom: 1.2rem; }
+.concept-name { font-weight: bold; color: var(--teal); font-size: 1.05em; margin-bottom: 0.5rem; }
+.hypothesis { border-left: 4px solid var(--teal); background: #0d1f1f;
+              border-radius: 4px; padding: 1rem; margin: 1rem 0; }
+.recommendation { border-left: 4px solid var(--purple); background: #1a0f2e;
+                  border-radius: 4px; padding: 1rem; margin: 1rem 0; }
+.rq-row { background: rgba(88,166,255,0.05); border-left: 3px solid var(--accent);
+          padding: 0.4rem 0.8rem; margin-bottom: 0.5rem; border-radius: 0 4px 4px 0; }
+.scroll-table-wrap { max-height: 420px; overflow-y: auto; border: 1px solid var(--border);
+                     border-radius: 4px; }
+.scroll-table-wrap table { margin-bottom: 0; }
+.scroll-table-wrap thead th { position: sticky; top: 0; background: #161b22; z-index: 1; }
+.page-nav { display: flex; justify-content: space-between; margin-top: 2rem;
+            padding-top: 1rem; border-top: 1px solid var(--border); gap: 1rem; }
+.page-nav a { color: var(--accent); font-size: 0.9em; }
+html.ko-active .en-only { display: none !important; }
+html.ko-active .ko-only { display: block !important; }
+.ko-only { display: none; }
+span.ko-only, .sidebar-logo a span.ko-only { display: none; }
+html.ko-active span.ko-only { display: inline !important; }
+.lang-btn { background: transparent; color: var(--muted); border: 1px solid var(--border);
+            border-radius: 4px; padding: 3px 9px; font-size: 0.8em; cursor: pointer; }
+.lang-btn.active { border-color: var(--teal); color: var(--teal); }
+details { margin-bottom: 0.8rem; }
+details summary { color: var(--muted); cursor: pointer; }
+@media (max-width: 1024px) { .bd-sidebar-secondary { display: none; } }
+@media (max-width: 768px) {
+  .bd-sidebar-primary { display: none; }
+  .bd-root { flex-direction: column; height: auto; overflow: visible; }
+  .bd-main { overflow: visible; }
+  .bd-article { overflow: visible; padding: 1rem; }
+  .stat-grid { grid-template-columns: repeat(2, 1fr); }
+  .sp-grid { grid-template-columns: 1fr; }
+}
+</style>
+
+<script>
+MathJax = { tex: { inlineMath: [['$','$']], displayMath: [['$$','$$']] },
+            options: { skipHtmlTags: ['script','noscript','style','textarea','pre','code'] } };
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<script>
+function toggleLanguage() {
+  const html = document.documentElement;
+  const isKo = html.classList.toggle('ko-active');
+  document.querySelectorAll('.lang-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.lang === (isKo ? 'ko' : 'en'));
+  });
+  localStorage.setItem('survey-lang', isKo ? 'ko' : 'en');
+}
+document.addEventListener('DOMContentLoaded', function() {
+  const saved = localStorage.getItem('survey-lang');
+  if (saved === 'ko') {
+    document.documentElement.classList.add('ko-active');
+    document.querySelectorAll('.lang-btn').forEach(b =>
+      b.classList.toggle('active', b.dataset.lang === 'ko'));
+  } else {
+    document.querySelectorAll('[data-lang="en"]').forEach(b => b.classList.add('active'));
+  }
+  const article = document.querySelector('.bd-article');
+  const sections = Array.from(document.querySelectorAll('.section-anchor[id]'));
+  const sideLinks = Array.from(document.querySelectorAll('.bd-sidebar-primary .sidebar-nav-link'));
+  const tocLinks = Array.from(document.querySelectorAll('.bd-sidebar-secondary .mini-toc a'));
+  if (!article || !sections.length) return;
+  function current() {
+    let id = sections[0].id;
+    const scrollTop = article.scrollTop + 60;
+    sections.forEach(function(s) { if (s.offsetTop <= scrollTop) id = s.id; });
+    return id;
+  }
+  function update() {
+    const id = current();
+    sideLinks.forEach(function(a) {
+      a.classList.toggle('active', a.getAttribute('href') === '#' + id);
+    });
+    tocLinks.forEach(function(a) {
+      a.classList.toggle('toc-active', a.getAttribute('href') === '#' + id);
+    });
+  }
+  article.addEventListener('scroll', update, { passive: true });
+  update();
+});
+</script>
+
+</head>
+<body>
+<div class="bd-root">
+
+<nav class="bd-sidebar-primary">
+  <div class="sidebar-logo">
+    <a href="../index.html">&#x2B21; <span class="en-only">Exposure-Frequency Control Survey</span><span class="ko-only">Exposure-빈도 제어 문헌 조사</span></a>
+  </div>
+  <div class="sidebar-section"><span class="en-only">Overview</span><span class="ko-only">개요</span></div>
+  <a href="../index.html#overview" class="sidebar-nav-link"><span class="en-only">Survey Hub</span><span class="ko-only">조사 허브</span></a>
+  <a href="../index.html#answers" class="sidebar-nav-link"><span class="en-only">Key Answers</span><span class="ko-only">핵심 답변</span></a>
+  <div class="sidebar-section"><span class="en-only">Sub-Problems</span><span class="ko-only">세부 문제</span></div>
+<a href="../sp1_fairness-of-exposure-fixed-scores.html" class="sidebar-nav-link">SP1: <span class="en-only">Exposure fairness</span><span class="ko-only">Exposure 공정성</span></a>
+<a href="../sp2_2024-2026-frontier-llm-era.html" class="sidebar-nav-link">SP2: <span class="en-only">2024–26 frontier / LLM</span><span class="ko-only">2024–26 최전선 / LLM</span></a>
+<a href="../sp3_postproc-rerank-blackbox.html" class="sidebar-nav-link">SP3: <span class="en-only">Post-proc re-ranking</span><span class="ko-only">Post-proc re-ranking</span></a>
+<a href="../sp4_stochastic-ranking-policies.html" class="sidebar-nav-link active">SP4: <span class="en-only">Stochastic policies</span><span class="ko-only">확률적 정책</span></a>
+<a href="../sp5_amortized-equity-attention.html" class="sidebar-nav-link">SP5: <span class="en-only">Amortized fairness</span><span class="ko-only">Amortized 공정성</span></a>
+<a href="../sp6_bandit-exposure-allocation.html" class="sidebar-nav-link">SP6: <span class="en-only">Bandit allocation</span><span class="ko-only">Bandit 배분</span></a>
+<a href="../sp7_capping-pacing-feeds-ads.html" class="sidebar-nav-link">SP7: <span class="en-only">Capping &amp; pacing</span><span class="ko-only">Capping·pacing</span></a>
+<a href="../sp8_popularity-debias-calibration.html" class="sidebar-nav-link">SP8: <span class="en-only">Debiasing &amp; calibration</span><span class="ko-only">Debiasing·calibration</span></a>
+<a href="../sp9_ecosystems-creator-incentives.html" class="sidebar-nav-link">SP9: <span class="en-only">Ecosystems &amp; creators</span><span class="ko-only">생태계·creator</span></a>
+<a href="../sp10_llm-exposure-feedback-loops.html" class="sidebar-nav-link">SP10: <span class="en-only">LLM feedback loops</span><span class="ko-only">LLM feedback loop</span></a>
+<a href="../sp11_strategyproof-exposure.html" class="sidebar-nav-link">SP11: <span class="en-only">Strategy-proofness</span><span class="ko-only">Strategy-proofness</span></a>
+
+  <div class="sidebar-section"><span class="en-only">Synthesis</span><span class="ko-only">종합</span></div>
+  <a href="../conclusion.html" class="sidebar-nav-link"><span class="en-only">Conclusion</span><span class="ko-only">결론</span></a>
+  <a href="../thinking-process.html" class="sidebar-nav-link"><span class="en-only">Thinking Process</span><span class="ko-only">추론 과정</span></a>
+</nav>
+  <div class="bd-main">
+<div class="article-header-bar"><div class="header-brand"><a href="../index.html"><span class="en-only">Exposure-Frequency Control Survey</span><span class="ko-only">Exposure-빈도 제어 문헌 조사</span></a></div><nav class="breadcrumb"><a href="../index.html"><span class="en-only">Survey</span><span class="ko-only">조사</span></a><span>&rsaquo;</span><a href="../sp4_stochastic-ranking-policies.html">SP4</a><span>&rsaquo;</span><span>[41] Scalable and Provably Fair Exposure Cont</span></nav><button class="lang-btn" data-lang="en" onclick="toggleLanguage()">EN</button><button class="lang-btn" data-lang="ko" onclick="toggleLanguage()">KO</button></div>
+    <div class="bd-article">
+<section id="header" class="section-anchor"><div class="paper-meta">
+<h1 style="margin-bottom:0.3rem">Scalable and Provably Fair Exposure Control for Large-Scale Recommender Systems</h1>
+<p style="margin:0.3rem 0;color:var(--muted)">Togashi et al. · WWW 2024 · 2024</p>
+<p style="margin:0.3rem 0"><a href="https://arxiv.org/abs/2402.14369" target="_blank">arXiv:2402.14369</a> · <a href="https://arxiv.org/pdf/2402.14369.pdf" target="_blank">PDF</a> · SP: <a href="../sp4_stochastic-ranking-policies.html">SP4</a></p>
+<p><span class="pill pill-p0">P0</span><span class="pill" style="background:rgba(255,255,255,0.05);color:var(--muted)">Track B</span></p>
+</div>
+<div class="card ko-only" style="border-color:var(--teal)"><div class="section-label">한 줄 요약</div><p style="margin:0">대규모 recommender를 위한 확장 가능하고 증명 가능한 공정 exposure 제어(WWW 2024)를 제안한다.</p></div>
+</section>
+<section id="problem" class="section-anchor">
+<div class="card"><div class="section-label"><span class="en-only">Problem</span><span class="ko-only">해결하려는 문제</span></div><p>Existing exposure-fairness methods for recommendation — post-processing on doubly stochastic matrices, Frank–Wolfe rankers, FairRec's round-robin, and PL-model in-processing with SGD — all carry an $O(|U||V|)$ time or space factor (or a non-parallelizable loop), so none can control the accuracy–fairness tradeoff on industry-scale systems with millions of users and items. The scalable baseline (iALS) offers no fairness control at all.</p></div>
+</section>
+<section id="solution" class="section-anchor">
+<div class="card"><div class="section-label"><span class="en-only">Solution / Contribution</span><span class="ko-only">해결책 / 기여</span></div><p>Minimize $L(V,U) + \lambda_{ex} R_{ex}(V,U)$ where $L$ is the iALS objective (Eq. 1) and $R_{ex}(V,U) = \frac{1}{|V|}\|\frac{1}{|U|}VU^\top\mathbb{1}\|_2^2$ is the second moment of per-item average predicted scores. Since $R_{ex}$ destroys the row-separability iALS depends on, reformulate with auxiliary $s = \frac{1}{|U|}U^\top\mathbb{1}$ and solve the augmented Lagrangian by 4-block alternation: (1) V-step — closed-form row-wise ridge solves with an extra rank-one term $\lambda_{ex}ss^\top$; (2) U-step — proximal gradient: parallel gradient descent on the iALS loss, then a closed-form proximal map made $O(|U|d)$ by Sherman–Morrison; (3) s-step — $d\times d$ linear solve reusing the item Gramian; (4) dual ascent on $w$. Theorem 3.1 proves that under bounded iterates and $\rho, \gamma$ conditions, the augmented Lagrangian converges and all residuals and gradients converge to 0 (KKT points), despite non-convex multi-block ADMM having no such guarantee in general.</p></div>
+<div class="card"><div class="section-label"><span class="en-only">Key Results</span><span class="ko-only">주요 결과</span></div><ul><li>Training time on MSD (571K users, 41K items): exADMM 1,533 s vs. iALS 858 s (≈1.8× overhead); Mult-VAE 22,580 s (~15× slower than exADMM); Multi-FR and FairRec infeasible (NA) on MSD.</li><li>Multi-FR is ~2,350× slower than exADMM on Epinions (4,011 s vs. 1.7 s) and infeasible on ML-20M and MSD.</li><li>On Epinions, exADMM matches Multi-FR's accuracy–fairness Pareto frontier (nDCG@K vs. Gini@K) despite the scalability gap; vs. iALS+FairRec, exADMM wins the tradeoff in the high-accuracy regime, FairRec wins under strong fairness requirements.</li><li>$\lambda_{ex}$ acts as a monotonic controller: Lorenz curves of item exposure shift smoothly toward equality as $\lambda_{ex}$ grows (e.g., ML-20M: 1e−10 → 3e−6), with $\lambda_{ex}=0$ recovering vanilla iALS exactly.</li><li>Time complexity strictly better than iALS in the $|U|$ term ($|U|d^2$ vs. $|U|d^3$) because the U-step avoids the linear solve.</li></ul></div>
+<details><summary><span class="en-only">5Cs Analysis</span><span class="ko-only">5Cs 분석</span></summary><div class="card" style="margin-top:0.5rem"><p><strong>Category</strong>: new method (scalable in-processing fairness algorithm) + theoretical convergence analysis. <strong>Context</strong>: builds directly on iALS (Hu et al. 2008; Rendle et al. 2021) and ADMM (Boyd et al. 2011); positions against Singh &amp; Joachims' fairness-of-exposure line, FairRec (Patro et al. 2020), Multi-FR (Wu et al. 2022), Do &amp; Usunier's Gini/Lorenz work. <strong>Correctness</strong>: convergence theorem with full appendix proofs (assumes bounded iterates — a stated assumption, not proven); experiments report Pareto frontiers over grid search rather than single cherry-picked points; no error bars / repeated-run CIs reported [SKIM - verify whether runs are averaged]. <strong>Contributions</strong>: (1) first fairness-controllable method with iALS-level scalability ($O(\text{nz}(R)d^2 + |U|d^2 + |V|d^3)$); (2) ADMM optimization tools (auxiliary-variable splitting + linearized U-step + Sherman–Morrison prox) with a convergence guarantee for the non-convex 3-block problem; (3) empirical demonstration on ML-20M, MSD, Epinions that the tradeoff is controllable where competitors are infeasible. <strong>Clarity</strong>: high — Algorithm 1 gives line-by-line pseudocode with per-line complexity annotations, and code is public.</p></div></details>
+<details><summary><span class="en-only">Contribution vs Claim</span><span class="ko-only">기여 대 주장</span></summary><div class="card" style="margin-top:0.5rem"><ul><li><strong>Stated claims</strong>: first scalable method for flexible accuracy–fairness control at million-user/item scale; provable convergence; tradeoff effectiveness similar to inefficient fairness baselines.</li><li><strong>Demonstrated</strong>: scalability and controllability are shown convincingly (Tables 2–3, Figures 1–2); convergence theorem proven in the appendix under a bounded-iterates assumption.</li><li><strong>Gap</strong>: [SKIM - verify in deep read] the fairness notion actually optimized is a score-second-moment proxy, while evaluation uses position-based Gini@K — the paper asserts a "monotonic relationship" between scores and exposure but does not formally bound the proxy-to-metric gap; "provably fair" in the title means provable convergence of the fairness-regularized objective, not a provable fairness guarantee on the ranked output. Largest datasets tested are ~571K users, below the "millions" the claims target.</li></ul></div></details>
+</section>
+<section id="results" class="section-anchor">
+<details><summary><span class="en-only">Concepts Introduced</span><span class="ko-only">도입된 개념</span></summary><div class="card" style="margin-top:0.5rem"><p><strong>exADMM (exposure-aware ADMM)</strong></p>
+<ul><li><strong>What it computes</strong>: implicit feedback matrix $R \in \{0,1\}^{|U|\times|V|}$ → alternating updates of user embeddings $U$, item embeddings $V$, auxiliary variable $s$, and dual variable $w$ under an augmented Lagrangian → embeddings whose predicted scores $UV^\top$ trade off nDCG against exposure equality, controlled by a single weight $\lambda_{ex}$.</li><li><strong>Why it was created</strong>: prior fairness-aware rankers (doubly-stochastic-matrix optimization, Frank–Wolfe, FairRec, Plackett–Luce + SGD) all carry an $O(|U||V|)$ time or space factor and are infeasible at millions of users/items; vanilla iALS scales but has no fairness knob.</li><li><strong>Concrete example</strong>: on MSD (571K users, 41K items, 33.6M interactions), exADMM trains in 1,533 s vs. iALS's 858 s, while Multi-FR and FairRec are infeasible (NA) on that dataset.</li><li><strong>How it is used in this paper</strong>: it is the paper's core contribution — Algorithm 1, with per-step complexity $O(\text{nz}(R)d^2 + |U|d^2 + |V|d^3)$, lower than iALS's $O(\text{nz}(R)d^2 + (|U|+|V|)d^3)$.</li></ul>
+<p><strong>Second-moment exposure regularizer $R_{ex}$</strong></p>
+<ul><li><strong>What it computes</strong>: predicted score matrix $UV^\top$ → mean predicted score per item averaged over users, then L2 norm over items → $R_{ex}(V,U) = \frac{1}{|V|}\left\|\frac{1}{|U|}VU^\top\mathbb{1}\right\|_2^2$, a scalar penalty that is large when some items' average scores are extreme.</li><li><strong>Why it was created</strong>: exact exposure metrics (Gini over ranked positions) are non-smooth and non-separable; this proxy exploits the monotonic link between an item's predicted score and the exposure it receives in ranked lists, while staying quadratic.</li><li><strong>Concrete example</strong>: setting $\lambda_{ex}$ from 0 → 3e−6 on ML-20M moves the Lorenz curve of cumulative item exposure monotonically toward equality (Figure 2).</li><li><strong>How it is used in this paper</strong>: added to the iALS objective as $L(V,U) + \lambda_{ex} R_{ex}(V,U)$; it introduces the structural dependency across all users that the ADMM machinery then decouples.</li></ul>
+<p><strong>Separability-restoring ADMM splitting (auxiliary $s$ + proximal-gradient U-step + Sherman–Morrison proximal map)</strong></p>
+<ul><li><strong>What it computes</strong>: the non-separable term $\frac{1}{|U|}U^\top\mathbb{1}$ is replaced by an auxiliary $s \in \mathbb{R}^d$ with equality constraint; the U-update linearizes the loss (proximal gradient), and the resulting $|U|\times|U|$ inverse in the proximal map collapses via Sherman–Morrison to a rank-one correction computable in $O(|U|d)$.</li><li><strong>Why it was created</strong>: the fairness regularizer couples all rows of $U$, destroying the row-wise independence that gives iALS its parallelism; naive proximal mapping costs $O(|U|^3)$.</li><li><strong>Concrete example</strong>: $\text{prox}_\gamma^k(U) = \left(\frac{-1}{|U|^2(1/|U|+1/\rho\gamma)}\mathbb{1}\mathbb{1}^\top + I\right)\left(U + \frac{\rho\gamma}{|U|}\mathbb{1}(s^k - w^k)^\top\right)$ — three parallelizable passes over user rows.</li><li><strong>How it is used in this paper</strong>: Sections 3.2.1–3.2.3; this is what makes the fairness-regularized objective run at iALS-like cost.</li></ul>
+<p><strong>iALS (implicit alternating least squares)</strong> — background method, defined here as used: alternating row-wise ridge solves on the implicit-feedback MF objective with Gramian trick, $O(\text{nz}(R)d^2 + (|U|+|V|)d^3)$ per epoch. Standard prior work (Hu et al. 2008; Rendle et al. 2021), summarized in §2 of the paper.</p></div></details>
+<details><summary><span class="en-only">Implementation Feasibility</span><span class="ko-only">구현 가능성</span></summary><div class="card" style="margin-top:0.5rem"><ul><li><strong>Needs</strong>: implicit-feedback dataset; C++ (built on Rendle et al.'s public iALS implementation); CPU-parallel; $d$ = 32–512, $T$ = 50 epochs; hyperparameters $\{\lambda_{L2}, \alpha_0, \lambda_{ex}, \rho, \gamma\}$ with the scale-reparametrization $\lambda_{ex} = \lambda_{ex}^* |U|^2$.</li><li><strong>Code</strong>: available at https://github.com/riktor/exADMM-recommender</li><li><strong>Modifications</strong>: to serve SP4, exposure would need to be measured on realized rankings over time, not on score averages; extending beyond MF (e.g., to two-tower or LTR scorers) breaks the closed-form ridge steps.</li><li><strong>Unknowns</strong>: missing link: sensitivity of convergence to the bounded-iterates assumption in practice; missing link: how the score-level regularizer behaves when score→exposure monotonicity is broken by downstream re-ranking.</li></ul></div></details>
+<details><summary><span class="en-only">Follow-up Papers</span><span class="ko-only">관련 후속 논문</span></summary><div class="card" style="margin-top:0.5rem"><ul><li>Saito &amp; Joachims, "Fair Ranking as Fair Division: Impact-Based Individual Fairness in Ranking" (KDD 2022) — the paper's own named future direction (scalable impact-based fairness); relevant to SP4's exposure-vs-impact distinction.</li><li>Patro et al., "FairRec" (WWW 2020) — main post-processing baseline; the in- vs. post-processing tradeoff regimes found here (high-accuracy vs. strong-fairness) are directly relevant to SP4.</li><li>Do &amp; Usunier, "Optimizing generalized Gini indices for fairness in rankings" (SIGIR 2022) — the exact-Gini optimization line that exADMM's second-moment proxy approximates; candidate for quantifying the proxy gap.</li><li>Rendle et al., "Revisiting the Performance of iALS on Item Recommendation Benchmarks" (2021) — the scalable backbone; needed to reproduce exADMM.</li></ul></div></details>
+</section>
+<section id="delta" class="section-anchor">
+<div class="card"><div class="section-label"><span class="en-only">Condition Delta — transfer to our setting</span><span class="ko-only">조건 차이 — 우리 설정으로의 전이</span></div><p><strong>Paper's setting</strong>: inputs = binary implicit-feedback matrix (users × items), outputs = MF embeddings scoring all items per user for top-K ranking; conditions = static offline training, exposure measured post-hoc by position-discounted Gini@K, fairness handled in-processing as a differentiable score-level regularizer. <strong>Our setting</strong> (SP4 — exposure frequency as ranking proxy): we care about how item exposure frequency functions as, or distorts, a proxy signal in ranking pipelines — i.e., the relationship between an item's exposure and its inferred relevance/rank quality. <strong>Differences</strong>:</p>
+<ul><li>Paper controls exposure inequality as an optimization target; our SP treats exposure frequency as a measurement/proxy problem — resolved: the paper's score↔exposure monotonicity argument (§3.1) is directly usable as the formal bridge from model scores to expected exposure.</li><li>Fairness proxy operates on predicted scores, never on realized ranked exposure — missing link: no bound relating score second-moment to Gini@K of actual rankings.</li><li>Static one-shot training, no feedback loop — missing link: exposure→interaction→retraining dynamics (popularity-bias amplification) are out of scope here; the paper cites but does not model them.</li><li>Implicit-feedback CF only (MF embeddings) — reference only: LTR / LLM-ranker settings in other SP4 papers need re-derivation of the separability machinery.</li></ul></div>
+<div class="card"><div class="section-label"><span class="en-only">Root-cause vs. Symptom</span><span class="ko-only">근본 원인 대 증상</span></div><p><strong>Mixed</strong> — the scalability problem is solved at its root (the regularizer's destruction of subproblem separability is analyzed exactly and repaired with ADMM splitting + Sherman–Morrison, with a convergence proof), but the fairness side is a symptom-level proxy: it flattens the second moment of predicted scores rather than guaranteeing anything about realized position-based exposure, leaving the proxy-to-metric gap unaddressed.</p></div>
+</section>
+<div class="page-nav"><a href="40_PLRank.html">&larr; [40] PLRank</a><a href="../sp4_stochastic-ranking-policies.html">&uarr; SP4</a><a href="42_TopKFairLTR.html">[42] TopKFairLTR &rarr;</a></div>
+    </div>
+  </div>
+<nav class="bd-sidebar-secondary"><div class="mini-toc-label"><span class="en-only">On this page</span><span class="ko-only">이 페이지</span></div><ul class="mini-toc"><li><a href="#header"><span class="en-only">Paper info</span><span class="ko-only">논문 정보</span></a></li><li><a href="#problem"><span class="en-only">Problem</span><span class="ko-only">문제</span></a></li><li><a href="#solution"><span class="en-only">Solution &amp; Results</span><span class="ko-only">해결책 · 결과</span></a></li><li><a href="#results"><span class="en-only">Concepts &amp; Follow-ups</span><span class="ko-only">개념 · 후속</span></a></li><li><a href="#delta"><span class="en-only">Condition Delta</span><span class="ko-only">조건 차이</span></a></li></ul></nav>
+</div>
+</body>
+</html>

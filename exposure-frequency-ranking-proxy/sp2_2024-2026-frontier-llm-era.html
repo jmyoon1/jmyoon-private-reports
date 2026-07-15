@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SP2: 2024–2026 Frontier: Exposure Control and LLM-era Re-ranking — Exposure-Frequency Control Survey</title>
+
+<style>
+:root {
+  --bg: #0d1117; --card: #161b22; --border: #30363d;
+  --text: #e6edf3; --muted: #7d8590; --accent: #58a6ff;
+  --teal: #39d0c7; --green: #3fb950; --yellow: #d29922;
+  --red: #f85149; --purple: #bc8cff; --orange: #e3b341;
+  --sidebar-w: 262px; --toc-w: 210px; --hdr-h: 48px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+body { font-family: -apple-system, sans-serif; background: var(--bg);
+       color: var(--text); line-height: 1.6; }
+.bd-root { display: flex; height: 100vh; overflow: hidden; }
+.bd-sidebar-primary {
+  width: var(--sidebar-w); min-width: var(--sidebar-w);
+  overflow-y: auto; background: var(--card);
+  border-right: 1px solid var(--border);
+  padding: 0.75rem 0; flex-shrink: 0;
+}
+.bd-sidebar-primary::-webkit-scrollbar { width: 4px; }
+.bd-sidebar-primary::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+.bd-main { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-width: 0; }
+.article-header-bar {
+  height: var(--hdr-h); background: var(--card);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; padding: 0 1.5rem;
+  gap: 1rem; flex-shrink: 0;
+}
+.header-brand { color: var(--teal); font-weight: bold; font-size: 0.95em;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 1; }
+.header-brand a { color: inherit; text-decoration: none; }
+.breadcrumb { color: var(--muted); font-size: 0.82em; display: flex;
+  align-items: center; gap: 0.3rem; flex-shrink: 0; }
+.breadcrumb a { color: var(--accent); text-decoration: none; }
+.breadcrumb span { color: var(--border); }
+.bd-article { flex: 1; overflow-y: auto; padding: 2rem 2.5rem; }
+.bd-article::-webkit-scrollbar { width: 6px; }
+.bd-article::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+.bd-sidebar-secondary {
+  width: var(--toc-w); min-width: var(--toc-w);
+  overflow-y: auto; border-left: 1px solid var(--border);
+  padding: 1rem 0.75rem; flex-shrink: 0;
+}
+.bd-sidebar-secondary::-webkit-scrollbar { width: 4px; }
+.bd-sidebar-secondary::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+.sidebar-logo { padding: 0.5rem 1rem 0.75rem;
+  border-bottom: 1px solid var(--border); margin-bottom: 0.5rem; }
+.sidebar-logo a { color: var(--teal); font-weight: bold; font-size: 0.95em;
+  text-decoration: none; display: block; }
+.sidebar-section { color: var(--muted); font-size: 0.72em; font-weight: bold;
+  text-transform: uppercase; letter-spacing: 0.07em;
+  padding: 0.7rem 1rem 0.25rem; }
+.sidebar-nav-link { display: block; padding: 0.28rem 1rem 0.28rem 1.25rem;
+  color: var(--muted); font-size: 0.875em; text-decoration: none; }
+.sidebar-nav-link:hover { color: var(--text); background: rgba(255,255,255,0.03); }
+.sidebar-nav-link.active { color: var(--teal);
+  border-left: 2px solid var(--teal);
+  padding-left: calc(1.25rem - 2px); background: rgba(57,208,199,0.05); }
+.mini-toc-label { color: var(--muted); font-size: 0.72em; font-weight: bold;
+  text-transform: uppercase; letter-spacing: 0.07em; padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border); margin-bottom: 0.5rem; }
+.mini-toc { list-style: none; }
+.mini-toc li a { display: block; padding: 0.22rem 0;
+  color: var(--muted); font-size: 0.83em; text-decoration: none;
+  border-left: 2px solid transparent; padding-left: 0.5rem; }
+.mini-toc li a:hover { color: var(--text); }
+.mini-toc li a.toc-active { color: var(--teal); border-left-color: var(--teal); }
+.section-anchor { scroll-margin-top: calc(var(--hdr-h) + 8px); }
+h1 { color: var(--teal); font-size: 1.7em; margin-bottom: 0.5rem; line-height:1.3; }
+h2 { color: var(--teal); font-size: 1.25em; margin: 1.5rem 0 0.6rem; }
+h3 { color: var(--teal); font-size: 1.05em; margin: 1.2rem 0 0.4rem; }
+h4 { color: var(--teal); font-size: 0.95em; margin: 1rem 0 0.3rem; }
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+p { margin-bottom: 0.8rem; }
+ul, ol { margin: 0 0 0.8rem 1.4rem; }
+li { margin-bottom: 0.3rem; }
+code { background: rgba(255,255,255,0.06); border-radius: 3px; padding: 1px 4px; font-size: 0.9em; }
+blockquote { border-left: 3px solid var(--border); color: var(--muted);
+  padding: 0.2rem 0.8rem; margin-bottom: 0.8rem; }
+.card { background: var(--card); border: 1px solid var(--border);
+        border-radius: 8px; padding: 1.2rem; margin-bottom: 1rem; }
+table { width: 100%; border-collapse: collapse; font-size: 0.9em; margin-bottom: 0.8rem; }
+th { background: var(--card); color: var(--teal); padding: 8px;
+     border: 1px solid var(--border); text-align: left; }
+td { padding: 8px; border: 1px solid var(--border); vertical-align: top; }
+tr:nth-child(even) td { background: rgba(0,0,0,0.2); }
+.stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+             gap: 1rem; margin-bottom: 1.5rem; }
+.stat-box { background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+            padding: 1rem; text-align: center; }
+.stat-num { font-size: 2rem; font-weight: bold; color: var(--teal); }
+.stat-label { color: var(--muted); font-size: 0.85em; margin-top: 0.2rem; }
+.sp-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+           gap: 1rem; margin: 1rem 0; }
+.sp-card { background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+           padding: 1.2rem; cursor: pointer; transition: border-color 0.15s; height:100%; }
+.sp-card:hover { border-color: var(--teal); }
+.sp-card h3 { margin: 0 0 0.5rem; color: var(--teal); font-size: 1em; }
+.sp-card p { margin: 0; color: var(--muted); font-size: 0.88em; }
+.sp-badge { display: inline-block; background: rgba(57,208,199,0.1); color: var(--teal);
+            border-radius: 4px; padding: 2px 8px; font-size: 0.8em; margin-bottom: 0.5rem; }
+.paper-meta { color: var(--muted); font-size: 0.9em; margin-bottom: 1.5rem; }
+.paper-meta a { color: var(--accent); }
+.section-label { color: var(--teal); font-weight: bold; font-size: 0.85em;
+                 text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.4rem; }
+.pill { display: inline-block; border-radius: 4px; padding: 0.15rem 0.6rem;
+        font-size: 0.8em; font-weight: bold; margin-right: 0.4rem; }
+.pill-p0 { background: rgba(63,185,80,0.2); color: var(--green); }
+.pill-p1 { background: rgba(57,208,199,0.15); color: var(--teal); }
+.pill-p2 { background: rgba(210,153,34,0.2); color: var(--yellow); }
+.pill-p3 { background: rgba(188,140,255,0.2); color: var(--purple); }
+.pill-p4 { background: rgba(125,133,144,0.2); color: var(--muted); }
+.delta-row { margin: 0.4rem 0; padding: 0.4rem 0.8rem;
+             border-left: 3px solid var(--border); border-radius: 0 4px 4px 0; }
+.chain { position: relative; padding-left: 2rem; }
+.chain::before { content: ''; position: absolute; left: 0.95rem; top: 0;
+                 bottom: 0; width: 2px; background: var(--border); }
+.chain-node { position: relative; margin-bottom: 2rem; }
+.chain-node::before { content: ''; position: absolute; left: -1.55rem;
+                      top: 1.1rem; width: 12px; height: 12px;
+                      border-radius: 50%; background: var(--teal); }
+.chain-num { display: inline-block; width: 28px; height: 28px; background: var(--teal);
+             color: #000; border-radius: 50%; text-align: center; line-height: 28px;
+             font-weight: bold; font-size: 0.85em; margin-right: 0.6rem; flex-shrink: 0; }
+.chain-q { font-weight: bold; color: var(--text); margin: 0.4rem 0 0.3rem; font-size: 1em; }
+.chain-papers { color: var(--muted); font-size: 0.85em; margin-bottom: 0.6rem; }
+.chain-start { background: var(--card); border: 1px solid var(--teal);
+               border-radius: 8px; padding: 1rem; margin-bottom: 2rem; }
+.chain-start h3 { margin: 0 0 0.5rem; color: var(--teal); }
+.chain-converge { background: var(--card); border: 1px solid var(--green);
+                  border-radius: 8px; padding: 1rem; margin-top: 1rem; }
+.chain-converge h3 { margin: 0 0 0.5rem; color: var(--green); }
+.chain-label { display: inline-block; border-radius: 4px; padding: 0.15rem 0.6rem;
+               font-size: 0.8em; font-weight: bold; margin-right: 0.4rem; }
+.chain-status { border-radius: 0 4px 4px 0; padding: 0.5rem 0.8rem;
+                margin: 0.35rem 0; font-size: 0.88em; }
+.chain-status ul { margin: 0.3rem 0 0 1.2rem; padding: 0; }
+.chain-status li { margin-bottom: 0.25rem; }
+.chain-status.solved  { background: rgba(63,185,80,0.07);  border-left: 3px solid var(--green); }
+.chain-status.remains { background: rgba(210,153,34,0.07); border-left: 3px solid var(--yellow); }
+.chain-status.added   { background: rgba(248,81,73,0.07);  border-left: 3px solid var(--red); }
+.chain-status.pivoted { background: rgba(188,140,255,0.1); border-left: 3px solid var(--purple); }
+.chain-label.solved   { background: rgba(63,185,80,0.2);  color: var(--green); }
+.chain-label.remains  { background: rgba(210,153,34,0.2); color: var(--yellow); }
+.chain-label.added    { background: rgba(248,81,73,0.2);  color: var(--red); }
+.chain-label.pivoted  { background: rgba(188,140,255,0.2); color: var(--purple); }
+.chain-status.expected { background: rgba(88,166,255,0.07);  border-left: 3px solid var(--accent); }
+.chain-label.expected  { background: rgba(88,166,255,0.2);   color: var(--accent); }
+.chain-status.revised  { background: rgba(57,208,199,0.07);  border-left: 3px solid var(--teal); }
+.chain-label.revised   { background: rgba(57,208,199,0.2);   color: var(--teal); }
+.concept-box { border-left: 4px solid var(--teal); background: #0d1f1f;
+               border-radius: 4px; padding: 1.2rem; margin-bottom: 1.2rem; }
+.concept-name { font-weight: bold; color: var(--teal); font-size: 1.05em; margin-bottom: 0.5rem; }
+.hypothesis { border-left: 4px solid var(--teal); background: #0d1f1f;
+              border-radius: 4px; padding: 1rem; margin: 1rem 0; }
+.recommendation { border-left: 4px solid var(--purple); background: #1a0f2e;
+                  border-radius: 4px; padding: 1rem; margin: 1rem 0; }
+.rq-row { background: rgba(88,166,255,0.05); border-left: 3px solid var(--accent);
+          padding: 0.4rem 0.8rem; margin-bottom: 0.5rem; border-radius: 0 4px 4px 0; }
+.scroll-table-wrap { max-height: 420px; overflow-y: auto; border: 1px solid var(--border);
+                     border-radius: 4px; }
+.scroll-table-wrap table { margin-bottom: 0; }
+.scroll-table-wrap thead th { position: sticky; top: 0; background: #161b22; z-index: 1; }
+.page-nav { display: flex; justify-content: space-between; margin-top: 2rem;
+            padding-top: 1rem; border-top: 1px solid var(--border); gap: 1rem; }
+.page-nav a { color: var(--accent); font-size: 0.9em; }
+html.ko-active .en-only { display: none !important; }
+html.ko-active .ko-only { display: block !important; }
+.ko-only { display: none; }
+span.ko-only, .sidebar-logo a span.ko-only { display: none; }
+html.ko-active span.ko-only { display: inline !important; }
+.lang-btn { background: transparent; color: var(--muted); border: 1px solid var(--border);
+            border-radius: 4px; padding: 3px 9px; font-size: 0.8em; cursor: pointer; }
+.lang-btn.active { border-color: var(--teal); color: var(--teal); }
+details { margin-bottom: 0.8rem; }
+details summary { color: var(--muted); cursor: pointer; }
+@media (max-width: 1024px) { .bd-sidebar-secondary { display: none; } }
+@media (max-width: 768px) {
+  .bd-sidebar-primary { display: none; }
+  .bd-root { flex-direction: column; height: auto; overflow: visible; }
+  .bd-main { overflow: visible; }
+  .bd-article { overflow: visible; padding: 1rem; }
+  .stat-grid { grid-template-columns: repeat(2, 1fr); }
+  .sp-grid { grid-template-columns: 1fr; }
+}
+</style>
+
+<script>
+MathJax = { tex: { inlineMath: [['$','$']], displayMath: [['$$','$$']] },
+            options: { skipHtmlTags: ['script','noscript','style','textarea','pre','code'] } };
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<script>
+function toggleLanguage() {
+  const html = document.documentElement;
+  const isKo = html.classList.toggle('ko-active');
+  document.querySelectorAll('.lang-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.lang === (isKo ? 'ko' : 'en'));
+  });
+  localStorage.setItem('survey-lang', isKo ? 'ko' : 'en');
+}
+document.addEventListener('DOMContentLoaded', function() {
+  const saved = localStorage.getItem('survey-lang');
+  if (saved === 'ko') {
+    document.documentElement.classList.add('ko-active');
+    document.querySelectorAll('.lang-btn').forEach(b =>
+      b.classList.toggle('active', b.dataset.lang === 'ko'));
+  } else {
+    document.querySelectorAll('[data-lang="en"]').forEach(b => b.classList.add('active'));
+  }
+  const article = document.querySelector('.bd-article');
+  const sections = Array.from(document.querySelectorAll('.section-anchor[id]'));
+  const sideLinks = Array.from(document.querySelectorAll('.bd-sidebar-primary .sidebar-nav-link'));
+  const tocLinks = Array.from(document.querySelectorAll('.bd-sidebar-secondary .mini-toc a'));
+  if (!article || !sections.length) return;
+  function current() {
+    let id = sections[0].id;
+    const scrollTop = article.scrollTop + 60;
+    sections.forEach(function(s) { if (s.offsetTop <= scrollTop) id = s.id; });
+    return id;
+  }
+  function update() {
+    const id = current();
+    sideLinks.forEach(function(a) {
+      a.classList.toggle('active', a.getAttribute('href') === '#' + id);
+    });
+    tocLinks.forEach(function(a) {
+      a.classList.toggle('toc-active', a.getAttribute('href') === '#' + id);
+    });
+  }
+  article.addEventListener('scroll', update, { passive: true });
+  update();
+});
+</script>
+
+</head>
+<body>
+<div class="bd-root">
+
+<nav class="bd-sidebar-primary">
+  <div class="sidebar-logo">
+    <a href="index.html">&#x2B21; <span class="en-only">Exposure-Frequency Control Survey</span><span class="ko-only">Exposure-빈도 제어 문헌 조사</span></a>
+  </div>
+  <div class="sidebar-section"><span class="en-only">Overview</span><span class="ko-only">개요</span></div>
+  <a href="index.html#overview" class="sidebar-nav-link"><span class="en-only">Survey Hub</span><span class="ko-only">조사 허브</span></a>
+  <a href="index.html#answers" class="sidebar-nav-link"><span class="en-only">Key Answers</span><span class="ko-only">핵심 답변</span></a>
+  <div class="sidebar-section"><span class="en-only">Sub-Problems</span><span class="ko-only">세부 문제</span></div>
+<a href="sp1_fairness-of-exposure-fixed-scores.html" class="sidebar-nav-link">SP1: <span class="en-only">Exposure fairness</span><span class="ko-only">Exposure 공정성</span></a>
+<a href="sp2_2024-2026-frontier-llm-era.html" class="sidebar-nav-link active">SP2: <span class="en-only">2024–26 frontier / LLM</span><span class="ko-only">2024–26 최전선 / LLM</span></a>
+<a href="sp3_postproc-rerank-blackbox.html" class="sidebar-nav-link">SP3: <span class="en-only">Post-proc re-ranking</span><span class="ko-only">Post-proc re-ranking</span></a>
+<a href="sp4_stochastic-ranking-policies.html" class="sidebar-nav-link">SP4: <span class="en-only">Stochastic policies</span><span class="ko-only">확률적 정책</span></a>
+<a href="sp5_amortized-equity-attention.html" class="sidebar-nav-link">SP5: <span class="en-only">Amortized fairness</span><span class="ko-only">Amortized 공정성</span></a>
+<a href="sp6_bandit-exposure-allocation.html" class="sidebar-nav-link">SP6: <span class="en-only">Bandit allocation</span><span class="ko-only">Bandit 배분</span></a>
+<a href="sp7_capping-pacing-feeds-ads.html" class="sidebar-nav-link">SP7: <span class="en-only">Capping &amp; pacing</span><span class="ko-only">Capping·pacing</span></a>
+<a href="sp8_popularity-debias-calibration.html" class="sidebar-nav-link">SP8: <span class="en-only">Debiasing &amp; calibration</span><span class="ko-only">Debiasing·calibration</span></a>
+<a href="sp9_ecosystems-creator-incentives.html" class="sidebar-nav-link">SP9: <span class="en-only">Ecosystems &amp; creators</span><span class="ko-only">생태계·creator</span></a>
+<a href="sp10_llm-exposure-feedback-loops.html" class="sidebar-nav-link">SP10: <span class="en-only">LLM feedback loops</span><span class="ko-only">LLM feedback loop</span></a>
+<a href="sp11_strategyproof-exposure.html" class="sidebar-nav-link">SP11: <span class="en-only">Strategy-proofness</span><span class="ko-only">Strategy-proofness</span></a>
+
+  <div class="sidebar-section"><span class="en-only">Synthesis</span><span class="ko-only">종합</span></div>
+  <a href="conclusion.html" class="sidebar-nav-link"><span class="en-only">Conclusion</span><span class="ko-only">결론</span></a>
+  <a href="thinking-process.html" class="sidebar-nav-link"><span class="en-only">Thinking Process</span><span class="ko-only">추론 과정</span></a>
+</nav>
+  <div class="bd-main">
+<div class="article-header-bar"><div class="header-brand"><a href="index.html"><span class="en-only">Exposure-Frequency Control Survey</span><span class="ko-only">Exposure-빈도 제어 문헌 조사</span></a></div><nav class="breadcrumb"><a href="index.html"><span class="en-only">Survey</span><span class="ko-only">조사</span></a><span>&rsaquo;</span><span>SP2: <span class="en-only">2024–26 frontier / LLM</span><span class="ko-only">2024–26 최전선 / LLM</span></span></nav><button class="lang-btn" data-lang="en" onclick="toggleLanguage()">EN</button><button class="lang-btn" data-lang="ko" onclick="toggleLanguage()">KO</button></div>
+    <div class="bd-article">
+<section id="intro" class="section-anchor">
+<div class="lang en-only"><h1>SP2: 2024–2026 Frontier: Exposure Control and LLM-era Re-ranking</h1><p style="color:var(--muted)">15 papers · targets O3, O4 · 2024-2026</p><p>Dedicated recency probe (O3): what the 2024-2026 literature adds over the pre-2024 exposure-control canon, and whether any frontier paper relaxes SP1's two universal assumptions (known position-bias curve, trusted scores) under the user's black-box, frequency-only constraint.</p></div><div class="lang ko-only"><h1>SP2: 2024–2026 최전선: LLM 시대의 exposure 제어</h1><p style="color:var(--muted)">15편 논문 · O3, O4 목표 대상 · 2024-2026</p><p>O3 전용 recency 탐침: 2024–2026 문헌이 2024년 이전 canon에 무엇을 더하는지, 그리고 frontier 논문이 SP1의 두 보편 가정(알려진 position-bias 곡선, 신뢰된 score)을 완화하는지를 검사한다.</p></div>
+</section>
+<section id="rationale" class="section-anchor"><div class="card" style="border-color:var(--accent)">
+<div class="lang en-only"><h2 style="margin-top:0">Entry Assumption vs. What Was Found</h2><p><strong>Expected</strong> (revised after SP1: check whether each frontier paper relaxes SP1's two universal assumptions — known position-bias curve and trusted scores): Dedicated recency probe for O3: LLM-based re-ranking with exposure objectives, exposure control in feeds, and new 2024–2026 formulations under black-box scorers. Pre-loop search assessed WWW 2026's FUDLR as an 'almost verbatim' match to the user constraint.</p><p><strong>Found:</strong> The frontier does not relax SP1's assumptions by mechanism design — it empirically demolishes trusted scores for LLM/generative scorers (prompt-position bias, pre-training content priors, gradient starvation amplified by tokenization; scaling 0.6B→8B does not fix it), then mostly abandons black-box feasibility to cure it. The feed/production line delivered TEC: frequency-level eligibility control over an unmodified scorer that raised the platform's true objective.</p><p><strong>Assessment:</strong> Pivoted — the pre-loop belief that FUDLR was black-box feasible was corrected (it needs gradients and training data); the actual near-verbatim match is TEC. And instead of relaxing SP1's two assumptions, the frontier added a third load-bearing one: homogeneous exposure→utility conversion, contradicted independently by three 2026 papers.</p></div><div class="lang ko-only"><h2 style="margin-top:0">사전 가정과 실제 발견</h2><p><strong>기대</strong> (SP1 이후 수정됨: 각 frontier 논문이 SP1의 두 보편 가정 — 알려진 position-bias 곡선과 신뢰된 score — 을 완화하는지 검사): O3 전용 recency 탐침으로서 exposure 목표를 갖는 LLM 기반 re-ranking, feed에서의 exposure 제어, black-box scorer 하의 2024–2026 신규 정식화를 기대하였다. 사전 검색에서는 WWW 2026의 FUDLR가 사용자 제약에 '거의 그대로' 부합한다고 판단했었다.</p><p><strong>발견</strong>: frontier는 SP1의 가정을 메커니즘 설계로 완화하지 않는다. LLM/생성형 scorer의 trusted-scores 가정을 경험적으로 무너뜨린 뒤(prompt 위치 편향, pre-training 내용 prior, tokenization으로 증폭되는 gradient 결핍; 0.6B→8B 스케일링으로도 제거 안 됨), 가장 강한 치료법들은 black-box 실행 가능성을 포기한다. 반면 feed/production 라인은 TEC — 수정되지 않은 scorer 위의 빈도 수준 eligibility 제어로 플랫폼의 진짜 목표를 올린 필드 실험 — 을 내놓았다.</p><p><strong>평가</strong>: 전환됨 — FUDLR가 black-box에서 실행 가능하다는 사전 판단이 수정되었다(gradient와 학습 데이터 필요). 실제로 사용자 설정에 부합하는 것은 TEC였다. 또한 frontier는 SP1의 두 가정을 완화하는 대신 세 번째 부하 가정(균질한 exposure→효용 변환)을 추가로 드러냈고, 이는 2026년 논문 세 편이 독립적으로 반박한다.</p></div>
+</div></section>
+<section id="establishes" class="section-anchor"><div class="card" style="border-color:var(--teal)">
+<div class="lang en-only"><h2 style="margin-top:0">What SP2 Establishes</h2><p>The 2024-2026 frontier splits into three lines, and none of them relaxes SP1's two assumptions by mechanism design — instead the frontier <strong>empirically demolishes the trusted-scores assumption and then mostly abandons black-box feasibility to fix it</strong>. (1) The <strong>LLM-era line</strong> shows that LLM and generative scorers violate trusted scores <em>structurally</em>, through three now-identified channels: prompt-position sensitivity of the ranking output <a href="papers/18_LLMPositionBias.html">[18] LLMPositionBias</a>, content priors baked in by pre-training/alignment that persist across providers and prompts <a href="papers/19_PolarizationByDefault.html">[19] PolarizationByDefault</a>, and MLE gradient starvation of tail tokens amplified geometrically by shared tokenization <a href="papers/22_EchoesFilterBubble.html">[22] EchoesFilterBubble</a>, <a href="papers/23_CRAB.html">[23] CRAB</a> — and scaling the backbone 0.6B→8B does not remove it. The strongest cures, however, all require white-box access: influence-function parameter edits <a href="papers/16_FairLLMRec.html">[16] FairLLMRec</a>, tokenization redesign with retraining <a href="papers/22_EchoesFilterBubble.html">[22] EchoesFilterBubble</a>, codebook splitting plus fine-tuning <a href="papers/23_CRAB.html">[23] CRAB</a>. (2) The <strong>feed/production line</strong> delivers the single most important result for the user's setting: TEC <a href="papers/20_SpotWorkTEC.html">[20] SpotWorkTEC</a> is a field-experimentally validated, purely frequency-level eligibility control over an <em>unmodified</em> engagement scorer that raised the platform's true objective (+9.0 matches/prefecture-day) while the engagement metric stayed flat — the first production successor to FairRec's show/don't-show pattern, directly refining SP1's finding that pure frequency control was nearly absent. (3) The <strong>new-formulation line</strong> attacks the allocation target itself: <a href="papers/24_BeyondExposure.html">[24] BeyondExposure</a> and <a href="papers/25_EquityVsEquality.html">[25] EquityVsEquality</a> independently argue exposure is a lossy proxy for provider utility when the exposure→utility conversion is context-dependent — which surfaces a <em>third</em> load-bearing assumption (homogeneous conversion) on top of SP1's two, rather than relaxing either. The known-position-bias assumption is untouched everywhere; worse, LLM re-rankers introduce a <em>second, internal</em> position-bias curve (prompt-slot bias) that no paper has measured per-slot.</p></div><div class="lang ko-only"><h2 style="margin-top:0">SP2이 확립한 것</h2><p>SP2는 2024–2026 frontier가 세 갈래로 갈라짐을 확립한다. (1) LLM 라인: LLM/생성형 scorer는 prompt 위치 민감성, pre-training 내용 prior, tokenization으로 기하급수적으로 증폭되는 tail token gradient 결핍이라는 세 채널을 통해 trusted-scores 가정을 구조적으로 위반하며, 스케일링으로 제거되지 않는다. 가장 강한 치료법(FairLLMRec, EchoesFilterBubble, CRAB)은 모두 white-box 접근이 필요하다. (2) feed/production 라인: TEC는 수정되지 않은 engagement scorer 위에서 exposure 차감식 eligibility 임계값만으로 매칭 +9.0/현day를 달성했다(engagement 불변) — FairRec의 show/don't-show 패턴의 첫 production 후속. (3) 신규 정식화 라인: exposure는 provider 효용의 손실 있는 proxy이며(BeyondExposure, EquityVsEquality), exposure→효용 변환의 균질성이라는 세 번째 부하 가정이 존재한다. 알려진 position-bias 가정은 어디서도 다뤄지지 않았고, LLM re-ranker는 오히려 두 번째 내부 position-bias 곡선(prompt slot)을 쌓는다.</p></div>
+</div>
+<details><summary><span class="en-only">Dominant Approach</span><span class="ko-only">지배적 접근</span></summary><div class="card" style="margin-top:0.5rem"><p>The frontier has no single dominant <em>method</em>; it has a dominant <em>finding</em>: the scores are not to be trusted, and the papers divide by where they intervene about it. The LLM-era cluster (<a href="papers/16_FairLLMRec.html">[16] FairLLMRec</a>, <a href="papers/18_LLMPositionBias.html">[18] LLMPositionBias</a>, <a href="papers/19_PolarizationByDefault.html">[19] PolarizationByDefault</a>, <a href="papers/22_EchoesFilterBubble.html">[22] EchoesFilterBubble</a>, <a href="papers/23_CRAB.html">[23] CRAB</a>, with <a href="papers/26_LLMRecSysSurvey.html">[26] LLMRecSysSurvey</a> as landscape) traces score contamination to its sources — training samples, prompt geometry, pre-training priors, tokenization — and fixes it <em>upstream</em>, at the parameters: FUDLR's influence-function unlearning edits LoRA weights in one step, Ghost redesigns the tokenizer and retrains, CRAB splits over-popular codebook tokens and fine-tunes. These are "retraining-free" only in the narrow sense of avoiding full retraining; all require gradients, training data, or parameter access. The logic chain matters for the user: <a href="papers/22_EchoesFilterBubble.html">[22] EchoesFilterBubble</a> proves the bias is an optimization-level property of MLE on long-tailed data (gradient starvation), which explains why the pre-2024 remedy — item-level re-weighting/re-ranking transplants like IFairLRS — is only marginally effective on generative recommenders, and why the frontier concluded it had to go white-box.</p>
+<p>The production/feed cluster reaches the opposite conclusion from the same distrust. <a href="papers/20_SpotWorkTEC.html">[20] SpotWorkTEC</a> does not repair the engagement score at all: it diagnoses that the score optimizes the wrong objective (favoriting probability ≠ realized matches under capacity constraints — "misdirected concentration"), and constrains it <em>orthogonally</em> with a frequency-level eligibility filter fed by supply-side state. This is the 2026 successor of the pre-2024 production pattern <a href="papers/27_LinkedInFairRanking.html">[27] LinkedInFairRanking</a> (count-based prefix constraints over a fixed scorer, deployed 2018), upgraded in two ways: the constraint is stateful across rounds (scores debited by realized exposure — literally an impression ledger) and validated against the platform's <em>true</em> objective in a randomized field rollout rather than against representation metrics. <a href="papers/21_ExposureAwareRetrieval.html">[21] ExposureAwareRetrieval</a> sits between the clusters: it accepts the trained model but adds an exposure head so the contamination term can be subtracted at inference with a runtime knob — the deployed γ=0.65 &lt; 1 showing that fully removing the exposure signal from scores <em>hurts</em>, i.e., exposure frequency carries genuine relevance information mixed with the bias.</p>
+<p>For the survey objectives this means: O3 is satisfied — every classical line has a named 2024-2026 extension (see Research Questions) — but the frontier's trajectory runs <em>away</em> from the user's constraint set. The methods with the strongest fairness numbers need white-box access; the methods compatible with an immutable black-box scorer are exactly the frequency-level ones (TEC's eligibility thresholds; balanced-word impression scheduling from <a href="papers/28_Expohedron.html">[28] Expohedron</a>; the efficient group-level Pareto machinery of <a href="papers/10_ParetoRepeatedRankings.html">[10] ParetoRepeatedRankings</a>) plus, potentially, a log-only variant of the γ-knob correction that no paper has tested.</p></div></details>
+<details><summary><span class="en-only">Convergences</span><span class="ko-only">수렴 지점</span></summary><div class="card" style="margin-top:0.5rem"><ul><li><strong>LLM/generative scorers violate the trusted-scores assumption structurally, not incidentally.</strong> Four papers reach this via independent routes: prompt-order shuffling changes rankings (<a href="papers/18_LLMPositionBias.html">[18] LLMPositionBias</a>); content biases (polarization amplification) persist across 3 providers × 3 platforms × 6 prompts with all metadata stripped (<a href="papers/19_PolarizationByDefault.html">[19] PolarizationByDefault</a>); MLE gradient dynamics starve tail tokens and tokenization amplifies it geometrically (<a href="papers/22_EchoesFilterBubble.html">[22] EchoesFilterBubble</a>); token-popularity accumulation biases decoding (<a href="papers/23_CRAB.html">[23] CRAB</a>). Mechanism: the contamination enters before any ranking is served, so no amount of downstream trust is warranted — and scaling does not fix it (<a href="papers/22_EchoesFilterBubble.html">[22] EchoesFilterBubble</a>: 0.6B→8B).</li><li><strong>Exposure is a lossy proxy for provider utility.</strong> Three independent 2026 papers: <a href="papers/24_BeyondExposure.html">[24] BeyondExposure</a> (time-varying unit income), <a href="papers/25_EquityVsEquality.html">[25] EquityVsEquality</a> (heterogeneous provider preferences over exposure vs sales), and empirically <a href="papers/20_SpotWorkTEC.html">[20] SpotWorkTEC</a> (favorites flat while matches rose — engagement and true objective decoupled). Mechanism: exposure→utility conversion is context-dependent, so equalizing exposure does not equalize outcomes.</li><li><strong>The frontier's strongest interventions abandon black-box feasibility.</strong> <a href="papers/16_FairLLMRec.html">[16] FairLLMRec</a> (gradients + training data + parameter edit), <a href="papers/22_EchoesFilterBubble.html">[22] EchoesFilterBubble</a> (retrain with new tokenizer), <a href="papers/23_CRAB.html">[23] CRAB</a> (codebook surgery + LoRA fine-tune). This repeats SP1's HEA surprise at larger scale: SOTA fairness numbers are bought with access the user does not have.</li><li><strong>Score-read-only re-ranking remains the default mechanism for the papers that do stay downstream.</strong> <a href="papers/24_BeyondExposure.html">[24] BeyondExposure</a>, <a href="papers/25_EquityVsEquality.html">[25] EquityVsEquality</a>, <a href="papers/27_LinkedInFairRanking.html">[27] LinkedInFairRanking</a>, <a href="papers/10_ParetoRepeatedRankings.html">[10] ParetoRepeatedRankings</a>, <a href="papers/28_Expohedron.html">[28] Expohedron</a> all consume fixed scores and reorder/schedule — confirming SP1's access-level finding into 2026.</li></ul></div></details>
+<details><summary><span class="en-only">Divergences</span><span class="ko-only">분기 지점</span></summary><div class="card" style="margin-top:0.5rem"><ul><li><strong>Where does LLM-recommender bias come from — popularity or position?</strong> <a href="papers/18_LLMPositionBias.html">[18] LLMPositionBias</a> explicitly tests popularity strata and finds popularity is <em>not</em> the main driver of ranking instability in prompted LLM rankers (prompt position is; PC varies only 0.63-0.67 across popularity strata). <a href="papers/22_EchoesFilterBubble.html">[22] EchoesFilterBubble</a> and <a href="papers/23_CRAB.html">[23] CRAB</a> find popularity (via training-frequency effects on tokens) <em>is</em> the dominant distortion in generative recommenders. Likely cause: different architectures — zero-shot prompting over text titles puts the bias in context attention; SID-based fine-tuned generation puts it in MLE gradient dynamics over tokens. Unresolved for hybrid pipelines (fine-tuned LLM re-ranking a prompted candidate list); no paper adjudicates.</li><li>**What should exposure be debiased <em>toward</em>?** <a href="papers/23_CRAB.html">[23] CRAB</a> debiases generated exposure toward <em>historical interaction frequency</em> (the GU metric's reference); <a href="papers/21_ExposureAwareRetrieval.html">[21] ExposureAwareRetrieval</a> debiases scores <em>away from</em> interaction frequency (conditional-on-exposure relevance); <a href="papers/24_BeyondExposure.html">[24] BeyondExposure</a>/<a href="papers/25_EquityVsEquality.html">[25] EquityVsEquality</a> debias toward <em>realized utility</em>. These are mutually inconsistent reference distributions — historical frequency is itself the contaminated quantity per <a href="papers/21_ExposureAwareRetrieval.html">[21] ExposureAwareRetrieval</a>'s own diagnosis. Likely cause: each line inherits its reference from its evaluation tradition (fairness metrics vs retrieval quality vs welfare economics). Unresolved.</li></ul></div></details>
+<details><summary><span class="en-only">Prior Beliefs and Surprises (full)</span><span class="ko-only">사전 믿음과 놀라움 (전문)</span></summary><div class="card" style="margin-top:0.5rem"><p><strong>What the entry rationale expected to find</strong>:</p>
+<blockquote>LLM-based re-ranking with fairness/exposure objectives, exposure control in feeds, and new 2024-2026 formulations of exposure allocation under black-box scorers; for each frontier paper, check whether it relaxes SP1's two universal assumptions (known position-bias curve, trusted scores).</blockquote>
+<p><strong>Confirmed</strong>:</p>
+<ul><li>All three expected lines exist and are populated with 2025-2026 publications, including a production field experiment (<a href="papers/20_SpotWorkTEC.html">[20] SpotWorkTEC</a>) — O3's recency requirement is met.</li><li>The trusted-scores failure mode (SP1's FairPGRank warning) is confirmed and <em>mechanized</em> for LLM-era scorers: the frontier identifies the specific channels (prompt position, pre-training priors, gradient starvation, token popularity).</li></ul>
+<p><strong>Surprised</strong>:</p>
+<ul><li>(a) Assumed the frontier would produce new <em>black-box</em> formulations; found instead that the strongest interventions require white-box parameter access (<a href="papers/16_FairLLMRec.html">[16] FairLLMRec</a>, <a href="papers/22_EchoesFilterBubble.html">[22] EchoesFilterBubble</a>, <a href="papers/23_CRAB.html">[23] CRAB</a>). The assumption was wrong because the frontier diagnosed the bias as an optimization-level property of training, which cannot be fully repaired downstream — "retraining-free" in 2026 titles means cheap parameter edits, not output-only access.</li><li>(b) Assumed pure frequency-level control would remain absent (KB claim 3); found TEC — a field-validated eligibility-threshold control over untouched scores. The pre-loop search's read that WWW 2026's "without costly retraining" paper matched the user constraint "almost verbatim" was wrong (it needs gradients); the <em>actual</em> near-verbatim match is the Timee field experiment.</li><li>(c) Assumed the frontier would relax SP1's two assumptions; found it instead <em>added a third</em> (homogeneous exposure→utility conversion, attacked by <a href="papers/24_BeyondExposure.html">[24] BeyondExposure</a>/<a href="papers/25_EquityVsEquality.html">[25] EquityVsEquality</a>) and stacked a second unknown position-bias curve (prompt slots) on the first.</li></ul>
+<p><strong>KB impact</strong>:</p>
+<ul><li>UUID 2: confirmed — score-read-only re-ranking remains the dominant downstream access level in the 2024-2026 papers that stay downstream.</li><li>UUID 3: refined — pure frequency-level control is no longer FairRec-only: TEC is a second, production-validated instance; the absence of formal position-weighted exposure guarantees for frequency-only control persists (TEC is empirical).</li><li>UUID 4: confirmed and strengthened — the trusted-scores assumption now has identified failure mechanisms for LLM/generative scorers; no frontier mechanism paper relaxes the known-position-bias assumption.</li></ul></div></details>
+</section>
+<section id="concepts" class="section-anchor"><h2><span class="en-only">Key Concepts</span><span class="ko-only">핵심 개념</span></h2><p>Concepts from SP1 reused here without redefinition: marginal rank-probability matrix, expected exposure / target exposure ε* (see SP1 Key Concepts; formalized in <a href="papers/15_ExpectedExposure.html">[15] ExpectedExposure</a>), Expohedron and Carathéodory decomposition (SP1; <a href="papers/28_Expohedron.html">[28] Expohedron</a>).</p>
+<p><strong>Eligibility-threshold exposure control (TEC)</strong></p>
+<ul><li><strong>What it computes</strong>: input = per-item supply-side score $p_k$ (posted + unfilled capacity, carried across rounds and debited by realized exposure) and each user's slot positions; operation = convert sorted capped scores into eligibility thresholds $\tau_k$, then each user's slot $s$ may only draw items with $\tau_k \ge z_{is}$; within the eligible set, ranking still uses the untouched engagement score; output = a per-user recommendation list, computable fully in parallel.</li><li><strong>Why it was created</strong>: quota-based exposure control (round-robin serial dictatorship) cannot be parallelized at &gt;1M-user scale; TEC replaces consumed quotas with precomputed thresholds so exposure allocation becomes an embarrassingly parallel filter in front of the scorer.</li><li><strong>Concrete example</strong>: with 16 slots, an item holding 1/16 of total score stays eligible for exactly one slot's worth of selection timings; in the Timee field rollout this lifted matches +9.0/prefecture-day (p&lt;0.05) with daily favorites unchanged.</li><li><strong>Role in this SP</strong>: <a href="papers/20_SpotWorkTEC.html">[20] SpotWorkTEC</a>'s deployed treatment — the frontier's only production-validated, score-untouched, frequency-level intervention; the core evidence for O2/O3 that the user's exact knob works at scale.</li></ul>
+<p><strong>Inference-time exposure-logit subtraction (γ-knob correction)</strong></p>
+<ul><li><strong>What it computes</strong>: input = an item's retrieval logit for $P(\text{positive} \wedge \text{exposed}\mid \text{item})$ and a separately learned exposure logit for $P(\text{exposed}\mid \text{item})$; operation = $\text{score} = \text{joint logit} - \gamma \cdot \text{exposure logit}$ (subtraction in logit space = division in probability space); output = an approximation of $P(\text{positive}\mid \text{item}, \text{exposed})$, with $\gamma \in [0,1]$ a runtime knob.</li><li><strong>Why it was created</strong>: retrieval models trained on logged interactions rank by the joint probability, which conflates relevance with how often the feedback loop already showed the item; prior fixes (IPS, off-policy correction) bake the correction into training with no post-hoc control.</li><li><strong>Concrete example</strong>: item A exposed 40× with 20 positives beats item B exposed 10× with 7 positives under the joint score, but loses under the conditional score (0.5 vs 0.7 per-exposure rate). Deployed optimum γ=0.65; full correction γ=1.0 <em>drops</em> positive recall 31.7%→28.0%.</li><li><strong>Role in this SP</strong>: <a href="papers/21_ExposureAwareRetrieval.html">[21] ExposureAwareRetrieval</a>'s production mechanism — the frontier's cleanest formalization of exposure frequency as a score contaminant, and the closest existing thing to a post-hoc frequency-based score correction (though it still needs a trained auxiliary head).</li></ul>
+<p><strong>Prompt-position bias (LLM-internal position bias)</strong></p>
+<ul><li><strong>What it computes</strong>: input = the same candidate set presented in different orders inside an LLM ranking prompt; operation = compare output rankings across shuffles via pairwise Kendall's tau; output = a stability score (low tau = the ranking depends on where candidates sit in the prompt, not on relevance).</li><li><strong>Why it was created</strong>: LLM re-rankers were adopted without checking whether their output depends on input order; it does, strongly — a bias channel entirely distinct from the user-side position-bias curve of classical exposure models.</li><li><strong>Concrete example</strong>: standard list-wise prompting on MovieLens drops from positional consistency 0.67 at K=10 to 0.47 at K=30; iterative one-item-per-call selection (RISE) holds 0.69 at K=30.</li><li><strong>Role in this SP</strong>: <a href="papers/18_LLMPositionBias.html">[18] LLMPositionBias</a>'s central phenomenon; establishes that in LLM-era re-ranking the <em>scorer itself</em> has a position-bias curve — unknown, unmeasured per-slot — stacking a second unknown on top of SP1's known-position-bias assumption.</li></ul>
+<p><strong>Gradient starvation + tokenization bias amplification (generative-recommender popularity mechanism)</strong></p>
+<ul><li><strong>What it computes</strong>: (i) under MLE training on a long-tailed interaction distribution, a rarely-targeted semantic-ID token's expected gradient projection onto the user-preference direction is ≤ 0 (it only ever serves as a softmax negative); (ii) because tokenization ignores popularity, a tail item's token sequence must survive $z$ head-dominated branching points during autoregressive decoding, suppressing its generation probability geometrically by $(\gamma_{min})^{-z}$.</li><li><strong>Why it was created</strong>: to explain <em>why</em> generative recommenders amplify popularity bias beyond discriminative models (vs SASRec: popular-item frequency +6.7-7.2%), rather than treating the skew as a generic data artifact.</li><li><strong>Concrete example</strong>: LC-Rec's head/tail HR@10 gap reaches 45× (0.1800 vs 0.0040); &gt;97% of top-10 slots go to head items; the gap persists from 0.6B to 8B parameters.</li><li><strong>Role in this SP</strong>: <a href="papers/22_EchoesFilterBubble.html">[22] EchoesFilterBubble</a>'s diagnosis (with <a href="papers/23_CRAB.html">[23] CRAB</a>'s token-popularity variant) — the mechanism-level proof that exposure-frequency distortion is inherited <em>and amplified</em> by the newest scoring paradigm, i.e., the trusted-scores assumption fails by construction for generative recommenders.</li></ul>
+<p><strong>Heterogeneous exposure→utility conversion (income fairness)</strong></p>
+<ul><li><strong>What it computes</strong>: item income at timestep $i$ is $v_d^i = \Delta E(d,i)\,\mu(d,q,\xi_i)$ — position-driven exposure times a context-dependent unit-income function μ; fairness is then required of cumulative <em>income</em> relative to relevance, not cumulative exposure.</li><li><strong>Why it was created</strong>: exposure fairness assumes every unit of exposure converts to provider utility identically; when conversion varies with time/context (a news impression at hour 1 vs day 2), exposure-fair rankings still produce unequal realized utility.</li><li><strong>Concrete example</strong>: in <a href="papers/24_BeyondExposure.html">[24] BeyondExposure</a>'s Criteo-calibrated environment, methods that are exposure-fair remain income-unfair; DIDRF cuts income unfairness ~10% below the best exposure-derived baseline. <a href="papers/25_EquityVsEquality.html">[25] EquityVsEquality</a> instantiates the same idea with per-provider preference weights over exposure vs sales gains.</li><li><strong>Role in this SP</strong>: the frontier's new formulation of the allocation target — evidence that even a perfectly realized exposure-frequency schedule controls a proxy, not the outcome providers care about.</li></ul></section>
+<section id="rqs" class="section-anchor"><h2><span class="en-only">Research Questions Extracted</span><span class="ko-only">추출된 연구 질문</span></h2><div class="scroll-table-wrap"><table><thead><tr><th>ID</th><th>Question</th><th>Key Papers</th><th>Objective</th></tr></thead><tbody><tr><td>RQ2.1</td><td>Does any 2024-2026 paper demonstrate production-validated exposure-frequency-only control over an unmodified scorer, and what does it add over the pre-2024 production canon?</td><td><a href="papers/20_SpotWorkTEC.html">[20] SpotWorkTEC</a>, <a href="papers/27_LinkedInFairRanking.html">[27] LinkedInFairRanking</a></td><td>O3</td></tr><tr><td>RQ2.2</td><td>By what mechanisms do LLM and generative scorers violate the trusted-scores assumption, and does scaling remove them?</td><td><a href="papers/18_LLMPositionBias.html">[18] LLMPositionBias</a>, <a href="papers/19_PolarizationByDefault.html">[19] PolarizationByDefault</a>, <a href="papers/22_EchoesFilterBubble.html">[22] EchoesFilterBubble</a>, <a href="papers/23_CRAB.html">[23] CRAB</a></td><td>O3</td></tr><tr><td>RQ2.3</td><td>Can exposure contamination of scores be corrected purely at inference time, and what is the utility cost of full correction?</td><td><a href="papers/21_ExposureAwareRetrieval.html">[21] ExposureAwareRetrieval</a></td><td>O3</td></tr><tr><td>RQ2.4</td><td>Which frontier debiasing interventions remain feasible under the black-box, frequency-only constraint set?</td><td><a href="papers/16_FairLLMRec.html">[16] FairLLMRec</a>, <a href="papers/22_EchoesFilterBubble.html">[22] EchoesFilterBubble</a>, <a href="papers/23_CRAB.html">[23] CRAB</a>, <a href="papers/20_SpotWorkTEC.html">[20] SpotWorkTEC</a>, <a href="papers/21_ExposureAwareRetrieval.html">[21] ExposureAwareRetrieval</a></td><td>O2</td></tr><tr><td>RQ2.5</td><td>Do the newest formulations retain exposure as the allocation target, and if not, what replaces it?</td><td><a href="papers/24_BeyondExposure.html">[24] BeyondExposure</a>, <a href="papers/25_EquityVsEquality.html">[25] EquityVsEquality</a></td><td>O3</td></tr><tr><td>RQ2.6</td><td>What machinery converts a target exposure vector into a concrete impression schedule, and at what cost relative to pre-2024 BvN decomposition?</td><td><a href="papers/28_Expohedron.html">[28] Expohedron</a>, <a href="papers/10_ParetoRepeatedRankings.html">[10] ParetoRepeatedRankings</a></td><td>O1</td></tr><tr><td>RQ2.7</td><td>Is there a transferable pattern for enforcing fairness on closed-weight LLMs through output-only access?</td><td><a href="papers/17_BlackBoxFairPost.html">[17] BlackBoxFairPost</a></td><td>O3</td></tr></tbody></table></div></section>
+<section id="papers" class="section-anchor"><div class="card" style="margin-top:1.5rem">
+<h3 style="margin-top:0"><span class="en-only">Papers in SP2 (DIR table)</span><span class="ko-only">SP2 논문 목록 (DIR 표)</span></h3><p>Access column (synthesis lens): SF = score-free, SRO = score-read-only, SM = score-modifying/aux-training, WB = white-box parameter edit, RT = retraining. Level: F = frequency-level intervention, I = per-instance re-ranking, M = model-level, A = audit/eval.</p>
+<div class="scroll-table-wrap"><table><thead><tr><th>Ref</th><th>Title</th><th>Track</th><th>Tier</th><th>Key Contribution</th><th>Fit</th><th>Gap</th></tr></thead><tbody><tr><td><a href="papers/16_FairLLMRec.html">[16] FairLLMRec</a></td><td>Fair LLM-RS without costly retraining (WWW 2026)</td><td>B</td><td>P0</td><td>Bias-agnostic influence-function unlearning (WB, M)</td><td>"Retraining-free" frontier for LLM-RS popularity/attribute bias</td><td>Needs gradients + training data; not black-box; score-level variant missing</td></tr><tr><td><a href="papers/17_BlackBoxFairPost.html">[17] BlackBoxFairPost</a></td><td>Fair algorithms on closed LLMs via post-processing</td><td>A</td><td>P4</td><td>Elicited logits as sufficient statistics for fair post-processing (SRO, I)</td><td>The genuine closed-weight intervention pattern</td><td>Classification only; no ranking/exposure analogue exists</td></tr><tr><td><a href="papers/18_LLMPositionBias.html">[18] LLMPositionBias</a></td><td>Position bias in LLM recommendations</td><td>B</td><td>P4</td><td>Quantifies prompt-order sensitivity; RISE mitigation (SF, A/I)</td><td>Names the LLM-internal position-bias channel</td><td>Per-slot bias direction unreported; one model family; no loop</td></tr><tr><td><a href="papers/19_PolarizationByDefault.html">[19] PolarizationByDefault</a></td><td>Auditing LLM content curation</td><td>B</td><td>P4</td><td>Structural-vs-promptable bias map across 54 conditions (SF, A)</td><td>Proves score contamination survives prompt engineering</td><td>No frequency/familiarity analysis; cheap model tiers only</td></tr><tr><td><a href="papers/20_SpotWorkTEC.html">[20] SpotWorkTEC</a></td><td>Exposure design field experiment (Timee)</td><td>B</td><td>P3</td><td>TEC eligibility-threshold exposure control, field-validated (SRO, F)</td><td>The frontier's only production frequency-only control over untouched scores</td><td>Needs a supply/capacity signal; no exposure guarantees; one prefecture pair</td></tr><tr><td><a href="papers/21_ExposureAwareRetrieval.html">[21] ExposureAwareRetrieval</a></td><td>Exposure-aware retrieval (Meta)</td><td>B</td><td>P3</td><td>Inference-time γ-knob exposure-logit subtraction (SM, I)</td><td>Cleanest formalization of exposure as score contaminant + runtime knob</td><td>Needs trained exposure head; log-only variant untested; 3-page evidence</td></tr><tr><td><a href="papers/22_EchoesFilterBubble.html">[22] EchoesFilterBubble</a></td><td>Popularity bias in generative recommenders</td><td>B</td><td>P4</td><td>Gradient-starvation + tokenization-amplification diagnosis; Ghost cure (RT, M)</td><td>Mechanism-level proof frequency bias survives paradigm change and scale</td><td>Cure requires retraining; SFT regime only; no loop simulation</td></tr><tr><td><a href="papers/23_CRAB.html">[23] CRAB</a></td><td>Codebook rebalancing</td><td>B</td><td>P4</td><td>Token-popularity diagnosis + post-hoc codebook split (WB, M)</td><td>Localizes exposure distortion to a discrete tokenization artifact</td><td>Debiases toward historical frequency; needs fine-tuning; private data</td></tr><tr><td><a href="papers/24_BeyondExposure.html">[24] BeyondExposure</a></td><td>Non-linear time-income fairness</td><td>B</td><td>P4</td><td>Income fairness + DIDRF second-order greedy (SRO, I)</td><td>Formalizes exposure→utility conversion failure; subsumes exposure fairness</td><td>μ assumed given; semi-synthetic income; known PBM still required</td></tr><tr><td><a href="papers/25_EquityVsEquality.html">[25] EquityVsEquality</a></td><td>Tailored provider needs</td><td>B</td><td>P4</td><td>Need-weighted equity metric + EquityRank (SRO, I)</td><td>Independent convergence on exposure-as-lossy-proxy</td><td>Preference vectors assumed known; simulation only</td></tr><tr><td><a href="papers/26_LLMRecSysSurvey.html">[26] LLMRecSysSurvey</a></td><td>LLMs for RecSys survey (TKDE 2024)</td><td>C</td><td>P1</td><td>Pre-train/fine-tune/prompt taxonomy; Chat-Rec re-ranker pattern</td><td>Landscape anchor for the LLM-era line</td><td>Does not analyze exposure distributions of LLM rankers</td></tr><tr><td><a href="papers/27_LinkedInFairRanking.html">[27] LinkedInFairRanking</a></td><td>LinkedIn talent search (KDD 2019)</td><td>C</td><td>P0</td><td>DetGreedy count-based re-rank, first web-scale deployment (SRO, I)</td><td>Pre-2024 production baseline the frontier extends</td><td>Count-based, not position-weighted exposure; per-query only</td></tr><tr><td><a href="papers/28_Expohedron.html">[28] Expohedron</a></td><td>Expohedron (WSDM 2022)</td><td>C</td><td>P2</td><td>O(n²log n) exposure geometry + balanced-word delivery (SRO, F)</td><td>Pre-2024 canon machinery for impression scheduling</td><td>PBM only; trusted scores; ~100-item numerics cap</td></tr><tr><td><a href="papers/10_ParetoRepeatedRankings.html">[10] ParetoRepeatedRankings</a></td><td>Pareto utility-fairness in repeated rankings (2024)</td><td>B</td><td>P4</td><td>Sphere-Expo group-fairness Pareto profiling (SRO, F)</td><td>2024 efficiency extension of the canon</td><td>Still trusted scores + known PBM; preprint grade</td></tr><tr><td><a href="papers/15_ExpectedExposure.html">[15] ExpectedExposure</a></td><td>Expected exposure (CIKM 2020)</td><td>C</td><td>P2</td><td>EE-D/EE-R metric; PL dominates score-free randomization</td><td>Pre-2024 canonical exposure formalization (SP1 anchor)</td><td>Needs known browsing model + relevance judgments</td></tr></tbody></table></div>
+</div>
+<details><summary><span class="en-only">Design Implication Registry</span><span class="ko-only">설계 함의 레지스트리</span></summary><div class="card" style="margin-top:0.5rem"><div class="scroll-table-wrap"><table><thead><tr><th>Requirement</th><th>Evidence</th><th>Implication</th><th>Risk</th><th>Mitigation</th></tr></thead><tbody><tr><td>Exposure control compatible with an immutable scorer</td><td><a href="papers/20_SpotWorkTEC.html">[20] SpotWorkTEC</a>, <a href="papers/27_LinkedInFairRanking.html">[27] LinkedInFairRanking</a></td><td>Put a constraint layer <em>in front of</em> (eligibility thresholds) or <em>behind</em> (prefix-count re-rank) the untouched scorer; both patterns are production-validated</td><td>Eligibility/count constraints do not control position-weighted exposure (SP1's FairRec lesson)</td><td>Pair the eligibility filter with balanced-word delivery <a href="papers/28_Expohedron.html">[28] Expohedron</a> to realize a target exposure vector over impressions</td></tr><tr><td>Post-hoc correction signal when retraining is impossible</td><td><a href="papers/21_ExposureAwareRetrieval.html">[21] ExposureAwareRetrieval</a></td><td>Subtract γ·(exposure logit) from the score in logit space, keeping γ &lt; 1; exposure term can in principle come from impression logs</td><td>The fully log-only variant (no trained exposure head) is untested; γ does not obviously transfer across domains</td><td>Grid-search γ offline against recall proxies (shown feasible in the paper), then staged online tuning</td></tr><tr><td>Do not treat LLM re-ranker output as trusted merit</td><td><a href="papers/18_LLMPositionBias.html">[18] LLMPositionBias</a>, <a href="papers/19_PolarizationByDefault.html">[19] PolarizationByDefault</a>, <a href="papers/22_EchoesFilterBubble.html">[22] EchoesFilterBubble</a></td><td>Audit prompt-slot sensitivity and structural content priors per model before consuming LLM rankings; use iterative single-item selection (RISE) to cut order sensitivity ~25%</td><td>RISE costs K× inference; audits are model- and tier-specific (only cheap tiers audited in <a href="papers/19_PolarizationByDefault.html">[19] PolarizationByDefault</a>)</td><td>Instrument per-slot exposure probability (missing in all current work); re-audit on model upgrades</td></tr><tr><td>Correct allocation target under heterogeneous conversion</td><td><a href="papers/24_BeyondExposure.html">[24] BeyondExposure</a>, <a href="papers/25_EquityVsEquality.html">[25] EquityVsEquality</a>, <a href="papers/20_SpotWorkTEC.html">[20] SpotWorkTEC</a></td><td>Define exposure targets on downstream utility (income, matches, need-weighted gain) when conversion varies by context; exposure fairness is the degenerate homogeneous-μ case</td><td>The conversion function μ / provider preference vectors are assumed given; estimating them from logs is unsolved</td><td>Start from exposure targets (subsumed as special case per <a href="papers/24_BeyondExposure.html">[24] BeyondExposure</a>), add conversion estimates incrementally where measurable (e.g., match rates)</td></tr><tr><td>Efficient realization of a chosen exposure schedule</td><td><a href="papers/28_Expohedron.html">[28] Expohedron</a>, <a href="papers/10_ParetoRepeatedRankings.html">[10] ParetoRepeatedRankings</a></td><td>Use expohedron geometry: Carathéodory decomposition into ≤ n rankings (O(n²log n) vs O(n⁵) BvN) + full Pareto front (Sphere-Expo for group fairness) + deterministic balanced-word scheduling</td><td>PBM-only exposure model; numerical failures beyond ~100 items/slate</td><td>Cap per-slate candidate sets; DBN extension exists (Kletti et al. SIGIR 2022) for cascade exposure</td></tr></tbody></table></div></div></details>
+</section>
+<section id="open" class="section-anchor"><div class="card">
+<h3 style="margin-top:0"><span class="en-only">Open Questions After SP2</span><span class="ko-only">SP2 이후 미해결 질문</span></h3><ul><li><strong>Black-box exposure post-processing theory</strong>: No Bayes-optimal post-processing result exists for exposure-based ranking fairness over closed scorers. <a href="papers/17_BlackBoxFairPost.html">[17] BlackBoxFairPost</a> proves the pattern for <em>classification</em> (elicited output probabilities are sufficient statistics for the optimal fair post-processor) and flags the ranking analogue as missing (<code>missing link</code>: "whether a LinearPost-style Bayes-optimal linear post-processing result exists for exposure-based ranking fairness"); <a href="papers/16_FairLLMRec.html">[16] FairLLMRec</a> flags the same from the other side (<code>missing link</code>: "whether a strictly score-level variant is possible"). What would resolve it: extending the Xian &amp; Zhao 2024 optimality theory from label parity to position-weighted exposure constraints.</li><li><strong>Log-only post-hoc exposure correction</strong>: <a href="papers/21_ExposureAwareRetrieval.html">[21] ExposureAwareRetrieval</a> never tests replacing its trained exposure head with an empirical $P(\text{exposed}\mid\text{item})$ estimated from impression logs (<code>missing link</code>), and <a href="papers/20_SpotWorkTEC.html">[20] SpotWorkTEC</a> leaves sensitivity to noisy/delayed exposure signals unknown (<code>missing link</code>). This untested variant is <em>exactly</em> the user's setting: frequency-based correction of a frozen scorer using only logs. What would resolve it: an ablation swapping the learned head for log-frequency estimates and measuring the recall/γ curve.</li><li><strong>Feedback-loop compounding in the LLM era</strong>: exposure distortion is measured one-shot everywhere — <a href="papers/18_LLMPositionBias.html">[18] LLMPositionBias</a> (<code>missing link</code>: no repeated-interaction loop), <a href="papers/19_PolarizationByDefault.html">[19] PolarizationByDefault</a> (<code>missing link</code>: no longitudinal amplification), <a href="papers/22_EchoesFilterBubble.html">[22] EchoesFilterBubble</a> (<code>missing link</code>: single training round despite the filter-bubble title). No paper measures how prompt-position or token-popularity bias compounds over exposure→training-data→exposure cycles. What would resolve it: a multi-round simulation with the LLM retrained/re-prompted on its own exposure-filtered logs.</li><li><strong>The LLM-internal position-bias curve</strong>: <a href="papers/18_LLMPositionBias.html">[18] LLMPositionBias</a> reports only aggregate stability, never per-slot bias direction (<code>missing link</code>: "does the LLM favor early or late slots?"), and <a href="papers/26_LLMRecSysSurvey.html">[26] LLMRecSysSurvey</a> does not analyze exposure distributions induced by LLM rankers (<code>missing link</code>). The classical literature's known-position-bias assumption now has an unmeasured second curve stacked on it. What would resolve it: per-slot promotion-probability instrumentation across models.</li><li><strong>Estimating the conversion function</strong>: <a href="papers/24_BeyondExposure.html">[24] BeyondExposure</a> assumes μ given and error-free (<code>missing link</code>: no noise sensitivity); <a href="papers/25_EquityVsEquality.html">[25] EquityVsEquality</a> assumes provider preference vectors known (<code>missing link</code>: elicitation unaddressed). The hard part of replacing the exposure proxy — knowing the conversion — is outside every current method.</li></ul>
+</div>
+<details><summary><span class="en-only">Cross-SP Dependencies</span><span class="ko-only">SP 간 의존성</span></summary><div class="card" style="margin-top:0.5rem"><ul><li><strong>Feeds into</strong>: SP3 (post-processing) — the missing Bayes-optimal exposure post-processing theory (<a href="papers/17_BlackBoxFairPost.html">[17] BlackBoxFairPost</a>'s open ranking analogue) is the exact theoretical object SP3's re-rankers lack; check SP3's papers for it. SP7 (capping/pacing) — TEC's exposure-debited eligibility scores are functionally an impression ledger; test against KB claim 6 (pacing ≡ dual-variable targeting). SP8 (popularity debiasing) — the generative-amplification mechanism (<a href="papers/22_EchoesFilterBubble.html">[22] EchoesFilterBubble</a>, <a href="papers/23_CRAB.html">[23] CRAB</a>) and the debias-target divergence belong in SP8's synthesis frame.</li><li><strong>Shared methods with</strong>: SP4/SP5 — expohedron + balanced-word machinery (<a href="papers/28_Expohedron.html">[28] Expohedron</a>, <a href="papers/10_ParetoRepeatedRankings.html">[10] ParetoRepeatedRankings</a>) and amortized income/equity objectives (<a href="papers/24_BeyondExposure.html">[24] BeyondExposure</a>, <a href="papers/25_EquityVsEquality.html">[25] EquityVsEquality</a>) recur there.</li><li><strong>Depends on</strong>: SP1 — the two-assumption lens (known position-bias curve, trusted scores) and the access-level taxonomy; SP2 applied both as classification axes.</li></ul></div></details>
+</section>
+<div class="page-nav"><a href="sp1_fairness-of-exposure-fixed-scores.html">&larr; <span class="en-only">SP1</span><span class="ko-only">SP1</span></a><a href="index.html"><span class="en-only">&uarr; Survey Hub</span><span class="ko-only">&uarr; 조사 허브</span></a><a href="sp3_postproc-rerank-blackbox.html"><span class="en-only">SP3</span><span class="ko-only">SP3</span> &rarr;</a></div>
+    </div>
+  </div>
+<nav class="bd-sidebar-secondary"><div class="mini-toc-label"><span class="en-only">On this page</span><span class="ko-only">이 페이지</span></div><ul class="mini-toc"><li><a href="#intro"><span class="en-only">Introduction</span><span class="ko-only">개요</span></a></li><li><a href="#rationale"><span class="en-only">Entry Assumption</span><span class="ko-only">사전 가정</span></a></li><li><a href="#establishes"><span class="en-only">What SP2 Establishes</span><span class="ko-only">확립한 것</span></a></li><li><a href="#concepts"><span class="en-only">Key Concepts</span><span class="ko-only">핵심 개념</span></a></li><li><a href="#rqs"><span class="en-only">Research Questions</span><span class="ko-only">연구 질문</span></a></li><li><a href="#papers"><span class="en-only">Papers</span><span class="ko-only">논문</span></a></li><li><a href="#open"><span class="en-only">Open Questions</span><span class="ko-only">미해결 질문</span></a></li></ul></nav>
+</div>
+</body>
+</html>

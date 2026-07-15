@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SP10: LLM-era Exposure Feedback Loops — Exposure-Frequency Control Survey</title>
+
+<style>
+:root {
+  --bg: #0d1117; --card: #161b22; --border: #30363d;
+  --text: #e6edf3; --muted: #7d8590; --accent: #58a6ff;
+  --teal: #39d0c7; --green: #3fb950; --yellow: #d29922;
+  --red: #f85149; --purple: #bc8cff; --orange: #e3b341;
+  --sidebar-w: 262px; --toc-w: 210px; --hdr-h: 48px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+body { font-family: -apple-system, sans-serif; background: var(--bg);
+       color: var(--text); line-height: 1.6; }
+.bd-root { display: flex; height: 100vh; overflow: hidden; }
+.bd-sidebar-primary {
+  width: var(--sidebar-w); min-width: var(--sidebar-w);
+  overflow-y: auto; background: var(--card);
+  border-right: 1px solid var(--border);
+  padding: 0.75rem 0; flex-shrink: 0;
+}
+.bd-sidebar-primary::-webkit-scrollbar { width: 4px; }
+.bd-sidebar-primary::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+.bd-main { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-width: 0; }
+.article-header-bar {
+  height: var(--hdr-h); background: var(--card);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; padding: 0 1.5rem;
+  gap: 1rem; flex-shrink: 0;
+}
+.header-brand { color: var(--teal); font-weight: bold; font-size: 0.95em;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 1; }
+.header-brand a { color: inherit; text-decoration: none; }
+.breadcrumb { color: var(--muted); font-size: 0.82em; display: flex;
+  align-items: center; gap: 0.3rem; flex-shrink: 0; }
+.breadcrumb a { color: var(--accent); text-decoration: none; }
+.breadcrumb span { color: var(--border); }
+.bd-article { flex: 1; overflow-y: auto; padding: 2rem 2.5rem; }
+.bd-article::-webkit-scrollbar { width: 6px; }
+.bd-article::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+.bd-sidebar-secondary {
+  width: var(--toc-w); min-width: var(--toc-w);
+  overflow-y: auto; border-left: 1px solid var(--border);
+  padding: 1rem 0.75rem; flex-shrink: 0;
+}
+.bd-sidebar-secondary::-webkit-scrollbar { width: 4px; }
+.bd-sidebar-secondary::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+.sidebar-logo { padding: 0.5rem 1rem 0.75rem;
+  border-bottom: 1px solid var(--border); margin-bottom: 0.5rem; }
+.sidebar-logo a { color: var(--teal); font-weight: bold; font-size: 0.95em;
+  text-decoration: none; display: block; }
+.sidebar-section { color: var(--muted); font-size: 0.72em; font-weight: bold;
+  text-transform: uppercase; letter-spacing: 0.07em;
+  padding: 0.7rem 1rem 0.25rem; }
+.sidebar-nav-link { display: block; padding: 0.28rem 1rem 0.28rem 1.25rem;
+  color: var(--muted); font-size: 0.875em; text-decoration: none; }
+.sidebar-nav-link:hover { color: var(--text); background: rgba(255,255,255,0.03); }
+.sidebar-nav-link.active { color: var(--teal);
+  border-left: 2px solid var(--teal);
+  padding-left: calc(1.25rem - 2px); background: rgba(57,208,199,0.05); }
+.mini-toc-label { color: var(--muted); font-size: 0.72em; font-weight: bold;
+  text-transform: uppercase; letter-spacing: 0.07em; padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border); margin-bottom: 0.5rem; }
+.mini-toc { list-style: none; }
+.mini-toc li a { display: block; padding: 0.22rem 0;
+  color: var(--muted); font-size: 0.83em; text-decoration: none;
+  border-left: 2px solid transparent; padding-left: 0.5rem; }
+.mini-toc li a:hover { color: var(--text); }
+.mini-toc li a.toc-active { color: var(--teal); border-left-color: var(--teal); }
+.section-anchor { scroll-margin-top: calc(var(--hdr-h) + 8px); }
+h1 { color: var(--teal); font-size: 1.7em; margin-bottom: 0.5rem; line-height:1.3; }
+h2 { color: var(--teal); font-size: 1.25em; margin: 1.5rem 0 0.6rem; }
+h3 { color: var(--teal); font-size: 1.05em; margin: 1.2rem 0 0.4rem; }
+h4 { color: var(--teal); font-size: 0.95em; margin: 1rem 0 0.3rem; }
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+p { margin-bottom: 0.8rem; }
+ul, ol { margin: 0 0 0.8rem 1.4rem; }
+li { margin-bottom: 0.3rem; }
+code { background: rgba(255,255,255,0.06); border-radius: 3px; padding: 1px 4px; font-size: 0.9em; }
+blockquote { border-left: 3px solid var(--border); color: var(--muted);
+  padding: 0.2rem 0.8rem; margin-bottom: 0.8rem; }
+.card { background: var(--card); border: 1px solid var(--border);
+        border-radius: 8px; padding: 1.2rem; margin-bottom: 1rem; }
+table { width: 100%; border-collapse: collapse; font-size: 0.9em; margin-bottom: 0.8rem; }
+th { background: var(--card); color: var(--teal); padding: 8px;
+     border: 1px solid var(--border); text-align: left; }
+td { padding: 8px; border: 1px solid var(--border); vertical-align: top; }
+tr:nth-child(even) td { background: rgba(0,0,0,0.2); }
+.stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+             gap: 1rem; margin-bottom: 1.5rem; }
+.stat-box { background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+            padding: 1rem; text-align: center; }
+.stat-num { font-size: 2rem; font-weight: bold; color: var(--teal); }
+.stat-label { color: var(--muted); font-size: 0.85em; margin-top: 0.2rem; }
+.sp-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+           gap: 1rem; margin: 1rem 0; }
+.sp-card { background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+           padding: 1.2rem; cursor: pointer; transition: border-color 0.15s; height:100%; }
+.sp-card:hover { border-color: var(--teal); }
+.sp-card h3 { margin: 0 0 0.5rem; color: var(--teal); font-size: 1em; }
+.sp-card p { margin: 0; color: var(--muted); font-size: 0.88em; }
+.sp-badge { display: inline-block; background: rgba(57,208,199,0.1); color: var(--teal);
+            border-radius: 4px; padding: 2px 8px; font-size: 0.8em; margin-bottom: 0.5rem; }
+.paper-meta { color: var(--muted); font-size: 0.9em; margin-bottom: 1.5rem; }
+.paper-meta a { color: var(--accent); }
+.section-label { color: var(--teal); font-weight: bold; font-size: 0.85em;
+                 text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.4rem; }
+.pill { display: inline-block; border-radius: 4px; padding: 0.15rem 0.6rem;
+        font-size: 0.8em; font-weight: bold; margin-right: 0.4rem; }
+.pill-p0 { background: rgba(63,185,80,0.2); color: var(--green); }
+.pill-p1 { background: rgba(57,208,199,0.15); color: var(--teal); }
+.pill-p2 { background: rgba(210,153,34,0.2); color: var(--yellow); }
+.pill-p3 { background: rgba(188,140,255,0.2); color: var(--purple); }
+.pill-p4 { background: rgba(125,133,144,0.2); color: var(--muted); }
+.delta-row { margin: 0.4rem 0; padding: 0.4rem 0.8rem;
+             border-left: 3px solid var(--border); border-radius: 0 4px 4px 0; }
+.chain { position: relative; padding-left: 2rem; }
+.chain::before { content: ''; position: absolute; left: 0.95rem; top: 0;
+                 bottom: 0; width: 2px; background: var(--border); }
+.chain-node { position: relative; margin-bottom: 2rem; }
+.chain-node::before { content: ''; position: absolute; left: -1.55rem;
+                      top: 1.1rem; width: 12px; height: 12px;
+                      border-radius: 50%; background: var(--teal); }
+.chain-num { display: inline-block; width: 28px; height: 28px; background: var(--teal);
+             color: #000; border-radius: 50%; text-align: center; line-height: 28px;
+             font-weight: bold; font-size: 0.85em; margin-right: 0.6rem; flex-shrink: 0; }
+.chain-q { font-weight: bold; color: var(--text); margin: 0.4rem 0 0.3rem; font-size: 1em; }
+.chain-papers { color: var(--muted); font-size: 0.85em; margin-bottom: 0.6rem; }
+.chain-start { background: var(--card); border: 1px solid var(--teal);
+               border-radius: 8px; padding: 1rem; margin-bottom: 2rem; }
+.chain-start h3 { margin: 0 0 0.5rem; color: var(--teal); }
+.chain-converge { background: var(--card); border: 1px solid var(--green);
+                  border-radius: 8px; padding: 1rem; margin-top: 1rem; }
+.chain-converge h3 { margin: 0 0 0.5rem; color: var(--green); }
+.chain-label { display: inline-block; border-radius: 4px; padding: 0.15rem 0.6rem;
+               font-size: 0.8em; font-weight: bold; margin-right: 0.4rem; }
+.chain-status { border-radius: 0 4px 4px 0; padding: 0.5rem 0.8rem;
+                margin: 0.35rem 0; font-size: 0.88em; }
+.chain-status ul { margin: 0.3rem 0 0 1.2rem; padding: 0; }
+.chain-status li { margin-bottom: 0.25rem; }
+.chain-status.solved  { background: rgba(63,185,80,0.07);  border-left: 3px solid var(--green); }
+.chain-status.remains { background: rgba(210,153,34,0.07); border-left: 3px solid var(--yellow); }
+.chain-status.added   { background: rgba(248,81,73,0.07);  border-left: 3px solid var(--red); }
+.chain-status.pivoted { background: rgba(188,140,255,0.1); border-left: 3px solid var(--purple); }
+.chain-label.solved   { background: rgba(63,185,80,0.2);  color: var(--green); }
+.chain-label.remains  { background: rgba(210,153,34,0.2); color: var(--yellow); }
+.chain-label.added    { background: rgba(248,81,73,0.2);  color: var(--red); }
+.chain-label.pivoted  { background: rgba(188,140,255,0.2); color: var(--purple); }
+.chain-status.expected { background: rgba(88,166,255,0.07);  border-left: 3px solid var(--accent); }
+.chain-label.expected  { background: rgba(88,166,255,0.2);   color: var(--accent); }
+.chain-status.revised  { background: rgba(57,208,199,0.07);  border-left: 3px solid var(--teal); }
+.chain-label.revised   { background: rgba(57,208,199,0.2);   color: var(--teal); }
+.concept-box { border-left: 4px solid var(--teal); background: #0d1f1f;
+               border-radius: 4px; padding: 1.2rem; margin-bottom: 1.2rem; }
+.concept-name { font-weight: bold; color: var(--teal); font-size: 1.05em; margin-bottom: 0.5rem; }
+.hypothesis { border-left: 4px solid var(--teal); background: #0d1f1f;
+              border-radius: 4px; padding: 1rem; margin: 1rem 0; }
+.recommendation { border-left: 4px solid var(--purple); background: #1a0f2e;
+                  border-radius: 4px; padding: 1rem; margin: 1rem 0; }
+.rq-row { background: rgba(88,166,255,0.05); border-left: 3px solid var(--accent);
+          padding: 0.4rem 0.8rem; margin-bottom: 0.5rem; border-radius: 0 4px 4px 0; }
+.scroll-table-wrap { max-height: 420px; overflow-y: auto; border: 1px solid var(--border);
+                     border-radius: 4px; }
+.scroll-table-wrap table { margin-bottom: 0; }
+.scroll-table-wrap thead th { position: sticky; top: 0; background: #161b22; z-index: 1; }
+.page-nav { display: flex; justify-content: space-between; margin-top: 2rem;
+            padding-top: 1rem; border-top: 1px solid var(--border); gap: 1rem; }
+.page-nav a { color: var(--accent); font-size: 0.9em; }
+html.ko-active .en-only { display: none !important; }
+html.ko-active .ko-only { display: block !important; }
+.ko-only { display: none; }
+span.ko-only, .sidebar-logo a span.ko-only { display: none; }
+html.ko-active span.ko-only { display: inline !important; }
+.lang-btn { background: transparent; color: var(--muted); border: 1px solid var(--border);
+            border-radius: 4px; padding: 3px 9px; font-size: 0.8em; cursor: pointer; }
+.lang-btn.active { border-color: var(--teal); color: var(--teal); }
+details { margin-bottom: 0.8rem; }
+details summary { color: var(--muted); cursor: pointer; }
+@media (max-width: 1024px) { .bd-sidebar-secondary { display: none; } }
+@media (max-width: 768px) {
+  .bd-sidebar-primary { display: none; }
+  .bd-root { flex-direction: column; height: auto; overflow: visible; }
+  .bd-main { overflow: visible; }
+  .bd-article { overflow: visible; padding: 1rem; }
+  .stat-grid { grid-template-columns: repeat(2, 1fr); }
+  .sp-grid { grid-template-columns: 1fr; }
+}
+</style>
+
+<script>
+MathJax = { tex: { inlineMath: [['$','$']], displayMath: [['$$','$$']] },
+            options: { skipHtmlTags: ['script','noscript','style','textarea','pre','code'] } };
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<script>
+function toggleLanguage() {
+  const html = document.documentElement;
+  const isKo = html.classList.toggle('ko-active');
+  document.querySelectorAll('.lang-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.lang === (isKo ? 'ko' : 'en'));
+  });
+  localStorage.setItem('survey-lang', isKo ? 'ko' : 'en');
+}
+document.addEventListener('DOMContentLoaded', function() {
+  const saved = localStorage.getItem('survey-lang');
+  if (saved === 'ko') {
+    document.documentElement.classList.add('ko-active');
+    document.querySelectorAll('.lang-btn').forEach(b =>
+      b.classList.toggle('active', b.dataset.lang === 'ko'));
+  } else {
+    document.querySelectorAll('[data-lang="en"]').forEach(b => b.classList.add('active'));
+  }
+  const article = document.querySelector('.bd-article');
+  const sections = Array.from(document.querySelectorAll('.section-anchor[id]'));
+  const sideLinks = Array.from(document.querySelectorAll('.bd-sidebar-primary .sidebar-nav-link'));
+  const tocLinks = Array.from(document.querySelectorAll('.bd-sidebar-secondary .mini-toc a'));
+  if (!article || !sections.length) return;
+  function current() {
+    let id = sections[0].id;
+    const scrollTop = article.scrollTop + 60;
+    sections.forEach(function(s) { if (s.offsetTop <= scrollTop) id = s.id; });
+    return id;
+  }
+  function update() {
+    const id = current();
+    sideLinks.forEach(function(a) {
+      a.classList.toggle('active', a.getAttribute('href') === '#' + id);
+    });
+    tocLinks.forEach(function(a) {
+      a.classList.toggle('toc-active', a.getAttribute('href') === '#' + id);
+    });
+  }
+  article.addEventListener('scroll', update, { passive: true });
+  update();
+});
+</script>
+
+</head>
+<body>
+<div class="bd-root">
+
+<nav class="bd-sidebar-primary">
+  <div class="sidebar-logo">
+    <a href="index.html">&#x2B21; <span class="en-only">Exposure-Frequency Control Survey</span><span class="ko-only">Exposure-빈도 제어 문헌 조사</span></a>
+  </div>
+  <div class="sidebar-section"><span class="en-only">Overview</span><span class="ko-only">개요</span></div>
+  <a href="index.html#overview" class="sidebar-nav-link"><span class="en-only">Survey Hub</span><span class="ko-only">조사 허브</span></a>
+  <a href="index.html#answers" class="sidebar-nav-link"><span class="en-only">Key Answers</span><span class="ko-only">핵심 답변</span></a>
+  <div class="sidebar-section"><span class="en-only">Sub-Problems</span><span class="ko-only">세부 문제</span></div>
+<a href="sp1_fairness-of-exposure-fixed-scores.html" class="sidebar-nav-link">SP1: <span class="en-only">Exposure fairness</span><span class="ko-only">Exposure 공정성</span></a>
+<a href="sp2_2024-2026-frontier-llm-era.html" class="sidebar-nav-link">SP2: <span class="en-only">2024–26 frontier / LLM</span><span class="ko-only">2024–26 최전선 / LLM</span></a>
+<a href="sp3_postproc-rerank-blackbox.html" class="sidebar-nav-link">SP3: <span class="en-only">Post-proc re-ranking</span><span class="ko-only">Post-proc re-ranking</span></a>
+<a href="sp4_stochastic-ranking-policies.html" class="sidebar-nav-link">SP4: <span class="en-only">Stochastic policies</span><span class="ko-only">확률적 정책</span></a>
+<a href="sp5_amortized-equity-attention.html" class="sidebar-nav-link">SP5: <span class="en-only">Amortized fairness</span><span class="ko-only">Amortized 공정성</span></a>
+<a href="sp6_bandit-exposure-allocation.html" class="sidebar-nav-link">SP6: <span class="en-only">Bandit allocation</span><span class="ko-only">Bandit 배분</span></a>
+<a href="sp7_capping-pacing-feeds-ads.html" class="sidebar-nav-link">SP7: <span class="en-only">Capping &amp; pacing</span><span class="ko-only">Capping·pacing</span></a>
+<a href="sp8_popularity-debias-calibration.html" class="sidebar-nav-link">SP8: <span class="en-only">Debiasing &amp; calibration</span><span class="ko-only">Debiasing·calibration</span></a>
+<a href="sp9_ecosystems-creator-incentives.html" class="sidebar-nav-link">SP9: <span class="en-only">Ecosystems &amp; creators</span><span class="ko-only">생태계·creator</span></a>
+<a href="sp10_llm-exposure-feedback-loops.html" class="sidebar-nav-link active">SP10: <span class="en-only">LLM feedback loops</span><span class="ko-only">LLM feedback loop</span></a>
+<a href="sp11_strategyproof-exposure.html" class="sidebar-nav-link">SP11: <span class="en-only">Strategy-proofness</span><span class="ko-only">Strategy-proofness</span></a>
+
+  <div class="sidebar-section"><span class="en-only">Synthesis</span><span class="ko-only">종합</span></div>
+  <a href="conclusion.html" class="sidebar-nav-link"><span class="en-only">Conclusion</span><span class="ko-only">결론</span></a>
+  <a href="thinking-process.html" class="sidebar-nav-link"><span class="en-only">Thinking Process</span><span class="ko-only">추론 과정</span></a>
+</nav>
+  <div class="bd-main">
+<div class="article-header-bar"><div class="header-brand"><a href="index.html"><span class="en-only">Exposure-Frequency Control Survey</span><span class="ko-only">Exposure-빈도 제어 문헌 조사</span></a></div><nav class="breadcrumb"><a href="index.html"><span class="en-only">Survey</span><span class="ko-only">조사</span></a><span>&rsaquo;</span><span>SP10: <span class="en-only">LLM feedback loops</span><span class="ko-only">LLM feedback loop</span></span></nav><button class="lang-btn" data-lang="en" onclick="toggleLanguage()">EN</button><button class="lang-btn" data-lang="ko" onclick="toggleLanguage()">KO</button></div>
+    <div class="bd-article">
+<section id="intro" class="section-anchor">
+<div class="lang en-only"><h1>SP10: LLM-era Exposure Feedback Loops</h1><p style="color:var(--muted)">10 papers · targets O3, O4 · 2023-2026</p><p>Spawned at iteration 9 after SP8 and SP9 both missed the LLM-loop line. Investigates whether LLM/generative recommenders retraining on exposure-shaped logs change the exposure-control problem, and whether frequency-level interventions can stabilize the loop (O3, O4).</p></div><div class="lang ko-only"><h1>SP10: LLM 시대 exposure feedback loop</h1><p style="color:var(--muted)">10편 논문 · O3, O4 목표 대상 · 2023-2026</p><p>반복 9에서 스폰됨(SP8과 SP9 모두 누락한 watch-item 트리거). LLM/생성형 recommender가 exposure로 형성된 로그로 재학습될 때 exposure 제어 문제가 바뀌는지, 그리고 빈도 수준 개입이 루프를 안정화할 수 있는지를 조사한다(O3, O4).</p></div>
+</section>
+<section id="rationale" class="section-anchor"><div class="card" style="border-color:var(--accent)">
+<div class="lang en-only"><h2 style="margin-top:0">Entry Assumption vs. What Was Found</h2><p><strong>Expected</strong> (spawned at iteration 9 — watch-item trigger fired after SP8 and SP9 both missed the LLM-loop line): SP2 found LLM/generative scorers violate trusted-scores structurally; SP7 found exposure boosts durably retrain production scorers; SP9 confirmed no ecosystem paper models the log-contamination channel. Question: do LLM recommenders retraining on exposure-shaped logs change the exposure-control problem, and can frequency-level interventions stabilize the loop?</p><p><strong>Found:</strong> Yes on stabilization: four independent theory results (fixed-point contraction, α^{-1} bounded shift, correction operators, curated self-consumption) converge on keeping a constant fraction of loop-independent data per batch — whose exposure-side translation is exactly the survey's quota-floor machinery run PERSISTENTLY. Yes on problem change: hallucination contamination, incremental-fine-tuning acceleration, and generation-space support collapse are inexpressible in the classical θ^t skeleton.</p><p><strong>Assessment:</strong> Surprised — the LLM-era loop was expected to demand new control machinery; instead the theory endorses the survey's oldest machinery (exploration floors) with one inversion: the floor must be persistent, whereas every deployed floor switches off. The surviving O4 gap: the entire theory covers generation loops, while the survey's loop is a reweighting loop — the transfer is unproven (gap 3).</p></div><div class="lang ko-only"><h2 style="margin-top:0">사전 가정과 실제 발견</h2><p><strong>기대</strong> (반복 9에서 스폰 — SP8과 SP9이 모두 LLM 루프 라인을 누락하여 watch-item 트리거 발동): SP2는 LLM/생성형 scorer가 trusted-scores를 구조적으로 위반함을, SP7은 exposure boost가 production scorer를 지속적으로 재학습시킴을, SP9은 로그 오염 채널을 모델링하는 생태계 논문이 없음을 확인하였다. 질문: exposure로 형성된 로그로 재학습되는 LLM recommender는 exposure 제어 문제를 바꾸는가, 빈도 수준 개입이 루프를 안정화할 수 있는가?</p><p><strong>발견</strong>: 안정화에 대해 긍정: 네 개의 독립 이론 결과(고정점 수축, α^{-1} 유계 이동, 교정 연산자, 큐레이션 자기 소비)가 '매 배치 상수 비율의 루프 독립 데이터'로 수렴하며, 그 exposure 측 번역은 조사의 quota-floor 기계를 지속적으로 가동하는 것이다. 문제 변화에 대해서도 긍정: 환각 오염, incremental fine-tuning 가속, 생성 공간 support collapse는 고전 θ^t 골격으로 표현 불가능하다.</p><p><strong>평가</strong>: 예상과 다름 — LLM 시대 루프가 새로운 제어 기계를 요구할 것으로 기대했으나, 이론은 조사의 가장 오래된 기계(탐색 floor)를 지지한다. 단 하나의 반전: floor는 지속적이어야 하는데, 배포된 모든 floor는 switch-off 설계다. 남은 O4 gap: 이론 전체가 generation 루프를 다루는 반면 조사의 루프는 reweighting 루프다 — 전이는 미증명(gap 3).</p></div>
+</div></section>
+<section id="establishes" class="section-anchor"><div class="card" style="border-color:var(--teal)">
+<div class="lang en-only"><h2 style="margin-top:0">What SP10 Establishes</h2><p>The literature partially answers the SP question, and the two halves land differently.</p>
+<p><strong>Can frequency-level interventions stabilize the loop? Yes — and the theory line says the stabilizer must be a PERSISTENT exploration floor.</strong> Four independent theory results converge on one lever: keep a constant fraction of loop-independent data in every retraining batch. Bertrand et al. prove fixed-point contraction of iterative retraining when the self-influenced fraction satisfies $\lambda(1 + L\varepsilon/\alpha) &lt; 1/2$ <a href="papers/112_IterativeRetrainStability.html">[112] IterativeRetrainStability</a>; Fu et al. prove the cumulative distribution-shift factor stays bounded at $\alpha^{-1}$ for any constant clean-data proportion $\alpha &gt; 0$ but grows linearly in generations as $\alpha \to 0$ <a href="papers/111_RecursiveStability.html">[111] RecursiveStability</a>; Gillman et al. prove a correction function of strength $\gamma$ shrinks the loop's contraction factor to $\rho(\lambda)/(1+\gamma)$ and explicitly note fresh-data injection is a special case of correction — which gives randomized/forced exposure a principled reading as a corrector <a href="papers/110_SelfCorrectingLoop.html">[110] SelfCorrectingLoop</a>. The exposure-side translation is exactly the survey's quota-floor machinery (SP6 Fair-Learn, SP8 InvR) — but run PERSISTENTLY, never switched off, in tension with all deployed switch-off designs (InvR floors off after the minimum; TEC's temporal eligibility).</p>
+<p><strong>Do LLM recommenders change the exposure-control problem? Yes, in three ways the classical $\theta^t$ skeleton cannot express</strong>: (a) hallucinated items and interactions enter the training log — a contamination channel that cannot exist when the loop merely reweights real items <a href="papers/114_EchoesInTheLoop.html">[114] EchoesInTheLoop</a>; (b) the incremental fine-tuning regime that deployed LLMs actually use accelerates performative bias amplification, where retraining-from-scratch (the classical loop's regime) shows only marginal acceleration <a href="papers/116_LLMPerformativeLoop.html">[116] LLMPerformativeLoop</a>; (c) a production LLM recommender continually updated on its own exposure logs stops generating never-clicked items entirely — generation-space support collapse, against which a serving-side frequency floor may be structurally insufficient because the generative policy can no longer produce the item to be floored <a href="papers/115_BanditDriftLLMRec.html">[115] BanditDriftLLMRec</a>.</p>
+<p><strong>The load-bearing caveat</strong>: every stability theorem in the line models generation loops (the model's own synthetic samples re-enter training); the survey's loop is a reweighting loop (the intervention biases which REAL interactions are observed). Three independent condition deltas flag this transfer as unproven, and no paper models the two-sided co-adaptation where the scorer is retrained on data its own exposure allocation filtered. The exposure-denominated loop-stability theorem does not exist — the SP answers "which lever" but not "with what guarantee."</p></div><div class="lang ko-only"><h2 style="margin-top:0">SP10이 확립한 것</h2><p>SP10은 두 절반으로 답한다. (1) 빈도 수준 개입이 루프를 안정화할 수 있는가 — 그렇다, 그리고 이론은 안정화 장치가 지속적 탐색 floor여야 한다고 말한다. Bertrand et al.은 자기 영향 비율이 λ(1+Lε/α)&lt;1/2를 만족할 때 반복 재학습의 고정점 수축을, Fu et al.은 상수 clean 데이터 비율 α&gt;0에서 누적 분포 이동이 α^{-1}로 유계(α→0이면 세대 선형 증가)임을, Gillman et al.은 강도 γ의 교정 함수가 수축 인자를 ρ(λ)/(1+γ)로 줄이며 신선 데이터 주입이 교정의 특수case임을 증명한다 — 무작위/강제 exposure에 원리적 근거를 준다. 이 exposure 측 번역은 정확히 SP6 Fair-Learn/SP8 InvR의 quota-floor 기계지만, 지속 가동해야 한다 — 배포된 모든 설계(InvR, TEC, cold-start boost)는 부트스트랩 후 꺼진다. (2) LLM recommender는 문제를 세 방식으로 바꾼다: 환각된 item/상호작용의 로그 오염, incremental fine-tuning의 편향 증폭 가속, 그리고 클릭되지 않은 item을 아예 생성하지 못하게 되는 generation-space support collapse — serving 측 floor가 구조적으로 불충분할 수 있는 조사 최초의 설정이다.</p></div>
+</div>
+<details><summary><span class="en-only">Dominant Approach</span><span class="ko-only">지배적 접근</span></summary><div class="card" style="margin-top:0.5rem"><p>The dominant method family is <strong>fixed-point / contraction analysis of iterative retraining on self-influenced data</strong>, running from performative prediction <a href="papers/107_PerformativePred.html">[107] PerformativePred</a> through generative-loop stability <a href="papers/112_IterativeRetrainStability.html">[112] IterativeRetrainStability</a>, <a href="papers/110_SelfCorrectingLoop.html">[110] SelfCorrectingLoop</a>, <a href="papers/111_RecursiveStability.html">[111] RecursiveStability</a>. The logic chain across the central papers is cumulative. Perdomo et al. established that retraining on model-induced data is an equilibrating dynamic with fixed points ($\theta_{PS}$), converging linearly iff the induced distribution shift per unit parameter change is small relative to the loss curvature ($\varepsilon &lt; \gamma/\beta$) — and, critically, that mere convexity is NOT enough (oscillation counterexamples), and the fixed point is generally NOT the performative optimum. Bertrand et al. transported the argument to generative retraining loops and overturned the field's first reading of collapse: Alemohammad et al.'s MAD taxonomy <a href="papers/108_MADLoop.html">[108] MADLoop</a> had concluded that only FRESH real data per generation prevents degradation and a fixed real set merely delays it; Bertrand's Theorem 1 shows a FIXED real set re-used every round suffices — provided the self-influenced fraction is small ($\lambda(1+L\varepsilon/\alpha)&lt;1/2$) and the initial model good. Fu et al. then explained why the empirical record is inconsistent at all: the outcome is jointly determined by the clean-data proportion (constant $\alpha$ bounds error at $\alpha^{-1}$; $\alpha\to 0$ accumulates linearly) and the architecture's recursive stability — the first architecture-aware account, covering transformers. Gillman et al. added the control knob: a correction operator $\pi_\gamma$ provably shrinks the contraction factor by $1/(1+\gamma)$, and fresh data is a special case of correction — so anything that pushes the training mixture back toward the true distribution (a physics simulator for motion; plausibly IPS reweighting or forced exploration for ranking) buys stability at a quantified rate.</p>
+<p>Its key limitation is the <strong>generation-loop scope</strong>: every theorem models the model's own synthetic samples re-entering training. The exposure loop reweights observation of real items, its effective self-influenced fraction is implicit and unmeasured in a live system (nobody controls or even observes $\lambda$), and the assumptions (strong concavity of likelihood, memoryless distribution map, Wasserstein-Lipschitz sensitivity) fail for implicit-feedback ranking losses, top-k discontinuity, and path-dependent logs. The alternative track — the 2024–2026 empirical loop papers <a href="papers/113_FairnessFeedbackLoops.html">[113] FairnessFeedbackLoops</a>, <a href="papers/114_EchoesInTheLoop.html">[114] EchoesInTheLoop</a>, <a href="papers/115_BanditDriftLLMRec.html">[115] BanditDriftLLMRec</a>, <a href="papers/116_LLMPerformativeLoop.html">[116] LLMPerformativeLoop</a> — closes the domain gap (recommenders, LLMs, production) but abandons guarantees: their mitigations (STAR quota batches, anchor-calibrated GRPO, reward-based reweighted rejection sampling) are training-data-side quota/reweighting interventions, structurally the same move as exposure floors applied at the data-injection point, validated empirically (one in a 3-month production A/B <a href="papers/115_BanditDriftLLMRec.html">[115] BanditDriftLLMRec</a>) but with no stability theory. Ferbach et al. <a href="papers/109_CuratedSelfConsuming.html">[109] CuratedSelfConsuming</a> sit between the tracks: the one theory paper whose loop operator (softmax selection over real candidates from the current distribution) is structurally an exposure filter — proving the filter is an implicit RLHF operator — but with a static reward, so the scorer-side co-adaptation is still absent.</p>
+<p>For the survey objectives this means: O3 gains the genuinely new 2026 lines (hallucination contamination, incremental-FT acceleration, generation-space support collapse, plus production loop-correction evidence); O4 gains a precisely-stated, completed-search gap — the exposure-denominated loop-stability theorem (which floor fraction $\alpha$ stabilizes a reweighting loop, in position-weighted units) exists nowhere, while all of its ingredients (floor delivery machinery from SP6/SP7, ledger accounting from SP5/SP8, contraction skeletons from this SP) do.</p></div></details>
+<details><summary><span class="en-only">Convergences</span><span class="ko-only">수렴 지점</span></summary><div class="card" style="margin-top:0.5rem"><ul><li><strong>Constant-fraction-of-clean-data stabilization</strong> — four papers, four methods: empirical loop taxonomy (<a href="papers/108_MADLoop.html">[108] MADLoop</a>: fresh-data loop avoids degradation), fixed-point contraction (<a href="papers/112_IterativeRetrainStability.html">[112] IterativeRetrainStability</a>: $\lambda(1+L\varepsilon/\alpha)&lt;1/2$), generalization bounds (<a href="papers/111_RecursiveStability.html">[111] RecursiveStability</a>: shift factor $\le \alpha^{-1}$ for constant $\alpha$), and correction operators (<a href="papers/110_SelfCorrectingLoop.html">[110] SelfCorrectingLoop</a>: fresh data = $\pi_\gamma$ special case). The mechanism: loop-independent data anchors the retraining fixed point / bounds cumulative TV drift. This is the field's established fact and the theory-side justification for exploration floors.</li><li><strong>Selection between model output and retraining is an optimization operator, not noise</strong> — <a href="papers/109_CuratedSelfConsuming.html">[109] CuratedSelfConsuming</a> (exact RLHF equivalence, $\beta=1/t$), <a href="papers/115_BanditDriftLLMRec.html">[115] BanditDriftLLMRec</a> (production GRPO matching rate on past exposures climbs to ~60%; no-response items stop being generated), <a href="papers/116_LLMPerformativeLoop.html">[116] LLMPerformativeLoop</a> (performative sampling accelerates preference bias), with <a href="papers/86_FeedbackLoop.html">[86] FeedbackLoop</a>'s $\theta^t$ as the classical shadow. Mechanism: preferential re-inclusion of high-scored outputs performs reward ascent on the selection criterion.</li><li><strong>Loop-blind evaluation systematically overstates performance and fairness</strong> — <a href="papers/113_FairnessFeedbackLoops.html">[113] FairnessFeedbackLoops</a> (relative metrics show ~100% accuracy while true accuracy collapses and the minoritized group is erased), <a href="papers/114_EchoesInTheLoop.html">[114] EchoesInTheLoop</a> (phase-wise diagnostics exist precisely because end-metrics hide where risk enters), <a href="papers/115_BanditDriftLLMRec.html">[115] BanditDriftLLMRec</a> (several update baselines fall below no-update). Confirms and extends SP8's offline-artifact adjudication (uuid 13) to the loop setting.</li><li><strong>Pure self-consumption provably collapses</strong> — <a href="papers/112_IterativeRetrainStability.html">[112] IterativeRetrainStability</a> (Gaussian rate $\alpha(n)^t &lt; 1$, collapse guaranteed at $\lambda=\infty$), <a href="papers/108_MADLoop.html">[108] MADLoop</a> (precision or recall always declines in the fully synthetic loop), <a href="papers/109_CuratedSelfConsuming.html">[109] CuratedSelfConsuming</a> (variance → 0 on the max-reward level set), <a href="papers/107_PerformativePred.html">[107] PerformativePred</a> (oscillation without regularity). No dissent anywhere in the SP.</li></ul></div></details>
+<details><summary><span class="en-only">Divergences</span><span class="ko-only">분기 지점</span></summary><div class="card" style="margin-top:0.5rem"><ul><li><strong>Fixed real data: suffices vs merely delays.</strong> <a href="papers/108_MADLoop.html">[108] MADLoop</a> concludes a fixed real set only DELAYS inevitable MADness and only fresh data per generation prevents it; <a href="papers/112_IterativeRetrainStability.html">[112] IterativeRetrainStability</a> proves and empirically shows a fixed real set re-used every round suffices (EDM/CIFAR-10 stable for all $\lambda \le 1$ over 20 rounds). Likely cause: regime difference — MAD's synthetic-augmentation loop lets synthetic data accumulate across generations sampled from ALL previous models (effective $\lambda$ grows, no smallness condition, no good-initialization requirement), while Bertrand's theorem requires small $\lambda$ and initialization near $\theta^\star$; the metrics also differ (precision/recall of the generated distribution vs parameter distance). <a href="papers/111_RecursiveStability.html">[111] RecursiveStability</a> partially adjudicates toward Bertrand: constant $\alpha&gt;0$ bounds the shift factor for arbitrarily many generations, with the residual outcome hinging on architecture (recursive stability). Status: adjudicated in direction, open in the reweighting-loop translation.</li><li><strong>What the loop degrades is metric-dependent, not uniform.</strong> <a href="papers/113_FairnessFeedbackLoops.html">[113] FairnessFeedbackLoops</a> finds sequential classifiers ADAPT to collapse (+10–20pp accuracy vs non-sequential) while becoming far more unfair (EOdds +0.6); <a href="papers/116_LLMPerformativeLoop.html">[116] LLMPerformativeLoop</a> finds disparate (accuracy-gap) bias DECREASES over the loop while preference bias increases. Both contradict the naive "loops degrade everything" reading of the classical line (<a href="papers/86_FeedbackLoop.html">[86] FeedbackLoop</a>: monotone degradation of diversity/coverage). Likely cause: representation-denominated harms (group erasure, preference skew, support collapse) and performance-denominated metrics (accuracy, per-group gaps) move independently — the loop trades one for the other. Unresolved: no paper states which metric family a given loop protocol will sacrifice.</li><li><strong>Training-regime moderation (new, unreplicated).</strong> <a href="papers/116_LLMPerformativeLoop.html">[116] LLMPerformativeLoop</a> finds performative feedback accelerates bias amplification under incremental fine-tuning but only marginally under retraining-from-scratch — yet the classical retrain-from-scratch loops (<a href="papers/86_FeedbackLoop.html">[86] FeedbackLoop</a>, <a href="papers/95_DynamicExposure.html">[95] DynamicExposure</a>) show robust amplification. Likely cause: different bias objects (group composition of generated text vs item popularity concentration); single paper, simulated linear disengagement schedule. Needs replication before design weight.</li></ul></div></details>
+<details><summary><span class="en-only">Prior Beliefs and Surprises (full)</span><span class="ko-only">사전 믿음과 놀라움 (전문)</span></summary><div class="card" style="margin-top:0.5rem"><p><strong>What the entry rationale expected to find</strong>:</p>
+<blockquote>LLM/generative scorers violate trusted-scores structurally (SP2); exposure boosts durably retrain production scorers (SP7); the log-contamination channel is unmodeled (SP9). Question: do LLM/generative recommenders retraining on exposure-shaped logs change the exposure-control problem, and can frequency-level interventions stabilize the loop?</blockquote>
+<p><strong>Confirmed</strong>:</p>
+<ul><li>The self-consuming/performative theory line exists and directly supplies stabilization levers with explicit thresholds — the loop is analyzable, not just observable.</li><li>The 2026 LLM-loop papers exist with production evidence (<a href="papers/115_BanditDriftLLMRec.html">[115] BanditDriftLLMRec</a>'s 3-month A/B), satisfying O3's recency requirement for this line.</li></ul>
+<p><strong>Surprised</strong>:</p>
+<ul><li>(a) Assumed the LLM-era loop would demand NEW control machinery; found instead that the theory endorses the survey's own oldest machinery — exploration floors — but with one inversion: the floor must be PERSISTENT (constant $\alpha$ forever), whereas every deployed floor in the survey (InvR, TEC, cold-start boosts) is designed to switch off. The deployed designs forfeit exactly the property the theory says matters.</li><li>(b) Assumed exposure filtering merely amplifies popularity ($\theta^t$); found it is EXACT implicit preference optimization (RLHF at $\beta=1/t$) with a known degenerate convergence target — a much stronger and more designable characterization.</li><li>(c) Found a failure mode with no classical counterpart: generation-space support collapse (<a href="papers/115_BanditDriftLLMRec.html">[115] BanditDriftLLMRec</a>) — the first setting in 10 SPs where a show/don't-show floor may be structurally insufficient, because the generative policy can lose the ability to produce the item to be floored.</li><li>(d) Despite six theory papers, the EXACT loop the survey cares about (reweighting observation of real items, scorer co-adapting) has no theorem — the whole line models generation loops; the transfer is flagged, unperformed.</li></ul>
+<p><strong>KB impact</strong>:</p>
+<ul><li>UUID 25: refined — SP10 adds the formal-theory column (stability thresholds, correction operators, implicit-RLHF sharpening of $\theta^t$) while confirming the core gap survives (no exposure-reweighting/co-adaptation theorem).</li><li>UUID 4: refined — LLM bias channels shown loop-dynamic: hallucination contamination, incremental-FT acceleration, generation-space support collapse.</li><li>UUID 11: refined — bias attribution gains a pipeline-role axis (EchoTrace taxonomy) with an open-source diagnostic instrument.</li><li>2 new claims: constant-fraction stabilization convergence (mechanism); generation-vs-reweighting loop mismatch (gap).</li></ul></div></details>
+</section>
+<section id="concepts" class="section-anchor"><h2><span class="en-only">Key Concepts</span><span class="ko-only">핵심 개념</span></h2><p><strong>Performative stability vs performative optimality (PS-PO gap)</strong></p>
+<ul><li><strong>What it computes</strong>: a performatively stable point $\theta_{PS}$ is a fixed point of retraining — $\theta_{PS} = \arg\min_\theta \mathbb{E}_{Z\sim\mathcal{D}(\theta_{PS})}\ell(Z;\theta)$, optimal for the distribution it itself induces. A performative optimum $\theta_{PO}$ minimizes $\text{PR}(\theta) = \mathbb{E}_{Z\sim\mathcal{D}(\theta)}\ell(Z;\theta)$. They differ in general ($\theta_{PS} = \mu/(1-\varepsilon)$ vs $\theta_{PO} = \mu/(1-2\varepsilon)$ in the coin example), bounded by $\|\theta_{PO}-\theta_{PS}\| \le 2L_z\varepsilon/\gamma$.</li><li><strong>Why it was created</strong>: supervised learning has no notion of what retraining-on-induced-data converges TO; stability recasts retraining as an equilibrating dynamic with well-defined fixed points.</li><li><strong>Concrete example</strong>: retraining converges linearly to a unique $\theta_{PS}$ iff the loss is $\beta$-smooth, $\gamma$-strongly convex, and the distribution map is $\varepsilon$-sensitive with $\varepsilon &lt; \gamma/\beta$; removing any single assumption admits perpetual oscillation.</li><li><strong>Role in this SP</strong>: <a href="papers/107_PerformativePred.html">[107] PerformativePred</a> is the formal language for "the exposure knob writes the scorer's future training data" (uuid 25). Its PS-PO gap is the formal seed of the concern that a converged loop can enshrine exposure bias: the fixed point retraining reaches is NOT the model that would be best for the ecosystem.</li></ul>
+<p><strong>Generation loop vs reweighting loop</strong> (this SP's key structural distinction)</p>
+<ul><li><strong>What it computes</strong>: a generation loop injects the model's own SYNTHETIC samples into the next training set ($D_{t+1} \supseteq \text{samples}(G_t)$); a reweighting loop biases WHICH REAL interactions are observed (exposure allocation changes the sampling distribution over a fixed catalog, then only exposed items generate feedback).</li><li><strong>Why it was created</strong>: (named here for the synthesis) all six theory papers model the generation case; the survey's setting — a black-box scorer retrained on exposure-shaped logs — is the reweighting case.</li><li><strong>Concrete example</strong>: MAD's synthetic-augmentation loop mixes StyleGAN outputs into training <a href="papers/108_MADLoop.html">[108] MADLoop</a>; the SP7 field experiment's loop contains only real videos and real user behavior, reweighted by a temporary boost — yet still durably retrained the scorer (+14.75%, persistent).</li><li><strong>Role in this SP</strong>: the transfer of every stability result across this distinction is flagged as a missing link in the condition deltas of <a href="papers/111_RecursiveStability.html">[111] RecursiveStability</a>, <a href="papers/112_IterativeRetrainStability.html">[112] IterativeRetrainStability</a>, and <a href="papers/108_MADLoop.html">[108] MADLoop</a> — the SP's central surviving gap.</li></ul>
+<p><strong>Constant-fraction stabilization ($\alpha$/$\lambda$ lever)</strong></p>
+<ul><li><strong>What it computes</strong>: mix the training set as $\tilde{S}_t = \alpha S_{\text{clean}} + (1-\alpha) S_{\text{loop}}$; the generation-$t$ generalization error against the original distribution carries a distribution-shift factor $(1-(1-\alpha)^t)\,\alpha^{-1}$ — bounded by $\alpha^{-1}$ for any constant $\alpha&gt;0$, linear in $t$ as $\alpha\to 0$.</li><li><strong>Why it was created</strong>: to explain the striking inconsistency of self-consuming-loop experiments (some collapse, some don't): the clean-data fraction and the architecture's recursive stability jointly determine the outcome.</li><li><strong>Concrete example</strong>: EDM on CIFAR-10 stays at FID ~2–3 over 20 retraining rounds for all $\lambda \le 1$ while fully-synthetic diverges past 8 <a href="papers/112_IterativeRetrainStability.html">[112] IterativeRetrainStability</a>.</li><li><strong>Role in this SP</strong>: the theoretically-grounded design principle behind exploration floors as loop stabilizers; used by <a href="papers/111_RecursiveStability.html">[111] RecursiveStability</a>, <a href="papers/112_IterativeRetrainStability.html">[112] IterativeRetrainStability</a>, <a href="papers/108_MADLoop.html">[108] MADLoop</a>.</li></ul>
+<p><strong>Correction function $\pi_\gamma$</strong></p>
+<ul><li><strong>What it computes</strong>: maps the loop's data distribution toward the target: $\pi_\gamma p_\theta = (p_\theta + \gamma p_{\theta^\star})/(1+\gamma)$; inserted into the retraining operator it shrinks the contraction factor from $\rho(\lambda)$ to $\rho(\lambda)/(1+\gamma)$, and as $\gamma\to\infty$ doubles the admissible self-influenced fraction.</li><li><strong>Why it was created</strong>: fresh clean data may be unavailable; a domain corrector (physics simulator, cluster anchors) can substitute.</li><li><strong>Concrete example</strong>: MDM human-motion diffusion at 100% synthetic augmentation collapses over 50 generations without correction; with physics-simulator correction FID stays at the no-synthetic baseline <a href="papers/110_SelfCorrectingLoop.html">[110] SelfCorrectingLoop</a>.</li><li><strong>Role in this SP</strong>: the formal slot that randomized exposure / IPS reweighting would occupy in a ranking loop — the paper itself notes fresh-data injection is a special case of $\pi_\gamma$, so exploration IS correction with strength $\gamma$; no paper instantiates the ranking-side corrector.</li></ul>
+<p><strong>Curation-as-implicit-preference-optimization (exposure filtering = RLHF)</strong></p>
+<ul><li><strong>What it computes</strong>: selecting 1-of-K model outputs by softmax over a latent reward $r$, then retraining on the selections, maps $p_t \mapsto p_t e^{r}/\mathbb{E}_{p_t}[e^r]$ in the $K\to\infty$ limit; after $t$ rounds this equals the RLHF solution $\pi(x) \propto p_0(x)e^{r(x)/\beta}$ with $\beta = 1/t$.</li><li><strong>Why it was created</strong>: prior loop analyses treated fed-back data as raw model output; in practice a selection filter (user picks, exposure allocation) sits between generation and retraining, and it turns out to be an optimization operator, not noise.</li><li><strong>Concrete example</strong>: CIFAR10 with reward = P(airplane): airplane proportion goes 0.1 → ~1.0 in 10 retraining rounds; with a class-agnostic confidence reward, class proportions still skew heavily (bias amplification from implicit correlations) <a href="papers/109_CuratedSelfConsuming.html">[109] CuratedSelfConsuming</a>.</li><li><strong>Role in this SP</strong>: the sharpest formal upgrade of Mansoury's $\theta^t$ compounding (uuid 25): the exposure filter performs unbounded reward ascent on the selection criterion as $t$ grows, with a known convergence target (max-reward level set, diversity variance → 0) — and mixing reference data bounds the KL while preserving reward gain (Thms 2.3/2.4).</li></ul>
+<p><strong>Recursive stability</strong></p>
+<ul><li><strong>What it computes</strong>: for two initial datasets differing in one example, the bound $\gamma^{i}_n$ on the divergence of the GENERATION-$i$ model's outputs — how a single-point perturbation propagates through $i$ rounds of recursive retraining. Architecture-dependent (transformers in ICL: $O(1/n)$).</li><li><strong>Why it was created</strong>: classical uniform stability handles one i.i.d. pass; it cannot track cross-generation error propagation on non-i.i.d. mixed data.</li><li><strong>Concrete example</strong>: Theorem 1 of <a href="papers/111_RecursiveStability.html">[111] RecursiveStability</a> needs recursive stability converging faster than $O(1/\log n)$ for the generalization bound to hold.</li><li><strong>Role in this SP</strong>: makes collapse-vs-no-collapse architecture-dependent — the first formal reason to expect LLM-based and classical recommenders to behave differently in the same loop.</li></ul>
+<p>See also SP8 Key Concepts: $\theta^t$ popularity compounding (<a href="papers/86_FeedbackLoop.html">[86] FeedbackLoop</a>); SP9: performative recommendation (creator-content channel).</p></section>
+<section id="rqs" class="section-anchor"><h2><span class="en-only">Research Questions Extracted</span><span class="ko-only">추출된 연구 질문</span></h2><div class="scroll-table-wrap"><table><thead><tr><th>ID</th><th>Question</th><th>Key Papers</th><th>Objective</th></tr></thead><tbody><tr><td>RQ10.1</td><td>Under what formal conditions does a scorer retraining on data its own deployment shaped converge to a stable fixed point rather than oscillate or collapse — and how far is that fixed point from the performative optimum?</td><td><a href="papers/107_PerformativePred.html">[107] PerformativePred</a>, <a href="papers/112_IterativeRetrainStability.html">[112] IterativeRetrainStability</a>, <a href="papers/111_RecursiveStability.html">[111] RecursiveStability</a></td><td>O3, O4</td></tr><tr><td>RQ10.2</td><td>Does stabilizing a retraining loop require continually fresh clean data, or does a constant fixed fraction of loop-independent data suffice — and what determines which regime applies?</td><td><a href="papers/112_IterativeRetrainStability.html">[112] IterativeRetrainStability</a>, <a href="papers/111_RecursiveStability.html">[111] RecursiveStability</a>, <a href="papers/108_MADLoop.html">[108] MADLoop</a></td><td>O3</td></tr><tr><td>RQ10.3</td><td>What does exposure-style selection between model output and retraining do to the retrained model's distribution?</td><td><a href="papers/109_CuratedSelfConsuming.html">[109] CuratedSelfConsuming</a></td><td>O3, O4</td></tr><tr><td>RQ10.4</td><td>What is genuinely new in LLM-recommender feedback loops relative to the classical popularity-amplification loop?</td><td><a href="papers/114_EchoesInTheLoop.html">[114] EchoesInTheLoop</a>, <a href="papers/115_BanditDriftLLMRec.html">[115] BanditDriftLLMRec</a>, <a href="papers/116_LLMPerformativeLoop.html">[116] LLMPerformativeLoop</a>, <a href="papers/86_FeedbackLoop.html">[86] FeedbackLoop</a></td><td>O3</td></tr><tr><td>RQ10.5</td><td>Which training-side corrections stabilize a deployed LLM recommender continually updated on its own exposure logs, and with what evidence?</td><td><a href="papers/115_BanditDriftLLMRec.html">[115] BanditDriftLLMRec</a>, <a href="papers/116_LLMPerformativeLoop.html">[116] LLMPerformativeLoop</a>, <a href="papers/113_FairnessFeedbackLoops.html">[113] FairnessFeedbackLoops</a></td><td>O3</td></tr><tr><td>RQ10.6</td><td>Is randomized/forced exposure formally a loop corrector, and what plays the role of correction strength $\gamma$?</td><td><a href="papers/110_SelfCorrectingLoop.html">[110] SelfCorrectingLoop</a>, <a href="papers/111_RecursiveStability.html">[111] RecursiveStability</a>, <a href="papers/78_FeedInterventionFieldExp.html">[78] FeedInterventionFieldExp</a></td><td>O3, O4</td></tr><tr><td>RQ10.7</td><td>Why does evaluation on model-influenced data systematically overstate accuracy and fairness in closed loops, and what instrumentation avoids it?</td><td><a href="papers/113_FairnessFeedbackLoops.html">[113] FairnessFeedbackLoops</a>, <a href="papers/114_EchoesInTheLoop.html">[114] EchoesInTheLoop</a>, <a href="papers/95_DynamicExposure.html">[95] DynamicExposure</a></td><td>O3</td></tr></tbody></table></div></section>
+<section id="papers" class="section-anchor"><div class="card" style="margin-top:1.5rem">
+<h3 style="margin-top:0"><span class="en-only">Papers in SP10 (DIR table)</span><span class="ko-only">SP10 논문 목록 (DIR 표)</span></h3><div class="scroll-table-wrap"><table><thead><tr><th>Ref</th><th>Title</th><th>Track</th><th>Tier</th><th>Key Contribution</th><th>Fit</th><th>Gap</th></tr></thead><tbody><tr><td><a href="papers/107_PerformativePred.html">[107] PerformativePred</a></td><td>Performative Prediction</td><td>A</td><td>P0</td><td>Retraining-on-induced-data as fixed-point dynamic; $\varepsilon&lt;\gamma/\beta$ convergence; PS≠PO</td><td>Formal language for exposure-endogenous scorers; recommendations a canonical instance</td><td>Memoryless map, strong convexity — fail for top-k rankers and cumulative logs</td></tr><tr><td><a href="papers/108_MADLoop.html">[108] MADLoop</a></td><td>Self-Consuming Generative Models Go MAD</td><td>A</td><td>P2</td><td>Three-loop taxonomy; sampling bias trades quality for faster diversity collapse</td><td>Fresh-data-loop result = the exploration-floor analogy; curation-bias λ ≈ exposure filter</td><td>Image-domain; fixed-real "only delays" reading contradicted by 112; rank-based selection unmapped</td></tr><tr><td><a href="papers/109_CuratedSelfConsuming.html">[109] CuratedSelfConsuming</a></td><td>Curated Self-Consuming Models Optimize Preferences</td><td>A</td><td>P4</td><td>Curation = implicit RLHF ($\beta=1/t$); level-set convergence; bounded-KL mixed loop</td><td>Closest formal operator to exposure filtering over real candidates</td><td>Static reward — no scorer co-adaptation; infinite-sample; no ranking experiments</td></tr><tr><td><a href="papers/110_SelfCorrectingLoop.html">[110] SelfCorrectingLoop</a></td><td>Self-Correcting Self-Consuming Loops</td><td>A</td><td>P0</td><td>Correction $\pi_\gamma$ shrinks contraction to $\rho/(1+\gamma)$; fresh data a special case</td><td>Exploration-as-corrector reading; quantified stability-vs-correction-strength trade</td><td>Assumes a programmable expert corrector; no ranking-side corrector exists</td></tr><tr><td><a href="papers/111_RecursiveStability.html">[111] RecursiveStability</a></td><td>Preventing Model Collapse in STLs (ICLR 2025)</td><td>A</td><td>P0</td><td>Recursive stability; first STL generalization bound; constant-$\alpha$ boundedness; architecture-aware</td><td>Explains collapse inconsistency; transformer/ICL coverage bridges to LLM recommenders</td><td>Resampling loops only; recursive stability of practical rankers unestimated</td></tr><tr><td><a href="papers/112_IterativeRetrainStability.html">[112] IterativeRetrainStability</a></td><td>Stability of Iterative Retraining (ICLR 2024)</td><td>C</td><td>P2</td><td>$\lambda(1+L\varepsilon/\alpha)&lt;1/2$ contraction; fixed real data suffices; Gaussian collapse rate</td><td>The direct stability anchor the exploration-floor implication rests on</td><td>Likelihood/concavity assumptions have no implicit-feedback analogue; $\lambda$ unobservable live</td></tr><tr><td><a href="papers/113_FairnessFeedbackLoops.html">[113] FairnessFeedbackLoops</a></td><td>Fairness Feedback Loops (MIDS)</td><td>C</td><td>P2</td><td>MIDS unification; minoritized-group erasure; relative-metric fairwashing; STAR quota batches</td><td>Metric suite + quota intervention transfer to exposure strata; fairwashing finding is loop-general</td><td>Vision-only; STAR patches representation without breaking the loop; never tested on ranking</td></tr><tr><td><a href="papers/114_EchoesInTheLoop.html">[114] EchoesInTheLoop</a></td><td>Echoes in the Loop (LLM4RS diagnostics)</td><td>B</td><td>P4</td><td>Role taxonomy + EchoTrace closed-loop pipeline; hallucination contamination channel</td><td>Names what's LLM-new: hallucinated items enter logs; per-role risk localization</td><td>Diagnosis only; full-acceptance user model conflates exposure with consumption</td></tr><tr><td><a href="papers/115_BanditDriftLLMRec.html">[115] BanditDriftLLMRec</a></td><td>ABPO: Anchored Bandit Policy Optimization</td><td>B</td><td>P4</td><td>Anchor+SNIPS-corrected GRPO; 3-month production A/B; no-update beats naive updates</td><td>Only paper operating a real deployed LLM-rec loop; quantifies self-reinforcement and support collapse</td><td>Training-side fix, not frequency-level; exact propensities are a simulator luxury; position bias unmodeled</td></tr><tr><td><a href="papers/116_LLMPerformativeLoop.html">[116] LLMPerformativeLoop</a></td><td>LLM Bias in Self-Consuming Performative Loop</td><td>B</td><td>P4</td><td>First co-model of log channel + performative (user) channel; incremental-FT acceleration</td><td>Two-channel skeleton nearest to SP9's divergence; regime moderation finding</td><td>Hand-set linear disengagement schedule; group-level not item/exposure-level; creator channel absent</td></tr></tbody></table></div>
+</div>
+<details><summary><span class="en-only">Design Implication Registry</span><span class="ko-only">설계 함의 레지스트리</span></summary><div class="card" style="margin-top:0.5rem"><div class="scroll-table-wrap"><table><thead><tr><th>Requirement</th><th>Evidence</th><th>Implication</th><th>Risk</th><th>Mitigation</th></tr></thead><tbody><tr><td>Long-horizon frequency-only control must treat the scorer as exposure-endogenous</td><td><a href="papers/107_PerformativePred.html">[107] PerformativePred</a>, <a href="papers/115_BanditDriftLLMRec.html">[115] BanditDriftLLMRec</a>, <a href="papers/78_FeedInterventionFieldExp.html">[78] FeedInterventionFieldExp</a></td><td>Model the exposure knob as writing future training data; evaluate any intervention over retraining cycles (closed-loop), not single deployments — naive continual updates can be worse than not updating at all</td><td>Performative convergence conditions (memoryless map, strong convexity, $\varepsilon&lt;\gamma/\beta$) fail for top-k rankers → no off-the-shelf convergence guarantee</td><td>Propensity-corrected updates (ABPO anchor+SNIPS pattern) plus pre-deployment closed-loop simulation (EchoTrace protocol)</td></tr><tr><td>A standing source of scorer-independent interactions in every retraining batch</td><td><a href="papers/111_RecursiveStability.html">[111] RecursiveStability</a>, <a href="papers/112_IterativeRetrainStability.html">[112] IterativeRetrainStability</a>, <a href="papers/108_MADLoop.html">[108] MADLoop</a>, <a href="papers/110_SelfCorrectingLoop.html">[110] SelfCorrectingLoop</a></td><td>Implement a PERSISTENT exploration floor supplying a constant fraction $\alpha$ of exposure-independent data — switch-off designs forfeit the $\alpha^{-1}$ bound and revert to linear error accumulation</td><td>Count-denominated floors are satisfiable with worthless impressions (SP6/SP8 evidence); floor utility cost recurs forever</td><td>Relevance-targeted floors (InvR pattern: +261–300% CTR vs ~0% for random assignment) with cumulative-ledger monitoring (SP8 DM^dynamic)</td></tr><tr><td>Treat any exposure boost/cap as an implicit reward the loop will ascend</td><td><a href="papers/109_CuratedSelfConsuming.html">[109] CuratedSelfConsuming</a>, <a href="papers/86_FeedbackLoop.html">[86] FeedbackLoop</a>, <a href="papers/115_BanditDriftLLMRec.html">[115] BanditDriftLLMRec</a></td><td>Design intervention targets knowing $t$ retraining rounds ≈ RLHF at $\beta=1/t$ toward the intervention's implicit reward — the loop amplifies the target, it does not merely apply it</td><td>Diversity collapse to the max-reward level set if the implicit reward is degenerate (e.g. pure popularity or pure compliance)</td><td>Bound per-round selection pressure (small K) and mix reference-distribution data — bounded-KL + reward-gain guarantees (Ferbach Thms 2.3/2.4)</td></tr><tr><td>Loop-aware evaluation against an uncontaminated reference</td><td><a href="papers/113_FairnessFeedbackLoops.html">[113] FairnessFeedbackLoops</a>, <a href="papers/114_EchoesInTheLoop.html">[114] EchoesInTheLoop</a>, <a href="papers/95_DynamicExposure.html">[95] DynamicExposure</a></td><td>Evaluate on the original/unbiased distribution and on CUMULATIVE ledgers; relative metrics (generation $t$ vs $t-1$'s labels) report ~100% accuracy and near-perfect fairness while true accuracy collapses</td><td>Offline logged metrics certify a collapsing system (fairwashing); per-round fairness hides cumulative concentration</td><td>Phase-wise diagnostics (EchoTrace P1–P3), held-out unbiased slice, cumulative Gini/coverage trajectories</td></tr><tr><td>LLM-specific loop channels need dedicated controls beyond frequency</td><td><a href="papers/114_EchoesInTheLoop.html">[114] EchoesInTheLoop</a>, <a href="papers/115_BanditDriftLLMRec.html">[115] BanditDriftLLMRec</a>, <a href="papers/116_LLMPerformativeLoop.html">[116] LLMPerformativeLoop</a></td><td>Add catalog-validity filtering (hallucinated items/interactions must not enter logs); prefer accumulation or anchored updates over naive incremental fine-tuning on loop data</td><td>Generation-space support collapse: a serving-side floor cannot re-expose an item the generative policy no longer produces</td><td>Untested — candidate is insertion-floor kick-start (uuid 25c) to regenerate training signal; flagged as open question</td></tr></tbody></table></div></div></details>
+</section>
+<section id="open" class="section-anchor"><div class="card">
+<h3 style="margin-top:0"><span class="en-only">Open Questions After SP10</span><span class="ko-only">SP10 이후 미해결 질문</span></h3><ul><li><strong>The reweighting-loop stability theorem is absent</strong>: no theory covers loops that bias OBSERVATION of real items rather than injecting synthetic samples. Flagged as a missing link independently in <a href="papers/111_RecursiveStability.html">[111] RecursiveStability</a> ("whether the recursive-stability machinery transfers to reweighting-type loops"), <a href="papers/112_IterativeRetrainStability.html">[112] IterativeRetrainStability</a> (no analogue of strong-concavity assumptions for implicit-feedback ranking losses; effective $\lambda$ unmeasurable in a live loop), and <a href="papers/108_MADLoop.html">[108] MADLoop</a> (whether rank-based top-k selection maps onto the biased-sampling $\lambda$ formalism). What would resolve it: re-derive the contraction/STL analysis with an exposure-biased subsampling operator over a fixed catalog, with the floor fraction as $\alpha$ and error denominated in exposure units.</li><li><strong>Two-sided co-adaptation is unmodeled</strong>: <a href="papers/109_CuratedSelfConsuming.html">[109] CuratedSelfConsuming</a>'s reward is static and <a href="papers/107_PerformativePred.html">[107] PerformativePred</a>'s map is memoryless, so no paper models the scorer being retrained on data its own (changing) exposure allocation filtered, with path dependence. This is exactly uuid 25's log-contamination channel; the SP's nearest skeletons each lack one half.</li><li><strong>The floor-fraction → $\alpha$ mapping has no exposure-denominated statement</strong>: the stabilization thresholds ($\lambda$, $\alpha$, $\gamma$) are all denominated in distribution distance over generated samples; no paper states what impression-floor fraction, in position-weighted units, buys which stability margin — the count-to-position gap (uuid 22, O4-final) recurs inside the loop-stability question.</li><li><strong>Creator-content and log-contamination channels remain un-co-modeled after SP10</strong>: <a href="papers/116_LLMPerformativeLoop.html">[116] LLMPerformativeLoop</a> is the first paper to co-model the log channel with ANY second performative channel (user disengagement), showing interaction effects — but the creator channel (SP9) and the persistence divergence (creator effects revert, log effects persist) are still not co-modeled anywhere.</li><li><strong>Can insertion floors reverse generation-space support collapse?</strong> <a href="papers/115_BanditDriftLLMRec.html">[115] BanditDriftLLMRec</a> shows the collapse; uuid 25's kick-start effect shows floor-generated interactions durably retrain classical pipelines; whether floor-generated interactions restore an item's generate-ability in an LLM policy is untested in any paper.</li></ul>
+</div>
+<details><summary><span class="en-only">Cross-SP Dependencies</span><span class="ko-only">SP 간 의존성</span></summary><div class="card" style="margin-top:0.5rem"><ul><li><strong>Feeds into</strong>: SP11 (strategy-proofness of frequency interventions) — Ferbach's implicit-RLHF result means creators gaming an intervention are gaming a reward the LOOP AMPLIFIES ($\beta=1/t$), not a one-shot rule; and the persistent-floor implication makes floor-farming (SP9's flagged gaming behaviors) permanently profitable, raising the stakes of SP11's question.</li><li><strong>Shared methods with</strong>: SP8 — <a href="papers/86_FeedbackLoop.html">[86] FeedbackLoop</a>'s $\theta^t$ skeleton is the classical special case of this SP's loop operators; <a href="papers/95_DynamicExposure.html">[95] DynamicExposure</a>'s cumulative-ledger normalization is the empirical precursor of the constant-$\alpha$ principle. SP6/SP7 — quota floors and delivery machinery are the realization layer for the persistent exploration floor this SP's theory justifies.</li><li><strong>Depends on</strong>: SP7 (uuid 25 field evidence: exposure boosts durably retrain scorers — the phenomenon this SP theorizes), SP9 (channel separation: creator-content vs log-contamination; performative recommendation as nearest creator-side skeleton), SP2 (uuid 4: LLM scorer bias channels that the loop dynamically amplifies).</li></ul></div></details>
+</section>
+<div class="page-nav"><a href="sp9_ecosystems-creator-incentives.html">&larr; <span class="en-only">SP9</span><span class="ko-only">SP9</span></a><a href="index.html"><span class="en-only">&uarr; Survey Hub</span><span class="ko-only">&uarr; 조사 허브</span></a><a href="sp11_strategyproof-exposure.html"><span class="en-only">SP11</span><span class="ko-only">SP11</span> &rarr;</a></div>
+    </div>
+  </div>
+<nav class="bd-sidebar-secondary"><div class="mini-toc-label"><span class="en-only">On this page</span><span class="ko-only">이 페이지</span></div><ul class="mini-toc"><li><a href="#intro"><span class="en-only">Introduction</span><span class="ko-only">개요</span></a></li><li><a href="#rationale"><span class="en-only">Entry Assumption</span><span class="ko-only">사전 가정</span></a></li><li><a href="#establishes"><span class="en-only">What SP10 Establishes</span><span class="ko-only">확립한 것</span></a></li><li><a href="#concepts"><span class="en-only">Key Concepts</span><span class="ko-only">핵심 개념</span></a></li><li><a href="#rqs"><span class="en-only">Research Questions</span><span class="ko-only">연구 질문</span></a></li><li><a href="#papers"><span class="en-only">Papers</span><span class="ko-only">논문</span></a></li><li><a href="#open"><span class="en-only">Open Questions</span><span class="ko-only">미해결 질문</span></a></li></ul></nav>
+</div>
+</body>
+</html>

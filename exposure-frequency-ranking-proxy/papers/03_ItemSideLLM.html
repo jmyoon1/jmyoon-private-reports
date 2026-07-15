@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>[03] Item-side Fairness of Large Language Model-based Recommendat — Exposure-Frequency Control Survey</title>
+
+<style>
+:root {
+  --bg: #0d1117; --card: #161b22; --border: #30363d;
+  --text: #e6edf3; --muted: #7d8590; --accent: #58a6ff;
+  --teal: #39d0c7; --green: #3fb950; --yellow: #d29922;
+  --red: #f85149; --purple: #bc8cff; --orange: #e3b341;
+  --sidebar-w: 262px; --toc-w: 210px; --hdr-h: 48px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+body { font-family: -apple-system, sans-serif; background: var(--bg);
+       color: var(--text); line-height: 1.6; }
+.bd-root { display: flex; height: 100vh; overflow: hidden; }
+.bd-sidebar-primary {
+  width: var(--sidebar-w); min-width: var(--sidebar-w);
+  overflow-y: auto; background: var(--card);
+  border-right: 1px solid var(--border);
+  padding: 0.75rem 0; flex-shrink: 0;
+}
+.bd-sidebar-primary::-webkit-scrollbar { width: 4px; }
+.bd-sidebar-primary::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+.bd-main { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-width: 0; }
+.article-header-bar {
+  height: var(--hdr-h); background: var(--card);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; padding: 0 1.5rem;
+  gap: 1rem; flex-shrink: 0;
+}
+.header-brand { color: var(--teal); font-weight: bold; font-size: 0.95em;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 1; }
+.header-brand a { color: inherit; text-decoration: none; }
+.breadcrumb { color: var(--muted); font-size: 0.82em; display: flex;
+  align-items: center; gap: 0.3rem; flex-shrink: 0; }
+.breadcrumb a { color: var(--accent); text-decoration: none; }
+.breadcrumb span { color: var(--border); }
+.bd-article { flex: 1; overflow-y: auto; padding: 2rem 2.5rem; }
+.bd-article::-webkit-scrollbar { width: 6px; }
+.bd-article::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+.bd-sidebar-secondary {
+  width: var(--toc-w); min-width: var(--toc-w);
+  overflow-y: auto; border-left: 1px solid var(--border);
+  padding: 1rem 0.75rem; flex-shrink: 0;
+}
+.bd-sidebar-secondary::-webkit-scrollbar { width: 4px; }
+.bd-sidebar-secondary::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+.sidebar-logo { padding: 0.5rem 1rem 0.75rem;
+  border-bottom: 1px solid var(--border); margin-bottom: 0.5rem; }
+.sidebar-logo a { color: var(--teal); font-weight: bold; font-size: 0.95em;
+  text-decoration: none; display: block; }
+.sidebar-section { color: var(--muted); font-size: 0.72em; font-weight: bold;
+  text-transform: uppercase; letter-spacing: 0.07em;
+  padding: 0.7rem 1rem 0.25rem; }
+.sidebar-nav-link { display: block; padding: 0.28rem 1rem 0.28rem 1.25rem;
+  color: var(--muted); font-size: 0.875em; text-decoration: none; }
+.sidebar-nav-link:hover { color: var(--text); background: rgba(255,255,255,0.03); }
+.sidebar-nav-link.active { color: var(--teal);
+  border-left: 2px solid var(--teal);
+  padding-left: calc(1.25rem - 2px); background: rgba(57,208,199,0.05); }
+.mini-toc-label { color: var(--muted); font-size: 0.72em; font-weight: bold;
+  text-transform: uppercase; letter-spacing: 0.07em; padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border); margin-bottom: 0.5rem; }
+.mini-toc { list-style: none; }
+.mini-toc li a { display: block; padding: 0.22rem 0;
+  color: var(--muted); font-size: 0.83em; text-decoration: none;
+  border-left: 2px solid transparent; padding-left: 0.5rem; }
+.mini-toc li a:hover { color: var(--text); }
+.mini-toc li a.toc-active { color: var(--teal); border-left-color: var(--teal); }
+.section-anchor { scroll-margin-top: calc(var(--hdr-h) + 8px); }
+h1 { color: var(--teal); font-size: 1.7em; margin-bottom: 0.5rem; line-height:1.3; }
+h2 { color: var(--teal); font-size: 1.25em; margin: 1.5rem 0 0.6rem; }
+h3 { color: var(--teal); font-size: 1.05em; margin: 1.2rem 0 0.4rem; }
+h4 { color: var(--teal); font-size: 0.95em; margin: 1rem 0 0.3rem; }
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+p { margin-bottom: 0.8rem; }
+ul, ol { margin: 0 0 0.8rem 1.4rem; }
+li { margin-bottom: 0.3rem; }
+code { background: rgba(255,255,255,0.06); border-radius: 3px; padding: 1px 4px; font-size: 0.9em; }
+blockquote { border-left: 3px solid var(--border); color: var(--muted);
+  padding: 0.2rem 0.8rem; margin-bottom: 0.8rem; }
+.card { background: var(--card); border: 1px solid var(--border);
+        border-radius: 8px; padding: 1.2rem; margin-bottom: 1rem; }
+table { width: 100%; border-collapse: collapse; font-size: 0.9em; margin-bottom: 0.8rem; }
+th { background: var(--card); color: var(--teal); padding: 8px;
+     border: 1px solid var(--border); text-align: left; }
+td { padding: 8px; border: 1px solid var(--border); vertical-align: top; }
+tr:nth-child(even) td { background: rgba(0,0,0,0.2); }
+.stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+             gap: 1rem; margin-bottom: 1.5rem; }
+.stat-box { background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+            padding: 1rem; text-align: center; }
+.stat-num { font-size: 2rem; font-weight: bold; color: var(--teal); }
+.stat-label { color: var(--muted); font-size: 0.85em; margin-top: 0.2rem; }
+.sp-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+           gap: 1rem; margin: 1rem 0; }
+.sp-card { background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+           padding: 1.2rem; cursor: pointer; transition: border-color 0.15s; height:100%; }
+.sp-card:hover { border-color: var(--teal); }
+.sp-card h3 { margin: 0 0 0.5rem; color: var(--teal); font-size: 1em; }
+.sp-card p { margin: 0; color: var(--muted); font-size: 0.88em; }
+.sp-badge { display: inline-block; background: rgba(57,208,199,0.1); color: var(--teal);
+            border-radius: 4px; padding: 2px 8px; font-size: 0.8em; margin-bottom: 0.5rem; }
+.paper-meta { color: var(--muted); font-size: 0.9em; margin-bottom: 1.5rem; }
+.paper-meta a { color: var(--accent); }
+.section-label { color: var(--teal); font-weight: bold; font-size: 0.85em;
+                 text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.4rem; }
+.pill { display: inline-block; border-radius: 4px; padding: 0.15rem 0.6rem;
+        font-size: 0.8em; font-weight: bold; margin-right: 0.4rem; }
+.pill-p0 { background: rgba(63,185,80,0.2); color: var(--green); }
+.pill-p1 { background: rgba(57,208,199,0.15); color: var(--teal); }
+.pill-p2 { background: rgba(210,153,34,0.2); color: var(--yellow); }
+.pill-p3 { background: rgba(188,140,255,0.2); color: var(--purple); }
+.pill-p4 { background: rgba(125,133,144,0.2); color: var(--muted); }
+.delta-row { margin: 0.4rem 0; padding: 0.4rem 0.8rem;
+             border-left: 3px solid var(--border); border-radius: 0 4px 4px 0; }
+.chain { position: relative; padding-left: 2rem; }
+.chain::before { content: ''; position: absolute; left: 0.95rem; top: 0;
+                 bottom: 0; width: 2px; background: var(--border); }
+.chain-node { position: relative; margin-bottom: 2rem; }
+.chain-node::before { content: ''; position: absolute; left: -1.55rem;
+                      top: 1.1rem; width: 12px; height: 12px;
+                      border-radius: 50%; background: var(--teal); }
+.chain-num { display: inline-block; width: 28px; height: 28px; background: var(--teal);
+             color: #000; border-radius: 50%; text-align: center; line-height: 28px;
+             font-weight: bold; font-size: 0.85em; margin-right: 0.6rem; flex-shrink: 0; }
+.chain-q { font-weight: bold; color: var(--text); margin: 0.4rem 0 0.3rem; font-size: 1em; }
+.chain-papers { color: var(--muted); font-size: 0.85em; margin-bottom: 0.6rem; }
+.chain-start { background: var(--card); border: 1px solid var(--teal);
+               border-radius: 8px; padding: 1rem; margin-bottom: 2rem; }
+.chain-start h3 { margin: 0 0 0.5rem; color: var(--teal); }
+.chain-converge { background: var(--card); border: 1px solid var(--green);
+                  border-radius: 8px; padding: 1rem; margin-top: 1rem; }
+.chain-converge h3 { margin: 0 0 0.5rem; color: var(--green); }
+.chain-label { display: inline-block; border-radius: 4px; padding: 0.15rem 0.6rem;
+               font-size: 0.8em; font-weight: bold; margin-right: 0.4rem; }
+.chain-status { border-radius: 0 4px 4px 0; padding: 0.5rem 0.8rem;
+                margin: 0.35rem 0; font-size: 0.88em; }
+.chain-status ul { margin: 0.3rem 0 0 1.2rem; padding: 0; }
+.chain-status li { margin-bottom: 0.25rem; }
+.chain-status.solved  { background: rgba(63,185,80,0.07);  border-left: 3px solid var(--green); }
+.chain-status.remains { background: rgba(210,153,34,0.07); border-left: 3px solid var(--yellow); }
+.chain-status.added   { background: rgba(248,81,73,0.07);  border-left: 3px solid var(--red); }
+.chain-status.pivoted { background: rgba(188,140,255,0.1); border-left: 3px solid var(--purple); }
+.chain-label.solved   { background: rgba(63,185,80,0.2);  color: var(--green); }
+.chain-label.remains  { background: rgba(210,153,34,0.2); color: var(--yellow); }
+.chain-label.added    { background: rgba(248,81,73,0.2);  color: var(--red); }
+.chain-label.pivoted  { background: rgba(188,140,255,0.2); color: var(--purple); }
+.chain-status.expected { background: rgba(88,166,255,0.07);  border-left: 3px solid var(--accent); }
+.chain-label.expected  { background: rgba(88,166,255,0.2);   color: var(--accent); }
+.chain-status.revised  { background: rgba(57,208,199,0.07);  border-left: 3px solid var(--teal); }
+.chain-label.revised   { background: rgba(57,208,199,0.2);   color: var(--teal); }
+.concept-box { border-left: 4px solid var(--teal); background: #0d1f1f;
+               border-radius: 4px; padding: 1.2rem; margin-bottom: 1.2rem; }
+.concept-name { font-weight: bold; color: var(--teal); font-size: 1.05em; margin-bottom: 0.5rem; }
+.hypothesis { border-left: 4px solid var(--teal); background: #0d1f1f;
+              border-radius: 4px; padding: 1rem; margin: 1rem 0; }
+.recommendation { border-left: 4px solid var(--purple); background: #1a0f2e;
+                  border-radius: 4px; padding: 1rem; margin: 1rem 0; }
+.rq-row { background: rgba(88,166,255,0.05); border-left: 3px solid var(--accent);
+          padding: 0.4rem 0.8rem; margin-bottom: 0.5rem; border-radius: 0 4px 4px 0; }
+.scroll-table-wrap { max-height: 420px; overflow-y: auto; border: 1px solid var(--border);
+                     border-radius: 4px; }
+.scroll-table-wrap table { margin-bottom: 0; }
+.scroll-table-wrap thead th { position: sticky; top: 0; background: #161b22; z-index: 1; }
+.page-nav { display: flex; justify-content: space-between; margin-top: 2rem;
+            padding-top: 1rem; border-top: 1px solid var(--border); gap: 1rem; }
+.page-nav a { color: var(--accent); font-size: 0.9em; }
+html.ko-active .en-only { display: none !important; }
+html.ko-active .ko-only { display: block !important; }
+.ko-only { display: none; }
+span.ko-only, .sidebar-logo a span.ko-only { display: none; }
+html.ko-active span.ko-only { display: inline !important; }
+.lang-btn { background: transparent; color: var(--muted); border: 1px solid var(--border);
+            border-radius: 4px; padding: 3px 9px; font-size: 0.8em; cursor: pointer; }
+.lang-btn.active { border-color: var(--teal); color: var(--teal); }
+details { margin-bottom: 0.8rem; }
+details summary { color: var(--muted); cursor: pointer; }
+@media (max-width: 1024px) { .bd-sidebar-secondary { display: none; } }
+@media (max-width: 768px) {
+  .bd-sidebar-primary { display: none; }
+  .bd-root { flex-direction: column; height: auto; overflow: visible; }
+  .bd-main { overflow: visible; }
+  .bd-article { overflow: visible; padding: 1rem; }
+  .stat-grid { grid-template-columns: repeat(2, 1fr); }
+  .sp-grid { grid-template-columns: 1fr; }
+}
+</style>
+
+<script>
+MathJax = { tex: { inlineMath: [['$','$']], displayMath: [['$$','$$']] },
+            options: { skipHtmlTags: ['script','noscript','style','textarea','pre','code'] } };
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<script>
+function toggleLanguage() {
+  const html = document.documentElement;
+  const isKo = html.classList.toggle('ko-active');
+  document.querySelectorAll('.lang-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.lang === (isKo ? 'ko' : 'en'));
+  });
+  localStorage.setItem('survey-lang', isKo ? 'ko' : 'en');
+}
+document.addEventListener('DOMContentLoaded', function() {
+  const saved = localStorage.getItem('survey-lang');
+  if (saved === 'ko') {
+    document.documentElement.classList.add('ko-active');
+    document.querySelectorAll('.lang-btn').forEach(b =>
+      b.classList.toggle('active', b.dataset.lang === 'ko'));
+  } else {
+    document.querySelectorAll('[data-lang="en"]').forEach(b => b.classList.add('active'));
+  }
+  const article = document.querySelector('.bd-article');
+  const sections = Array.from(document.querySelectorAll('.section-anchor[id]'));
+  const sideLinks = Array.from(document.querySelectorAll('.bd-sidebar-primary .sidebar-nav-link'));
+  const tocLinks = Array.from(document.querySelectorAll('.bd-sidebar-secondary .mini-toc a'));
+  if (!article || !sections.length) return;
+  function current() {
+    let id = sections[0].id;
+    const scrollTop = article.scrollTop + 60;
+    sections.forEach(function(s) { if (s.offsetTop <= scrollTop) id = s.id; });
+    return id;
+  }
+  function update() {
+    const id = current();
+    sideLinks.forEach(function(a) {
+      a.classList.toggle('active', a.getAttribute('href') === '#' + id);
+    });
+    tocLinks.forEach(function(a) {
+      a.classList.toggle('toc-active', a.getAttribute('href') === '#' + id);
+    });
+  }
+  article.addEventListener('scroll', update, { passive: true });
+  update();
+});
+</script>
+
+</head>
+<body>
+<div class="bd-root">
+
+<nav class="bd-sidebar-primary">
+  <div class="sidebar-logo">
+    <a href="../index.html">&#x2B21; <span class="en-only">Exposure-Frequency Control Survey</span><span class="ko-only">Exposure-빈도 제어 문헌 조사</span></a>
+  </div>
+  <div class="sidebar-section"><span class="en-only">Overview</span><span class="ko-only">개요</span></div>
+  <a href="../index.html#overview" class="sidebar-nav-link"><span class="en-only">Survey Hub</span><span class="ko-only">조사 허브</span></a>
+  <a href="../index.html#answers" class="sidebar-nav-link"><span class="en-only">Key Answers</span><span class="ko-only">핵심 답변</span></a>
+  <div class="sidebar-section"><span class="en-only">Sub-Problems</span><span class="ko-only">세부 문제</span></div>
+<a href="../sp1_fairness-of-exposure-fixed-scores.html" class="sidebar-nav-link active">SP1: <span class="en-only">Exposure fairness</span><span class="ko-only">Exposure 공정성</span></a>
+<a href="../sp2_2024-2026-frontier-llm-era.html" class="sidebar-nav-link">SP2: <span class="en-only">2024–26 frontier / LLM</span><span class="ko-only">2024–26 최전선 / LLM</span></a>
+<a href="../sp3_postproc-rerank-blackbox.html" class="sidebar-nav-link">SP3: <span class="en-only">Post-proc re-ranking</span><span class="ko-only">Post-proc re-ranking</span></a>
+<a href="../sp4_stochastic-ranking-policies.html" class="sidebar-nav-link">SP4: <span class="en-only">Stochastic policies</span><span class="ko-only">확률적 정책</span></a>
+<a href="../sp5_amortized-equity-attention.html" class="sidebar-nav-link">SP5: <span class="en-only">Amortized fairness</span><span class="ko-only">Amortized 공정성</span></a>
+<a href="../sp6_bandit-exposure-allocation.html" class="sidebar-nav-link">SP6: <span class="en-only">Bandit allocation</span><span class="ko-only">Bandit 배분</span></a>
+<a href="../sp7_capping-pacing-feeds-ads.html" class="sidebar-nav-link">SP7: <span class="en-only">Capping &amp; pacing</span><span class="ko-only">Capping·pacing</span></a>
+<a href="../sp8_popularity-debias-calibration.html" class="sidebar-nav-link">SP8: <span class="en-only">Debiasing &amp; calibration</span><span class="ko-only">Debiasing·calibration</span></a>
+<a href="../sp9_ecosystems-creator-incentives.html" class="sidebar-nav-link">SP9: <span class="en-only">Ecosystems &amp; creators</span><span class="ko-only">생태계·creator</span></a>
+<a href="../sp10_llm-exposure-feedback-loops.html" class="sidebar-nav-link">SP10: <span class="en-only">LLM feedback loops</span><span class="ko-only">LLM feedback loop</span></a>
+<a href="../sp11_strategyproof-exposure.html" class="sidebar-nav-link">SP11: <span class="en-only">Strategy-proofness</span><span class="ko-only">Strategy-proofness</span></a>
+
+  <div class="sidebar-section"><span class="en-only">Synthesis</span><span class="ko-only">종합</span></div>
+  <a href="../conclusion.html" class="sidebar-nav-link"><span class="en-only">Conclusion</span><span class="ko-only">결론</span></a>
+  <a href="../thinking-process.html" class="sidebar-nav-link"><span class="en-only">Thinking Process</span><span class="ko-only">추론 과정</span></a>
+</nav>
+  <div class="bd-main">
+<div class="article-header-bar"><div class="header-brand"><a href="../index.html"><span class="en-only">Exposure-Frequency Control Survey</span><span class="ko-only">Exposure-빈도 제어 문헌 조사</span></a></div><nav class="breadcrumb"><a href="../index.html"><span class="en-only">Survey</span><span class="ko-only">조사</span></a><span>&rsaquo;</span><a href="../sp1_fairness-of-exposure-fixed-scores.html">SP1</a><span>&rsaquo;</span><span>[03] Item-side Fairness of Large Language Mod</span></nav><button class="lang-btn" data-lang="en" onclick="toggleLanguage()">EN</button><button class="lang-btn" data-lang="ko" onclick="toggleLanguage()">KO</button></div>
+    <div class="bd-article">
+<section id="header" class="section-anchor"><div class="paper-meta">
+<h1 style="margin-bottom:0.3rem">Item-side Fairness of Large Language Model-based Recommendation System</h1>
+<p style="margin:0.3rem 0;color:var(--muted)">Jiang et al. · WWW 2024 · 2024 · 51 citations</p>
+<p style="margin:0.3rem 0"><a href="https://arxiv.org/abs/2402.15215" target="_blank">arXiv:2402.15215</a> · <a href="https://arxiv.org/pdf/2402.15215.pdf" target="_blank">PDF</a> · SP: <a href="../sp1_fairness-of-exposure-fixed-scores.html">SP1</a></p>
+<p><span class="pill pill-p0">P0</span><span class="pill" style="background:rgba(255,255,255,0.05);color:var(--muted)">Track A</span></p>
+</div>
+<div class="card ko-only" style="border-color:var(--teal)"><div class="section-label">한 줄 요약</div><p style="margin:0">LLM 기반 recommender의 item 측 공정성을 처음으로 측정하고, 학습 데이터 편향과 pre-training 내용 prior라는 두 가지 편향 원천을 분해한다. exposure 대 학습 이력 비교 지표(GU/MGU/DGU)를 제안한다.</p></div>
+</section>
+<section id="problem" class="section-anchor">
+<div class="card"><div class="section-label"><span class="en-only">Problem</span><span class="ko-only">해결하려는 문제</span></div><p>Item-side fairness (fair exposure across item groups) is unstudied for LLM-based recommenders, whose properties differ from conventional recommenders: they infer preference from semantic clues, are instruction-tuned, and <em>generate</em> recommendations rather than score candidates. The only prior touchpoint (LLMRank) noted a recommendation-frequency vs. item-popularity correlation qualitatively, with no quantitative metrics and no mitigation. Additionally, conventional in-processing fairness methods assume access to per-item ranking scores, which generative LRS training does not provide.</p></div>
+</section>
+<section id="solution" class="section-anchor">
+<div class="card"><div class="section-label"><span class="en-only">Solution / Contribution</span><span class="ko-only">해결책 / 기여</span></div><p>Two-part contribution:</p>
+<ol><li><strong>Diagnostic study</strong> (BIGRec/LLaMA vs. SASRec on MovieLens1M and Steam, sequential setting, all-ranking protocol): LRS over-recommends the most-popular item quintile at top-1 far more than SASRec (MGU@1 0.1044 vs. 0.0238 on MovieLens1M); genre-level unfairness also exceeds SASRec's. A genre-deletion experiment (remove all Comedy items from fine-tuning data; model still recommends comedies) shows the bias has <em>two</em> sources: imbalanced fine-tuning interactions <strong>and</strong> semantic priors from LLM pre-training. The grounding step partially masks popularity bias at large $K$; beam search instead amplifies it.</li></ol>
+<ol><li><strong>IFairLRS framework</strong>: (a) in-learning sample reweighting $W_G = \text{GH}_{tr}(G)/\text{GH}_{ta}(G)$ applied to the instruction-tuning loss; (b) post-learning reranking that divides the grounding L2 distance by $(1-\hat{U}_i)^\alpha$, where $\hat{U}_i$ aggregates validation-set GU@$K$ across $K$ with weights favoring large $K$.</li></ol></div>
+<div class="card"><div class="section-label"><span class="en-only">Key Results</span><span class="ko-only">주요 결과</span></div><ul><li>Popularity groups, MovieLens1M: BIGRec MGU@1 = 0.1044 vs. SASRec 0.0238 (~4.4× worse); but BIGRec MGU@20 = 0.0128 vs. SASRec 0.0279 — grounding dilutes the skew as $K$ grows.</li><li>Steam: BIGRec worse at every $K$ (MGU@20 0.0900 vs. 0.0157; DGU@20 0.3050 vs. 0.0445) — unfairness <em>grows</em> with $K$ on the more popularity-skewed dataset.</li><li>Genre-deletion probe: model recommends Comedy titles never seen in fine-tuning (e.g. "Airplane! (1980)") — direct evidence that pre-training semantic priors, independent of the fine-tuning interaction distribution, drive part of the exposure skew.</li><li>IFairLRS(RW): MGU@1/DGU@1 improvements of 5%/8.4% (MovieLens1M) and 9.7%/11.1% (Steam) on popularity groups; up to 30%/28.3% on genre groups (MovieLens1M).</li><li>IFairLRS(RR): strongest at large $K$ (Steam MGU@5 0.0590 → 0.0179; MovieLens1M genre DGU@20 −52%); accuracy (NDCG@5, HR@5) stays within ~1–5% of BIGRec for all variants.</li><li>Beam search in place of grounding significantly amplifies unfairness (Figure 3b), echoing bias-amplification findings for beam search in NLP.</li></ul></div>
+<details><summary><span class="en-only">5Cs Analysis</span><span class="ko-only">5Cs 분석</span></summary><div class="card" style="margin-top:0.5rem"><p><strong>Category</strong>: empirical analysis + new method (fairness framework) <strong>Context</strong>: builds directly on BIGRec (Bao et al. 2023, bi-step grounding) as the LRS backbone; SASRec as the conventional baseline; calibrated recommendations (Steck 2018) for the metric design; positions against LLMRank (qualitative-only) and FaiRLLM (user-side, not item-side fairness). <strong>Correctness</strong>: experiments run 3× with averages reported; no CIs/std reported in main tables. [SKIM] — appendix-level rigor not fully assessed. <strong>Contributions</strong>: (1) first quantitative item-side fairness metrics (GU/MGU/DGU) for generative LRS; (2) causal decomposition of LRS unfairness into interaction-imbalance vs. pre-training semantic priors (genre-deletion evidence); (3) IFairLRS reweighting + reranking adapted to the generative (non-scoring) setting. <strong>Clarity</strong>: metrics and both strategies are fully specified with equations; code released (github.com/JiangM-C/IFairLRS). Reproducible in principle.</p></div></details>
+<details><summary><span class="en-only">Contribution vs Claim</span><span class="ko-only">기여 대 주장</span></summary><div class="card" style="margin-top:0.5rem"><ul><li><strong>Stated claims</strong>: LRS unfairness stems from both historical-interaction imbalance and inherent LLM semantic biases; IFairLRS yields "significant" fairness improvements without accuracy loss.</li><li><strong>Demonstrated</strong>: the two-source decomposition is supported by the genre-deletion experiment (qualitative + Figure 3a); fairness gains are real but modest for popularity groups at top-1 (5–10%), larger for genre groups and large-$K$ reranking (up to ~50%). Accuracy preservation is demonstrated.</li><li><strong>Gap</strong>: the semantic-prior component is <em>identified</em> but neither quantified nor mitigated — the paper concedes "it is challenging to quantify and alleviate such impact." Reweighting explicitly fails to fix grounding-stage issues (MGU@20 worsens); reranking fails at small $K$. Only one LLM backbone (LLaMA-1) and one LRS paradigm (BIGRec) tested, so generality across LRS architectures is claimed by argument ("BIGRec embodies the fundamental elements"), not shown. [SKIM - deep read could verify appendix scope]</li></ul></div></details>
+</section>
+<section id="results" class="section-anchor">
+<details><summary><span class="en-only">Concepts Introduced</span><span class="ko-only">도입된 개념</span></summary><div class="card" style="margin-top:0.5rem"><p><strong>Group Unfairness (GU) — calibration-style exposure gap</strong></p>
+<ul><li><strong>What it computes</strong>: for an item group $G$, GU$(G) = \text{GP}(G) - \text{GH}(G)$, where GP$(G)$ is the proportion of group-$G$ items in the top-$K$ recommendations across all users, and GH$(G)$ is the group's proportion in users' historical interaction sequences. Output: a signed scalar per group; $&gt;0$ = over-recommended, $&lt;0$ = overlooked.</li><li><strong>Why it was created</strong>: prior LRS fairness work (LLMRank) only observed the recommendation-frequency vs. popularity correlation qualitatively; GU turns the exposure-vs-history discrepancy into a per-group quantitative measure grounded in calibrated-recommendation ideas (Steck 2018).</li><li><strong>Concrete example</strong>: on Steam, BIGRec's top-1 recommendations give the most-popular quintile a GP far above its GH (Figure 1b), yielding DGU@1 = 0.1586 vs. SASRec's 0.0647.</li><li><strong>How it is used in this paper</strong>: aggregated into MGU (mean $|$GU$|$ over groups) and DGU (max − min GU), computed at $K \in \{1,5,10,20\}$ under the all-ranking protocol; these are the paper's core fairness metrics and also feed the reranking penalty.</li></ul>
+<p><strong>BIGRec grounding step (L2 embedding grounding)</strong></p>
+<ul><li><strong>What it computes</strong>: the fine-tuned LLM generates a free-text item description ("oracle"); the system computes $D_i = \|\text{emb}_i - \text{oracle}\|_2$ against every catalog item's token-embedding and returns the $K$ nearest items as the ranked list.</li><li><strong>Why it was created</strong>: generated descriptions may not exactly match any real catalog item; grounding maps generation into the actual item space.</li><li><strong>Concrete example</strong>: LLM outputs "Mighty Ducks, The (1992)" (not in catalog); grounding maps it to the nearest embedding "The Mighty Ducks (1992)".</li><li><strong>How it is used in this paper</strong>: shown to be a de facto fairness mechanism — as $K$ grows, grounding (popularity-agnostic in embedding space) dilutes the LLM's popularity skew, which explains why BIGRec's MGU@20 can be <em>better</em> than SASRec's while MGU@1 is 4× worse. Replacing grounding with beam search amplifies unfairness.</li></ul>
+<p><strong>IFairLRS reweighting (in-learning strategy)</strong></p>
+<ul><li><strong>What it computes</strong>: per-group weight $W_G = \text{GH}_{tr}(G) / \text{GH}_{ta}(G)$ (group proportion in training sequences ÷ proportion in target items); per-sample weight $W_i$ = mean of $W_G$ over the target item's groups; the instruction-tuning loss is scaled by $W_i$.</li><li><strong>Why it was created</strong>: conventional in-processing IF methods need ranking scores over item candidates, which a generative LRS (token-likelihood training) does not produce; pre-computed sample weights sidestep this.</li><li><strong>Concrete example</strong>: MovieLens1M MGU@1 drops 0.1044 → 0.0990 (−5%), DGU@1 0.3917 → 0.3585 (−8.4%).</li><li><strong>How it is used in this paper</strong>: applied during LLaMA instruction-tuning on MovieLens1M and Steam.</li></ul>
+<p><strong>IFairLRS reranking (post-learning strategy)</strong></p>
+<ul><li><strong>What it computes</strong>: penalty $U_G = \sum_{K} \gamma_K \cdot \text{GU}(G)@K$ with $\gamma_K \propto K$ (computed on validation data), normalized to $[-1,1]$, averaged over an item's groups into $\hat{U}_i$; the grounding distance is rescaled as $\tilde{D}_i = D_i / (1-\hat{U}_i)^{\alpha}$ so over-recommended items get pushed down.</li><li><strong>Why it was created</strong>: to correct residual unfairness after training without retraining, and to handle grounding's over-correction at large $K$ (hence the $K$-weighted aggregation).</li><li><strong>Concrete example</strong>: Steam MGU@5 drops 0.0590 → 0.0179 with reranking.</li><li><strong>How it is used in this paper</strong>: applied on top of BIGRec's grounding-based ranking at inference.</li></ul></div></details>
+<details><summary><span class="en-only">Implementation Feasibility</span><span class="ko-only">구현 가능성</span></summary><div class="card" style="margin-top:0.5rem"><ul><li><strong>Needs</strong>: LLaMA checkpoint + instruction-tuning stack (PyTorch, Adam, lr 1e-3, batch 128), MovieLens1M and Steam datasets, embedding-distance grounding infra; GU computation needs only group labels + interaction logs.</li><li><strong>Code</strong>: available at https://github.com/JiangM-C/IFairLRS.git</li><li><strong>Modifications</strong>: for our exposure-frequency-proxy setting, the GU/GP/GH machinery ports directly to any ranker output; the reranking penalty assumes a distance-based grounding score (Eq. 14) — would need adaptation for logit- or prompt-based rankers.</li><li><strong>Unknowns</strong>: missing link — sensitivity to group granularity (5 popularity quintiles is a design choice); missing link — behavior on LLM backbones newer than LLaMA-1; missing link — how validation-set GU estimates transfer when the exposure distribution shifts.</li></ul></div></details>
+<details><summary><span class="en-only">Follow-up Papers</span><span class="ko-only">관련 후속 논문</span></summary><div class="card" style="margin-top:0.5rem"><ul><li>Bao et al., "A Bi-Step Grounding Paradigm for LLMs in Recommendation Systems" (BIGRec, 2023) — the backbone whose grounding step turns out to be a hidden fairness modulator; foundational for interpreting this paper's $K$-dependence.</li><li>Hou et al., "Large Language Models are Zero-Shot Rankers for Recommender Systems" (LLMRank, 2023) — the only prior item-side observation (frequency–popularity correlation) in LRS; covers the zero-shot regime this paper omits.</li><li>Zhang et al., "Is ChatGPT Fair for Recommendation? (FaiRLLM, RecSys 2023)" — user-side counterpart; together they span both fairness sides of LRS.</li><li>Steck, "Calibrated Recommendations" (RecSys 2018) — origin of the calibration-to-history framing that GU operationalizes; relevant if our SP formalizes exposure frequency against a base-rate reference.</li></ul></div></details>
+</section>
+<section id="delta" class="section-anchor">
+<div class="card"><div class="section-label"><span class="en-only">Condition Delta — transfer to our setting</span><span class="ko-only">조건 차이 — 우리 설정으로의 전이</span></div><p><strong>Paper's setting</strong>: inputs = user interaction sequences verbalized as instructions; outputs = generated item description grounded to catalog via L2 embedding distance, top-$K$ list; conditions = fine-tuned LLaMA (BIGRec), MovieLens1M + Steam, sequential recommendation, group fairness over popularity quintiles and genres, exposure measured against historical-interaction proportions. <strong>Our setting</strong> (SP1 — exposure frequency as a ranking proxy): whether the frequency with which an LLM surfaces an item in its ranked/generated output can serve as (or contaminates) a ranking-quality signal; interest is in the <em>mechanism</em> linking training-corpus/interaction frequency to output exposure frequency. <strong>Differences</strong>:</p>
+<ul><li>Paper measures exposure skew as a fairness harm; our SP treats exposure frequency as a proxy signal to characterize or exploit — same underlying quantity (GP vs. GH gap), different use: <strong>resolved</strong> — GU/MGU/DGU are directly reusable as exposure-frequency-vs-base-rate proxies.</li><li>Paper's exposure source is a fine-tuned + grounded pipeline; a prompting-only or scoring LLM ranker may show different frequency dynamics: <strong>missing link</strong> — top-1 results isolate the LLM (Appendix B shows grounding barely alters top-1), but zero-shot ranking is not tested here (LLMRank covers that qualitatively).</li><li>Pre-training semantic prior as a frequency driver independent of in-domain interaction counts: <strong>resolved (existence)</strong> via genre-deletion, <strong>missing link (magnitude)</strong> — no quantification.</li><li>Domains limited to movies/games with title-only item text: <strong>reference only</strong>.</li></ul></div>
+<div class="card"><div class="section-label"><span class="en-only">Root-cause vs. Symptom</span><span class="ko-only">근본 원인 대 증상</span></div><p><code>Mixed</code> — the diagnostic half genuinely isolates two root causes (interaction imbalance vs. pre-training semantic priors, via the genre-deletion probe), but the mitigation half calibrates the observable exposure distribution (loss reweighting, distance-rescaling rerank) without touching the semantic-prior mechanism, which the authors admit remains unquantified and unmitigated.</p></div>
+</section>
+<div class="page-nav"><a href="02_JME.html">&larr; [02] JME</a><a href="../sp1_fairness-of-exposure-fixed-scores.html">&uarr; SP1</a><a href="04_PMMF.html">[04] PMMF &rarr;</a></div>
+    </div>
+  </div>
+<nav class="bd-sidebar-secondary"><div class="mini-toc-label"><span class="en-only">On this page</span><span class="ko-only">이 페이지</span></div><ul class="mini-toc"><li><a href="#header"><span class="en-only">Paper info</span><span class="ko-only">논문 정보</span></a></li><li><a href="#problem"><span class="en-only">Problem</span><span class="ko-only">문제</span></a></li><li><a href="#solution"><span class="en-only">Solution &amp; Results</span><span class="ko-only">해결책 · 결과</span></a></li><li><a href="#results"><span class="en-only">Concepts &amp; Follow-ups</span><span class="ko-only">개념 · 후속</span></a></li><li><a href="#delta"><span class="en-only">Condition Delta</span><span class="ko-only">조건 차이</span></a></li></ul></nav>
+</div>
+</body>
+</html>

@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>[110] Self-Correcting Self-Consuming Loops for Generative Model Tr — Exposure-Frequency Control Survey</title>
+
+<style>
+:root {
+  --bg: #0d1117; --card: #161b22; --border: #30363d;
+  --text: #e6edf3; --muted: #7d8590; --accent: #58a6ff;
+  --teal: #39d0c7; --green: #3fb950; --yellow: #d29922;
+  --red: #f85149; --purple: #bc8cff; --orange: #e3b341;
+  --sidebar-w: 262px; --toc-w: 210px; --hdr-h: 48px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+body { font-family: -apple-system, sans-serif; background: var(--bg);
+       color: var(--text); line-height: 1.6; }
+.bd-root { display: flex; height: 100vh; overflow: hidden; }
+.bd-sidebar-primary {
+  width: var(--sidebar-w); min-width: var(--sidebar-w);
+  overflow-y: auto; background: var(--card);
+  border-right: 1px solid var(--border);
+  padding: 0.75rem 0; flex-shrink: 0;
+}
+.bd-sidebar-primary::-webkit-scrollbar { width: 4px; }
+.bd-sidebar-primary::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+.bd-main { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-width: 0; }
+.article-header-bar {
+  height: var(--hdr-h); background: var(--card);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; padding: 0 1.5rem;
+  gap: 1rem; flex-shrink: 0;
+}
+.header-brand { color: var(--teal); font-weight: bold; font-size: 0.95em;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 1; }
+.header-brand a { color: inherit; text-decoration: none; }
+.breadcrumb { color: var(--muted); font-size: 0.82em; display: flex;
+  align-items: center; gap: 0.3rem; flex-shrink: 0; }
+.breadcrumb a { color: var(--accent); text-decoration: none; }
+.breadcrumb span { color: var(--border); }
+.bd-article { flex: 1; overflow-y: auto; padding: 2rem 2.5rem; }
+.bd-article::-webkit-scrollbar { width: 6px; }
+.bd-article::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+.bd-sidebar-secondary {
+  width: var(--toc-w); min-width: var(--toc-w);
+  overflow-y: auto; border-left: 1px solid var(--border);
+  padding: 1rem 0.75rem; flex-shrink: 0;
+}
+.bd-sidebar-secondary::-webkit-scrollbar { width: 4px; }
+.bd-sidebar-secondary::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+.sidebar-logo { padding: 0.5rem 1rem 0.75rem;
+  border-bottom: 1px solid var(--border); margin-bottom: 0.5rem; }
+.sidebar-logo a { color: var(--teal); font-weight: bold; font-size: 0.95em;
+  text-decoration: none; display: block; }
+.sidebar-section { color: var(--muted); font-size: 0.72em; font-weight: bold;
+  text-transform: uppercase; letter-spacing: 0.07em;
+  padding: 0.7rem 1rem 0.25rem; }
+.sidebar-nav-link { display: block; padding: 0.28rem 1rem 0.28rem 1.25rem;
+  color: var(--muted); font-size: 0.875em; text-decoration: none; }
+.sidebar-nav-link:hover { color: var(--text); background: rgba(255,255,255,0.03); }
+.sidebar-nav-link.active { color: var(--teal);
+  border-left: 2px solid var(--teal);
+  padding-left: calc(1.25rem - 2px); background: rgba(57,208,199,0.05); }
+.mini-toc-label { color: var(--muted); font-size: 0.72em; font-weight: bold;
+  text-transform: uppercase; letter-spacing: 0.07em; padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border); margin-bottom: 0.5rem; }
+.mini-toc { list-style: none; }
+.mini-toc li a { display: block; padding: 0.22rem 0;
+  color: var(--muted); font-size: 0.83em; text-decoration: none;
+  border-left: 2px solid transparent; padding-left: 0.5rem; }
+.mini-toc li a:hover { color: var(--text); }
+.mini-toc li a.toc-active { color: var(--teal); border-left-color: var(--teal); }
+.section-anchor { scroll-margin-top: calc(var(--hdr-h) + 8px); }
+h1 { color: var(--teal); font-size: 1.7em; margin-bottom: 0.5rem; line-height:1.3; }
+h2 { color: var(--teal); font-size: 1.25em; margin: 1.5rem 0 0.6rem; }
+h3 { color: var(--teal); font-size: 1.05em; margin: 1.2rem 0 0.4rem; }
+h4 { color: var(--teal); font-size: 0.95em; margin: 1rem 0 0.3rem; }
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+p { margin-bottom: 0.8rem; }
+ul, ol { margin: 0 0 0.8rem 1.4rem; }
+li { margin-bottom: 0.3rem; }
+code { background: rgba(255,255,255,0.06); border-radius: 3px; padding: 1px 4px; font-size: 0.9em; }
+blockquote { border-left: 3px solid var(--border); color: var(--muted);
+  padding: 0.2rem 0.8rem; margin-bottom: 0.8rem; }
+.card { background: var(--card); border: 1px solid var(--border);
+        border-radius: 8px; padding: 1.2rem; margin-bottom: 1rem; }
+table { width: 100%; border-collapse: collapse; font-size: 0.9em; margin-bottom: 0.8rem; }
+th { background: var(--card); color: var(--teal); padding: 8px;
+     border: 1px solid var(--border); text-align: left; }
+td { padding: 8px; border: 1px solid var(--border); vertical-align: top; }
+tr:nth-child(even) td { background: rgba(0,0,0,0.2); }
+.stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+             gap: 1rem; margin-bottom: 1.5rem; }
+.stat-box { background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+            padding: 1rem; text-align: center; }
+.stat-num { font-size: 2rem; font-weight: bold; color: var(--teal); }
+.stat-label { color: var(--muted); font-size: 0.85em; margin-top: 0.2rem; }
+.sp-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+           gap: 1rem; margin: 1rem 0; }
+.sp-card { background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+           padding: 1.2rem; cursor: pointer; transition: border-color 0.15s; height:100%; }
+.sp-card:hover { border-color: var(--teal); }
+.sp-card h3 { margin: 0 0 0.5rem; color: var(--teal); font-size: 1em; }
+.sp-card p { margin: 0; color: var(--muted); font-size: 0.88em; }
+.sp-badge { display: inline-block; background: rgba(57,208,199,0.1); color: var(--teal);
+            border-radius: 4px; padding: 2px 8px; font-size: 0.8em; margin-bottom: 0.5rem; }
+.paper-meta { color: var(--muted); font-size: 0.9em; margin-bottom: 1.5rem; }
+.paper-meta a { color: var(--accent); }
+.section-label { color: var(--teal); font-weight: bold; font-size: 0.85em;
+                 text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.4rem; }
+.pill { display: inline-block; border-radius: 4px; padding: 0.15rem 0.6rem;
+        font-size: 0.8em; font-weight: bold; margin-right: 0.4rem; }
+.pill-p0 { background: rgba(63,185,80,0.2); color: var(--green); }
+.pill-p1 { background: rgba(57,208,199,0.15); color: var(--teal); }
+.pill-p2 { background: rgba(210,153,34,0.2); color: var(--yellow); }
+.pill-p3 { background: rgba(188,140,255,0.2); color: var(--purple); }
+.pill-p4 { background: rgba(125,133,144,0.2); color: var(--muted); }
+.delta-row { margin: 0.4rem 0; padding: 0.4rem 0.8rem;
+             border-left: 3px solid var(--border); border-radius: 0 4px 4px 0; }
+.chain { position: relative; padding-left: 2rem; }
+.chain::before { content: ''; position: absolute; left: 0.95rem; top: 0;
+                 bottom: 0; width: 2px; background: var(--border); }
+.chain-node { position: relative; margin-bottom: 2rem; }
+.chain-node::before { content: ''; position: absolute; left: -1.55rem;
+                      top: 1.1rem; width: 12px; height: 12px;
+                      border-radius: 50%; background: var(--teal); }
+.chain-num { display: inline-block; width: 28px; height: 28px; background: var(--teal);
+             color: #000; border-radius: 50%; text-align: center; line-height: 28px;
+             font-weight: bold; font-size: 0.85em; margin-right: 0.6rem; flex-shrink: 0; }
+.chain-q { font-weight: bold; color: var(--text); margin: 0.4rem 0 0.3rem; font-size: 1em; }
+.chain-papers { color: var(--muted); font-size: 0.85em; margin-bottom: 0.6rem; }
+.chain-start { background: var(--card); border: 1px solid var(--teal);
+               border-radius: 8px; padding: 1rem; margin-bottom: 2rem; }
+.chain-start h3 { margin: 0 0 0.5rem; color: var(--teal); }
+.chain-converge { background: var(--card); border: 1px solid var(--green);
+                  border-radius: 8px; padding: 1rem; margin-top: 1rem; }
+.chain-converge h3 { margin: 0 0 0.5rem; color: var(--green); }
+.chain-label { display: inline-block; border-radius: 4px; padding: 0.15rem 0.6rem;
+               font-size: 0.8em; font-weight: bold; margin-right: 0.4rem; }
+.chain-status { border-radius: 0 4px 4px 0; padding: 0.5rem 0.8rem;
+                margin: 0.35rem 0; font-size: 0.88em; }
+.chain-status ul { margin: 0.3rem 0 0 1.2rem; padding: 0; }
+.chain-status li { margin-bottom: 0.25rem; }
+.chain-status.solved  { background: rgba(63,185,80,0.07);  border-left: 3px solid var(--green); }
+.chain-status.remains { background: rgba(210,153,34,0.07); border-left: 3px solid var(--yellow); }
+.chain-status.added   { background: rgba(248,81,73,0.07);  border-left: 3px solid var(--red); }
+.chain-status.pivoted { background: rgba(188,140,255,0.1); border-left: 3px solid var(--purple); }
+.chain-label.solved   { background: rgba(63,185,80,0.2);  color: var(--green); }
+.chain-label.remains  { background: rgba(210,153,34,0.2); color: var(--yellow); }
+.chain-label.added    { background: rgba(248,81,73,0.2);  color: var(--red); }
+.chain-label.pivoted  { background: rgba(188,140,255,0.2); color: var(--purple); }
+.chain-status.expected { background: rgba(88,166,255,0.07);  border-left: 3px solid var(--accent); }
+.chain-label.expected  { background: rgba(88,166,255,0.2);   color: var(--accent); }
+.chain-status.revised  { background: rgba(57,208,199,0.07);  border-left: 3px solid var(--teal); }
+.chain-label.revised   { background: rgba(57,208,199,0.2);   color: var(--teal); }
+.concept-box { border-left: 4px solid var(--teal); background: #0d1f1f;
+               border-radius: 4px; padding: 1.2rem; margin-bottom: 1.2rem; }
+.concept-name { font-weight: bold; color: var(--teal); font-size: 1.05em; margin-bottom: 0.5rem; }
+.hypothesis { border-left: 4px solid var(--teal); background: #0d1f1f;
+              border-radius: 4px; padding: 1rem; margin: 1rem 0; }
+.recommendation { border-left: 4px solid var(--purple); background: #1a0f2e;
+                  border-radius: 4px; padding: 1rem; margin: 1rem 0; }
+.rq-row { background: rgba(88,166,255,0.05); border-left: 3px solid var(--accent);
+          padding: 0.4rem 0.8rem; margin-bottom: 0.5rem; border-radius: 0 4px 4px 0; }
+.scroll-table-wrap { max-height: 420px; overflow-y: auto; border: 1px solid var(--border);
+                     border-radius: 4px; }
+.scroll-table-wrap table { margin-bottom: 0; }
+.scroll-table-wrap thead th { position: sticky; top: 0; background: #161b22; z-index: 1; }
+.page-nav { display: flex; justify-content: space-between; margin-top: 2rem;
+            padding-top: 1rem; border-top: 1px solid var(--border); gap: 1rem; }
+.page-nav a { color: var(--accent); font-size: 0.9em; }
+html.ko-active .en-only { display: none !important; }
+html.ko-active .ko-only { display: block !important; }
+.ko-only { display: none; }
+span.ko-only, .sidebar-logo a span.ko-only { display: none; }
+html.ko-active span.ko-only { display: inline !important; }
+.lang-btn { background: transparent; color: var(--muted); border: 1px solid var(--border);
+            border-radius: 4px; padding: 3px 9px; font-size: 0.8em; cursor: pointer; }
+.lang-btn.active { border-color: var(--teal); color: var(--teal); }
+details { margin-bottom: 0.8rem; }
+details summary { color: var(--muted); cursor: pointer; }
+@media (max-width: 1024px) { .bd-sidebar-secondary { display: none; } }
+@media (max-width: 768px) {
+  .bd-sidebar-primary { display: none; }
+  .bd-root { flex-direction: column; height: auto; overflow: visible; }
+  .bd-main { overflow: visible; }
+  .bd-article { overflow: visible; padding: 1rem; }
+  .stat-grid { grid-template-columns: repeat(2, 1fr); }
+  .sp-grid { grid-template-columns: 1fr; }
+}
+</style>
+
+<script>
+MathJax = { tex: { inlineMath: [['$','$']], displayMath: [['$$','$$']] },
+            options: { skipHtmlTags: ['script','noscript','style','textarea','pre','code'] } };
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<script>
+function toggleLanguage() {
+  const html = document.documentElement;
+  const isKo = html.classList.toggle('ko-active');
+  document.querySelectorAll('.lang-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.lang === (isKo ? 'ko' : 'en'));
+  });
+  localStorage.setItem('survey-lang', isKo ? 'ko' : 'en');
+}
+document.addEventListener('DOMContentLoaded', function() {
+  const saved = localStorage.getItem('survey-lang');
+  if (saved === 'ko') {
+    document.documentElement.classList.add('ko-active');
+    document.querySelectorAll('.lang-btn').forEach(b =>
+      b.classList.toggle('active', b.dataset.lang === 'ko'));
+  } else {
+    document.querySelectorAll('[data-lang="en"]').forEach(b => b.classList.add('active'));
+  }
+  const article = document.querySelector('.bd-article');
+  const sections = Array.from(document.querySelectorAll('.section-anchor[id]'));
+  const sideLinks = Array.from(document.querySelectorAll('.bd-sidebar-primary .sidebar-nav-link'));
+  const tocLinks = Array.from(document.querySelectorAll('.bd-sidebar-secondary .mini-toc a'));
+  if (!article || !sections.length) return;
+  function current() {
+    let id = sections[0].id;
+    const scrollTop = article.scrollTop + 60;
+    sections.forEach(function(s) { if (s.offsetTop <= scrollTop) id = s.id; });
+    return id;
+  }
+  function update() {
+    const id = current();
+    sideLinks.forEach(function(a) {
+      a.classList.toggle('active', a.getAttribute('href') === '#' + id);
+    });
+    tocLinks.forEach(function(a) {
+      a.classList.toggle('toc-active', a.getAttribute('href') === '#' + id);
+    });
+  }
+  article.addEventListener('scroll', update, { passive: true });
+  update();
+});
+</script>
+
+</head>
+<body>
+<div class="bd-root">
+
+<nav class="bd-sidebar-primary">
+  <div class="sidebar-logo">
+    <a href="../index.html">&#x2B21; <span class="en-only">Exposure-Frequency Control Survey</span><span class="ko-only">Exposure-빈도 제어 문헌 조사</span></a>
+  </div>
+  <div class="sidebar-section"><span class="en-only">Overview</span><span class="ko-only">개요</span></div>
+  <a href="../index.html#overview" class="sidebar-nav-link"><span class="en-only">Survey Hub</span><span class="ko-only">조사 허브</span></a>
+  <a href="../index.html#answers" class="sidebar-nav-link"><span class="en-only">Key Answers</span><span class="ko-only">핵심 답변</span></a>
+  <div class="sidebar-section"><span class="en-only">Sub-Problems</span><span class="ko-only">세부 문제</span></div>
+<a href="../sp1_fairness-of-exposure-fixed-scores.html" class="sidebar-nav-link">SP1: <span class="en-only">Exposure fairness</span><span class="ko-only">Exposure 공정성</span></a>
+<a href="../sp2_2024-2026-frontier-llm-era.html" class="sidebar-nav-link">SP2: <span class="en-only">2024–26 frontier / LLM</span><span class="ko-only">2024–26 최전선 / LLM</span></a>
+<a href="../sp3_postproc-rerank-blackbox.html" class="sidebar-nav-link">SP3: <span class="en-only">Post-proc re-ranking</span><span class="ko-only">Post-proc re-ranking</span></a>
+<a href="../sp4_stochastic-ranking-policies.html" class="sidebar-nav-link">SP4: <span class="en-only">Stochastic policies</span><span class="ko-only">확률적 정책</span></a>
+<a href="../sp5_amortized-equity-attention.html" class="sidebar-nav-link">SP5: <span class="en-only">Amortized fairness</span><span class="ko-only">Amortized 공정성</span></a>
+<a href="../sp6_bandit-exposure-allocation.html" class="sidebar-nav-link">SP6: <span class="en-only">Bandit allocation</span><span class="ko-only">Bandit 배분</span></a>
+<a href="../sp7_capping-pacing-feeds-ads.html" class="sidebar-nav-link">SP7: <span class="en-only">Capping &amp; pacing</span><span class="ko-only">Capping·pacing</span></a>
+<a href="../sp8_popularity-debias-calibration.html" class="sidebar-nav-link">SP8: <span class="en-only">Debiasing &amp; calibration</span><span class="ko-only">Debiasing·calibration</span></a>
+<a href="../sp9_ecosystems-creator-incentives.html" class="sidebar-nav-link">SP9: <span class="en-only">Ecosystems &amp; creators</span><span class="ko-only">생태계·creator</span></a>
+<a href="../sp10_llm-exposure-feedback-loops.html" class="sidebar-nav-link active">SP10: <span class="en-only">LLM feedback loops</span><span class="ko-only">LLM feedback loop</span></a>
+<a href="../sp11_strategyproof-exposure.html" class="sidebar-nav-link">SP11: <span class="en-only">Strategy-proofness</span><span class="ko-only">Strategy-proofness</span></a>
+
+  <div class="sidebar-section"><span class="en-only">Synthesis</span><span class="ko-only">종합</span></div>
+  <a href="../conclusion.html" class="sidebar-nav-link"><span class="en-only">Conclusion</span><span class="ko-only">결론</span></a>
+  <a href="../thinking-process.html" class="sidebar-nav-link"><span class="en-only">Thinking Process</span><span class="ko-only">추론 과정</span></a>
+</nav>
+  <div class="bd-main">
+<div class="article-header-bar"><div class="header-brand"><a href="../index.html"><span class="en-only">Exposure-Frequency Control Survey</span><span class="ko-only">Exposure-빈도 제어 문헌 조사</span></a></div><nav class="breadcrumb"><a href="../index.html"><span class="en-only">Survey</span><span class="ko-only">조사</span></a><span>&rsaquo;</span><a href="../sp10_llm-exposure-feedback-loops.html">SP10</a><span>&rsaquo;</span><span>[110] Self-Correcting Self-Consuming Loops for</span></nav><button class="lang-btn" data-lang="en" onclick="toggleLanguage()">EN</button><button class="lang-btn" data-lang="ko" onclick="toggleLanguage()">KO</button></div>
+    <div class="bd-article">
+<section id="header" class="section-anchor"><div class="paper-meta">
+<h1 style="margin-bottom:0.3rem">Self-Correcting Self-Consuming Loops for Generative Model Training</h1>
+<p style="margin:0.3rem 0;color:var(--muted)">Gillman et al. · ICML 2024 · 2024 · 30 citations</p>
+<p style="margin:0.3rem 0"><a href="https://arxiv.org/abs/2402.07087" target="_blank">arXiv:2402.07087</a> · <a href="https://arxiv.org/pdf/2402.07087.pdf" target="_blank">PDF</a> · SP: <a href="../sp10_llm-exposure-feedback-loops.html">SP10</a></p>
+<p><span class="pill pill-p0">P0</span><span class="pill" style="background:rgba(255,255,255,0.05);color:var(--muted)">Track A</span></p>
+</div>
+<div class="card ko-only" style="border-color:var(--teal)"><div class="section-label">한 줄 요약</div><p style="margin:0">강도 γ의 교정 함수가 자기 소비 루프의 수축 인자를 ρ(λ)/(1+γ)로 줄임을 증명한다(ICML 2024). 신선 데이터 주입이 교정의 특수case — 무작위/강제 exposure에 원리적 근거를 준다.</p></div>
+</section>
+<section id="problem" class="section-anchor">
+<div class="card"><div class="section-label"><span class="en-only">Problem</span><span class="ko-only">해결하려는 문제</span></div><p>Training generative models on their own outputs (self-consuming loops) leads to instability or collapse. Prior work established this empirically (Shumailov et al. 2023; Alemohammad et al. 2024) and showed stability only under restrictive conditions: Alemohammad et al. find only injecting fresh real data avoids degradation; Bertrand et al. 2024 prove stability only when the synthetic-to-real ratio $\lambda$ is sufficiently small. Neither offers a scalable mechanism to keep the loop stable when synthetic data is abundant or its proportion unknown/large.</p></div>
+</section>
+<section id="solution" class="section-anchor">
+<div class="card"><div class="section-label"><span class="en-only">Solution / Contribution</span><span class="ko-only">해결책 / 기여</span></div><p>Introduce a correction step inside the loop. Theoretically: define $\pi_\gamma p_\theta = \frac{p_\theta + \gamma p_{\theta^\star}}{1+\gamma}$ and the corrected weight update $$\pi_\gamma \mathcal{G}^n_\lambda(\theta) = \operatorname{local\,argmax}_{\theta'} \Big[ \mathbb{E}_{x\sim \hat p_{\text{data}}}[\log p_{\theta'}(x)] + \lambda \mathbb{E}_{x \sim \widehat{\pi_\gamma p_\theta}}[\log p_{\theta'}(x)] \Big].$$ Main result (Theorem 4.3): under regularity assumptions (Lipschitz Hessian, local concavity $-\alpha I$, generalization bound), if $\lambda(1+\varepsilon L/\alpha) &lt; \frac{1+\gamma}{2+\gamma}$, the iterates satisfy $$\|\theta^n_t - \theta^\star\| \le \tau_n(\delta/t)\sum_{i=0}^{t}\Big(\frac{\rho(\lambda)}{1+\gamma}\Big)^i + \Big(\frac{\rho(\lambda)}{1+\gamma}\Big)^t \|\theta^n_0 - \theta^\star\|,$$ i.e. correction of strength $\gamma$ shrinks the contraction factor by $1/(1+\gamma)$ — exponentially more stable in $t$ than $\gamma=0$ (which exactly recovers Bertrand et al. 2024). Practically: replace the idealized corrector with automated expert knowledge (physics-simulator imitation for motion; nearest K-means centroid for MNIST) applied point-wise to each synthetic sample before fine-tuning (Algorithm 1).</p></div>
+<div class="card"><div class="section-label"><span class="en-only">Key Results</span><span class="ko-only">주요 결과</span></div><ul><li>Human motion (MDM on HumanML3D/MoVi subset, n=64, 100% synthetic augmentation, 50 generations): iterative fine-tuning without correction collapses (diverging FID/Diversity, flat Matching score); with self-correction FID stays stable and competitive with the no-synthetic-data baseline.</li><li>Contraction bound: correction strength $\gamma$ improves the per-generation factor from $\rho(\lambda)$ to $\rho(\lambda)/(1+\gamma)$; as $\gamma \to \infty$ the admissible augmentation percentage doubles ($\lim \frac{1+\gamma}{2+\gamma} = 1$ vs $1/2$ at $\gamma=0$).</li><li>Gaussian toy (λ=0.5, 500 generations): Wasserstein distance to target decreases monotonically with $\gamma$; even small $\gamma$ (0.01–0.1) improves over no correction.</li><li>MNIST (DDPM, up to 150% synthetic augmentation, 50 generations): K-means-centroid correction (K=16) yields legible digits and better FID where the uncorrected loop degrades.</li><li>17 experimental settings (n ∈ {64,128,256,2794} × λ grids) consistently show correction ≥ no-correction; gains shrink as real dataset grows (n=2794 curves are close).</li></ul></div>
+<details><summary><span class="en-only">5Cs Analysis</span><span class="ko-only">5Cs 분석</span></summary><div class="card" style="margin-top:0.5rem"><p><strong>Category</strong>: theoretical analysis + new method (correction-augmented self-consuming training). <strong>Context</strong>: directly generalizes Bertrand et al. 2024 (ICLR) stability analysis; responds to collapse findings of Shumailov et al. 2023 and Alemohammad et al. 2024 ("self-consuming generative models go MAD"). Uses MDM (Tevet et al. 2023), UHC (Luo et al. 2021). <strong>Correctness</strong>: <code>[SKIM]</code> — theorem assumptions mirror Bertrand et al. (local concavity, $\theta_0$ near $\theta^\star$, small $\lambda$); the practical corrector's correspondence to the idealized one is argued via Appendix C sufficient conditions and a Gaussian example, not proven for UHC/K-means. Multi-seed motion experiments reported (Appendix G). <strong>Contributions</strong>: (1) stability theorem showing correction strength $\gamma$ contracts the error recursion by $1/(1+\gamma)$ and doubles the admissible $\lambda$ as $\gamma \to \infty$; (2) practical automated self-correction (physics simulator, clustering); (3) empirical demonstration that collapse is avoided at 100% synthetic augmentation. <strong>Clarity</strong>: Algorithm 1 and hyperparameters are stated concretely; code released (project page). <code>[SKIM - reproducibility of UHC pipeline]</code></p></div></details>
+</section>
+<section id="results" class="section-anchor">
+<details><summary><span class="en-only">Concepts Introduced</span><span class="ko-only">도입된 개념</span></summary><div class="card" style="margin-top:0.5rem"><p><strong>Self-consuming loop (iterative fine-tuning on own outputs)</strong></p>
+<ul><li><strong>What it computes</strong>: at each generation $t$, sample $\lfloor \lambda n \rfloor$ synthetic points from the previous checkpoint $p_{\theta_{t-1}}$, mix with the $n$ real points, fine-tune to get $\theta_t$; repeat for $T$ generations.</li><li><strong>Why it was created</strong>: formalizes the increasingly common regime where model-generated content re-enters the training corpus (data contamination on the web).</li><li><strong>Concrete example</strong>: human motion diffusion model (MDM) iteratively fine-tuned for 50 generations; without intervention it collapses (fails prompts, violates physics).</li><li><strong>How it is used in this paper</strong>: the baseline process whose instability the paper aims to fix.</li></ul>
+<p><strong>Correction function $\pi_\gamma$ (correction strength $\gamma$)</strong></p>
+<ul><li><strong>What it computes</strong>: maps the model distribution to a convex mixture with the optimal in-class model: $\pi_\gamma p_\theta(x) = \frac{p_\theta(x) + \gamma p_{\theta^\star}(x)}{1+\gamma}$. Input: model distribution; output: a distribution whose likelihood profile matches the target more as $\gamma \to \infty$.</li><li><strong>Why it was created</strong>: prior stability results (Bertrand et al. 2024) hold only when the synthetic augmentation percentage $\lambda$ is "moderate"; the correction gives a lever that provably relaxes this.</li><li><strong>Concrete example</strong>: $\gamma = 0$ recovers no correction (Bertrand et al.'s setting); $\gamma = 1$ gives the average $(p_\theta + p_{\theta^\star})/2$; $\gamma = \infty$ gives $p_{\theta^\star}$ exactly.</li><li><strong>How it is used in this paper</strong>: inserted into the weight-update map $\pi_\gamma \mathcal{G}^n_\lambda(\theta)$; Theorem 4.3 shows the contraction factor shrinks from $\rho(\lambda)$ to $\rho(\lambda)/(1+\gamma)$.</li></ul>
+<p><strong>Self-correction function (practical, point-wise)</strong></p>
+<ul><li><strong>What it computes</strong>: input = a synthesized data point; operation = project it using programmed expert knowledge (physics simulator, cluster centroids); output = a corrected point likelier under the true data distribution.</li><li><strong>Why it was created</strong>: the idealized $\pi_\gamma$ requires knowing $p_{\theta^\star}$; practical correction must work without a complete description of the target distribution and at scale (no human-in-the-loop).</li><li><strong>Concrete example</strong>: Universal Humanoid Control (UHC) inside MuJoCo re-imitates a generated motion under physics constraints, removing foot-floor penetration; for MNIST, snapping a generated digit to the nearest of K=16 K-means centroids.</li><li><strong>How it is used in this paper</strong>: applied to every synthetic batch before fine-tuning ($D_{\text{real}} \cup \text{UHC}(D_{\text{synth}})$). Appendix C gives sufficient conditions for a point-wise corrector to correspond to a distribution-wise $\pi_\gamma$. <code>[SKIM - verify Appendix C conditions in deep read]</code></li></ul></div></details>
+<details><summary><span class="en-only">Implementation Feasibility</span><span class="ko-only">구현 가능성</span></summary><div class="card" style="margin-top:0.5rem"><ul><li><strong>Needs</strong>: MDM codebase + UHC + MuJoCo + SMPL/VPoser for the motion pipeline; a DDPM + K-means for the MNIST variant; 50-generation loops (moderate academic compute, single-node GPU scale).</li><li><strong>Code</strong>: available at https://nategillman.com/sc-sc.html (stated in paper, camera-ready comment).</li><li><strong>Modifications</strong>: for an exposure/ranking setting, one must design the corrector — an operation mapping logged (exposure-biased) data toward the true preference distribution (e.g., inverse-propensity reweighting or forced exploration could play the $\pi_\gamma$ role). The theory's $\gamma$ would correspond to the strength of debiasing.</li><li><strong>Unknowns</strong>: missing link: whether UHC-style point-wise correction satisfies the Appendix C conditions is not verified; missing link: sensitivity to corrector noise/bias (theory assumes idealized correction toward $p_{\theta^\star}$).</li></ul></div></details>
+<details><summary><span class="en-only">Follow-up Papers</span><span class="ko-only">관련 후속 논문</span></summary><div class="card" style="margin-top:0.5rem"><ul><li>Bertrand et al., "On the stability of iterative retraining of generative models on their own data" (ICLR 2024) — the direct predecessor; this paper's Theorem 4.3 at $\gamma=0$ recovers it exactly. Core baseline for any feedback-loop stability claim in the SP.</li><li>Alemohammad et al., "Self-consuming generative models go MAD" (ICLR 2024) — taxonomy of self-consuming loops (fully synthetic / synthetic augmentation / fresh data); frames the collapse phenomenon this paper stabilizes.</li><li>Shumailov et al., "The curse of recursion: training on generated data makes models forget" (2023) — original model-collapse evidence; relevant as the degradation mechanism analogue for exposure-feedback loops in ranking.</li></ul></div></details>
+</section>
+<section id="delta" class="section-anchor">
+<div class="card"><div class="section-label"><span class="en-only">Condition Delta — transfer to our setting</span><span class="ko-only">조건 차이 — 우리 설정으로의 전이</span></div><p><strong>Paper's setting</strong>: inputs = generative model (diffusion) + fixed real dataset (n = 64–2794 motions; 12k MNIST images); outputs = stabilized model across 50 self-consuming generations; conditions = an external, domain-specific corrector exists (physics simulator / cluster centroids), synthetic fraction known and controlled, model retrained from own outputs. <strong>Our setting</strong> (SP10, exposure-frequency-as-ranking-proxy survey): ranking/recommendation systems where exposure frequency feeds back into training signals — the model's own ranking decisions determine which items generate future interaction data, a self-consuming loop over the exposure distribution rather than over generated content. <strong>Differences</strong>:</p>
+<ul><li>Data type: generated samples (motion/images) vs. logged interaction/exposure data — reference only; the loop structure is analogous but the corrupted object differs (item exposure distribution vs. sample fidelity).</li><li>Corrector availability: paper assumes a programmable expert corrector (laws of physics); ranking systems have no obvious analogue that maps biased exposure logs "closer to the true preference distribution" — missing link; this is the key obstacle to transferring the result.</li><li>Theoretical frame: paper's stability is in model-parameter space under likelihood training; ranking feedback loops are usually analyzed as popularity-bias amplification dynamics — missing link <code>[SKIM - verify whether the contraction argument transfers to exposure dynamics]</code>.</li><li>Fresh-data injection as special case of correction: paper explicitly notes injecting fresh human data is a special case of $\pi_\gamma$ — resolved: this maps to exploration/randomized exposure in ranking, giving a principled reading of exploration as a corrector.</li></ul></div>
+<div class="card"><div class="section-label"><span class="en-only">Root-cause vs. Symptom</span><span class="ko-only">근본 원인 대 증상</span></div><p><code>Mixed</code> — the theory directly targets the root cause of collapse (distributional drift of the training mixture away from $p_{\text{data}}$, formalized as a contraction argument), but the practical instantiation delegates the hard part to an assumed external expert corrector (physics simulator, cluster anchors) whose existence is exactly the limitation the authors concede (Appendix A.4); domains without such a corrector are left unsolved.</p></div>
+</section>
+<div class="page-nav"><a href="109_CuratedSelfConsuming.html">&larr; [109] CuratedSelfConsuming</a><a href="../sp10_llm-exposure-feedback-loops.html">&uarr; SP10</a><a href="111_RecursiveStability.html">[111] RecursiveStability &rarr;</a></div>
+    </div>
+  </div>
+<nav class="bd-sidebar-secondary"><div class="mini-toc-label"><span class="en-only">On this page</span><span class="ko-only">이 페이지</span></div><ul class="mini-toc"><li><a href="#header"><span class="en-only">Paper info</span><span class="ko-only">논문 정보</span></a></li><li><a href="#problem"><span class="en-only">Problem</span><span class="ko-only">문제</span></a></li><li><a href="#solution"><span class="en-only">Solution &amp; Results</span><span class="ko-only">해결책 · 결과</span></a></li><li><a href="#results"><span class="en-only">Concepts &amp; Follow-ups</span><span class="ko-only">개념 · 후속</span></a></li><li><a href="#delta"><span class="en-only">Condition Delta</span><span class="ko-only">조건 차이</span></a></li></ul></nav>
+</div>
+</body>
+</html>

@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SP3: Post-processing Re-ranking over Black-box Scorers — Exposure-Frequency Control Survey</title>
+
+<style>
+:root {
+  --bg: #0d1117; --card: #161b22; --border: #30363d;
+  --text: #e6edf3; --muted: #7d8590; --accent: #58a6ff;
+  --teal: #39d0c7; --green: #3fb950; --yellow: #d29922;
+  --red: #f85149; --purple: #bc8cff; --orange: #e3b341;
+  --sidebar-w: 262px; --toc-w: 210px; --hdr-h: 48px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+body { font-family: -apple-system, sans-serif; background: var(--bg);
+       color: var(--text); line-height: 1.6; }
+.bd-root { display: flex; height: 100vh; overflow: hidden; }
+.bd-sidebar-primary {
+  width: var(--sidebar-w); min-width: var(--sidebar-w);
+  overflow-y: auto; background: var(--card);
+  border-right: 1px solid var(--border);
+  padding: 0.75rem 0; flex-shrink: 0;
+}
+.bd-sidebar-primary::-webkit-scrollbar { width: 4px; }
+.bd-sidebar-primary::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+.bd-main { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-width: 0; }
+.article-header-bar {
+  height: var(--hdr-h); background: var(--card);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; padding: 0 1.5rem;
+  gap: 1rem; flex-shrink: 0;
+}
+.header-brand { color: var(--teal); font-weight: bold; font-size: 0.95em;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 1; }
+.header-brand a { color: inherit; text-decoration: none; }
+.breadcrumb { color: var(--muted); font-size: 0.82em; display: flex;
+  align-items: center; gap: 0.3rem; flex-shrink: 0; }
+.breadcrumb a { color: var(--accent); text-decoration: none; }
+.breadcrumb span { color: var(--border); }
+.bd-article { flex: 1; overflow-y: auto; padding: 2rem 2.5rem; }
+.bd-article::-webkit-scrollbar { width: 6px; }
+.bd-article::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+.bd-sidebar-secondary {
+  width: var(--toc-w); min-width: var(--toc-w);
+  overflow-y: auto; border-left: 1px solid var(--border);
+  padding: 1rem 0.75rem; flex-shrink: 0;
+}
+.bd-sidebar-secondary::-webkit-scrollbar { width: 4px; }
+.bd-sidebar-secondary::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+.sidebar-logo { padding: 0.5rem 1rem 0.75rem;
+  border-bottom: 1px solid var(--border); margin-bottom: 0.5rem; }
+.sidebar-logo a { color: var(--teal); font-weight: bold; font-size: 0.95em;
+  text-decoration: none; display: block; }
+.sidebar-section { color: var(--muted); font-size: 0.72em; font-weight: bold;
+  text-transform: uppercase; letter-spacing: 0.07em;
+  padding: 0.7rem 1rem 0.25rem; }
+.sidebar-nav-link { display: block; padding: 0.28rem 1rem 0.28rem 1.25rem;
+  color: var(--muted); font-size: 0.875em; text-decoration: none; }
+.sidebar-nav-link:hover { color: var(--text); background: rgba(255,255,255,0.03); }
+.sidebar-nav-link.active { color: var(--teal);
+  border-left: 2px solid var(--teal);
+  padding-left: calc(1.25rem - 2px); background: rgba(57,208,199,0.05); }
+.mini-toc-label { color: var(--muted); font-size: 0.72em; font-weight: bold;
+  text-transform: uppercase; letter-spacing: 0.07em; padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border); margin-bottom: 0.5rem; }
+.mini-toc { list-style: none; }
+.mini-toc li a { display: block; padding: 0.22rem 0;
+  color: var(--muted); font-size: 0.83em; text-decoration: none;
+  border-left: 2px solid transparent; padding-left: 0.5rem; }
+.mini-toc li a:hover { color: var(--text); }
+.mini-toc li a.toc-active { color: var(--teal); border-left-color: var(--teal); }
+.section-anchor { scroll-margin-top: calc(var(--hdr-h) + 8px); }
+h1 { color: var(--teal); font-size: 1.7em; margin-bottom: 0.5rem; line-height:1.3; }
+h2 { color: var(--teal); font-size: 1.25em; margin: 1.5rem 0 0.6rem; }
+h3 { color: var(--teal); font-size: 1.05em; margin: 1.2rem 0 0.4rem; }
+h4 { color: var(--teal); font-size: 0.95em; margin: 1rem 0 0.3rem; }
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+p { margin-bottom: 0.8rem; }
+ul, ol { margin: 0 0 0.8rem 1.4rem; }
+li { margin-bottom: 0.3rem; }
+code { background: rgba(255,255,255,0.06); border-radius: 3px; padding: 1px 4px; font-size: 0.9em; }
+blockquote { border-left: 3px solid var(--border); color: var(--muted);
+  padding: 0.2rem 0.8rem; margin-bottom: 0.8rem; }
+.card { background: var(--card); border: 1px solid var(--border);
+        border-radius: 8px; padding: 1.2rem; margin-bottom: 1rem; }
+table { width: 100%; border-collapse: collapse; font-size: 0.9em; margin-bottom: 0.8rem; }
+th { background: var(--card); color: var(--teal); padding: 8px;
+     border: 1px solid var(--border); text-align: left; }
+td { padding: 8px; border: 1px solid var(--border); vertical-align: top; }
+tr:nth-child(even) td { background: rgba(0,0,0,0.2); }
+.stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+             gap: 1rem; margin-bottom: 1.5rem; }
+.stat-box { background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+            padding: 1rem; text-align: center; }
+.stat-num { font-size: 2rem; font-weight: bold; color: var(--teal); }
+.stat-label { color: var(--muted); font-size: 0.85em; margin-top: 0.2rem; }
+.sp-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+           gap: 1rem; margin: 1rem 0; }
+.sp-card { background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+           padding: 1.2rem; cursor: pointer; transition: border-color 0.15s; height:100%; }
+.sp-card:hover { border-color: var(--teal); }
+.sp-card h3 { margin: 0 0 0.5rem; color: var(--teal); font-size: 1em; }
+.sp-card p { margin: 0; color: var(--muted); font-size: 0.88em; }
+.sp-badge { display: inline-block; background: rgba(57,208,199,0.1); color: var(--teal);
+            border-radius: 4px; padding: 2px 8px; font-size: 0.8em; margin-bottom: 0.5rem; }
+.paper-meta { color: var(--muted); font-size: 0.9em; margin-bottom: 1.5rem; }
+.paper-meta a { color: var(--accent); }
+.section-label { color: var(--teal); font-weight: bold; font-size: 0.85em;
+                 text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.4rem; }
+.pill { display: inline-block; border-radius: 4px; padding: 0.15rem 0.6rem;
+        font-size: 0.8em; font-weight: bold; margin-right: 0.4rem; }
+.pill-p0 { background: rgba(63,185,80,0.2); color: var(--green); }
+.pill-p1 { background: rgba(57,208,199,0.15); color: var(--teal); }
+.pill-p2 { background: rgba(210,153,34,0.2); color: var(--yellow); }
+.pill-p3 { background: rgba(188,140,255,0.2); color: var(--purple); }
+.pill-p4 { background: rgba(125,133,144,0.2); color: var(--muted); }
+.delta-row { margin: 0.4rem 0; padding: 0.4rem 0.8rem;
+             border-left: 3px solid var(--border); border-radius: 0 4px 4px 0; }
+.chain { position: relative; padding-left: 2rem; }
+.chain::before { content: ''; position: absolute; left: 0.95rem; top: 0;
+                 bottom: 0; width: 2px; background: var(--border); }
+.chain-node { position: relative; margin-bottom: 2rem; }
+.chain-node::before { content: ''; position: absolute; left: -1.55rem;
+                      top: 1.1rem; width: 12px; height: 12px;
+                      border-radius: 50%; background: var(--teal); }
+.chain-num { display: inline-block; width: 28px; height: 28px; background: var(--teal);
+             color: #000; border-radius: 50%; text-align: center; line-height: 28px;
+             font-weight: bold; font-size: 0.85em; margin-right: 0.6rem; flex-shrink: 0; }
+.chain-q { font-weight: bold; color: var(--text); margin: 0.4rem 0 0.3rem; font-size: 1em; }
+.chain-papers { color: var(--muted); font-size: 0.85em; margin-bottom: 0.6rem; }
+.chain-start { background: var(--card); border: 1px solid var(--teal);
+               border-radius: 8px; padding: 1rem; margin-bottom: 2rem; }
+.chain-start h3 { margin: 0 0 0.5rem; color: var(--teal); }
+.chain-converge { background: var(--card); border: 1px solid var(--green);
+                  border-radius: 8px; padding: 1rem; margin-top: 1rem; }
+.chain-converge h3 { margin: 0 0 0.5rem; color: var(--green); }
+.chain-label { display: inline-block; border-radius: 4px; padding: 0.15rem 0.6rem;
+               font-size: 0.8em; font-weight: bold; margin-right: 0.4rem; }
+.chain-status { border-radius: 0 4px 4px 0; padding: 0.5rem 0.8rem;
+                margin: 0.35rem 0; font-size: 0.88em; }
+.chain-status ul { margin: 0.3rem 0 0 1.2rem; padding: 0; }
+.chain-status li { margin-bottom: 0.25rem; }
+.chain-status.solved  { background: rgba(63,185,80,0.07);  border-left: 3px solid var(--green); }
+.chain-status.remains { background: rgba(210,153,34,0.07); border-left: 3px solid var(--yellow); }
+.chain-status.added   { background: rgba(248,81,73,0.07);  border-left: 3px solid var(--red); }
+.chain-status.pivoted { background: rgba(188,140,255,0.1); border-left: 3px solid var(--purple); }
+.chain-label.solved   { background: rgba(63,185,80,0.2);  color: var(--green); }
+.chain-label.remains  { background: rgba(210,153,34,0.2); color: var(--yellow); }
+.chain-label.added    { background: rgba(248,81,73,0.2);  color: var(--red); }
+.chain-label.pivoted  { background: rgba(188,140,255,0.2); color: var(--purple); }
+.chain-status.expected { background: rgba(88,166,255,0.07);  border-left: 3px solid var(--accent); }
+.chain-label.expected  { background: rgba(88,166,255,0.2);   color: var(--accent); }
+.chain-status.revised  { background: rgba(57,208,199,0.07);  border-left: 3px solid var(--teal); }
+.chain-label.revised   { background: rgba(57,208,199,0.2);   color: var(--teal); }
+.concept-box { border-left: 4px solid var(--teal); background: #0d1f1f;
+               border-radius: 4px; padding: 1.2rem; margin-bottom: 1.2rem; }
+.concept-name { font-weight: bold; color: var(--teal); font-size: 1.05em; margin-bottom: 0.5rem; }
+.hypothesis { border-left: 4px solid var(--teal); background: #0d1f1f;
+              border-radius: 4px; padding: 1rem; margin: 1rem 0; }
+.recommendation { border-left: 4px solid var(--purple); background: #1a0f2e;
+                  border-radius: 4px; padding: 1rem; margin: 1rem 0; }
+.rq-row { background: rgba(88,166,255,0.05); border-left: 3px solid var(--accent);
+          padding: 0.4rem 0.8rem; margin-bottom: 0.5rem; border-radius: 0 4px 4px 0; }
+.scroll-table-wrap { max-height: 420px; overflow-y: auto; border: 1px solid var(--border);
+                     border-radius: 4px; }
+.scroll-table-wrap table { margin-bottom: 0; }
+.scroll-table-wrap thead th { position: sticky; top: 0; background: #161b22; z-index: 1; }
+.page-nav { display: flex; justify-content: space-between; margin-top: 2rem;
+            padding-top: 1rem; border-top: 1px solid var(--border); gap: 1rem; }
+.page-nav a { color: var(--accent); font-size: 0.9em; }
+html.ko-active .en-only { display: none !important; }
+html.ko-active .ko-only { display: block !important; }
+.ko-only { display: none; }
+span.ko-only, .sidebar-logo a span.ko-only { display: none; }
+html.ko-active span.ko-only { display: inline !important; }
+.lang-btn { background: transparent; color: var(--muted); border: 1px solid var(--border);
+            border-radius: 4px; padding: 3px 9px; font-size: 0.8em; cursor: pointer; }
+.lang-btn.active { border-color: var(--teal); color: var(--teal); }
+details { margin-bottom: 0.8rem; }
+details summary { color: var(--muted); cursor: pointer; }
+@media (max-width: 1024px) { .bd-sidebar-secondary { display: none; } }
+@media (max-width: 768px) {
+  .bd-sidebar-primary { display: none; }
+  .bd-root { flex-direction: column; height: auto; overflow: visible; }
+  .bd-main { overflow: visible; }
+  .bd-article { overflow: visible; padding: 1rem; }
+  .stat-grid { grid-template-columns: repeat(2, 1fr); }
+  .sp-grid { grid-template-columns: 1fr; }
+}
+</style>
+
+<script>
+MathJax = { tex: { inlineMath: [['$','$']], displayMath: [['$$','$$']] },
+            options: { skipHtmlTags: ['script','noscript','style','textarea','pre','code'] } };
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<script>
+function toggleLanguage() {
+  const html = document.documentElement;
+  const isKo = html.classList.toggle('ko-active');
+  document.querySelectorAll('.lang-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.lang === (isKo ? 'ko' : 'en'));
+  });
+  localStorage.setItem('survey-lang', isKo ? 'ko' : 'en');
+}
+document.addEventListener('DOMContentLoaded', function() {
+  const saved = localStorage.getItem('survey-lang');
+  if (saved === 'ko') {
+    document.documentElement.classList.add('ko-active');
+    document.querySelectorAll('.lang-btn').forEach(b =>
+      b.classList.toggle('active', b.dataset.lang === 'ko'));
+  } else {
+    document.querySelectorAll('[data-lang="en"]').forEach(b => b.classList.add('active'));
+  }
+  const article = document.querySelector('.bd-article');
+  const sections = Array.from(document.querySelectorAll('.section-anchor[id]'));
+  const sideLinks = Array.from(document.querySelectorAll('.bd-sidebar-primary .sidebar-nav-link'));
+  const tocLinks = Array.from(document.querySelectorAll('.bd-sidebar-secondary .mini-toc a'));
+  if (!article || !sections.length) return;
+  function current() {
+    let id = sections[0].id;
+    const scrollTop = article.scrollTop + 60;
+    sections.forEach(function(s) { if (s.offsetTop <= scrollTop) id = s.id; });
+    return id;
+  }
+  function update() {
+    const id = current();
+    sideLinks.forEach(function(a) {
+      a.classList.toggle('active', a.getAttribute('href') === '#' + id);
+    });
+    tocLinks.forEach(function(a) {
+      a.classList.toggle('toc-active', a.getAttribute('href') === '#' + id);
+    });
+  }
+  article.addEventListener('scroll', update, { passive: true });
+  update();
+});
+</script>
+
+</head>
+<body>
+<div class="bd-root">
+
+<nav class="bd-sidebar-primary">
+  <div class="sidebar-logo">
+    <a href="index.html">&#x2B21; <span class="en-only">Exposure-Frequency Control Survey</span><span class="ko-only">Exposure-빈도 제어 문헌 조사</span></a>
+  </div>
+  <div class="sidebar-section"><span class="en-only">Overview</span><span class="ko-only">개요</span></div>
+  <a href="index.html#overview" class="sidebar-nav-link"><span class="en-only">Survey Hub</span><span class="ko-only">조사 허브</span></a>
+  <a href="index.html#answers" class="sidebar-nav-link"><span class="en-only">Key Answers</span><span class="ko-only">핵심 답변</span></a>
+  <div class="sidebar-section"><span class="en-only">Sub-Problems</span><span class="ko-only">세부 문제</span></div>
+<a href="sp1_fairness-of-exposure-fixed-scores.html" class="sidebar-nav-link">SP1: <span class="en-only">Exposure fairness</span><span class="ko-only">Exposure 공정성</span></a>
+<a href="sp2_2024-2026-frontier-llm-era.html" class="sidebar-nav-link">SP2: <span class="en-only">2024–26 frontier / LLM</span><span class="ko-only">2024–26 최전선 / LLM</span></a>
+<a href="sp3_postproc-rerank-blackbox.html" class="sidebar-nav-link active">SP3: <span class="en-only">Post-proc re-ranking</span><span class="ko-only">Post-proc re-ranking</span></a>
+<a href="sp4_stochastic-ranking-policies.html" class="sidebar-nav-link">SP4: <span class="en-only">Stochastic policies</span><span class="ko-only">확률적 정책</span></a>
+<a href="sp5_amortized-equity-attention.html" class="sidebar-nav-link">SP5: <span class="en-only">Amortized fairness</span><span class="ko-only">Amortized 공정성</span></a>
+<a href="sp6_bandit-exposure-allocation.html" class="sidebar-nav-link">SP6: <span class="en-only">Bandit allocation</span><span class="ko-only">Bandit 배분</span></a>
+<a href="sp7_capping-pacing-feeds-ads.html" class="sidebar-nav-link">SP7: <span class="en-only">Capping &amp; pacing</span><span class="ko-only">Capping·pacing</span></a>
+<a href="sp8_popularity-debias-calibration.html" class="sidebar-nav-link">SP8: <span class="en-only">Debiasing &amp; calibration</span><span class="ko-only">Debiasing·calibration</span></a>
+<a href="sp9_ecosystems-creator-incentives.html" class="sidebar-nav-link">SP9: <span class="en-only">Ecosystems &amp; creators</span><span class="ko-only">생태계·creator</span></a>
+<a href="sp10_llm-exposure-feedback-loops.html" class="sidebar-nav-link">SP10: <span class="en-only">LLM feedback loops</span><span class="ko-only">LLM feedback loop</span></a>
+<a href="sp11_strategyproof-exposure.html" class="sidebar-nav-link">SP11: <span class="en-only">Strategy-proofness</span><span class="ko-only">Strategy-proofness</span></a>
+
+  <div class="sidebar-section"><span class="en-only">Synthesis</span><span class="ko-only">종합</span></div>
+  <a href="conclusion.html" class="sidebar-nav-link"><span class="en-only">Conclusion</span><span class="ko-only">결론</span></a>
+  <a href="thinking-process.html" class="sidebar-nav-link"><span class="en-only">Thinking Process</span><span class="ko-only">추론 과정</span></a>
+</nav>
+  <div class="bd-main">
+<div class="article-header-bar"><div class="header-brand"><a href="index.html"><span class="en-only">Exposure-Frequency Control Survey</span><span class="ko-only">Exposure-빈도 제어 문헌 조사</span></a></div><nav class="breadcrumb"><a href="index.html"><span class="en-only">Survey</span><span class="ko-only">조사</span></a><span>&rsaquo;</span><span>SP3: <span class="en-only">Post-proc re-ranking</span><span class="ko-only">Post-proc re-ranking</span></span></nav><button class="lang-btn" data-lang="en" onclick="toggleLanguage()">EN</button><button class="lang-btn" data-lang="ko" onclick="toggleLanguage()">KO</button></div>
+    <div class="bd-article">
+<section id="intro" class="section-anchor">
+<div class="lang en-only"><h1>SP3: Post-processing Re-ranking over Black-box Scorers</h1><p style="color:var(--muted)">15 papers · targets O2, O1 · 2019-2026</p><p>Directly tests O2's feasibility question: post-processing methods take scores as read-only input and re-rank — the closest relaxation of the score-immutable constraint. This SP annotates every technique on two axes (access level; per-instance slate reordering required?) and checks whether any paper provides a Bayes-optimal exposure-fair post-processor over elicited/black-box scores.</p></div><div class="lang ko-only"><h1>SP3: Black-box scorer 위의 post-processing re-ranking</h1><p style="color:var(--muted)">15편 논문 · O2, O1 목표 대상 · 2019-2026</p><p>O2의 실행 가능성 질문을 직접 검증한다: post-processing은 score를 읽기 전용 입력으로 받아 re-rank하는, score 불변 제약의 가장 가까운 완화이다. 모든 기법을 접근 수준과 slate 재배열 필요 여부의 두 축으로 주석하고, 引出된 black-box score 위의 Bayes-optimal exposure-fair post-processor 존재 여부를 검사한다.</p></div>
+</section>
+<section id="rationale" class="section-anchor"><div class="card" style="border-color:var(--accent)">
+<div class="lang en-only"><h2 style="margin-top:0">Entry Assumption vs. What Was Found</h2><p><strong>Expected</strong> (revised after SP1: add the slate-reordering axis; revised after SP2: check for a Bayes-optimal exposure-fair post-processor over elicited scores): Post-processing as the closest relaxation of the score-immutable constraint; the pre-loop read expected the strict frequency-only subset to come only from SP5/SP6/SP7, with SP3 papers being read-only reorderers.</p><p><strong>Found:</strong> All genuine post-processors are score-read-only (third confirmation of the KB claim). Feasibility of consuming corrupted scores is decided by the fairness target, not the method: merit-blind targets (FA*IR proportions, prefix counts, parity) never reference scores in the constraint. The taxation line operates at top-K-inclusion level with the first controllability guarantees (Lipschitz knob, POT bound).</p><p><strong>Assessment:</strong> Surprised twice — (a) SP3 was expected to contain no frequency-only control, but TaxRank's intermediate e* is literally an item-level impression-frequency schedule projected onto users by optimal transport; (b) the Bayes-optimality check came back empty after a dedicated 15-paper pass, upgrading the gap to O4-ready with completed-search evidence.</p></div><div class="lang ko-only"><h2 style="margin-top:0">사전 가정과 실제 발견</h2><p><strong>기대</strong> (SP1 이후 수정: slate 재배열 축 추가; SP2 이후 수정: 引出 score 위 Bayes-optimal post-processor 검사 추가): score 불변 제약의 가장 가까운 완화로서의 post-processing을 기대하였고, 사전 읽기에서는 엄밀한 빈도 전용 부분집합이 SP5/SP6/SP7에서만 나올 것이며 SP3 논문들은 읽기 전용 재배열기일 것으로 보았다.</p><p><strong>발견</strong>: 모든 진성 post-processor가 score-read-only임이 세 번째로 확인되었다. 오염된 score를 소비할 수 있는가는 방법이 아니라 공정성 목표가 결정한다: merit-blind 목표(FA*IR의 비율, 접두사 개수, parity)는 제약식에서 score를 참조하지 않는다. taxation 라인은 top-K 포함 수준에서 동작하며 최초의 제어 가능성 보장(Lipschitz knob, POT 상한)을 갖는다.</p><p><strong>평가</strong>: 두 번 예상과 다름 — (a) SP3에는 빈도 전용 제어가 없을 것으로 보았으나, TaxRank의 중간 객체 e*는 문자 그대로 item 수준 impression-frequency 스케줄이며 optimal transport로 사용자에게 배정된다. (b) Bayes-optimality 검사는 전용 15편 검토 후에도 공백으로 확인되어, 해당 gap이 완료된 탐색 증거를 갖춘 O4 후보로 승격되었다.</p></div>
+</div></section>
+<section id="establishes" class="section-anchor"><div class="card" style="border-color:var(--teal)">
+<div class="lang en-only"><h2 style="margin-top:0">What SP3 Establishes</h2><p>Post-processing re-ranking is uniformly feasible at the score-read-only access level — every genuine post-processor in this SP's 15 papers consumes fixed scores without modifying them — but the SP question decomposes into four parts, and the answers diverge:</p>
+<ol><li><strong>Reordering axis</strong>: most re-rankers require per-instance slate-reordering rights. The surprise is that the 2024–2025 taxation line (<a href="papers/32_TaxRank.html">[32] TaxRank</a>, <a href="papers/34_ElasticityTradeoff.html">[34] ElasticityTradeoff</a>) operates at the <strong>top-K-inclusion level</strong>: its decision variable is x_{u,i} ∈ {0,1} (show item i to user u or not), and TaxRank's intermediate object is an item-level exposure vector e* — literally an impression-frequency allocation — projected onto per-user lists by optimal transport. This grows the show/don't-show family (previously FairRec-only among fairness papers) and equips it, for the first time, with controllability guarantees: Lipschitz continuity in the fairness knob and a Price-of-Taxation bound POT ≤ 1 − O(|U|^{−t/(1+t)}). The catch persists from SP1: these guarantees are in <strong>count/score-mass exposure units</strong>, and no paper transfers them to position-weighted exposure.</li><li><strong>Bayes-optimality over elicited scores</strong>: absent. After this dedicated pass, no post-processing paper provides a ranking analogue of LinearPost — every optimality statement (LP optimality in <a href="papers/01_FoE.html">[01] FoE</a>, the POT bound in <a href="papers/32_TaxRank.html">[32] TaxRank</a>, the transfer-ratio theorem in <a href="papers/34_ElasticityTradeoff.html">[34] ElasticityTradeoff</a>, LP-constructed δ-fairness in <a href="papers/31_SPOFR.html">[31] SPOFR</a>) conditions on scores being the truth. <a href="papers/34_ElasticityTradeoff.html">[34] ElasticityTradeoff</a> explicitly flags miscalibrated scores as untested; <a href="papers/36_SinkhornFairRank.html">[36] SinkhornFairRank</a> flags score-error sensitivity as unstudied; <a href="papers/14_FairPGRank.html">[14] FairPGRank</a> demonstrates the failure mode. KB claim 10 is confirmed, now with completed-search evidence for O4.</li><li><strong>Which re-rankers could consume calibrated elicited scores</strong>: the answer is decided by the <em>fairness target</em>, not the method. Merit-blind targets (FA*IR's minimum proportion p, Celis's prefix-count bounds, demographic-parity exposure) never reference scores in the constraint, so constraint satisfaction survives arbitrary score corruption — only utility degrades. Merit-proportional targets (disparate-treatment ratio, equity-of-attention, quality-weighted shares, tax/elasticity objectives over score-mass) import score error directly into the definition of "fair", so calibrated magnitudes are necessary for the target to be meaningful at all. The survey's normative WYSIWYG-vs-WAE axis (<a href="papers/37_FairRankingSurvey.html">[37] FairRankingSurvey</a>) is, operationally, exactly this score-trust axis.</li><li>The mechanism explaining <em>why</em> trade-off severity varies (SP1's flatness law, uuid 5) now has a formal account: the fairness→accuracy transfer ratio is governed by inter-group utility elasticity E_{r,p} = (v̄_r/v̄_p)^{−|t|} (<a href="papers/34_ElasticityTradeoff.html">[34] ElasticityTradeoff</a>, Thm 3) — flat relevance means low elasticity means cheap fairness.</li></ol></div><div class="lang ko-only"><h2 style="margin-top:0">SP3이 확립한 것</h2><p>SP3는 post-processing re-ranking이 score-read-only 수준에서 일관되게 실행 가능함을 확립하되, 질문을 네 갈래로 분해한다. (1) 재배열 축: 대부분의 re-ranker는 인스턴스별 slate 재배열 권한을 요구하지만, 2024–2025 taxation 라인은 top-K 포함(x_{u,i}∈{0,1})을 결정 변수로 삼고 item 수준 exposure 벡터 e*를 optimal transport로 사용자 리스트에 투영한다 — show/don't-show 계열이 처음으로 Lipschitz 연속성과 Price-of-Taxation 상한이라는 제어 가능성 보장을 얻었다(단 count 단위). (2) 引出 score 위의 Bayes-optimality: 부재 — 모든 최적성 진술이 score가 참이라는 조건 위에 있다. (3) 오염 score 소비 가능성은 목표가 결정한다: merit-blind 목표는 구조적으로 생존, merit-proportional 목표는 score 오차를 목표 정의에 수입한다. (4) exposure 단위 선택(count/position/impact)은 수혜자를 뒤집는다(43.2% 사례).</p></div>
+</div>
+<details><summary><span class="en-only">Convergences</span><span class="ko-only">수렴 지점</span></summary><div class="card" style="margin-top:0.5rem"><ul><li><strong>All post-processing re-ranking is score-read-only; none needs more access.</strong> <a href="papers/32_TaxRank.html">[32] TaxRank</a>, <a href="papers/34_ElasticityTradeoff.html">[34] ElasticityTradeoff</a>, <a href="papers/36_SinkhornFairRank.html">[36] SinkhornFairRank</a>, <a href="papers/38_FAIRTopK.html">[38] FAIRTopK</a>, <a href="papers/39_CelisFairRank.html">[39] CelisFairRank</a>, <a href="papers/33_OnlinePostProc.html">[33] OnlinePostProc</a>, <a href="papers/35_DualSideOnline.html">[35] DualSideOnline</a> plus SP1's <a href="papers/01_FoE.html">[01] FoE</a>, <a href="papers/09_FairSort.html">[09] FairSort</a>, <a href="papers/11_EquityOfAttention.html">[11] EquityOfAttention</a> all consume fixed scores. The only SP3 papers requiring more are the deliberate contrast classes (<a href="papers/29_PairwiseFairness.html">[29] PairwiseFairness</a> in-processing; <a href="papers/31_SPOFR.html">[31] SPOFR</a> end-to-end training around a read-only LP core). Confirms KB uuid 2 for a third consecutive SP.</li><li><strong>Naive additive re-scoring is unstable; three independent mechanisms converge.</strong> <a href="papers/32_TaxRank.html">[32] TaxRank</a> proves item-level additive taxation non-Lipschitz with unbounded accuracy cost; <a href="papers/34_ElasticityTradeoff.html">[34] ElasticityTradeoff</a> derives the transfer-ratio mechanism governing when the cost is large; <a href="papers/09_FairSort.html">[09] FairSort</a> independently observes greedy knapsack re-ranking distributes utility loss unpredictably across users. The field's response is uniform: add a control-theoretic guarantee (POT bound; elasticity-aware taxing; per-user NDCG floor).</li><li><strong>Exposure units are fragmented into three non-interchangeable currencies.</strong> Prefix/inclusion counts (<a href="papers/38_FAIRTopK.html">[38] FAIRTopK</a>, <a href="papers/39_CelisFairRank.html">[39] CelisFairRank</a>, <a href="papers/32_TaxRank.html">[32] TaxRank</a>), position-weighted exposure (<a href="papers/01_FoE.html">[01] FoE</a>, <a href="papers/11_EquityOfAttention.html">[11] EquityOfAttention</a>, <a href="papers/36_SinkhornFairRank.html">[36] SinkhornFairRank</a>'s e(k)), and impact/outcomes (<a href="papers/36_SinkhornFairRank.html">[36] SinkhornFairRank</a>'s NSW). <a href="papers/37_FairRankingSurvey.html">[37] FairRankingSurvey</a> documents that no consensus exposure definition exists; <a href="papers/36_SinkhornFairRank.html">[36] SinkhornFairRank</a> quantifies the gap — an exposure-fair ranking leaves 43.2% of items worse off in impact. This independently confirms uuid 8 (exposure is a lossy proxy for provider utility; here the conversion factor is per-user relevance).</li><li><strong>Every optimality guarantee conditions on trusted scores.</strong> LP optimality (<a href="papers/01_FoE.html">[01] FoE</a>), POT bound (<a href="papers/32_TaxRank.html">[32] TaxRank</a>), transfer-ratio theory (<a href="papers/34_ElasticityTradeoff.html">[34] ElasticityTradeoff</a>, which names miscalibration untested), Sinkhorn quality parity (<a href="papers/36_SinkhornFairRank.html">[36] SinkhornFairRank</a>, which names score-error sensitivity unstudied), and δ-fairness-plus-regret (<a href="papers/31_SPOFR.html">[31] SPOFR</a>, whose optimality region assumes reachable ŷ). None elicits or models score uncertainty. Confirms uuid 4 and uuid 10.</li></ul></div></details>
+<details><summary><span class="en-only">Divergences</span><span class="ko-only">분기 지점</span></summary><div class="card" style="margin-top:0.5rem"><ul><li><strong>Hard constraints vs continuous taxation — each side proves the other's defect.</strong> <a href="papers/39_CelisFairRank.html">[39] CelisFairRank</a> proves score re-weighting (soft objectives) structurally cannot enforce representation when one group's scores dominate, and <a href="papers/31_SPOFR.html">[31] SPOFR</a> shows penalty methods satisfy a given δ for only 55–85% of queries vs 100% for constraint-in-the-feasible-set; conversely <a href="papers/32_TaxRank.html">[32] TaxRank</a> proves hard binary constraint selection is non-Lipschitz with unbounded accuracy cost. Likely cause: different desiderata (worst-case per-instance guarantee vs smooth operator controllability), not contradictory mathematics. Unresolved: no method offers both a per-instance hard floor and a Lipschitz-continuous, cost-bounded knob.</li><li><strong>Does read-only fairness re-ranking necessarily cost accuracy?</strong> Most SP3 papers pay NDCG for fairness (the entire trade-off literature), yet <a href="papers/35_DualSideOnline.html">[35] DualSideOnline</a> claims a "double-win" (fairness and accuracy both improve under model-agnostic post-ranking), and <a href="papers/37_FairRankingSurvey.html">[37] FairRankingSurvey</a> synthesizes three prior sightings (DELTR, Sühr, Mehrotra) where optimizing fairness increased utility. Likely cause: when the base scorer is stale or miscalibrated, exposure redistribution can correct scoring error as a side effect — the same mechanism as uuid 9's exposure-signal-carries-relevance finding. Unresolved (35 is abstract-tier; no paper isolates the mechanism).</li></ul></div></details>
+<details><summary><span class="en-only">Prior Beliefs and Surprises (full)</span><span class="ko-only">사전 믿음과 놀라움 (전문)</span></summary><div class="card" style="margin-top:0.5rem"><p><strong>What the entry rationale expected to find</strong> (revised after SP1/SP2):</p>
+<blockquote>Post-processing as the closest relaxation of the score-immutable constraint; annotate the per-instance-reordering axis (read-only necessary but not sufficient); check for a Bayes-optimal exposure-fair post-processor over elicited scores (LinearPost's ranking analogue); label which re-rankers could consume calibrated elicited scores.</blockquote>
+<p><strong>Confirmed</strong>:</p>
+<ul><li>Read-only dominance holds across all genuine post-processors (uuid 2, third confirmation).</li><li>No Bayes-optimal exposure-fair post-processing exists — the dedicated check found nothing; uuid 10 is confirmed with completed-search evidence, upgrading it to an O4-ready gap.</li></ul>
+<p><strong>Surprised</strong>:</p>
+<ul><li>(a) Assumed (per the pre-loop landscape read: "most methods are read-only reorderers, not frequency-only — strict subset must come from SP5/SP6/SP7") that SP3 contains no frequency-only control. Found instead that the taxation line's decision variable is top-K inclusion: <a href="papers/32_TaxRank.html">[32] TaxRank</a>'s intermediate e* is literally an item-level impression-frequency schedule, and ElasticRank operates on score-mass inclusion. The assumption was wrong because "re-ranking" vocabulary obscured that these methods never permute within-list positions as their controlled object — they decide who gets shown.</li><li>(b) Assumed calibrated-elicited-score feasibility would split by method family. Found it splits by fairness <em>target</em>: merit-blind targets survive arbitrary score corruption structurally; merit-proportional ones cannot. The survey's normative worldview axis (WYSIWYG/WAE) turns out to be operationally the score-trust axis — a reading none of the papers states explicitly.</li><li>(c) The magnitude of the exposure-unit gap: an exposure-fair allocation leaves 43.2% of items worse off in impact terms (<a href="papers/36_SinkhornFairRank.html">[36] SinkhornFairRank</a>) — the count/position/impact unit choice is not a modeling nicety but flips who benefits.</li></ul>
+<p><strong>KB impact</strong>:</p>
+<ul><li>UUID 2: confirmed — all SP3 post-processors are score-read-only.</li><li>UUID 3: refined — the show/don't-show family now includes TaxRank/ElasticRank (inclusion-level, count-based) with the first controllability guarantees; position-weighted absence persists.</li><li>UUID 5: refined — the flatness law acquires a mechanism: transfer ratio governed by inter-group utility elasticity.</li><li>UUID 8: confirmed — impact-vs-exposure divergence (43.2% worse off) is the same lossy-proxy phenomenon with conversion factor = per-user relevance.</li><li>UUID 10: confirmed — dedicated pass found no Bayes-optimal result; every optimality statement conditions on trusted scores.</li></ul></div></details>
+</section>
+<section id="concepts" class="section-anchor"><h2><span class="en-only">Key Concepts</span><span class="ko-only">핵심 개념</span></h2><p>(Position-weighted exposure, doubly stochastic ranking policies, and BvN decomposition: see SP1 Key Concepts. Below are concepts new in SP3.)</p>
+<p><strong>Ranked group fairness (per-prefix binomial test)</strong></p>
+<ul><li><strong>What it computes</strong>: a top-k ranking + minimum protected proportion p + significance α → one-sided binomial test at <em>every</em> prefix i = 1..k at a corrected level α_c (family-wise Type-I error = α, computed in O(k²)) → accept/reject verdict plus a table m_{α,p}(i) of minimum protected counts per position.</li><li><strong>Why it was created</strong>: averaged parity measures allow a consumer stopping at any depth to see arbitrarily skewed proportions; a per-prefix statistical criterion closes that hole, and naive per-prefix testing inflates Type-I error (Šidák over-corrects under positive dependence).</li><li><strong>Concrete example</strong>: for k = 1000, p = 0.5, α = 0.1, the corrected per-test level is α_c = 0.0096; with p = 0.4, α = 0.1, at least 1 protected candidate is required in the top 5.</li><li><strong>Role in this SP</strong>: the constraint <a href="papers/38_FAIRTopK.html">[38] FAIRTopK</a> enforces greedily; the "probability-based" measurement family in <a href="papers/37_FairRankingSurvey.html">[37] FairRankingSurvey</a>'s dichotomy; a score-free fairness target relevant to the elicited-scores question.</li></ul>
+<p><strong>Constrained ranking maximization (prefix-count constraints in the feasible set)</strong></p>
+<ul><li><strong>What it computes</strong>: value matrix W (item i at position j), property sets, per-prefix lower/upper count bounds → maximize Σ W_ij x_ij subject to the bounds → a single deterministic ranking. Exploits nested constraints + Monge weights for exact DP (constant type count q) and a (Δ+2)-approximation for overlapping groups; feasibility alone is NP-hard in general.</li><li><strong>Why it was created</strong>: score re-weighting structurally cannot enforce representation when one group's raw scores dominate — moving fairness from the objective into the feasible set makes it unconditional on score skew.</li><li><strong>Concrete example</strong>: U_k = ⌈k/2⌉ forces at most half of every top-k prefix to be one gender, whatever the scores say.</li><li><strong>Role in this SP</strong>: <a href="papers/39_CelisFairRank.html">[39] CelisFairRank</a> is the theory anchor of the hard-constraint branch; one pole of the hard-constraints-vs-continuous-tax divergence.</li></ul>
+<p><strong>Item-level tax policy vs progressive (utility-difference) taxation</strong></p>
+<ul><li><strong>What it computes</strong>: Theorem 1 of <a href="papers/32_TaxRank.html">[32] TaxRank</a> shows regularization- and constraint-based fair re-ranking both reduce to adding a per-item additive term μ_i to each item's score before top-K selection ("item-level flat tax"). Tax-rank replaces this with maximizing isoelastic welfare Σ γ_i v_i^{1−t}/(1−t) over inclusion variables — taxing the utility <em>gap between item pairs</em> ("progressive tax"), with tax rate t spanning accuracy-first (t=0) → proportional/Nash (t=1) → max-min (t→∞).</li><li><strong>Why it was created</strong>: item-level additive taxation is provably non-Lipschitz in the tax rate (binary selection + non-differentiable fairness terms create breakpoints), so the fairness knob produces erratic jumps and unbounded, unpredictable accuracy loss.</li><li><strong>Concrete example</strong>: two items, K=1: at t=1 utilities become proportional to weights (2:5); at t→∞ they equalize.</li><li><strong>Role in this SP</strong>: the unifying mechanism claim over the whole prior re-ranking family and the core of the SP's strongest new guarantee (<a href="papers/32_TaxRank.html">[32] TaxRank</a>, generalized by <a href="papers/34_ElasticityTradeoff.html">[34] ElasticityTradeoff</a>).</li></ul>
+<p><strong>Price of Taxation (POT) and continuity</strong></p>
+<ul><li><strong>What it computes</strong>: POT(t) = (Acc(0) − Acc(t))/Acc(0), the fraction of accuracy sacrificed at tax rate t. Tax-rank proves POT ≤ 1 − O(|U|^{−t/(1+t)}) and Lipschitz continuity of outputs in t.</li><li><strong>Why it was created</strong>: prior fair re-ranking gave no bound predicting how much accuracy a given fairness level costs — operators tuned λ blind.</li><li><strong>Concrete example</strong>: empirically, Tax-rank's POT curve is smooth and below P-MMF's across t ∈ [0,1]; Lorenz curves shift near-uniformly as t grows 10-fold vs erratic shifts for FairRec/P-MMF/Welf.</li><li><strong>Role in this SP</strong>: the first predictable-cost guarantee for a show/don't-show-level exposure controller — the property FairRec's EF1/MMS guarantees lack.</li></ul>
+<p><strong>Utility elasticity and transfer ratio</strong></p>
+<ul><li><strong>What it computes</strong>: E_{r,p} = ∂v_r/∂v_p = (v̄_r/v̄_p)^{−|t|} — how much a "rich" group's utility moves when a "poor" group's is nudged; the fairness-tax-to-accuracy-loss transfer ratio is γ = 1 − 1/(1 + k(E_{r,p})). Also proves every standard fairness metric (max-min, Jain, entropy, proportional, α-fair) is an instance of one parametric family f(v;t), so metric choice = elasticity assumption.</li><li><strong>Why it was created</strong>: the accuracy-fairness trade-off magnitude was observed to vary across datasets/metrics with no mechanism; elasticity (from commodity-tax theory) is that mechanism.</li><li><strong>Concrete example</strong>: with Jain's index (t=−1), a poor group at utility 1 vs rich at 3 gives E = 3: promoting a poor-group item is weighted 3× more.</li><li><strong>Role in this SP</strong>: <a href="papers/34_ElasticityTradeoff.html">[34] ElasticityTradeoff</a> supplies the mechanism behind SP1's utility-cost flatness law (uuid 5) and the EF-Curve evaluation exposing one-sidedness of P-MMF/CPFair.</li></ul>
+<p><strong>Merit-blind vs merit-aware fairness targets (operationalized worldviews)</strong></p>
+<ul><li><strong>What it computes</strong>: a classification of fairness targets by whether the target's definition references the scores. Merit-blind: minimum proportions, prefix counts, exposure parity — constraint satisfaction is checkable without trusting scores. Merit-aware: exposure ∝ merit (DTR/DIR, equity of attention, quality-weighted shares) — the target itself is computed from scores.</li><li><strong>Why it was created</strong>: <a href="papers/37_FairRankingSurvey.html">[37] FairRankingSurvey</a> maps every method to a WYSIWYG (scores trustworthy) or WAE (score gaps = observation bias) worldview; this SP reads that axis operationally as robustness to score corruption.</li><li><strong>Concrete example</strong>: FA*IR with p = 0.4 stays exactly as "fair" if every score is corrupted (only its utility cost changes); a DTR = 1 exposure allocation computed from corrupted merit estimates is fair only nominally — <a href="papers/14_FairPGRank.html">[14] FairPGRank</a> shows it can become <em>less</em> fair in true merit as the fairness weight rises.</li><li><strong>Role in this SP</strong>: the deciding axis for which re-rankers can consume calibrated elicited scores (SP question, part 4).</li></ul>
+<p><strong>Impact-based fairness (NSW objective)</strong></p>
+<ul><li><strong>What it computes</strong>: per-item impact Imp_i = Σ_u Σ_k r(u,i)·e(k)·x_{uik} (exposure converted to expected clicks/outcomes via relevance), maximizing Nash Social Welfare Σ_i log Imp_i over doubly stochastic ranking matrices; solved at scale by an exact Sinkhorn reparametrization (~1000× faster than Mosek).</li><li><strong>Why it was created</strong>: exposure-based fairness leaves the exposure→outcome relationship uncontrolled; equalizing exposure does not equalize what items actually receive.</li><li><strong>Concrete example</strong>: the exposure-fair baseline (ExpFair) leaves 43.20% of items <em>worse off</em> in impact terms than uniform, while the NSW solution leaves 0.04% worse off.</li><li><strong>Role in this SP</strong>: <a href="papers/36_SinkhornFairRank.html">[36] SinkhornFairRank</a> adds a third exposure unit (impact) to count-based and position-weighted, and independently confirms exposure is a lossy proxy for outcomes (uuid 8).</li></ul></section>
+<section id="rqs" class="section-anchor"><h2><span class="en-only">Research Questions Extracted</span><span class="ko-only">추출된 연구 질문</span></h2><div class="scroll-table-wrap"><table><thead><tr><th>ID</th><th>Question</th><th>Key Papers</th><th>Objective</th></tr></thead><tbody><tr><td>RQ3.1</td><td>Which post-processing re-rankers operate score-read-only, and which of those require per-instance slate reordering versus only top-K inclusion (show/don't-show) rights?</td><td><a href="papers/32_TaxRank.html">[32] TaxRank</a>, <a href="papers/34_ElasticityTradeoff.html">[34] ElasticityTradeoff</a>, <a href="papers/38_FAIRTopK.html">[38] FAIRTopK</a>, <a href="papers/39_CelisFairRank.html">[39] CelisFairRank</a>, <a href="papers/36_SinkhornFairRank.html">[36] SinkhornFairRank</a>, <a href="papers/33_OnlinePostProc.html">[33] OnlinePostProc</a>, <a href="papers/35_DualSideOnline.html">[35] DualSideOnline</a>, <a href="papers/01_FoE.html">[01] FoE</a>, <a href="papers/09_FairSort.html">[09] FairSort</a>, <a href="papers/11_EquityOfAttention.html">[11] EquityOfAttention</a></td><td>O2</td></tr><tr><td>RQ3.2</td><td>What optimality/controllability guarantees exist for exposure-fair post-processing over given scores (LP optimality, POT bound, Lipschitz continuity, transfer ratio, per-query δ-fairness), and what does each condition on?</td><td><a href="papers/01_FoE.html">[01] FoE</a>, <a href="papers/32_TaxRank.html">[32] TaxRank</a>, <a href="papers/34_ElasticityTradeoff.html">[34] ElasticityTradeoff</a>, <a href="papers/31_SPOFR.html">[31] SPOFR</a></td><td>O2</td></tr><tr><td>RQ3.3</td><td>Which fairness targets remain valid under corrupted/uncalibrated black-box scores (merit-blind proportions, counts, parity) versus which import score error into the target itself (merit-proportional ratios), and what does this imply for consuming calibrated elicited scores?</td><td><a href="papers/37_FairRankingSurvey.html">[37] FairRankingSurvey</a>, <a href="papers/38_FAIRTopK.html">[38] FAIRTopK</a>, <a href="papers/39_CelisFairRank.html">[39] CelisFairRank</a>, <a href="papers/14_FairPGRank.html">[14] FairPGRank</a>, <a href="papers/01_FoE.html">[01] FoE</a></td><td>O2</td></tr><tr><td>RQ3.4</td><td>How do non-fairness objectives (diversity, impact/NSW) slot into the same read-only post-processing design space, and with what guarantee loss?</td><td><a href="papers/30_LLMDiversityRerank.html">[30] LLMDiversityRerank</a>, <a href="papers/36_SinkhornFairRank.html">[36] SinkhornFairRank</a>, <a href="papers/37_FairRankingSurvey.html">[37] FairRankingSurvey</a></td><td>O1</td></tr><tr><td>RQ3.5</td><td>What do the 2024–2026 post-processing papers add over the classical line (taxation unification + POT bound, elasticity mechanism of the trade-off, OT/Sinkhorn scalability, online dual-side correction, LLM re-rankers as contaminated scorers)?</td><td><a href="papers/32_TaxRank.html">[32] TaxRank</a>, <a href="papers/34_ElasticityTradeoff.html">[34] ElasticityTradeoff</a>, <a href="papers/36_SinkhornFairRank.html">[36] SinkhornFairRank</a>, <a href="papers/35_DualSideOnline.html">[35] DualSideOnline</a>, <a href="papers/30_LLMDiversityRerank.html">[30] LLMDiversityRerank</a></td><td>O3</td></tr><tr><td>RQ3.6</td><td>Can the taxation two-stage architecture (item-level exposure vector e* → OT assignment to users) serve as a frequency-only realization bridging the FairRec/TEC eligibility pattern with formal cost bounds?</td><td><a href="papers/32_TaxRank.html">[32] TaxRank</a>, <a href="papers/34_ElasticityTradeoff.html">[34] ElasticityTradeoff</a></td><td>O2</td></tr></tbody></table></div></section>
+<section id="papers" class="section-anchor"><div class="card" style="margin-top:1.5rem">
+<h3 style="margin-top:0"><span class="en-only">Papers in SP3 (DIR table)</span><span class="ko-only">SP3 논문 목록 (DIR 표)</span></h3><div class="scroll-table-wrap"><table><thead><tr><th>Ref</th><th>Title</th><th>Track</th><th>Tier</th><th>Key Contribution</th><th>Fit</th><th>Gap</th></tr></thead><tbody><tr><td><a href="papers/01_FoE.html">[01] FoE</a></td><td>Fairness of Exposure in Rankings</td><td>A</td><td>P0</td><td>LP over doubly stochastic matrices + BvN (SP1 core)</td><td>Read-only; the exposure formalism everything builds on</td><td>Per-instance reordering; expectation-only; trusted scores</td></tr><tr><td><a href="papers/09_FairSort.html">[09] FairSort</a></td><td>FairSort</td><td>B</td><td>P4</td><td>Per-user NDCG floor via monotone binary search (SP1)</td><td>Read-only ledger-based reorderer with utility floor</td><td>Per-instance reordering; heuristic velocities</td></tr><tr><td><a href="papers/11_EquityOfAttention.html">[11] EquityOfAttention</a></td><td>Equity of Attention</td><td>C</td><td>P0</td><td>Amortized individual exposure via per-query ILP (SP1)</td><td>Read-only, cross-query amortization</td><td>Per-instance reordering; merit-aware target needs trusted scores</td></tr><tr><td><a href="papers/14_FairPGRank.html">[14] FairPGRank</a></td><td>Policy Learning for Fairness in Ranking</td><td>C</td><td>P2</td><td>Corrupted-scores failure mode of post-processing (SP1)</td><td>Motivates the score-trust axis</td><td>In-processing; infeasible under constraint</td></tr><tr><td><a href="papers/29_PairwiseFairness.html">[29] PairwiseFairness</a></td><td>Pairwise Fairness for Ranking and Regression</td><td>A</td><td>P2</td><td>Pairwise-accuracy fairness trained in-processing</td><td>Contrast class: the exposure-free, retraining alternative</td><td>Requires training scorer; never measures exposure</td></tr><tr><td><a href="papers/30_LLMDiversityRerank.html">[30] LLMDiversityRerank</a></td><td>LLM Diversity Re-ranking</td><td>A</td><td>P2</td><td>First LLM zero-shot beyond-accuracy re-ranking benchmark</td><td>O1 diversity branch; read-only over MF scores</td><td>LLM re-ranker itself popularity-biased (RBO 0.5–0.8); no guarantee</td></tr><tr><td><a href="papers/31_SPOFR.html">[31] SPOFR</a></td><td>End-to-end Learning for Fair Ranking (SPOFR)</td><td>A</td><td>P0</td><td>Per-query δ-fairness by LP construction + SPO+ regret training</td><td>LP layer separable and read-only; 100% constraint satisfaction</td><td>Whole pipeline retrains; n=20 lists; utility needs training</td></tr><tr><td><a href="papers/32_TaxRank.html">[32] TaxRank</a></td><td>A Taxation Perspective for Fair Re-ranking</td><td>A</td><td>P0</td><td>Unification (prior methods = item-level tax) + continuity + POT bound; inclusion-level control via e* + Sinkhorn</td><td>Show/don't-show family member with the first predictable-cost bound</td><td>Count-based units; no realized-exposure concentration bound; static</td></tr><tr><td><a href="papers/33_OnlinePostProc.html">[33] OnlinePostProc</a></td><td>Online Post-Processing in Rankings</td><td>A</td><td>P2</td><td>Online per-batch re-ranking over untouchable ranker (abstract-tier)</td><td>Read-only online regime, directly on-topic for O2</td><td>Closed access; constraint family/guarantees unverifiable</td></tr><tr><td><a href="papers/34_ElasticityTradeoff.html">[34] ElasticityTradeoff</a></td><td>Elasticity Trade-offs in Re-ranking</td><td>B</td><td>P0</td><td>Metric family unification; elasticity governs fairness→accuracy transfer; ElasticRank at sort complexity</td><td>Mechanism theory for the trade-off; read-only; fast</td><td>Score-mass units; miscalibration untested; group-level only</td></tr><tr><td><a href="papers/35_DualSideOnline.html">[35] DualSideOnline</a></td><td>Model-Agnostic Dual-Side Online Fairness</td><td>B</td><td>P2</td><td>Online dual-side post-ranking claiming fairness+accuracy double-win (abstract-tier)</td><td>Read-only, model-agnostic, online axis</td><td>Closed access; double-win mechanism unexplained</td></tr><tr><td><a href="papers/36_SinkhornFairRank.html">[36] SinkhornFairRank</a></td><td>Sinkhorn Fair Ranking</td><td>B</td><td>P4</td><td>Exact OT reparametrization; ~1000× speedup; impact ≠ exposure (43% worse off)</td><td>Objective-agnostic realization machinery; third exposure unit</td><td>No convergence guarantee (non-convex outer); ~10³ items max</td></tr><tr><td><a href="papers/37_FairRankingSurvey.html">[37] FairRankingSurvey</a></td><td>Fairness in Ranking: A Survey</td><td>A</td><td>P1</td><td>Probability-based vs exposure-based dichotomy; worldview mapping</td><td>Design-space map for O2's access/target labels</td><td>Pre-2022 coverage; no consensus exposure definition found</td></tr><tr><td><a href="papers/38_FAIRTopK.html">[38] FAIRTopK</a></td><td>FA*IR: Fair Top-k Ranking</td><td>C</td><td>P2</td><td>Per-prefix binomial test with family-wise correction + greedy construction</td><td>Score-free (merit-blind) target; read-only</td><td>Count-based; single-list; binary group; no amortization</td></tr><tr><td><a href="papers/39_CelisFairRank.html">[39] CelisFairRank</a></td><td>Ranking with Fairness Constraints</td><td>C</td><td>P2</td><td>Exact/approx algorithms + hardness for prefix-count-constrained ranking</td><td>Hard constraints immune to score skew; theory anchor</td><td>Count-based; deterministic single shot; feasibility NP-hard in general</td></tr></tbody></table></div>
+</div>
+<details><summary><span class="en-only">Design Implication Registry</span><span class="ko-only">설계 함의 레지스트리</span></summary><div class="card" style="margin-top:0.5rem"><div class="scroll-table-wrap"><table><thead><tr><th>Requirement</th><th>Evidence</th><th>Implication</th><th>Risk</th><th>Mitigation</th></tr></thead><tbody><tr><td>Exposure control without per-instance reordering rights</td><td><a href="papers/32_TaxRank.html">[32] TaxRank</a>, <a href="papers/34_ElasticityTradeoff.html">[34] ElasticityTradeoff</a></td><td>Adopt the taxation two-stage architecture: solve an item-level exposure vector e* (an impression-frequency schedule), then assign to users via OT/eligibility rules</td><td>Guarantees are count/score-mass-based; position-weighted exposure inside served lists is uncontrolled</td><td>Derive e* from a position-bias-weighted target, or state guarantees strictly in inclusion counts</td></tr><tr><td>Predictable utility cost when tuning the exposure knob</td><td><a href="papers/32_TaxRank.html">[32] TaxRank</a>, <a href="papers/34_ElasticityTradeoff.html">[34] ElasticityTradeoff</a>, <a href="papers/09_FairSort.html">[09] FairSort</a></td><td>Use progressive (pairwise utility-difference) taxation, never additive per-item score boosts; the POT bound and elasticity theory make the cost forecastable</td><td>POT bound is asymptotic in</td><td>U</td><td>with uncharacterized constants; elasticity computed on proxy utilities propagates score error</td><td>Validate the empirical POT curve per dataset before committing to a tax rate</td></tr><tr><td>Fairness target meaningful under untrusted black-box scores</td><td><a href="papers/37_FairRankingSurvey.html">[37] FairRankingSurvey</a>, <a href="papers/38_FAIRTopK.html">[38] FAIRTopK</a>, <a href="papers/39_CelisFairRank.html">[39] CelisFairRank</a>, <a href="papers/14_FairPGRank.html">[14] FairPGRank</a></td><td>Choose merit-blind targets (proportions, prefix counts, exposure parity, catalog-share) when scores cannot be validated; reserve merit-proportional targets for calibrated elicited scores</td><td>Merit-blind targets can over-penalize genuinely relevant items — utility cost is unbounded under steep relevance decay (uuid 5)</td><td>Use one-sided merit constraints (<a href="papers/14_FairPGRank.html">[14] FairPGRank</a>-style) or pair with per-user utility floors</td></tr><tr><td>Serving-time computation at catalog scale</td><td><a href="papers/32_TaxRank.html">[32] TaxRank</a>, <a href="papers/34_ElasticityTradeoff.html">[34] ElasticityTradeoff</a>, <a href="papers/36_SinkhornFairRank.html">[36] SinkhornFairRank</a></td><td>Sinkhorn/OT reduction (variables</td><td>U</td><td></td><td>I</td><td>→</td><td>I</td><td>) and closed-form distance re-scoring make post-processing deployable (&lt;10 s inference; sort-level complexity; ~1000× vs commercial solvers)</td><td>Entropic regularization biases toward smoothed allocations; the non-convex outer loop of <a href="papers/36_SinkhornFairRank.html">[36] SinkhornFairRank</a> has no global-optimality guarantee</td><td>Validate against exact solvers at small scale; monitor allocation entropy</td></tr><tr><td>Per-user utility floor while redistributing exposure</td><td><a href="papers/09_FairSort.html">[09] FairSort</a>, <a href="papers/11_EquityOfAttention.html">[11] EquityOfAttention</a>, <a href="papers/33_OnlinePostProc.html">[33] OnlinePostProc</a></td><td>Enforce a per-instance NDCG threshold via monotone binary search on the fairness weight or an ILP quality constraint θ</td><td>Floors shrink the feasible redistribution set; exposure targets may become unreachable and the gap is silent</td><td>Report the target-attainment gap alongside the floor</td></tr></tbody></table></div></div></details>
+</section>
+<section id="open" class="section-anchor"><div class="card">
+<h3 style="margin-top:0"><span class="en-only">Open Questions After SP3</span><span class="ko-only">SP3 이후 미해결 질문</span></h3><ul><li><strong>Bayes-optimal exposure-fair post-processing over elicited scores</strong> (uuid 10): genuinely open after a dedicated pass. Missing link flagged in <a href="papers/34_ElasticityTradeoff.html">[34] ElasticityTradeoff</a> (elasticity on miscalibrated utilities untested), <a href="papers/36_SinkhornFairRank.html">[36] SinkhornFairRank</a> (fair-policy sensitivity to score estimation error unstudied), <a href="papers/31_SPOFR.html">[31] SPOFR</a> (optimality assumes reachable predicted scores), plus SP2's <a href="papers/17_BlackBoxFairPost.html">[17] BlackBoxFairPost</a>/<a href="papers/16_FairLLMRec.html">[16] FairLLMRec</a>. What would resolve it: a theorem identifying which statistic of a black-box scorer (calibrated relevance probabilities?) is sufficient for the optimal exposure-constrained ranking policy, with a regret bound under elicitation error. This is now a completed-search-backed O4 gap.</li><li><strong>Count→position-weighted transfer for inclusion-level control</strong>: the show/don't-show family (FairRec → <a href="papers/32_TaxRank.html">[32] TaxRank</a> → <a href="papers/34_ElasticityTradeoff.html">[34] ElasticityTradeoff</a> → TEC) guarantees only count/score-mass exposure; <a href="papers/38_FAIRTopK.html">[38] FAIRTopK</a> and <a href="papers/39_CelisFairRank.html">[39] CelisFairRank</a> carry the same missing link (prefix counts say nothing about attention within positions). No paper bounds the position-weighted exposure a pure inclusion controller induces. What would resolve it: a bound relating inclusion frequency to expected position-weighted exposure under a known within-list ranking policy.</li><li><strong>Realized-vs-target exposure concentration</strong>: <a href="papers/32_TaxRank.html">[32] TaxRank</a> samples lists from a continuous relaxation with no bound on the gap between realized exposure and target e* under finite users (its own missing link); <a href="papers/01_FoE.html">[01] FoE</a>'s guarantees are expectation-only over BvN sampling (SP1 seed). No SP3 paper gives per-window or concentration guarantees. What would resolve it: anytime/finite-sample exposure floors for stochastic realization — SP4's remit.</li><li><strong>A mechanism with both hard per-instance floors and continuous controllability</strong> (from Divergence 1): appears in no paper; the two guarantee types are currently bought with mutually exclusive machinery (binary feasible-set constraints vs continuous relaxation).</li></ul>
+</div>
+<details><summary><span class="en-only">Cross-SP Dependencies</span><span class="ko-only">SP 간 의존성</span></summary><div class="card" style="margin-top:0.5rem"><ul><li><strong>Feeds into</strong>: SP4 (stochastic ranking policies) — the realized-vs-target exposure concentration gap (<a href="papers/32_TaxRank.html">[32] TaxRank</a> sampling, <a href="papers/01_FoE.html">[01] FoE</a> expectation-only) is exactly SP4's realization-axis question. SP5 (amortization) — check which amortized methods are inclusion-level vs reordering, and whether any gives position-weighted guarantees under inclusion-only control. SP7 (capping/pacing) — the taxation two-stage architecture (exposure vector → assignment) is formally an impression-budget allocation; check whether the ads literature has a POT-style predictable-cost bound (bridge-gap candidate, uuid 6). SP8 — the double-win divergence (stale scores → redistribution improves accuracy) intersects popularity-contamination.</li><li><strong>Shared methods with</strong>: SP1 — LP/BvN doubly stochastic machinery (<a href="papers/01_FoE.html">[01] FoE</a>); SP4 — Sinkhorn/OT realization (<a href="papers/32_TaxRank.html">[32] TaxRank</a>, <a href="papers/36_SinkhornFairRank.html">[36] SinkhornFairRank</a>); SP2 — LLM scorer contamination (<a href="papers/30_LLMDiversityRerank.html">[30] LLMDiversityRerank</a> confirms popularity priors, uuid 11's zero-shot side).</li><li><strong>Depends on</strong>: SP1 — the access-level and reordering-axis vocabulary, and uuids 2/3/5; SP2 — the Bayes-optimal-post-processing seed (uuid 10) that this SP was revised to check, and the trusted-scores failure evidence (uuid 4) that motivates the merit-blind/merit-aware split.</li></ul></div></details>
+</section>
+<div class="page-nav"><a href="sp2_2024-2026-frontier-llm-era.html">&larr; <span class="en-only">SP2</span><span class="ko-only">SP2</span></a><a href="index.html"><span class="en-only">&uarr; Survey Hub</span><span class="ko-only">&uarr; 조사 허브</span></a><a href="sp4_stochastic-ranking-policies.html"><span class="en-only">SP4</span><span class="ko-only">SP4</span> &rarr;</a></div>
+    </div>
+  </div>
+<nav class="bd-sidebar-secondary"><div class="mini-toc-label"><span class="en-only">On this page</span><span class="ko-only">이 페이지</span></div><ul class="mini-toc"><li><a href="#intro"><span class="en-only">Introduction</span><span class="ko-only">개요</span></a></li><li><a href="#rationale"><span class="en-only">Entry Assumption</span><span class="ko-only">사전 가정</span></a></li><li><a href="#establishes"><span class="en-only">What SP3 Establishes</span><span class="ko-only">확립한 것</span></a></li><li><a href="#concepts"><span class="en-only">Key Concepts</span><span class="ko-only">핵심 개념</span></a></li><li><a href="#rqs"><span class="en-only">Research Questions</span><span class="ko-only">연구 질문</span></a></li><li><a href="#papers"><span class="en-only">Papers</span><span class="ko-only">논문</span></a></li><li><a href="#open"><span class="en-only">Open Questions</span><span class="ko-only">미해결 질문</span></a></li></ul></nav>
+</div>
+</body>
+</html>

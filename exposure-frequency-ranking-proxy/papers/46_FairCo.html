@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>[46] Controlling Fairness and Bias in Dynamic Learning-to-Rank — Exposure-Frequency Control Survey</title>
+
+<style>
+:root {
+  --bg: #0d1117; --card: #161b22; --border: #30363d;
+  --text: #e6edf3; --muted: #7d8590; --accent: #58a6ff;
+  --teal: #39d0c7; --green: #3fb950; --yellow: #d29922;
+  --red: #f85149; --purple: #bc8cff; --orange: #e3b341;
+  --sidebar-w: 262px; --toc-w: 210px; --hdr-h: 48px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+body { font-family: -apple-system, sans-serif; background: var(--bg);
+       color: var(--text); line-height: 1.6; }
+.bd-root { display: flex; height: 100vh; overflow: hidden; }
+.bd-sidebar-primary {
+  width: var(--sidebar-w); min-width: var(--sidebar-w);
+  overflow-y: auto; background: var(--card);
+  border-right: 1px solid var(--border);
+  padding: 0.75rem 0; flex-shrink: 0;
+}
+.bd-sidebar-primary::-webkit-scrollbar { width: 4px; }
+.bd-sidebar-primary::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+.bd-main { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-width: 0; }
+.article-header-bar {
+  height: var(--hdr-h); background: var(--card);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; padding: 0 1.5rem;
+  gap: 1rem; flex-shrink: 0;
+}
+.header-brand { color: var(--teal); font-weight: bold; font-size: 0.95em;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 1; }
+.header-brand a { color: inherit; text-decoration: none; }
+.breadcrumb { color: var(--muted); font-size: 0.82em; display: flex;
+  align-items: center; gap: 0.3rem; flex-shrink: 0; }
+.breadcrumb a { color: var(--accent); text-decoration: none; }
+.breadcrumb span { color: var(--border); }
+.bd-article { flex: 1; overflow-y: auto; padding: 2rem 2.5rem; }
+.bd-article::-webkit-scrollbar { width: 6px; }
+.bd-article::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+.bd-sidebar-secondary {
+  width: var(--toc-w); min-width: var(--toc-w);
+  overflow-y: auto; border-left: 1px solid var(--border);
+  padding: 1rem 0.75rem; flex-shrink: 0;
+}
+.bd-sidebar-secondary::-webkit-scrollbar { width: 4px; }
+.bd-sidebar-secondary::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+.sidebar-logo { padding: 0.5rem 1rem 0.75rem;
+  border-bottom: 1px solid var(--border); margin-bottom: 0.5rem; }
+.sidebar-logo a { color: var(--teal); font-weight: bold; font-size: 0.95em;
+  text-decoration: none; display: block; }
+.sidebar-section { color: var(--muted); font-size: 0.72em; font-weight: bold;
+  text-transform: uppercase; letter-spacing: 0.07em;
+  padding: 0.7rem 1rem 0.25rem; }
+.sidebar-nav-link { display: block; padding: 0.28rem 1rem 0.28rem 1.25rem;
+  color: var(--muted); font-size: 0.875em; text-decoration: none; }
+.sidebar-nav-link:hover { color: var(--text); background: rgba(255,255,255,0.03); }
+.sidebar-nav-link.active { color: var(--teal);
+  border-left: 2px solid var(--teal);
+  padding-left: calc(1.25rem - 2px); background: rgba(57,208,199,0.05); }
+.mini-toc-label { color: var(--muted); font-size: 0.72em; font-weight: bold;
+  text-transform: uppercase; letter-spacing: 0.07em; padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border); margin-bottom: 0.5rem; }
+.mini-toc { list-style: none; }
+.mini-toc li a { display: block; padding: 0.22rem 0;
+  color: var(--muted); font-size: 0.83em; text-decoration: none;
+  border-left: 2px solid transparent; padding-left: 0.5rem; }
+.mini-toc li a:hover { color: var(--text); }
+.mini-toc li a.toc-active { color: var(--teal); border-left-color: var(--teal); }
+.section-anchor { scroll-margin-top: calc(var(--hdr-h) + 8px); }
+h1 { color: var(--teal); font-size: 1.7em; margin-bottom: 0.5rem; line-height:1.3; }
+h2 { color: var(--teal); font-size: 1.25em; margin: 1.5rem 0 0.6rem; }
+h3 { color: var(--teal); font-size: 1.05em; margin: 1.2rem 0 0.4rem; }
+h4 { color: var(--teal); font-size: 0.95em; margin: 1rem 0 0.3rem; }
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+p { margin-bottom: 0.8rem; }
+ul, ol { margin: 0 0 0.8rem 1.4rem; }
+li { margin-bottom: 0.3rem; }
+code { background: rgba(255,255,255,0.06); border-radius: 3px; padding: 1px 4px; font-size: 0.9em; }
+blockquote { border-left: 3px solid var(--border); color: var(--muted);
+  padding: 0.2rem 0.8rem; margin-bottom: 0.8rem; }
+.card { background: var(--card); border: 1px solid var(--border);
+        border-radius: 8px; padding: 1.2rem; margin-bottom: 1rem; }
+table { width: 100%; border-collapse: collapse; font-size: 0.9em; margin-bottom: 0.8rem; }
+th { background: var(--card); color: var(--teal); padding: 8px;
+     border: 1px solid var(--border); text-align: left; }
+td { padding: 8px; border: 1px solid var(--border); vertical-align: top; }
+tr:nth-child(even) td { background: rgba(0,0,0,0.2); }
+.stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+             gap: 1rem; margin-bottom: 1.5rem; }
+.stat-box { background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+            padding: 1rem; text-align: center; }
+.stat-num { font-size: 2rem; font-weight: bold; color: var(--teal); }
+.stat-label { color: var(--muted); font-size: 0.85em; margin-top: 0.2rem; }
+.sp-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+           gap: 1rem; margin: 1rem 0; }
+.sp-card { background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+           padding: 1.2rem; cursor: pointer; transition: border-color 0.15s; height:100%; }
+.sp-card:hover { border-color: var(--teal); }
+.sp-card h3 { margin: 0 0 0.5rem; color: var(--teal); font-size: 1em; }
+.sp-card p { margin: 0; color: var(--muted); font-size: 0.88em; }
+.sp-badge { display: inline-block; background: rgba(57,208,199,0.1); color: var(--teal);
+            border-radius: 4px; padding: 2px 8px; font-size: 0.8em; margin-bottom: 0.5rem; }
+.paper-meta { color: var(--muted); font-size: 0.9em; margin-bottom: 1.5rem; }
+.paper-meta a { color: var(--accent); }
+.section-label { color: var(--teal); font-weight: bold; font-size: 0.85em;
+                 text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.4rem; }
+.pill { display: inline-block; border-radius: 4px; padding: 0.15rem 0.6rem;
+        font-size: 0.8em; font-weight: bold; margin-right: 0.4rem; }
+.pill-p0 { background: rgba(63,185,80,0.2); color: var(--green); }
+.pill-p1 { background: rgba(57,208,199,0.15); color: var(--teal); }
+.pill-p2 { background: rgba(210,153,34,0.2); color: var(--yellow); }
+.pill-p3 { background: rgba(188,140,255,0.2); color: var(--purple); }
+.pill-p4 { background: rgba(125,133,144,0.2); color: var(--muted); }
+.delta-row { margin: 0.4rem 0; padding: 0.4rem 0.8rem;
+             border-left: 3px solid var(--border); border-radius: 0 4px 4px 0; }
+.chain { position: relative; padding-left: 2rem; }
+.chain::before { content: ''; position: absolute; left: 0.95rem; top: 0;
+                 bottom: 0; width: 2px; background: var(--border); }
+.chain-node { position: relative; margin-bottom: 2rem; }
+.chain-node::before { content: ''; position: absolute; left: -1.55rem;
+                      top: 1.1rem; width: 12px; height: 12px;
+                      border-radius: 50%; background: var(--teal); }
+.chain-num { display: inline-block; width: 28px; height: 28px; background: var(--teal);
+             color: #000; border-radius: 50%; text-align: center; line-height: 28px;
+             font-weight: bold; font-size: 0.85em; margin-right: 0.6rem; flex-shrink: 0; }
+.chain-q { font-weight: bold; color: var(--text); margin: 0.4rem 0 0.3rem; font-size: 1em; }
+.chain-papers { color: var(--muted); font-size: 0.85em; margin-bottom: 0.6rem; }
+.chain-start { background: var(--card); border: 1px solid var(--teal);
+               border-radius: 8px; padding: 1rem; margin-bottom: 2rem; }
+.chain-start h3 { margin: 0 0 0.5rem; color: var(--teal); }
+.chain-converge { background: var(--card); border: 1px solid var(--green);
+                  border-radius: 8px; padding: 1rem; margin-top: 1rem; }
+.chain-converge h3 { margin: 0 0 0.5rem; color: var(--green); }
+.chain-label { display: inline-block; border-radius: 4px; padding: 0.15rem 0.6rem;
+               font-size: 0.8em; font-weight: bold; margin-right: 0.4rem; }
+.chain-status { border-radius: 0 4px 4px 0; padding: 0.5rem 0.8rem;
+                margin: 0.35rem 0; font-size: 0.88em; }
+.chain-status ul { margin: 0.3rem 0 0 1.2rem; padding: 0; }
+.chain-status li { margin-bottom: 0.25rem; }
+.chain-status.solved  { background: rgba(63,185,80,0.07);  border-left: 3px solid var(--green); }
+.chain-status.remains { background: rgba(210,153,34,0.07); border-left: 3px solid var(--yellow); }
+.chain-status.added   { background: rgba(248,81,73,0.07);  border-left: 3px solid var(--red); }
+.chain-status.pivoted { background: rgba(188,140,255,0.1); border-left: 3px solid var(--purple); }
+.chain-label.solved   { background: rgba(63,185,80,0.2);  color: var(--green); }
+.chain-label.remains  { background: rgba(210,153,34,0.2); color: var(--yellow); }
+.chain-label.added    { background: rgba(248,81,73,0.2);  color: var(--red); }
+.chain-label.pivoted  { background: rgba(188,140,255,0.2); color: var(--purple); }
+.chain-status.expected { background: rgba(88,166,255,0.07);  border-left: 3px solid var(--accent); }
+.chain-label.expected  { background: rgba(88,166,255,0.2);   color: var(--accent); }
+.chain-status.revised  { background: rgba(57,208,199,0.07);  border-left: 3px solid var(--teal); }
+.chain-label.revised   { background: rgba(57,208,199,0.2);   color: var(--teal); }
+.concept-box { border-left: 4px solid var(--teal); background: #0d1f1f;
+               border-radius: 4px; padding: 1.2rem; margin-bottom: 1.2rem; }
+.concept-name { font-weight: bold; color: var(--teal); font-size: 1.05em; margin-bottom: 0.5rem; }
+.hypothesis { border-left: 4px solid var(--teal); background: #0d1f1f;
+              border-radius: 4px; padding: 1rem; margin: 1rem 0; }
+.recommendation { border-left: 4px solid var(--purple); background: #1a0f2e;
+                  border-radius: 4px; padding: 1rem; margin: 1rem 0; }
+.rq-row { background: rgba(88,166,255,0.05); border-left: 3px solid var(--accent);
+          padding: 0.4rem 0.8rem; margin-bottom: 0.5rem; border-radius: 0 4px 4px 0; }
+.scroll-table-wrap { max-height: 420px; overflow-y: auto; border: 1px solid var(--border);
+                     border-radius: 4px; }
+.scroll-table-wrap table { margin-bottom: 0; }
+.scroll-table-wrap thead th { position: sticky; top: 0; background: #161b22; z-index: 1; }
+.page-nav { display: flex; justify-content: space-between; margin-top: 2rem;
+            padding-top: 1rem; border-top: 1px solid var(--border); gap: 1rem; }
+.page-nav a { color: var(--accent); font-size: 0.9em; }
+html.ko-active .en-only { display: none !important; }
+html.ko-active .ko-only { display: block !important; }
+.ko-only { display: none; }
+span.ko-only, .sidebar-logo a span.ko-only { display: none; }
+html.ko-active span.ko-only { display: inline !important; }
+.lang-btn { background: transparent; color: var(--muted); border: 1px solid var(--border);
+            border-radius: 4px; padding: 3px 9px; font-size: 0.8em; cursor: pointer; }
+.lang-btn.active { border-color: var(--teal); color: var(--teal); }
+details { margin-bottom: 0.8rem; }
+details summary { color: var(--muted); cursor: pointer; }
+@media (max-width: 1024px) { .bd-sidebar-secondary { display: none; } }
+@media (max-width: 768px) {
+  .bd-sidebar-primary { display: none; }
+  .bd-root { flex-direction: column; height: auto; overflow: visible; }
+  .bd-main { overflow: visible; }
+  .bd-article { overflow: visible; padding: 1rem; }
+  .stat-grid { grid-template-columns: repeat(2, 1fr); }
+  .sp-grid { grid-template-columns: 1fr; }
+}
+</style>
+
+<script>
+MathJax = { tex: { inlineMath: [['$','$']], displayMath: [['$$','$$']] },
+            options: { skipHtmlTags: ['script','noscript','style','textarea','pre','code'] } };
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<script>
+function toggleLanguage() {
+  const html = document.documentElement;
+  const isKo = html.classList.toggle('ko-active');
+  document.querySelectorAll('.lang-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.lang === (isKo ? 'ko' : 'en'));
+  });
+  localStorage.setItem('survey-lang', isKo ? 'ko' : 'en');
+}
+document.addEventListener('DOMContentLoaded', function() {
+  const saved = localStorage.getItem('survey-lang');
+  if (saved === 'ko') {
+    document.documentElement.classList.add('ko-active');
+    document.querySelectorAll('.lang-btn').forEach(b =>
+      b.classList.toggle('active', b.dataset.lang === 'ko'));
+  } else {
+    document.querySelectorAll('[data-lang="en"]').forEach(b => b.classList.add('active'));
+  }
+  const article = document.querySelector('.bd-article');
+  const sections = Array.from(document.querySelectorAll('.section-anchor[id]'));
+  const sideLinks = Array.from(document.querySelectorAll('.bd-sidebar-primary .sidebar-nav-link'));
+  const tocLinks = Array.from(document.querySelectorAll('.bd-sidebar-secondary .mini-toc a'));
+  if (!article || !sections.length) return;
+  function current() {
+    let id = sections[0].id;
+    const scrollTop = article.scrollTop + 60;
+    sections.forEach(function(s) { if (s.offsetTop <= scrollTop) id = s.id; });
+    return id;
+  }
+  function update() {
+    const id = current();
+    sideLinks.forEach(function(a) {
+      a.classList.toggle('active', a.getAttribute('href') === '#' + id);
+    });
+    tocLinks.forEach(function(a) {
+      a.classList.toggle('toc-active', a.getAttribute('href') === '#' + id);
+    });
+  }
+  article.addEventListener('scroll', update, { passive: true });
+  update();
+});
+</script>
+
+</head>
+<body>
+<div class="bd-root">
+
+<nav class="bd-sidebar-primary">
+  <div class="sidebar-logo">
+    <a href="../index.html">&#x2B21; <span class="en-only">Exposure-Frequency Control Survey</span><span class="ko-only">Exposure-빈도 제어 문헌 조사</span></a>
+  </div>
+  <div class="sidebar-section"><span class="en-only">Overview</span><span class="ko-only">개요</span></div>
+  <a href="../index.html#overview" class="sidebar-nav-link"><span class="en-only">Survey Hub</span><span class="ko-only">조사 허브</span></a>
+  <a href="../index.html#answers" class="sidebar-nav-link"><span class="en-only">Key Answers</span><span class="ko-only">핵심 답변</span></a>
+  <div class="sidebar-section"><span class="en-only">Sub-Problems</span><span class="ko-only">세부 문제</span></div>
+<a href="../sp1_fairness-of-exposure-fixed-scores.html" class="sidebar-nav-link">SP1: <span class="en-only">Exposure fairness</span><span class="ko-only">Exposure 공정성</span></a>
+<a href="../sp2_2024-2026-frontier-llm-era.html" class="sidebar-nav-link">SP2: <span class="en-only">2024–26 frontier / LLM</span><span class="ko-only">2024–26 최전선 / LLM</span></a>
+<a href="../sp3_postproc-rerank-blackbox.html" class="sidebar-nav-link">SP3: <span class="en-only">Post-proc re-ranking</span><span class="ko-only">Post-proc re-ranking</span></a>
+<a href="../sp4_stochastic-ranking-policies.html" class="sidebar-nav-link">SP4: <span class="en-only">Stochastic policies</span><span class="ko-only">확률적 정책</span></a>
+<a href="../sp5_amortized-equity-attention.html" class="sidebar-nav-link active">SP5: <span class="en-only">Amortized fairness</span><span class="ko-only">Amortized 공정성</span></a>
+<a href="../sp6_bandit-exposure-allocation.html" class="sidebar-nav-link">SP6: <span class="en-only">Bandit allocation</span><span class="ko-only">Bandit 배분</span></a>
+<a href="../sp7_capping-pacing-feeds-ads.html" class="sidebar-nav-link">SP7: <span class="en-only">Capping &amp; pacing</span><span class="ko-only">Capping·pacing</span></a>
+<a href="../sp8_popularity-debias-calibration.html" class="sidebar-nav-link">SP8: <span class="en-only">Debiasing &amp; calibration</span><span class="ko-only">Debiasing·calibration</span></a>
+<a href="../sp9_ecosystems-creator-incentives.html" class="sidebar-nav-link">SP9: <span class="en-only">Ecosystems &amp; creators</span><span class="ko-only">생태계·creator</span></a>
+<a href="../sp10_llm-exposure-feedback-loops.html" class="sidebar-nav-link">SP10: <span class="en-only">LLM feedback loops</span><span class="ko-only">LLM feedback loop</span></a>
+<a href="../sp11_strategyproof-exposure.html" class="sidebar-nav-link">SP11: <span class="en-only">Strategy-proofness</span><span class="ko-only">Strategy-proofness</span></a>
+
+  <div class="sidebar-section"><span class="en-only">Synthesis</span><span class="ko-only">종합</span></div>
+  <a href="../conclusion.html" class="sidebar-nav-link"><span class="en-only">Conclusion</span><span class="ko-only">결론</span></a>
+  <a href="../thinking-process.html" class="sidebar-nav-link"><span class="en-only">Thinking Process</span><span class="ko-only">추론 과정</span></a>
+</nav>
+  <div class="bd-main">
+<div class="article-header-bar"><div class="header-brand"><a href="../index.html"><span class="en-only">Exposure-Frequency Control Survey</span><span class="ko-only">Exposure-빈도 제어 문헌 조사</span></a></div><nav class="breadcrumb"><a href="../index.html"><span class="en-only">Survey</span><span class="ko-only">조사</span></a><span>&rsaquo;</span><a href="../sp5_amortized-equity-attention.html">SP5</a><span>&rsaquo;</span><span>[46] Controlling Fairness and Bias in Dynamic</span></nav><button class="lang-btn" data-lang="en" onclick="toggleLanguage()">EN</button><button class="lang-btn" data-lang="ko" onclick="toggleLanguage()">KO</button></div>
+    <div class="bd-article">
+<section id="header" class="section-anchor"><div class="paper-meta">
+<h1 style="margin-bottom:0.3rem">Controlling Fairness and Bias in Dynamic Learning-to-Rank</h1>
+<p style="margin:0.3rem 0;color:var(--muted)">Morik et al. · SIGIR 2020 · 2020</p>
+<p style="margin:0.3rem 0"><a href="https://arxiv.org/abs/2005.14713" target="_blank">arXiv:2005.14713</a> · <a href="https://arxiv.org/pdf/2005.14713.pdf" target="_blank">PDF</a> · SP: <a href="../sp5_amortized-equity-attention.html">SP5</a></p>
+<p><span class="pill pill-p0">P0</span><span class="pill" style="background:rgba(255,255,255,0.05);color:var(--muted)">Track A</span></p>
+</div>
+<div class="card ko-only" style="border-color:var(--teal)"><div class="section-label">한 줄 요약</div><p style="margin:0">동적 learning-to-rank에서 score + λ·(누적 격차)로 정렬하는 비례 제어기(FairCo)를 제안한다. 임의의 λ&gt;0과 유계 고정 scorer에 대해 amortized disparity가 O(1/τ)로 0에 수렴함을 증명한다.</p></div>
+</section>
+<section id="problem" class="section-anchor">
+<div class="card"><div class="section-label"><span class="en-only">Problem</span><span class="ko-only">해결하려는 문제</span></div><p>Dynamic learning-to-rank systems that re-rank based on accumulated feedback have two coupled deficiencies: (1) click counts are inconsistent relevance estimators because presentation position biases which items collect feedback, producing rich-get-richer dynamics — items lucky early stay on top regardless of true relevance; (2) even with true relevances known, relevance-sorted ranking allocates exposure disproportionally to merit (a 2% relevance edge can yield a 10-position exposure gap). Existing fair-ranking methods (Singh &amp; Joachims 2018; Biega et al. 2018) assume merit is known a priori and do not handle the dynamic setting where merit is still being learned from biased feedback.</p></div>
+</section>
+<section id="solution" class="section-anchor">
+<div class="card"><div class="section-label"><span class="en-only">Solution / Contribution</span><span class="ko-only">해결책 / 기여</span></div><p>FairCo, a proportional controller layered on top of an unbiased relevance estimate <code>[SKIM - convergence proof (Appendix B) and LP baseline details not deep-verified]</code>:</p>
+<ol><li>Estimate merit unbiasedly from biased clicks via IPS: $\hat{R}^{IPS}(d) = \frac{1}{\tau}\sum_t \frac{c_t(d)}{p_t(d)}$ (global) or the unbiased cardinal regression objective (Eq. 14, personalized).</li><li>Track amortized exposure(or impact)-to-merit disparity $\hat{D}_{\tau-1}(G_i, G_j)$ between all group pairs.</li><li>Rank by $\sigma_\tau = \mathrm{argsort}_d\,[\hat{R}(d|x) + \lambda\,\mathrm{err}_\tau(d)]$ where $\mathrm{err}_\tau(d) = (\tau-1)\max_{G_i}\hat{D}_{\tau-1}(G_i, G)$ — a post-hoc additive error-correction term on the score, zero for the most-over-exposed group and growing with accumulated disparity for others.</li></ol>
+<p>Theorem 7.1: for any $\lambda &gt; 0$, any bounded relevance model, and a feasibility condition (Eq. 18: ranking an under-exposed group entirely above another reduces its disparity), overall exposure disparity converges to zero at $O(1/\tau)$ regardless of unfairness accumulated before merit estimates converge.</p></div>
+<div class="card"><div class="section-label"><span class="en-only">Key Results</span><span class="ko-only">주요 결과</span></div><ul><li>Semi-synthetic news simulation (30 articles, 2 polarity groups, PBM with DCG-style drop-off, 100 trials): FairCo(Imp) drives impact unfairness near 0 while Naive stays ~0.1–0.15 and D-ULTR(Glob) only marginally better; NDCG cost vs. D-ULTR(Glob) is small (roughly 0.70 vs. 0.72 range, Fig. 1).</li><li>IPS relevance-estimation error → 0 with more users; Naive click-count error stagnates at ~0.25 (Fig. 2).</li><li>Adversarial head-start (first x users all right-leaning): Naive unfairness grows with x; FairCo stays low across the whole range 0–400 (Fig. 3) — controller corrects arbitrary accumulated unfairness, matching Theorem 7.1.</li><li>FairCo matches the adapted LinProg baseline (Singh &amp; Joachims 2018 LP) in NDCG/unfairness across $\lambda$ sweep while being far cheaper (LP has $O(n^2+|G|^2)$ variables per step) (Fig. 4).</li><li>MovieLens ML-20M (100 movies, 5 production-company groups, $10^4$ users, personalized NN scorer): FairCo(Exp) and FairCo(Imp) control their respective unfairness with small NDCG reduction; optimizing impact fairness can <em>increase</em> exposure unfairness — the two criteria are substantively different (Figs. 8–10).</li></ul></div>
+<details><summary><span class="en-only">5Cs Analysis</span><span class="ko-only">5Cs 분석</span></summary><div class="card" style="margin-top:0.5rem"><p><strong>Category</strong>: new method (algorithm + unbiasedness proofs + controller convergence theorem) <strong>Context</strong>: extends static fairness-of-exposure (Singh &amp; Joachims 2018 "Fairness of Exposure in Rankings"; Biega et al. 2018 "Equity of Attention" amortization) to dynamic LTR; builds on unbiased/counterfactual LTR via IPS (Joachims et al. 2017 WSDM). First dynamic-LTR algorithm claimed to jointly handle rich-get-richer bias and merit-based exposure fairness. <strong>Correctness</strong>: unbiasedness derivations for both estimators are shown inline (pages 5–6) and are standard IPS algebra; controller convergence proven in Appendix B under a feasibility assumption. Experiments report trial counts (10–100) with shaded variance bands. <code>[SKIM - appendix proof not verified line-by-line]</code> <strong>Contributions</strong>: (1) amortized merit-based fairness definition for dynamic LTR with estimated merit; (2) unbiased cardinal relevance estimators (IPS point estimator + unbiased regression objective); (3) FairCo P-controller with $O(1/\tau)$ disparity convergence, cheaper than an LP-based alternative with equal effectiveness. <strong>Clarity</strong>: method is reproducible — estimators, controller, simulation setups, and hyperparameters ($\lambda = 0.01$, NN sizes) are fully specified; code released.</p></div></details>
+<details><summary><span class="en-only">Contribution vs Claim</span><span class="ko-only">기여 대 주장</span></summary><div class="card" style="margin-top:0.5rem"><ul><li><strong>Stated claims</strong>: first dynamic LTR algorithm that is unbiased and fair while merit is still being learned; rigorous theoretical foundation and convergence guarantees; practical, robust, easy to implement.</li><li><strong>Demonstrated</strong>: unbiasedness of both estimators (algebraic proof); $O(1/\tau)$ disparity convergence for FairCo(Exp) only (Theorem B.3) — impact-fairness convergence is explicitly a <em>conjecture</em> ("we conjecture that analogous proofs apply to other fairness criteria"). Empirics are simulation-only: semi-synthetic news + MovieLens with simulated PBM clicks and known propensities.</li><li><strong>Gap</strong>: no real user-interaction data; position-bias model is assumed given and correctly specified (propensity misspecification untested); FairCo(Imp) has no convergence proof despite being the variant used in most news experiments. <code>[SKIM - verify in deep read whether robustness to propensity misspecification appears anywhere]</code></li></ul></div></details>
+</section>
+<section id="results" class="section-anchor">
+<details><summary><span class="en-only">Concepts Introduced</span><span class="ko-only">도입된 개념</span></summary><div class="card" style="margin-top:0.5rem"><p><strong>Amortized merit-based exposure disparity $D^E_\tau(G_i, G_j)$</strong></p>
+<ul><li><strong>What it computes</strong>: input = per-timestep group exposures $Exp_t(G_i) = \frac{1}{|G_i|}\sum_{d \in G_i} p_t(d)$ (marginal examination probabilities from the position-bias model) and group merits $Merit(G_i) = \frac{1}{|G_i|}\sum_{d \in G_i} R(d)$ → operation = difference of time-averaged exposure-to-merit ratios: $D^E_\tau(G_i,G_j) = \frac{\frac{1}{\tau}\sum_t Exp_t(G_i)}{Merit(G_i)} - \frac{\frac{1}{\tau}\sum_t Exp_t(G_j)}{Merit(G_j)}$ → output = a signed scalar; zero means exposure was allocated proportional to relevance, amortized over the whole interaction history.</li><li><strong>Why it was created</strong>: prior fairness-of-exposure work (Singh &amp; Joachims 2018; Biega et al. 2018) assumed relevance/merit is known; in dynamic LTR merit is itself being learned from biased clicks, so fairness must be defined amortized over the learning process with estimated merit.</li><li><strong>Concrete example</strong>: two news groups where 51% of users like $G_{right}$ and 49% like $G_{left}$ — relevance-sorted ranking puts $G_{right}$ in positions 1–10, so a 2% merit difference produces a vastly larger exposure difference; $D^E_\tau$ quantifies exactly this gap.</li><li><strong>How it is used in this paper</strong>: it is the controller's error signal (Eq. 10) and the evaluation metric ("Exposure Unfairness", via the pairwise average $\overline{D}_\tau$, Eq. 16). An impact-based variant $D^I_\tau$ replaces exposure with IPS-clicks.</li></ul>
+<p><strong>FairCo (P-controller ranking policy)</strong></p>
+<ul><li><strong>What it computes</strong>: input = current relevance estimate $\hat{R}(d|x)$ and previous-step disparity estimates → operation = sort by $\hat{R}(d|x) + \lambda\, \mathrm{err}_\tau(d)$, where $\mathrm{err}_\tau(d) = (\tau-1)\cdot\max_{G_i}(\hat{D}_{\tau-1}(G_i, G))$ for $d \in G$ → output = the ranking $\sigma_\tau$ shown at step $\tau$. The error term pushes items from under-exposed groups upward, proportional to accumulated disparity.</li><li><strong>Why it was created</strong>: existing fair-LTR algorithms are static (assume known relevance); an LP-based per-step solution is expensive ($O(n^2 + |G|^2)$ variables per request). A proportional controller is cheap, needs no exploration interventions, and provably drives amortized disparity to zero even from arbitrary initial unfairness.</li><li><strong>Concrete example</strong>: $\lambda = 0.01$ works across all experiments; higher $\lambda$ oscillates, lower converges slower but any $\lambda &gt; 0$ suffices asymptotically (Theorem 7.1: $\overline{D}^E_\tau \to 0$ at rate $O(1/\tau)$).</li><li><strong>How it is used in this paper</strong>: it is the main contribution — the ranking policy in Eq. 17, instantiated as FairCo(Exp) and FairCo(Imp).</li></ul>
+<p><strong>Unbiased cardinal relevance estimators (IPS)</strong></p>
+<ul><li><strong>What it computes</strong>: (a) global: $\hat{R}^{IPS}(d) = \frac{1}{\tau}\sum_t c_t(d)/p_t(d)$ — clicks reweighted by examination propensity → unbiased estimate of average relevance $R(d)$; (b) conditional: a regression objective $\mathcal{L}^c(w) = \sum_t \sum_d \hat{R}_w(d|x_t)^2 + \frac{c_t(d)}{p_t(d)}(c_t(d) - 2\hat{R}_w(d|x_t))$ whose expectation equals the least-squares objective on the unobserved true relevances (Eq. 14).</li><li><strong>Why it was created</strong>: prior unbiased LTR (Joachims et al. 2017) gives ordinal (ranking-only) estimates; the fairness disparities are cardinal — merit must be estimated on an absolute scale, so a cardinal, position-bias-corrected estimator is required.</li><li><strong>Concrete example</strong>: on the semi-synthetic news data, the Naive click-count estimator's error stagnates at ~0.25 absolute relevance error while $\hat{R}^{IPS}$'s error approaches 0 as users increase (Fig. 2).</li><li><strong>How it is used in this paper</strong>: $\hat{R}^{IPS}(d)$ feeds the merit denominator of the disparities and the global ranking criterion; $\hat{R}^{Reg}(d|x)$ (a 1-hidden-layer NN trained on Eq. 14) is the personalized scorer in the MovieLens experiments.</li></ul>
+<p><strong>Position-Based Model (PBM) exposure</strong> — reused from Craswell et al. 2008 / Joachims et al. 2017: examination probability depends only on rank, here $p_t(d) = 1/\log_2(\mathrm{rank}(d|\sigma_t)+1)$; treated as a known input, with estimation delegated to prior work.</p></div></details>
+<details><summary><span class="en-only">Implementation Feasibility</span><span class="ko-only">구현 가능성</span></summary><div class="card" style="margin-top:0.5rem"><ul><li><strong>Needs</strong>: position-bias/propensity model (input, assumed given); running counters for per-group cumulative exposure and IPS merit; any bounded relevance scorer; single hyperparameter $\lambda$ (0.01 used throughout). Compute is trivial — sort plus counter updates per request.</li><li><strong>Code</strong>: available at https://github.com/MarcoMorik/Dynamic-Fairness</li><li><strong>Modifications</strong>: for a fixed-scorer setting, drop the online regression (Eq. 14) and plug the frozen scores into Eq. 17; replace merit-proportional disparity with the desired exposure target; supply or estimate propensities.</li><li><strong>Unknowns</strong>: missing link: sensitivity to misspecified propensities; missing link: behavior with many groups / individual-level fairness at scale; missing link: FairCo(Imp) convergence (conjectured only).</li></ul></div></details>
+<details><summary><span class="en-only">Follow-up Papers</span><span class="ko-only">관련 후속 논문</span></summary><div class="card" style="margin-top:0.5rem"><ul><li>Singh &amp; Joachims, "Fairness of Exposure in Rankings" (KDD 2018) — origin of the merit-proportional exposure criterion and the LP formulation FairCo adapts as baseline.</li><li>Biega, Gummadi &amp; Weikum, "Equity of Attention: Amortizing Individual Fairness in Rankings" (SIGIR 2018) — source of the amortized-over-time fairness notion.</li><li>Joachims, Swaminathan &amp; Schnabel, "Unbiased Learning-to-Rank with Biased Feedback" (WSDM 2017) — the IPS de-biasing framework FairCo extends from ordinal to cardinal estimation.</li><li>Yadav, Du &amp; Joachims, "Fair Learning-to-Rank from Implicit Feedback" (arXiv 2019) — closest contemporaneous fair-LTR-from-clicks work, cited as related.</li></ul></div></details>
+</section>
+<section id="delta" class="section-anchor">
+<div class="card"><div class="section-label"><span class="en-only">Condition Delta — transfer to our setting</span><span class="ko-only">조건 차이 — 우리 설정으로의 전이</span></div><p><strong>Paper's setting</strong>: inputs = stream of user requests with biased click feedback under a known PBM position-bias model; a scorer being learned online (or a global IPS estimate); disjoint item groups; outputs = per-step ranking; conditions = simulated users, 30–100 items, group-level merit-proportional exposure target, amortized over time. <strong>Our setting (SP5)</strong>: a fixed (pre-trained) scorer with cumulative exposure control — using exposure/frequency as the controlled quantity on top of estimated relevance, per the survey's fixed-scorer + cumulative-exposure-control framing. <strong>Differences</strong>:</p>
+<ul><li>Scorer learned online vs. fixed scorer: resolved — FairCo's controller term is additive and post-hoc on top of <em>any</em> $\hat{R}(d|x) \in [0,1]$ (Theorem 7.1 holds for any relevance model), so it transfers directly to a fixed scorer; the online-learning machinery is separable.</li><li>Known examination propensities $p_t(d)$: missing link — our setting may not have a calibrated position-bias model; FairCo's exposure bookkeeping and merit estimates both depend on it.</li><li>Group-level fairness target vs. item-level control: resolved — the paper notes individual fairness is the special case of one item per group, though convergence constants degrade with $m$. <code>[SKIM - verify scaling with many groups]</code></li><li>Merit-proportional exposure as the target allocation: reference only — our proxy target may differ; the paper notes alternative disparity definitions plug in, but only proportionality is evaluated.</li><li>Simulated clicks vs. real feedback: missing link — no real-world interaction validation.</li></ul></div>
+</section>
+<div class="page-nav"><a href="45_FairInfoAccess.html">&larr; [45] FairInfoAccess</a><a href="../sp5_amortized-equity-attention.html">&uarr; SP5</a><a href="47_LongTermFairRec.html">[47] LongTermFairRec &rarr;</a></div>
+    </div>
+  </div>
+<nav class="bd-sidebar-secondary"><div class="mini-toc-label"><span class="en-only">On this page</span><span class="ko-only">이 페이지</span></div><ul class="mini-toc"><li><a href="#header"><span class="en-only">Paper info</span><span class="ko-only">논문 정보</span></a></li><li><a href="#problem"><span class="en-only">Problem</span><span class="ko-only">문제</span></a></li><li><a href="#solution"><span class="en-only">Solution &amp; Results</span><span class="ko-only">해결책 · 결과</span></a></li><li><a href="#results"><span class="en-only">Concepts &amp; Follow-ups</span><span class="ko-only">개념 · 후속</span></a></li><li><a href="#delta"><span class="en-only">Condition Delta</span><span class="ko-only">조건 차이</span></a></li></ul></nav>
+</div>
+</body>
+</html>

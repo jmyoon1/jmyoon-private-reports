@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Thinking Process — Exposure-frequency ranking proxy</title>
+<style>
+:root{--bg:#0d1117;--card:#161b22;--border:#30363d;--text:#e6edf3;
+      --muted:#8b949e;--accent:#58a6ff;--green:#3fb950;--amber:#d29922;
+      --teal:#39d0c7;--purple:#bc8cff;}
+body{background:var(--bg);color:var(--text);font-family:-apple-system,sans-serif;
+     margin:0;padding:1rem;}
+.cell{border:1px solid var(--border);border-radius:8px;overflow:hidden;}
+.cell-header{background:var(--card);padding:.6rem 1rem;display:flex;
+             align-items:center;gap:.75rem;border-bottom:1px solid var(--border);}
+.badge{font-size:.72rem;font-weight:700;padding:.2rem .55rem;border-radius:4px;}
+.b-decomp {background:rgba(210,153,34,.15);color:var(--amber);}
+.b-search  {background:rgba(88,166,255,.15);color:var(--accent);}
+.b-skim    {background:rgba(63,185,80,.15); color:var(--green);}
+.b-synth   {background:rgba(188,140,255,.15);color:var(--purple);}
+.b-verify  {background:rgba(57,208,199,.15);color:var(--teal);}
+.cell-title{font-size:.9rem;font-weight:600;}
+.cell-ts   {margin-left:auto;font-size:.72rem;color:var(--muted);}
+.cell-body {padding:1rem;display:flex;flex-direction:column;gap:.7rem;}
+.field     {padding:.55rem .8rem;border-radius:6px;}
+.f-expected{background:rgba(88,166,255,.07);border-left:3px solid var(--accent);}
+.f-found   {background:rgba(63,185,80,.07); border-left:3px solid var(--green);}
+.f-surprise{background:rgba(210,153,34,.07);border-left:3px solid var(--amber);}
+.f-revised {background:rgba(57,208,199,.07);border-left:3px solid var(--teal);}
+.f-neutral {background:rgba(139,148,158,.07);border-left:3px solid var(--muted);}
+.f-label   {font-size:.71rem;font-weight:700;letter-spacing:.05em;
+            text-transform:uppercase;color:var(--muted);margin-bottom:.28rem;}
+.f-content {font-size:.88rem;line-height:1.55;margin:0;}
+
+body{padding:0;}
+.nb{max-width:860px;margin:0 auto;padding:2rem 1rem;}
+.nb-header{margin-bottom:1.5rem;}
+.nb-header h1{font-size:1.25rem;margin:0 0 .3rem;}
+.nb-header p{font-size:.85rem;color:var(--muted);margin:0;}
+.cells{display:flex;flex-direction:column;gap:1rem;}
+</style>
+</head>
+<body>
+<div class="nb">
+  <div class="nb-header">
+    <h1>Exposure-frequency control as a ranking proxy — Thinking Process</h1>
+    <p>31 steps completed · last updated 2026-07-15 KST</p>
+  </div>
+  <div class="cells">
+<div class="cell" id="cell-00-decomposition">
+  <div class="cell-header">
+    <span class="badge b-decomp">Phase 0b — Decomposition</span>
+    <span class="cell-title">Exposure-frequency control as a ranking proxy over a black-box recommender</span>
+    <span class="cell-ts">2026-07-14 KST</span>
+  </div>
+  <div class="cell-body">
+    <div class="field f-expected">
+      <div class="f-label">Objectives → SP mapping</div>
+      <p class="f-content">
+        <b>O1</b> (taxonomy of exposure-frequency interventions) → SP1, SP3, SP4, SP5, SP6, SP7, SP8 —
+        each mechanism family (exposure fairness, post-hoc re-ranking, stochastic policies,
+        amortization, bandits, capping/pacing, popularity debiasing) contributes one branch of the taxonomy.<br>
+        <b>O2</b> (feasibility under score-immutable, exposure-only control) → SP1, SP3, SP4, SP5, SP6, SP8 —
+        every technique gets an access-level label; SP3 (post-processing) and SP6 (score-free bandits) are the
+        feasibility-critical families.<br>
+        <b>O3</b> (2024–2026 state of the art) → SP2 (dedicated recency probe, year-pinned 2024–2026),
+        SP7 (recent feed-level work), SP9 (2023–2026 ecosystem line).<br>
+        <b>O4</b> (open research questions) → SP2, SP6, SP9 — frontier lines, theory-guarantee gaps, and
+        strategic/ecosystem failure modes are the likeliest gap sources.
+      </p>
+    </div>
+    <div class="field f-found">
+      <div class="f-label">SP set (9 sub-problems)</div>
+      <p class="f-content">
+        <b>SP1</b> Fairness of exposure in rankings under fixed scores — densest on-point field; contains all seed papers; taxonomy backbone.<br>
+        <b>SP2</b> 2024–2026 frontier: exposure control &amp; LLM-era re-ranking — dedicated recency probe (O3 is P1; stopping early is a failure condition).<br>
+        <b>SP3</b> Post-processing re-ranking over black-box scorers — the closest relaxation of the score-immutable constraint; papers state access assumptions explicitly.<br>
+        <b>SP4</b> Stochastic ranking policies &amp; randomized exposure allocation — the formal mechanism realizing target exposure over repeated impressions.<br>
+        <b>SP5</b> Amortized fairness / equity of attention over time — temporal form of exposure-frequency control (cumulative impression equalization).<br>
+        <b>SP6</b> Bandit &amp; online learning for exposure allocation — score-free candidates with regret guarantees under exposure constraints.<br>
+        <b>SP7</b> Impression capping, frequency control, pacing in feeds/ads — the literal industrial instantiation of the user's only knob.<br>
+        <b>SP8</b> Popularity debiasing &amp; calibrated exposure vs. relevance — the controlled-objective axis beyond fairness proper.<br>
+        <b>SP9</b> Content ecosystems, creator incentives, platform exposure mechanisms — exposure as the platform's policy lever; likeliest O4 source.
+      </p>
+    </div>
+    <div class="field f-surprise">
+      <div class="f-label">Ranking rationale</div>
+      <p class="f-content">
+        SP1 leads because it directly answers both P1 objectives O1 and O2 and anchors on the seed papers
+        (Singh &amp; Joachims 2018, FairRec, Equity of Attention) — its vocabulary ("exposure", "expected exposure",
+        "provider fairness") is what every later SP's queries and synthesis reuse. SP2 sits at rank 2 rather than
+        last because recency is itself priority-1: probing the 2024–2026 frontier early lets its findings revise
+        the queries of all seven remaining SPs instead of arriving after they have already run. SP3–SP6 then cover
+        the mechanism families in decreasing directness to the user's constraint (read-only re-ranking → stochastic
+        realization → temporal amortization → score-free online allocation). SP7–SP9 close with the industrial and
+        ecosystem views that mostly feed O3/O4 rather than the core taxonomy.
+      </p>
+    </div>
+    <div class="field f-neutral">
+      <div class="f-label">Field assumptions</div>
+      <p class="f-content">
+        Before any papers are read, the ranker assumes: (1) the exposure-fairness line (2018–) is mature and
+        well-cited, so SP1 will over-deliver; (2) an explicit "black-box scorer, exposure-frequency-only" framing
+        matching the user's exact constraint is <i>rare</i> — most papers will assume at least read access to scores,
+        making O2's feasibility map non-trivial and the purely score-free subset small (mainly bandits and
+        capping/pacing); (3) the 2024–2026 frontier is dominated by LLM-ranker fairness audits and ecosystem/
+        incentive papers rather than new classical-style allocation algorithms; (4) industrial frequency-capping
+        literature is thinner in academia than its practical importance suggests, so SP7 may under-deliver.
+        Phase 1 search results will confirm or contradict each of these.
+      </p>
+    </div>
+  </div>
+</div>
+<div class="cell" id="cell-sp1-search">
+  <div class="cell-header">
+    <span class="badge b-search">Phase 1 — Search</span>
+    <span class="cell-title">SP1: Fairness of exposure in rankings under fixed scores</span>
+    <span class="cell-ts">2026-07-15 KST</span>
+  </div>
+  <div class="cell-body">
+<div class="field f-expected"><div class="f-label">Queries run</div><p class="f-content">All queries from ranked_sps.json executed via 4-track search (Track D skipped — academic topic). S2 API was rate-limited throughout; arXiv API + WebSearch fallback used, all papers title-VERIFIED against arXiv.</p></div>
+<div class="field f-found"><div class="f-label">Candidates found</div><p class="f-content">15 candidates (Track A 5, B 5, C 5). Seeds all recovered: FoE (685 cites), Equity of Attention (556), FairRec (272, via citation graph). Track B: 5 papers 2024-2026 incl. post-hoc Hierarchical Exposure Alignment (2026) and LinkedIn Talent Search audit (2025). After cross-SP dedup: 15 new, 0 already seen.</p></div>
+<div class="field f-surprise"><div class="f-label">Initial landscape / surprise</div><p class="f-content">FairRec never surfaced in direct queries — recovered only via the citation graph, confirming that Track C is load-bearing rather than redundant. 2 of 10 query slots unrecoverable under S2 rate-limiting, but counterpart queries preserved topic coverage.</p></div>
+<div class="field f-neutral"><div class="f-label">Implication for synthesis</div><p class="f-content">The field's vocabulary is confirmed mature; the taxonomy backbone for O1 can be built from SP1 alone. Access-level labeling (O2) must wait for skims since abstracts rarely state score-access assumptions explicitly.</p></div>
+  </div>
+</div>
+<div class="cell" id="cell-sp2-search">
+  <div class="cell-header">
+    <span class="badge b-search">Phase 1 — Search</span>
+    <span class="cell-title">SP2: 2024-2026 frontier — exposure control and LLM-era re-ranking</span>
+    <span class="cell-ts">2026-07-15 KST</span>
+  </div>
+  <div class="cell-body">
+<div class="field f-expected"><div class="f-label">Queries run</div><p class="f-content">All queries from ranked_sps.json executed via 4-track search (Track D skipped — academic topic). S2 API was rate-limited throughout; arXiv API + WebSearch fallback used, all papers title-VERIFIED against arXiv.</p></div>
+<div class="field f-found"><div class="f-label">Candidates found</div><p class="f-content">15 candidates; 9 from 2025-2026, 6 from 2026 (WWW 2026 fair-LLM-recommenders-without-retraining; Timee production field experiment; time-income and equity-vs-equality provider-fairness reformulations; 2 generative-recommendation popularity-bias papers). After cross-SP dedup: 13 new, 2 already seen.</p></div>
+<div class="field f-surprise"><div class="f-label">Initial landscape / surprise</div><p class="f-content">A WWW 2026 paper matches the user's constraint almost verbatim (fair LLM recommenders WITHOUT retraining). The frontier is not purely audit-style: several 2026 papers propose interventions, contradicting the ranker's assumption (3) that the frontier would be measurement-heavy.</p></div>
+<div class="field f-neutral"><div class="f-label">Implication for synthesis</div><p class="f-content">Recency requirement (O3) already looks satisfiable. Frontier vocabulary ('retraining-free', 'exposure control') should be injected into remaining SPs' synthesis lenses.</p></div>
+  </div>
+</div>
+<div class="cell" id="cell-sp3-search">
+  <div class="cell-header">
+    <span class="badge b-search">Phase 1 — Search</span>
+    <span class="cell-title">SP3: Post-processing re-ranking over black-box scorers</span>
+    <span class="cell-ts">2026-07-15 KST</span>
+  </div>
+  <div class="cell-body">
+<div class="field f-expected"><div class="f-label">Queries run</div><p class="f-content">All queries from ranked_sps.json executed via 4-track search (Track D skipped — academic topic). S2 API was rate-limited throughout; arXiv API + WebSearch fallback used, all papers title-VERIFIED against arXiv.</p></div>
+<div class="field f-found"><div class="f-label">Candidates found</div><p class="f-content">15 candidates. Track C recovered the classical foundations (FoE LP+Birkhoff, FA*IR, Celis constrained ranking); Track A/B: SPOFR, taxation-perspective re-ranker (SIGIR 2024), elasticity analysis (SIGIR 2025), FairSort (TKDE), OT/Sinkhorn re-ranker. Each entry annotated with its O2 access level. After cross-SP dedup: 11 new, 4 already seen.</p></div>
+<div class="field f-surprise"><div class="f-label">Initial landscape / surprise</div><p class="f-content">The searcher pre-annotated every paper's position on the score-free / read-only / score-modifying axis — the O2 labeling can start from search notes instead of from zero at skim time.</p></div>
+<div class="field f-neutral"><div class="f-label">Implication for synthesis</div><p class="f-content">Confirms the expected O2 blur risk: nearly all these methods reorder lists (read-only), not exposure-frequency-only. The strict frequency-only subset must come from SP5/SP6/SP7.</p></div>
+  </div>
+</div>
+<div class="cell" id="cell-sp4-search">
+  <div class="cell-header">
+    <span class="badge b-search">Phase 1 — Search</span>
+    <span class="cell-title">SP4: Stochastic ranking policies and randomized exposure allocation</span>
+    <span class="cell-ts">2026-07-15 KST</span>
+  </div>
+  <div class="cell-body">
+<div class="field f-expected"><div class="f-label">Queries run</div><p class="f-content">All queries from ranked_sps.json executed via 4-track search (Track D skipped — academic topic). S2 API was rate-limited throughout; arXiv API + WebSearch fallback used, all papers title-VERIFIED against arXiv.</p></div>
+<div class="field f-found"><div class="f-label">Candidates found</div><p class="f-content">15 candidates, but only 6 new after dedup (9 already seen from SP1-SP3) — the highest overlap of any SP. New: PL-Rank (SIGIR 2021), Fair-PG-Rank, unbiased LTR foundations, scalable exposure control (WWW 2024), top-K fair LTR (2025). After cross-SP dedup: 6 new, 9 already seen.</p></div>
+<div class="field f-surprise"><div class="f-label">Initial landscape / surprise</div><p class="f-content">60% overlap with earlier SPs confirms that stochastic policies are the shared formal core of the exposure-fairness field, not a separate branch — BvN decomposition and expected exposure recur everywhere.</p></div>
+<div class="field f-neutral"><div class="f-label">Implication for synthesis</div><p class="f-content">SP4's synthesis should focus on the realization axis (how target exposure becomes actual impressions: BvN, expohedron, PL sampling) rather than re-cataloguing papers SP1 already covers.</p></div>
+  </div>
+</div>
+<div class="cell" id="cell-sp5-search">
+  <div class="cell-header">
+    <span class="badge b-search">Phase 1 — Search</span>
+    <span class="cell-title">SP5: Amortized fairness and equity of attention over time</span>
+    <span class="cell-ts">2026-07-15 KST</span>
+  </div>
+  <div class="cell-body">
+<div class="field f-expected"><div class="f-label">Queries run</div><p class="f-content">All queries from ranked_sps.json executed via 4-track search (Track D skipped — academic topic). S2 API was rate-limited throughout; arXiv API + WebSearch fallback used, all papers title-VERIFIED against arXiv.</p></div>
+<div class="field f-found"><div class="f-label">Candidates found</div><p class="f-content">15 candidates, 9 new. Foundational line complete (Biega, FairCo, CMDP long-term fairness) plus 2024-2026 successors: FairSync (WWW 2024, production retrieval), elasticity mechanism analysis (SIGIR 2025), item-lifecycle exposure control, VerFair/FARA amortization successors. After cross-SP dedup: 9 new, 6 already seen.</p></div>
+<div class="field f-surprise"><div class="f-label">Initial landscape / surprise</div><p class="f-content">A dedicated line exists showing the ORIGINAL amortization mechanism is suboptimal (VerFair) and that future-aware planning beats reactive repayment (FARA) — the amortization branch has internal succession, not just extensions.</p></div>
+<div class="field f-neutral"><div class="f-label">Implication for synthesis</div><p class="f-content">Temporal amortization is the closest existing formalization of the user's literal knob. The synthesis should extract exactly which papers amortize by frequency-only decisions vs. per-instance re-ranking.</p></div>
+  </div>
+</div>
+<div class="cell" id="cell-sp6-search">
+  <div class="cell-header">
+    <span class="badge b-search">Phase 1 — Search</span>
+    <span class="cell-title">SP6: Bandit and online learning for exposure allocation</span>
+    <span class="cell-ts">2026-07-15 KST</span>
+  </div>
+  <div class="cell-body">
+<div class="field f-expected"><div class="f-label">Queries run</div><p class="f-content">All queries from ranked_sps.json executed via 4-track search (Track D skipped — academic topic). S2 API was rate-limited throughout; arXiv API + WebSearch fallback used, all papers title-VERIFIED against arXiv.</p></div>
+<div class="field f-found"><div class="f-label">Candidates found</div><p class="f-content">15 candidates, 14 new. Center: Wang and Joachims 'Fairness of Exposure in Stochastic Bandits' (ICML 2021). Plus concave-rewards contextual bandits (ICLR 2023), Blackwell approachability unification (NeurIPS 2021), Google item-centric cold-start exploration (RecSys 2025 Industry), creator-incentive multi-agent bandit (AISTATS 2026 Oral). After cross-SP dedup: 14 new, 1 already seen.</p></div>
+<div class="field f-surprise"><div class="f-label">Initial landscape / surprise</div><p class="f-content">An industrial cold-start over-exposure paper from Google (RecSys 2025) directly documents deliberate exposure boosting in production — stronger O2 evidence than expected from theory-heavy bandit literature.</p></div>
+<div class="field f-neutral"><div class="f-label">Implication for synthesis</div><p class="f-content">Bandit line supplies the score-free column of O2's feasibility map with actual regret guarantees. Caveat confirmed: many bandit papers estimate their own rewards — the synthesis must separate 'respect black-box scores' from 'replace them'.</p></div>
+  </div>
+</div>
+<div class="cell" id="cell-sp7-search">
+  <div class="cell-header">
+    <span class="badge b-search">Phase 1 — Search</span>
+    <span class="cell-title">SP7: Impression capping, frequency control, and pacing in feeds and ads</span>
+    <span class="cell-ts">2026-07-15 KST</span>
+  </div>
+  <div class="cell-body">
+<div class="field f-expected"><div class="f-label">Queries run</div><p class="f-content">All queries from ranked_sps.json executed via 4-track search (Track D skipped — academic topic). S2 API was rate-limited throughout; arXiv API + WebSearch fallback used, all papers title-VERIFIED against arXiv.</p></div>
+<div class="field f-found"><div class="f-label">Candidates found</div><p class="f-content">15 candidates, 15 new (zero overlap — a genuinely separate literature). Capping: Buchbinder 2011 theory anchor, Yahoo Soft Frequency Capping (CIKM 2019), k-anonymous capping (2025). Pacing: Lee 2013 classic, LinkedIn impression pacing (CIKM 2020), KDD 2025 primal-dual budget management. Delivery-layer correction: Meta VRS (KDD 2023) + external FAccT 2025 evaluation, Parity Ray regularizer. After cross-SP dedup: 15 new, 0 already seen.</p></div>
+<div class="field f-surprise"><div class="f-label">Initial landscape / surprise</div><p class="f-content">Ranker assumption (4) CONTRADICTED: the industrial capping/pacing literature is richer than assumed — including a mechanism+limitation pair (Meta VRS + FAccT 2025 external audit) and 2 field experiments on boosting live feeds. Zero cross-SP overlap confirms this literature is disconnected from the fairness-of-exposure line — a bridge-gap candidate for O4.</p></div>
+<div class="field f-neutral"><div class="f-label">Implication for synthesis</div><p class="f-content">This SP supplies the literal exposure-frequency mechanisms for O1's intervention axis, published under 'budget/delivery' vocabulary rather than 'fairness' vocabulary — which is why the two literatures don't cite each other.</p></div>
+  </div>
+</div>
+<div class="cell" id="cell-sp8-search">
+  <div class="cell-header">
+    <span class="badge b-search">Phase 1 — Search</span>
+    <span class="cell-title">SP8: Popularity debiasing and calibrated exposure versus relevance</span>
+    <span class="cell-ts">2026-07-15 KST</span>
+  </div>
+  <div class="cell-body">
+<div class="field f-expected"><div class="f-label">Queries run</div><p class="f-content">All queries from ranked_sps.json executed via 4-track search (Track D skipped — academic topic). S2 API was rate-limited throughout; arXiv API + WebSearch fallback used, all papers title-VERIFIED against arXiv.</p></div>
+<div class="field f-found"><div class="f-label">Candidates found</div><p class="f-content">15 candidates, 13 new. Surveys (bias/debias, calibration), mechanism (FoE, Equity of Attention), empirical (feedback-loop, artist exposure), limitation ('Scoring Is Not Enough' — directly probes whether post-hoc scoring alone can reach the utility-fairness frontier). 5 papers 2024-2026 incl. 2 from 2026. After cross-SP dedup: 13 new, 2 already seen.</p></div>
+<div class="field f-surprise"><div class="f-label">Initial landscape / surprise</div><p class="f-content">'Scoring Is Not Enough' (2026) argues score-based post-processing has structural limits — potentially the single most important negative result for the user's setting, elevating frequency-based (non-scoring) intervention.</p></div>
+<div class="field f-neutral"><div class="f-label">Implication for synthesis</div><p class="f-content">Popularity debiasing mostly needs retraining (as assumed), but the calibration/feedback-loop subset motivates WHY exposure-frequency intervention is needed: exposure feeds back into future popularity.</p></div>
+  </div>
+</div>
+<div class="cell" id="cell-sp9-search">
+  <div class="cell-header">
+    <span class="badge b-search">Phase 1 — Search</span>
+    <span class="cell-title">SP9: Content ecosystems, creator incentives, and platform exposure mechanisms</span>
+    <span class="cell-ts">2026-07-15 KST</span>
+  </div>
+  <div class="cell-body">
+<div class="field f-expected"><div class="f-label">Queries run</div><p class="f-content">All queries from ranked_sps.json executed via 4-track search (Track D skipped — academic topic). S2 API was rate-limited throughout; arXiv API + WebSearch fallback used, all papers title-VERIFIED against arXiv.</p></div>
+<div class="field f-found"><div class="f-label">Candidates found</div><p class="f-content">15 candidates, 11 new. Strategic-creator theory cluster (Ben-Porat and Tennenholtz 2018, Hron 2023, Jagadeesan 2023, supply-side equilibria), welfare optimization with competing creators (KDD 2024), PPA-Game (KDD 2025), production feed-slot/traffic allocation (SIGIR, incl. one SIGIR 2026), LoRe critique of heuristic exposure steering (2025). After cross-SP dedup: 11 new, 4 already seen.</p></div>
+<div class="field f-surprise"><div class="f-label">Initial landscape / surprise</div><p class="f-content">LoRe (2025) explicitly critiques heuristic exposure-allocation steering — a ready-made O4 seed. The ecosystem line treats exposure as the platform's ONLY instrument as a modeling assumption, exactly the user's constraint, but abstracts away the black-box scorer.</p></div>
+<div class="field f-neutral"><div class="f-label">Implication for synthesis</div><p class="f-content">Confirms SP9 as the likeliest O4 source: the mismatch between 'exposure as sole instrument' (assumed) and 'black-box scorer' (abstracted away) is itself a gap.</p></div>
+  </div>
+</div>
+<div class="cell" id="cell-preloop-skim">
+  <div class="cell-header">
+    <span class="badge b-skim">Phase 2a-all — Skim</span>
+    <span class="cell-title">Phase 2a-all — Skim (106 papers) + Phase 3.7-global citation pass</span>
+    <span class="cell-ts">2026-07-15 KST</span>
+  </div>
+  <div class="cell-body">
+    <div class="field f-found">
+      <div class="f-label">Tier breakdown &amp; coverage</div>
+      <p class="f-content">
+        All 106 unique candidates skimmed (0 vault-reused). Tiers: P0: 36, P1: 5, P2: 24, P3: 5, P4: 36.
+        PDFs cached for ~98 papers; 8 are abstract-tier (closed-access ACM/IEEE: OnlinePostProc, DualSideOnline,
+        LinkedInJobsPacing, FairAdDelivery, PrimalDualBudget, FreqCapTheory, CalibratedRec, ControllingPopBias).
+        74 notes carry confirmed non-arXiv venues after per-paper verification; several venues were upgraded during
+        skim (HEA→SIGIR 2026, LinkedInAudit→AAAI 2026, VerFair→SIGIR-AP 2023, CascadingExposure→CIKM 2024,
+        TopKFairLTR→TMLR 2025, LongTermConstraints→WSDM 2024, 53 more confirmed from PDF title pages).
+      </p>
+    </div>
+    <div class="field f-surprise">
+      <div class="f-label">Conceptual surprises</div>
+      <p class="f-content">
+        (1) <b>The proxy question is repeatedly flagged as open by the papers themselves</b>: nearly every skim's
+        Condition Delta hits the same wall — methods assume true relevance/merit is known and exposure follows from it,
+        while the survey's setting treats logged exposure frequency as a contaminated proxy. Equity of Attention
+        assumes relevance=worthiness; FairPGRank calls it out of scope; ExpectedExposure needs a known browsing model.
+        (2) <b>"Scoring Is Not Enough" (2026) proves score-then-sort is Pareto-suboptimal</b> for any non-decomposable
+        exposure objective — a structural argument FOR frequency-level intervention. (3) <b>Production evidence of proxy
+        failure</b>: Meta's VRS achieves impression-share parity while reducing unique-user reach ~9.8% (FAccT 2025
+        external audit) — impressions ≠ people; the Timee field experiment shows engagement flat while matches rose.
+        (4) FELIX and the Expohedron line are the most direct formalizations of the user's constraint (stochastic policy
+        over frozen scores realizing target exposure).
+      </p>
+    </div>
+    <div class="field f-revised">
+      <div class="f-label">Cross-SP theme signals</div>
+      <p class="f-content">
+        Themes appearing in 3+ SPs: (a) doubly-stochastic / BvN / expohedron realization machinery (SP1/SP2/SP3/SP4/SP5);
+        (b) exposure-to-merit calibration ("merit-proportional exposure") as the shared normative target
+        (SP1/SP4/SP5/SP6/SP8); (c) controller-style amortized correction (FairCo → LongTermConstraints → FARA/VerFair)
+        as the score-untouched intervention pattern (SP5/SP3/SP7-adjacent); (d) exposure as the platform's incentive
+        instrument, with StrategicProviders assuming exposure=payoff by construction (SP9/SP6/SP2).
+        The SP7 (ads capping/pacing) vocabulary remains disconnected from (a)–(c) at the citation level — confirmed by
+        the Phase 3.7 pass: zero cross-cluster reverse-citation links between SP7 notes and the fairness cluster.
+      </p>
+    </div>
+    <div class="field f-neutral">
+      <div class="f-label">Phase 3.7-global result + must-reads</div>
+      <p class="f-content">
+        Reverse-citation pass over all 106 notes: 28 cited-by links added across 11 notes. Baseline-citation hubs:
+        FairRec (8 citers), P-MMF (5), FairCo (4) — the re-ranking benchmark canon. Must-read (tier-1) set flagged for
+        synthesis: FoE, FairRec, EquityOfAttention, ExpectedExposure, FELIX, P-MMF, FairCo, FairSync, TaxRank,
+        ElasticityTradeoff, FairExposureBandits, ConcaveRewards, BlackwellFair, RestlessFairMAB, PLRank, SPOFR,
+        VRSImpressionFairness, MetaVRSEval, PrimalDualBudget, ImpressionDiscounting, CalibratedRec, LeapRec(CaliRec),
+        WelfareCompetingCreators, PPAGame, StrategicProviders, CreatorIncentives, SupplySideEq, FairLLMRec,
+        ItemSideLLM, LinkedInFairRanking.
+      </p>
+    </div>
+  </div>
+</div>
+<div class="cell" id="cell-sp1-synthesis">
+  <div class="cell-header">
+    <span class="badge b-synth">Phase 3 ✓ Synthesis</span>
+    <span class="cell-title">SP1: Fairness of exposure in rankings under fixed scores</span>
+    <span class="cell-ts">2026-07-15 KST</span>
+  </div>
+  <div class="cell-body">
+    <div class="field f-expected"><div class="f-label">Prior belief ◈</div><p class="f-content">
+      The densest, most on-point field; expected to supply the O1 taxonomy backbone and the first O2 access-level labels, with most methods assuming at least score read access.
+    </p></div>
+    <div class="field f-found"><div class="f-label">Dominant approach found</div><p class="f-content">
+      Score-read-only post-processing over a fixed merit vector, in two formally-identical realizations: within-query stochastic policies (convex program over marginal rank probabilities → distribution over rankings) and cross-query amortization (cumulative exposure ledger + dual/pacing variables). Because utility and exposure are both linear in the marginal rank-probability matrix, exposure control under fixed scores reduces to convex optimization — and a distribution over rankings served across repeated impressions IS an impression-frequency schedule (FELIX states the equivalence explicitly).
+    </p></div>
+    <div class="field f-surprise"><div class="f-label">Surprise / Confirmation</div><p class="f-content">
+      Confirmed: 9/15 papers are score-read-only (feasible under immutable scores). Surprised: (a) nearly all read-only methods still assume per-instance slate-reordering rights — only FairRec operates on pure inclusion counts, and its EF1/MMS guarantees provably do not transfer to position-weighted exposure; (b) the 2026 SOTA (HEA) moves AWAY from black-box feasibility (needs internal embeddings); (c) post-processing on group-corrupted scores can become LESS fair as the fairness weight rises (FairPGRank) — the trusted-scores assumption is load-bearing and untested everywhere.
+    </p></div>
+    <div class="field f-neutral"><div class="f-label">KB delta</div><p class="f-content">
+      6 claims added (1 mechanism, 2 findings, 1 gap, 1 limitation, 1 hypothesis — the pacing≡dual-targeting bridge). knowledge_base.json initialized. 7 RQs extracted; 4 follow-up seeds (1 missing_sp candidate: policy-weights→impression-budget discretization).
+    </p></div>
+    <div class="field f-revised"><div class="f-label">SP revisions ✎</div><p class="f-content">
+      6 SPs revised (synthesis-lens updates; searches already ran pre-loop): SP2 — check whether frontier papers relax the position-bias/trusted-scores assumptions; SP3 — annotate slate-reordering-required axis; SP4 — policy-weight→frequency-budget discretization question; SP5 — ledger drives inclusion vs position; SP7 — test pacing≡dual-exposure-targeting equivalence; SP8 — frame Scoring-Is-Not-Enough against the dominated score-free column.
+    </p></div>
+  </div>
+</div>
+<div class="cell" id="cell-sp1-verification">
+  <div class="cell-header">
+    <span class="badge b-verify">Phase V — Verification</span>
+    <span class="cell-title">Iteration 1 — after SP1</span>
+    <span class="cell-ts">2026-07-15 KST</span>
+  </div>
+  <div class="cell-body">
+    <div class="field f-found"><div class="f-label">Coverage</div><p class="f-content">
+      0% of P1 objectives fully covered (0/3) · target: 100% · SPs run: 1/12 (max_sps = 9+3).
+      O1: partial (fixed-scores taxonomy backbone laid; capping/boosting + bandit families pending — SP7/SP6).
+      O2: partial (SP1's 15 papers access-labeled; feasibility map needs SP3/SP6/SP7; policy-weights→impression-budget mapping open).
+      O3: open (only fixed-scores-line recency; SP2's dedicated scope unsurveyed). O4: open (4–5 candidate gaps, no completed-search evidence yet — acceptable at P2 this early).
+    </p></div>
+    <div class="field f-neutral"><div class="f-label">Convergence</div><p class="f-content">
+      No — continue to SP2. Broad-sweep mode independently blocks convergence before SP2/SP7/SP9 complete, and the per-objective evidence agrees.
+    </p></div>
+    <div class="field f-surprise"><div class="f-label">New SPs discovered</div><p class="f-content">
+      None appended. Watch item: SP1's "policy-weights→impression-budget discretization" seed — promote to a new SP only if SP7's pacing/capping literature fails to close it.
+    </p></div>
+    <div class="field f-revised"><div class="f-label">Objectives refined ✎</div><p class="f-content">
+      Unchanged after SP1. The O2 "solved when" criterion already distinguishes access levels; SP1 added the finer slate-reordering-vs-frequency distinction, which is recorded as an SP-revision lens (SP3) rather than an objectives change — it sharpens O2's evidence standard without altering its statement.
+    </p></div>
+  </div>
+</div>
+<div class="cell" id="cell-sp2-synthesis">
+  <div class="cell-header">
+    <span class="badge b-synth">Phase 3 ✓ Synthesis</span>
+    <span class="cell-title">SP2: 2024–2026 frontier — exposure control and LLM-era re-ranking</span>
+    <span class="cell-ts">2026-07-15 KST</span>
+  </div>
+  <div class="cell-body">
+    <div class="field f-expected"><div class="f-label">Prior belief ◈</div><p class="f-content">
+      Recency probe for O3; revised after SP1 to check whether frontier papers relax the two universal assumptions (known position-bias curve, trusted scores). Pre-loop search assessed WWW 2026's FUDLR as an "almost verbatim" match to the user constraint.
+    </p></div>
+    <div class="field f-found"><div class="f-label">Dominant approach found</div><p class="f-content">
+      The frontier empirically demolishes the trusted-scores assumption for LLM/generative scorers via three identified mechanisms (prompt-position bias; pre-training content priors; gradient starvation + tokenization amplification) — and scaling does not fix it. But the strongest repairs abandon black-box feasibility (FUDLR needs gradients, Ghost retrains the tokenizer, CRAB edits the codebook). The known-position-bias assumption is untouched, and LLM re-rankers stack a second, unmeasured internal position-bias curve (prompt slots) on top of the display one.
+    </p></div>
+    <div class="field f-surprise"><div class="f-label">Surprise / Confirmation</div><p class="f-content">
+      Corrected a pre-loop belief: FUDLR is NOT black-box feasible (needs gradients + training data). The true near-verbatim match to the user's setting is TEC (Timee 2026 production field experiment) — purely frequency-level, exposure-debited eligibility control over an unmodified scorer, the first production successor to FairRec's show/don't-show pattern (KB claim 3 refined). Also new: three independent 2026 papers converge that exposure is a lossy proxy for provider utility when exposure→utility conversion is heterogeneous — a THIRD load-bearing assumption identified. Inference-time exposure correction is non-monotone in correction strength (fully removing the exposure signal hurts; γ-tuning required).
+    </p></div>
+    <div class="field f-neutral"><div class="f-label">KB delta</div><p class="f-content">
+      5 claims added, 3 refined (uuids 2, 3, 4), 0 contradicted — total 11. 7 RQs (5 for O3). 4 follow-up seeds: Bayes-optimal exposure post-processing theory (→SP3), log-only post-hoc correction (→SP7/SP8; the user's exact setting, untested), LLM-era exposure feedback loops (missing_sp candidate), per-slot prompt-position-bias estimation.
+    </p></div>
+    <div class="field f-revised"><div class="f-label">SP revisions ✎</div><p class="f-content">
+      6 SPs revised: SP3 (Bayes-optimal post-processor lens), SP5 (exposure- vs utility-ledgers), SP6 (γ-tuning + log-only estimation as online learning), SP7 (TEC as the pacing≡dual-targeting bridge case), SP8 (organize by reference distribution), SP9 (test exposure=payoff against heterogeneous conversion).
+    </p></div>
+  </div>
+</div>
+<div class="cell" id="cell-sp2-verification">
+  <div class="cell-header">
+    <span class="badge b-verify">Phase V — Verification</span>
+    <span class="cell-title">Iteration 2 — after SP2</span>
+    <span class="cell-ts">2026-07-15 KST</span>
+  </div>
+  <div class="cell-body">
+    <div class="field f-found"><div class="f-label">Coverage</div><p class="f-content">
+      0% of P1 objectives fully covered (0/3) · target: 100% · SPs run: 2/12.
+      O1: partial (backbone + realization machinery in place; capping/boosting and bandit families still absent — named in solved_when).
+      O2: partial (all 30 surveyed papers access-labeled with the frequency-vs-reordering axis; SP3–SP6 families pending).
+      O3: partial-marginal (strongest so far: RQ2.1–2.5, 2.7 name 2025–2026 papers with deltas incl. a 2026 production field experiment; pacing/feeds + ecosystem recency pending).
+      O4: open (8 candidate gaps banked, completed-search checks pending).
+    </p></div>
+    <div class="field f-neutral"><div class="f-label">Convergence</div><p class="f-content">No — continue to SP3 (highest-ranked incomplete).</p></div>
+    <div class="field f-surprise"><div class="f-label">New SPs discovered</div><p class="f-content">
+      Held as watch item: "LLM-era exposure feedback loops" (SP2 missing_sp seed). SP8's concept groups + SP9's longitudinal dynamics plausibly cover it; explicit re-evaluation trigger recorded — if SP8 and SP9 finish without surfacing LLM-era loop work, append SP10 (O3/O4). SP1's discretization seed still waits on SP7.
+    </p></div>
+    <div class="field f-revised"><div class="f-label">Objectives refined ✎</div><p class="f-content">
+      Unchanged after SP2. SP2's third load-bearing assumption (homogeneous exposure→utility conversion) sharpens the O4 gap inventory but does not change any objective statement or solved-when criterion.
+    </p></div>
+  </div>
+</div>
+<div class="cell" id="cell-sp3-synthesis">
+  <div class="cell-header">
+    <span class="badge b-synth">Phase 3 ✓ Synthesis</span>
+    <span class="cell-title">SP3: Post-processing re-ranking over black-box scorers</span>
+    <span class="cell-ts">2026-07-16 KST</span>
+  </div>
+  <div class="cell-body">
+    <div class="field f-expected"><div class="f-label">Prior belief ◈</div><p class="f-content">
+      Post-processing as the closest relaxation of the score-immutable constraint; the pre-loop read expected the strict frequency-only subset to come only from SP5/SP6/SP7. Two lenses added by earlier iterations: the slate-reordering axis (SP1) and the Bayes-optimal-post-processor check (SP2).
+    </p></div>
+    <div class="field f-found"><div class="f-label">Dominant approach found</div><p class="f-content">
+      Every genuine post-processor in the set is score-read-only — KB claim 2 confirmed for a third SP. The set splits by fairness target rather than by method: merit-blind targets (proportions, prefix counts, parity — FA*IR, Celis, LinkedIn DetConstSort) survive arbitrary score corruption structurally, while merit-proportional targets (DTR, equity-of-attention, tax welfare) import score error into the target itself. The WYSIWYG/WAE worldview axis is operationally the score-trust axis.
+    </p></div>
+    <div class="field f-surprise"><div class="f-label">Surprise / Confirmation</div><p class="f-content">
+      Pre-loop belief partially WRONG: the taxation line's decision variable is top-K inclusion, not position. TaxRank solves an item-level exposure vector e* — literally an impression-frequency schedule — then optimal-transport-assigns it to users; ElasticRank re-scores for inclusion at sort complexity. These are the first show/don't-show-family members with controllability guarantees (Lipschitz continuity + price-of-taxation bound), refining KB claim 3 — though guarantees remain count-based, so the count→position-weighted transfer gap persists. Bayes-optimality check: absent in all 15 papers — uuid 10 upgraded to an O4-ready gap with completed-search evidence.
+    </p></div>
+    <div class="field f-neutral"><div class="f-label">KB delta</div><p class="f-content">
+      2 claims added (score-trust dichotomy of fairness targets; hard-floor vs continuous-controllability mutual defect), 5 refined (uuids 2, 3, 5, 8, 10). Total 13. 6 RQs; 4 follow-up seeds (realized-exposure concentration →SP4; count→position transfer →SP5/SP7; POT-analogue in ads pacing →SP7; double-win adjudication →SP8).
+    </p></div>
+    <div class="field f-revised"><div class="f-label">SP revisions ✎</div><p class="f-content">
+      4 SPs revised: SP4 (bound realized-vs-target exposure deviation), SP5 (inclusion-level vs reordering annotation; position-weighted guarantees under inclusion-only control), SP7 (check for POT-style bound + two-stage architecture under budget vocabulary — would make the SP3↔SP7 bridge formal), SP8 (double-win lens).
+    </p></div>
+  </div>
+</div>
+<div class="cell" id="cell-sp3-verification">
+  <div class="cell-header">
+    <span class="badge b-verify">Phase V — Verification</span>
+    <span class="cell-title">Iteration 3 — after SP3</span>
+    <span class="cell-ts">2026-07-16 KST</span>
+  </div>
+  <div class="cell-body">
+    <div class="field f-found"><div class="f-label">Coverage</div><p class="f-content">
+      0% of P1 objectives fully covered (0/3) · target: 100% · SPs run: 3/12.
+      O1: partial (post-hoc branch complete incl. diversity/impact objectives; capping/boosting + bandit families still zero-RQ).
+      O2: partial, substantially narrowed (post-processing column done; frequency-only subset grew to FairRec + TEC + TaxRank/ElasticRank with first controllability guarantees; SP4–SP7 columns pending).
+      O3: partial-marginal (5 lines carry 2024–2026 deltas; SP7/SP9 frontiers unprobed).
+      O4: first O4-ready gap with completed-search evidence — no Bayes-optimal exposure-fair post-processor over elicited scores (verified by SP3's dedicated 15-paper pass).
+    </p></div>
+    <div class="field f-neutral"><div class="f-label">Convergence</div><p class="f-content">No — continue to SP4 (inherits the realized-vs-target concentration lens from SP3 and the discretization lens from SP1).</p></div>
+    <div class="field f-surprise"><div class="f-label">New SPs discovered</div><p class="f-content">None. Both watch items held: discretization seed (waits on SP7, now strengthened by TaxRank's two-stage e*→assignment bridge case); LLM feedback loops (waits on SP8+SP9).</p></div>
+    <div class="field f-revised"><div class="f-label">Objectives refined ✎</div><p class="f-content">Unchanged after SP3. The score-trust dichotomy of fairness targets refines O2's evidence standard (robustness column now split by target type), recorded as synthesis convention rather than an objectives edit.</p></div>
+  </div>
+</div>
+<div class="cell" id="cell-sp4-synthesis">
+  <div class="cell-header">
+    <span class="badge b-synth">Phase 3 ✓ Synthesis</span>
+    <span class="cell-title">SP4: Stochastic ranking policies and randomized exposure allocation</span>
+    <span class="cell-ts">2026-07-16 KST</span>
+  </div>
+  <div class="cell-body">
+    <div class="field f-expected"><div class="f-label">Prior belief ◈</div><p class="f-content">
+      The user's exposure-frequency knob formalized; synthesis organized around the realization axis with two inherited lenses: policy-weights→impression-budget discretization (SP1) and realized-vs-target concentration bounds (SP3).
+    </p></div>
+    <div class="field f-found"><div class="f-label">Dominant approach found</div><p class="f-content">
+      Three realization families with a strict ordering: LP+BvN (exact in expectation, O(n⁵)); expohedron+Carathéodory (exact, O(n² log n), support ≤ n, whole Pareto front, numerics cap n≈100); PL/Gumbel sampling (cheapest per impression but under fixed scores only a one-parameter temperature family — Pareto-dominated). Headline structural finding: decomposition and delivery are SCORE-FREE — scores enter exactly once, at target selection. The immutable-scores constraint does not bind on the realization axis at all.
+    </p></div>
+    <div class="field f-surprise"><div class="f-label">Surprise / Confirmation</div><p class="f-content">
+      (a) Exactly one per-realization mechanism exists in the whole line — balanced-word (stride) delivery, deterministic, ~10× empirically tighter than i.i.d. sampling — but NO paper states a concentration theorem in position-weighted exposure units. (b) The discretization question is solved only for the single-repeated-query case; the production mapping remains open, and stride scheduling ≈ ad pacing's smooth delivery (strengthens the pacing≡dual-targeting hypothesis). (c) The realization machinery has been FROZEN since 2022 — every 2024–2026 paper changes targets or scale, never the mechanism. (d) Controller adequacy diverges across papers (near-Pareto vs unfairness 0.93 on MSLR) — unadjudicated, sent to SP5.
+    </p></div>
+    <div class="field f-neutral"><div class="f-label">KB delta</div><p class="f-content">
+      4 claims added (score-free realization, importance 0.9; controller-adequacy divergence; curve-dependence locus; stride-pacing equivalence leg), 3 refined (uuids 1, 2, 6). Total 17. 7 RQs; seeds: concentration-theorem gap (→SP6 regret bounds), discretization+smooth-delivery (→SP7), target-redefinition reading lens (→SP8).
+    </p></div>
+    <div class="field f-revised"><div class="f-label">SP revisions ✎</div><p class="f-content">
+      4 SPs revised: SP5 (adjudicate controller divergence; finite-T realized-exposure bounds), SP6 (do regret bounds double as the missing concentration bounds?), SP7 (smooth-delivery discrepancy guarantees; discretization mapping; count-based delivery is curve-free), SP8 (read 2024–2026 papers for target redefinitions, not new mechanisms).
+    </p></div>
+  </div>
+</div>
+<div class="cell" id="cell-sp4-verification">
+  <div class="cell-header">
+    <span class="badge b-verify">Phase V — Verification</span>
+    <span class="cell-title">Iteration 4 — after SP4</span>
+    <span class="cell-ts">2026-07-16 KST</span>
+  </div>
+  <div class="cell-body">
+    <div class="field f-found"><div class="f-label">Coverage</div><p class="f-content">
+      0% of P1 objectives fully covered (0/3) · target: 100% · SPs run: 4/12.
+      O1: partial (stochastic-realization family complete; capping/pacing + bandit families still zero-RQ; amortization pass pending).
+      O2: partial-marginal (3 new feasibility verdicts: realization is score-free given the target; PL sampling degenerates to a temperature knob; in-processing = retraining, no realized-exposure guarantee).
+      O3: partial-marginal (6 lines meet the recency standard; SP7/SP9 lines pending).
+      O4: 1 gap search-verified + 2 matured candidates (position-weighted concentration theorem; curve-error propagation).
+    </p></div>
+    <div class="field f-neutral"><div class="f-label">Convergence</div><p class="f-content">No — continue to SP5 (adjudication tasks inherited: controller-adequacy divergence; finite-T realized-exposure bounds).</p></div>
+    <div class="field f-surprise"><div class="f-label">New SPs discovered</div><p class="f-content">None. Watch items now 3: discretization (→SP7), LLM feedback loops (→SP8+SP9), NEW concentration theorem in position-weighted units (→SP6 regret bounds; else O4).</p></div>
+    <div class="field f-revised"><div class="f-label">Objectives refined ✎</div><p class="f-content">Unchanged after SP4. The score-free-realization finding materially narrows O2's remaining question to target-selection access, recorded as synthesis framing.</p></div>
+  </div>
+</div>
+<div class="cell" id="cell-sp5-synthesis">
+  <div class="cell-header">
+    <span class="badge b-synth">Phase 3 ✓ Synthesis</span>
+    <span class="cell-title">SP5: Amortized fairness and equity of attention over time</span>
+    <span class="cell-ts">2026-07-16 KST</span>
+  </div>
+  <div class="cell-body">
+    <div class="field f-expected"><div class="f-label">Prior belief ◈</div><p class="f-content">
+      The temporal form of exposure-frequency control, carrying four inherited adjudication lenses: inclusion- vs position-ledger, exposure- vs utility-ledger, finite-T realized-exposure bounds, and the controller-adequacy divergence from SP4.
+    </p></div>
+    <div class="field f-found"><div class="f-label">Dominant approach found</div><p class="f-content">
+      Cumulative-ledger control in two families: ledger-boosted sorting (FairCo, OFFR — per-item score-plus-boost then sort) and planners/slot-constructors (FARA, VerFair, per-request LP — see full list composition). "Scoring Is Not Enough" (2026) splits them formally: the sorting family inherits the proven Pareto ceiling (including its amortized/across-query extension); planners escape it — and planners are exactly the empirical winners. Controller unification: FairCo ⊂ Stationary Controller (Lagrangian multiplier = tracking error) — reactive amortized fairness IS dual-variable pacing, the third leg of the pacing≡dual-targeting bridge.
+    </p></div>
+    <div class="field f-surprise"><div class="f-label">Surprise / Confirmation</div><p class="f-content">
+      (a) Controller-adequacy divergence ADJUDICATED as regime-dependence, not contradiction: the two SP4 evaluations answered different questions (target convergence vs trajectory Pareto-efficiency); FairCo does reach the LP unfairness floor on MSLR but at cNDCG@1 85.5 vs FARA's 129.0; relevance steepness is the confirmed moderator; constant-gain controllers stall against accumulated debt. (b) SP4's concentration gap is answered BY CONSTRUCTION, not concentration: four finite-T realized-exposure bounds exist (FairCo O(1/τ); FARA deterministic; VerFair &lt; one position weight; OFFR anytime O(1/√t)) — closed-loop methods pick each ranking from the realized ledger, so the gap localizes to open-loop realization only. (c) Strict frequency-only subset +1: FairSync (count-based inclusion floors at distributed retrieval, dual price, billion-scale, &lt;0.25 ms).
+    </p></div>
+    <div class="field f-neutral"><div class="f-label">KB delta</div><p class="f-content">
+      3 claims added, 4 refined (uuids 15 adjudicated, 3, 6, 8). Total 20. 7 RQs. Count→position-weighted transfer gap survives its third SP — O4-ready pending SP7.
+    </p></div>
+    <div class="field f-revised"><div class="f-label">SP revisions ✎</div><p class="f-content">
+      4 SPs revised: SP6 (ledger-state regret under non-stationary arrivals + estimated relevance; position-weighted denominations), SP7 (ads convergence guarantees as transferable finite-T exposure bounds; slot-aware delivery; MPC pacing ↔ Predictive controller), SP8 (ScoringNotEnough ceiling inheritance; ledger→clicks→relevance loop), SP9 (exposure=payoff assumption vs the divergence evidence).
+    </p></div>
+  </div>
+</div>
+<div class="cell" id="cell-sp5-verification">
+  <div class="cell-header">
+    <span class="badge b-verify">Phase V — Verification</span>
+    <span class="cell-title">Iteration 5 — after SP5</span>
+    <span class="cell-ts">2026-07-16 KST</span>
+  </div>
+  <div class="cell-body">
+    <div class="field f-found"><div class="f-label">Coverage</div><p class="f-content">
+      0% of P1 objectives fully covered (0/3) · target: 100% · SPs run: 5/12.
+      O1: 4/5 named families done; capping/boosting (SP7) + bandits (SP6) still zero-RQ.
+      O2: marginal — 16 mapped RQs; SP5 added closed-loop finite-T bounds, FairSync (frequency-only member), and the scorability ceiling; SP6/SP7 columns pending.
+      O3: 7 lines meet the recency standard with 2025–2026 publications; SP7/SP9 pending.
+      O4: 1 completed-search gap + 1 theorem-grade gap (scorability ceiling); count→position transfer awaits SP7 as last plausible home.
+    </p></div>
+    <div class="field f-neutral"><div class="f-label">Convergence</div><p class="f-content">No — continue to SP6.</p></div>
+    <div class="field f-surprise"><div class="f-label">New SPs discovered</div><p class="f-content">None. Watch-item changes: SP4 concentration item RESOLVED for the closed-loop branch (4 finite-T bounds; residual only open-loop); count→position transfer promoted to standalone watch item (→SP7); pacing-equivalence bridge now has 3 legs awaiting SP7's citation check.</p></div>
+    <div class="field f-revised"><div class="f-label">Objectives refined ✎</div><p class="f-content">Unchanged after SP5.</p></div>
+  </div>
+</div>
+<div class="cell" id="cell-sp6-synthesis">
+  <div class="cell-header">
+    <span class="badge b-synth">Phase 3 ✓ Synthesis</span>
+    <span class="cell-title">SP6: Bandit and online learning for exposure allocation</span>
+    <span class="cell-ts">2026-07-16 KST</span>
+  </div>
+  <div class="cell-body">
+    <div class="field f-expected"><div class="f-label">Prior belief ◈</div><p class="f-content">
+      Score-free candidates with regret guarantees; five inherited lenses incl. respect-vs-replace-scores, position-weighted denominations, and whether regret bounds close SP4's open-loop concentration gap.
+    </p></div>
+    <div class="field f-found"><div class="f-label">Dominant approach found</div><p class="f-content">
+      The respect/replace split is structural. The merit-proportional FairX line (Wang &amp; Joachims and successors) REPLACES the scorer — merit is a function of the bandit's own estimated means — and under trusted immutable scores its learning problem degenerates to a closed-form target plus SP4 realization. The genuine score-free column is the quota-floor family: Fair-Learn gives the strongest realized-exposure guarantee in the entire survey (deterministic, anytime, learner-independent count floor at O(1)/round); EARS and the YouTube Shorts satisfaction filter are score-read-only layers.
+    </p></div>
+    <div class="field f-surprise"><div class="f-label">Surprise / Confirmation</div><p class="f-content">
+      (a) Exactly one position-weighted regret bound exists in the whole bandit line (ConcaveRewards, objective-side only) — the count→position gap survives its 4th SP; SP7 is the final check. (b) Bandit bounds do NOT close SP4's open-loop concentration gap: realized-count guarantees are again closed-loop ledger mechanisms (uuid 18 confirmed in a 4th literature). (c) Non-stationary arrivals + estimated relevance are handled at most one at a time, never with slates. (d) Production cold-start over-exposure confirmed (YouTube Shorts), with an inversion: FEWER, better-matched impressions won — confirming exposure→utility heterogeneity (uuid 8). (e) Exploration noise does not debias exposure (CascadingExposure) — debiasing claims resting on exploration alone are suspect.
+    </p></div>
+    <div class="field f-neutral"><div class="f-label">KB delta</div><p class="f-content">
+      3 claims added (score-free anytime floor capability; count-denomination gap; degenerate-regime gap — O4-ready pending SP7/SP8), 6 refined (uuids 3, 6, 8, 12, 18, 19). Total 23. 7 RQs; 4 seeds handed to SP7/SP8 incl. the final count→position check and pacing-duals ≟ drift-plus-penalty virtual queues.
+    </p></div>
+    <div class="field f-revised"><div class="f-label">SP revisions ✎</div><p class="f-content">
+      3 SPs revised: SP7 (final count→position check; uuid 6 formal test vs virtual queues; guaranteed-delivery as the ads analogue of anytime floors), SP8 (intermediate score-trust regime; exploration≠debiasing caveat), SP9 (is creator welfare ever denominated in exposure units?).
+    </p></div>
+  </div>
+</div>
+<div class="cell" id="cell-sp6-verification">
+  <div class="cell-header">
+    <span class="badge b-verify">Phase V — Verification</span>
+    <span class="cell-title">Iteration 6 — after SP6</span>
+    <span class="cell-ts">2026-07-16 KST</span>
+  </div>
+  <div class="cell-body">
+    <div class="field f-found"><div class="f-label">Coverage</div><p class="f-content">
+      0% of P1 objectives fully covered (0/3) · SPs run: 6/12.
+      O1: 4/5 families done — sole blocker is the capping/boosting family (SP7's home, covered only incidentally so far).
+      O2: marginal — score-free column filled with the survey's strongest guarantee (Fair-Learn anytime count floors wrapping any black box); last unlabeled column is SP7's capping/pacing; NEW degenerate-regime gap: no paper handles exposure-only control when merit is a fixed, immutable, NOISY score — exactly the user's setting.
+      O3: 8 lines with named 2025–2026 extensions; SP7/SP9 pending.
+      O4: 1 search-verified gap + 3 at final-check stage entering SP7 (count→position; open-loop concentration; degenerate regime).
+    </p></div>
+    <div class="field f-neutral"><div class="f-label">Convergence</div><p class="f-content">No — continue to SP7, the single highest-leverage remaining pass: closes O1's last family, supplies O2's last column, runs final checks on two watch items, and formally tests the now five-leg pacing≡dual-targeting equivalence.</p></div>
+    <div class="field f-surprise"><div class="f-label">New SPs discovered</div><p class="f-content">None. Watch items now 5 (added: degenerate-regime gap). Concentration and count→position checks recorded as SP6-negative.</p></div>
+    <div class="field f-revised"><div class="f-label">Objectives refined ✎</div><p class="f-content">Unchanged after SP6.</p></div>
+  </div>
+</div>
+<div class="cell" id="cell-sp7-synthesis">
+  <div class="cell-header">
+    <span class="badge b-synth">Phase 3 ✓ Synthesis</span>
+    <span class="cell-title">SP7: Impression capping, frequency control, and pacing in feeds and ads</span>
+    <span class="cell-ts">2026-07-16 KST</span>
+  </div>
+  <div class="cell-body">
+    <div class="field f-expected"><div class="f-label">Prior belief ◈</div><p class="f-content">
+      The literal industrial instantiation of the user's knob, carrying six accumulated lenses — most decisively the five-leg pacing≡dual-targeting equivalence test and the FINAL count→position check.
+    </p></div>
+    <div class="field f-found"><div class="f-label">Dominant approach found</div><p class="f-content">
+      The delivery layer is the largest deployed show/don't-show family: eligibility caps, throttling, and budget debiting operate score-free/read-only over an untouched auction; only in-model soft capping needs retraining. Hard frequency capping is a deterministic anytime exposure CEILING — the exact mirror of Fair-Learn's floor. The EQUIVALENCE TEST PASSES at algorithm-identity level: RCPacing is explicitly Dual Mirror Descent; parity-ray bid shading, fairness boost-∝-lag re-ranking, P-MMF deficit duals, and drift-plus-penalty virtual queues are the same dual update. No paper states the reduction — uuid 6 upgraded from hypothesis to mechanism; the unwritten reduction is itself an O4 bridge gap.
+    </p></div>
+    <div class="field f-surprise"><div class="f-label">Surprise / Confirmation</div><p class="f-content">
+      (a) Count→position gap SURVIVES its 5th and final SP — every ads guarantee is count/spend-denominated; LinkedIn Jobs debits position-adjusted expected charges in production (the position-weighted ledger exists as practice) but with zero theory. (b) The discretization mapping CLOSED in count units: e*ᵢ is directly a per-item impression budget; throttling + DMD deliver it over heterogeneous streams with regret bounds; the unsmoothness index is the deviation metric SP4 lacked. (c) VRS production proxy failure: impression-parity compliance 18/18 while unique reach −9.82% and CPP +12%; naive per-group budget splitting (pure frequency intervention) DOMINATES the score-side multiplier. (d) NEW: dynamic immutability failure — a temporary exposure boost durably retrained the production recommender (+14.75%, persistent); the exposure knob writes the scorer's future training data — modeled by no paper in any of 7 SPs.
+    </p></div>
+    <div class="field f-neutral"><div class="f-label">KB delta</div><p class="f-content">
+      2 claims added (count-unit discretization closure; dynamic immutability failure), 5 refined (uuids 3, 6, 8, 22, 23). Total 25. 7 RQs.
+    </p></div>
+    <div class="field f-revised"><div class="f-label">SP revisions ✎</div><p class="f-content">
+      2 SPs revised: SP8 (post-intervention scorer updates; uuid 23 final check; impressions-vs-reach denominations), SP9 (creator payoff in reach vs impressions; ecosystem→ads-pacing citation bridge check).
+    </p></div>
+  </div>
+</div>
+<div class="cell" id="cell-sp7-verification">
+  <div class="cell-header">
+    <span class="badge b-verify">Phase V — Verification</span>
+    <span class="cell-title">Iteration 7 — after SP7</span>
+    <span class="cell-ts">2026-07-16 KST</span>
+  </div>
+  <div class="cell-body">
+    <div class="field f-found"><div class="f-label">Coverage</div><p class="f-content">
+      0% of P1 objectives fully covered (0/3) · SPs run: 7/12.
+      O1: marginal — all five named families in the taxonomy; the controlled-objective axis lacks only SP8's calibration/debiasing column.
+      O2: marginal — feasibility map complete for all seven surveyed mechanism columns; SP8's score-preserving debiasing family is the last unlabeled one.
+      O3: marginal — feed/ads 2023–2026 line delivered (VRS+audit pair, RCPacing, 2 field experiments); SP8/SP9 recency passes pending.
+      O4: 2 items reached final form (count→position gap O4-CONFIRMED after 5th literature; pacing↔fairness reduction confirmed at algorithm identity, write-up pending SP9 citation check); degenerate-regime gap gets its final check in SP8.
+    </p></div>
+    <div class="field f-neutral"><div class="f-label">Convergence</div><p class="f-content">No — continue to SP8 (carries the uuid-23 final check, dynamic-immutability lens, reach-vs-impressions check). Broad-sweep blocks convergence until SP9 completes.</p></div>
+    <div class="field f-surprise"><div class="f-label">New SPs discovered</div><p class="f-content">None. Discretization watch item CLOSED (count units). Dynamic-immutability finding is related evidence for the LLM-feedback-loop watch item (final trigger check after SP8+SP9).</p></div>
+    <div class="field f-revised"><div class="f-label">Objectives refined ✎</div><p class="f-content">Unchanged after SP7.</p></div>
+  </div>
+</div>
+<div class="cell" id="cell-sp8-synthesis">
+  <div class="cell-header">
+    <span class="badge b-synth">Phase 3 ✓ Synthesis</span>
+    <span class="cell-title">SP8: Popularity debiasing and calibrated exposure versus relevance</span>
+    <span class="cell-ts">2026-07-16 KST</span>
+  </div>
+  <div class="cell-body">
+    <div class="field f-expected"><div class="f-label">Prior belief ◈</div><p class="f-content">
+      The controlled-objective axis beyond fairness proper, carrying seven accumulated lenses — most decisively the FINAL check on the degenerate-regime gap (uuid 23) and the dynamic-immutability lens from SP7.
+    </p></div>
+    <div class="field f-found"><div class="f-label">Dominant approach found</div><p class="f-content">
+      Debiasing splits by reference distribution — the new four-class taxonomy: historical-frequency (exposure-contaminated, circular), merit-proportional (imports score error), engagement-learned (myopic), uniform-floor (normatively arbitrary). No paper adjudicates between classes or constructs a contamination-free reference. Methods are either retraining (CausalEPP, CDN, LTR regularizers) or trusted-score re-ranking (Steck calibration line, LeapRec).
+    </p></div>
+    <div class="field f-surprise"><div class="f-label">Surprise / Confirmation</div><p class="f-content">
+      (a) uuid 23 FINAL check complete — the degenerate-regime gap is O4-FINAL: no paper in SP6/SP7/SP8 gives exposure-only correction guarantees over fixed noisy exogenous scores. (b) Dynamic immutability refined three ways: formal skeleton (θᵗ compounding — any logged uplift monotonically amplifies), the survey's first closed-loop intervention evaluation (600-round loop: memoryless per-round constraints fail cumulatively; cumulative-ledger normalization fixes empirically), and a constructive face (InvR kick-start: floors supply ~40% of minimum exposure before organic takeover — the coupling can be deliberately exploited). (c) Double-win divergence ADJUDICATED with five independent online/field legs: the accuracy-vs-exposure trade-off is largely an offline-evaluation artifact on exposure-biased logs — conditional, not universal. (d) LLM-era feedback loops: SP8 MISSED — spawn decision rests entirely on SP9.
+    </p></div>
+    <div class="field f-neutral"><div class="f-label">KB delta</div><p class="f-content">
+      1 claim added (reference-distribution taxonomy), 7 refined. Total 26. 7 RQs. Seeds → SP9: exposure-endogenous scorer modeling; LLM feedback-loop decisive check; deconvolution-based reference estimation; reach-vs-impression payoff denomination.
+    </p></div>
+    <div class="field f-revised"><div class="f-label">SP revisions ✎</div><p class="f-content">
+      SP9 revised with three decisive lenses: exposure-endogenous scorer modeling (uuid 25's last chance), the LLM feedback-loop trigger, and the reference-distribution normative axis with reach-vs-impression denomination.
+    </p></div>
+  </div>
+</div>
+<div class="cell" id="cell-sp8-verification">
+  <div class="cell-header">
+    <span class="badge b-verify">Phase V — Verification (orchestrator-recorded; forced decision)</span>
+    <span class="cell-title">Iteration 8 — after SP8</span>
+    <span class="cell-ts">2026-07-16 KST</span>
+  </div>
+  <div class="cell-body">
+    <div class="field f-found"><div class="f-label">Coverage</div><p class="f-content">
+      0% of P1 objectives fully covered (0/3) · SPs run: 8/12.
+      O1: near-complete — all five named families + the controlled-objective axis (fairness, diversity, calibration, popularity debiasing) now populated; only SP9's ecosystem entries remain.
+      O2: near-complete — SP8's debiasing column labeled (retraining vs trusted-score re-ranking; post-hoc subset small as assumed); one family (SP9 ecosystem mechanisms) unlabeled.
+      O3: pending SP9 (ecosystem line explicitly O3-targeted).
+      O4: two O4-FINAL gaps (count→position transfer; degenerate regime), one algorithm-identity result awaiting SP9's citation bridge check, dynamic immutability refined with formal skeleton + closed-loop evidence.
+    </p></div>
+    <div class="field f-neutral"><div class="f-label">Convergence</div><p class="f-content">
+      No — FORCED CONTINUE → SP9: broad-sweep mode requires SP9 regardless of coverage, and SP9 is the last ranked SP. The full verifier agent was not spawned for this forced decision (cost control); the decisive verification — including the LLM-feedback-loop spawn-trigger evaluation — runs after SP9.
+    </p></div>
+    <div class="field f-surprise"><div class="f-label">New SPs discovered</div><p class="f-content">None this iteration. DECISIVE NEXT: LLM-era feedback loops — SP8 missed; if SP9 also misses, spawn the new SP per the trigger.</p></div>
+    <div class="field f-revised"><div class="f-label">Objectives refined ✎</div><p class="f-content">Unchanged after SP8.</p></div>
+  </div>
+</div>
+<div class="cell" id="cell-sp9-synthesis">
+  <div class="cell-header">
+    <span class="badge b-synth">Phase 3 ✓ Synthesis</span>
+    <span class="cell-title">SP9: Content ecosystems, creator incentives, and platform exposure mechanisms</span>
+    <span class="cell-ts">2026-07-16 KST</span>
+  </div>
+  <div class="cell-body">
+    <div class="field f-expected"><div class="f-label">Prior belief ◈</div><p class="f-content">
+      The likeliest O4 source, carrying five decisive lenses: exposure=payoff vs heterogeneity, the pacing citation bridge check, exposure-endogenous scorer modeling (uuid 25's last chance), the DECISIVE LLM-feedback-loop spawn check, and strategic gaming of frequency interventions.
+    </p></div>
+    <div class="field f-found"><div class="f-label">Dominant approach found</div><p class="f-content">
+      Game-theoretic creator competition over exposure shares: proportional-splitting games (PPA-Game: PNE under long-tailed payoffs, PoA bounds), embedding-strategic creators (Hron τ-threshold homogenization; SupplySideEq β* specialization phase transition), and welfare-optimizing exposure reweighting (KDD 2024). The whole theory line assumes exposure=payoff in raw single-impression counts — every model serves ONE impression per user per round, so the impressions-vs-reach distinction is inexpressible, not merely untested.
+    </p></div>
+    <div class="field f-surprise"><div class="f-label">Surprise / Confirmation</div><p class="f-content">
+      (a) Pacing bridge check NEGATIVE AND FINAL: no ecosystem paper cites the DMD/pacing cluster — the pacing↔fairness-dual reduction is a confirmed O4 gap after all 9 SPs. (b) uuid 25's last chance FAILS for the log-contamination channel; Performative Recommendation covers only the creator-content channel, white-box. New persistence divergence: creator-channel effects revert on removal, log-channel effects persist — never co-modeled. (c) LLM feedback loops: SP9 ALSO MISSES (LoRe uses LLM agents only as simulators) — SPAWN CONDITION MET → SP10. (d) Gaming of frequency interventions unmodeled anywhere → SP11 spawned as the completed-search verification. (e) Two new strict frequency-only members: HMT production eligibility scaling; the Shapley mediator (axiomatically REQUIRES show/don't-show randomization for fairness + strategic stability). (f) Hron's exploration→homogenization inverts the consumer-side diversity consensus on the supply side.
+    </p></div>
+    <div class="field f-neutral"><div class="f-label">KB delta</div><p class="f-content">
+      2 claims added, 5 refined (uuids 3, 6, 8, 25, 26). Total 28. 7 RQs; 3 seeds (2 missing_sp → SP10/SP11 spawned; 1 condition_delta: do equilibrium results survive position-weighted slate exposure?).
+    </p></div>
+    <div class="field f-revised"><div class="f-label">SP revisions ✎</div><p class="f-content">
+      No remaining ranked SPs to revise — SP9 was the last. Two SPs spawned instead: SP10 (LLM-era exposure feedback loops; trigger fired after SP8+SP9 double miss) and SP11 (strategy-proofness of frequency-level exposure interventions; completed-search verification for the O4 gaming gap).
+    </p></div>
+  </div>
+</div>
+<div class="cell" id="cell-sp10-synthesis">
+  <div class="cell-header">
+    <span class="badge b-synth">Phase 3 ✓ Synthesis (spawned SP)</span>
+    <span class="cell-title">SP10: LLM-era exposure feedback loops</span>
+    <span class="cell-ts">2026-07-16 KST</span>
+  </div>
+  <div class="cell-body">
+    <div class="field f-expected"><div class="f-label">Prior belief ◈</div><p class="f-content">
+      Spawned at iteration 9 after SP8+SP9 both missed. Question: do LLM/generative recommenders retraining on exposure-shaped logs change the exposure-control problem, and can frequency-level interventions stabilize the loop?
+    </p></div>
+    <div class="field f-found"><div class="f-label">Dominant approach found</div><p class="f-content">
+      A mature transferable theory line (performative prediction; self-consuming model collapse: MAD, fixed-point contraction, recursive stability, correction operators) plus three direct-hit 2026 LLM-recommender loop papers. Four independent theory lines converge on ONE stabilization mechanism: a constant fraction of loop-independent data in every retraining batch. Its exposure-side instantiation is a PERSISTENT exploration floor — which inverts every deployed design in the survey (InvR, TEC, cold-start boosts all switch off after bootstrap).
+    </p></div>
+    <div class="field f-surprise"><div class="f-label">Surprise / Confirmation</div><p class="f-content">
+      (a) LLM recommenders change the problem in three ways the θᵗ compounding skeleton cannot express: hallucination contamination of logs, incremental fine-tuning acceleration, and generation-space support collapse — the first setting in 11 SPs where a show/don't-show floor may be STRUCTURALLY INSUFFICIENT (the generative policy can lose the ability to produce the item to be floored). (b) The surviving O4-grade gap: the entire theory line models GENERATION loops (synthetic samples re-entering training) while the survey's loop is a REWEIGHTING loop (biasing observation of real items) — transfer unproven per three independent condition deltas; scorer/exposure co-adaptation modeled nowhere; SP9's two channels remain un-co-modeled.
+    </p></div>
+    <div class="field f-neutral"><div class="f-label">KB delta</div><p class="f-content">
+      2 claims added (constant-fraction stabilization mechanism; generation-vs-reweighting transfer gap), 3 refined (uuids 25, 4, 11 — incl. the implicit-RLHF sharpening: t retraining rounds ≙ RLHF with β=1/t). Total 30. 7 RQs.
+    </p></div>
+    <div class="field f-revised"><div class="f-label">SP revisions ✎</div><p class="f-content">No remaining SPs to revise — SP11 ran concurrently as the final SP.</p></div>
+  </div>
+</div>
+<div class="cell" id="cell-sp11-synthesis">
+  <div class="cell-header">
+    <span class="badge b-synth">Phase 3 ✓ Synthesis (spawned SP)</span>
+    <span class="cell-title">SP11: Strategy-proofness of frequency-level exposure interventions</span>
+    <span class="cell-ts">2026-07-16 KST</span>
+  </div>
+  <div class="cell-body">
+    <div class="field f-expected"><div class="f-label">Prior belief ◈</div><p class="f-content">
+      Spawned as the completed-search verification for SP9's gaming gap: adjacent literatures (Sybil-proofness, strategyproof mechanism design, adversarial attacks) might already address strategy-proofness of exposure floors/caps/boosts.
+    </p></div>
+    <div class="field f-found"><div class="f-label">Dominant approach found</div><p class="f-content">
+      Three adjacent literatures, each holding one necessary piece, never intersecting: (1) Sybil/false-name-proofness theory leans impossibility (symmetric monotone rules collapse to second-price allocation — floor-like allocation excluded) but every theorem is payment-load-bearing and one-shot; (2) StrategicBandits/OptGTM formalizes exactly the right incentive model (arm utility = selection count) but defends the learner's own rule, not an intervention layer, and its grim trigger is defeated by re-registration — the re-upload move; (3) attack papers (AIP, PUDA, poisoning survey) show the levers interventions institutionalize are already gamed with failing defenses, but never target an intervention layer.
+    </p></div>
+    <div class="field f-surprise"><div class="f-label">Surprise / Confirmation</div><p class="f-content">
+      GAP VERDICT: ABSENT — CONFIRMED with completed-search evidence (O4 solved_when discharged). Synthesis mechanism naming the danger: frequency interventions convert a STATISTICAL attack surface into a CONTRACTUAL one — a boost/floor is a guaranteed exposure payout for a cheaply-satisfiable predicate ("new item", "under-exposed item"). Honesty caveat carried: one named residual check (replication-proof bandit mechanism design, Esmaeili et al. 2023 — surfaced via related work, not ingested) recorded as a follow-up seed rather than silently absorbed.
+    </p></div>
+    <div class="field f-neutral"><div class="f-label">KB delta</div><p class="f-content">
+      2 claims added (frequency statistics as dual-use attack/defense signal; consumer-side incentive bound on boosts), 3 refined (uuids 28 — O4-confirmed with formalized candidate problem: payment-free, repeated, divisible splitting-proof floors; 21 — Fair-Learn's quota denomination is splitting-attractive; 27). Total 32. 6 RQs.
+    </p></div>
+    <div class="field f-revised"><div class="f-label">SP revisions ✎</div><p class="f-content">No remaining SPs. The ranked list (9 + 2 spawned) is exhausted — proceed to final verification.</p></div>
+  </div>
+</div>
+<div class="cell" id="cell-final-verification">
+  <div class="cell-header">
+    <span class="badge b-verify">Phase V — FINAL Verification</span>
+    <span class="cell-title">Iteration 11 — CONVERGED</span>
+    <span class="cell-ts">2026-07-16 KST</span>
+  </div>
+  <div class="cell-body">
+    <div class="field f-found"><div class="f-label">Coverage</div><p class="f-content">
+      100% of P1 objectives covered (3/3) + O4 [P2] also covered · SPs run: 11 (9 ranked + 2 spawned) · 126 papers · 78 RQs.
+      O1 ✓ all five named families taxonomized by mechanism/objective/evaluation; canonical checklist in-corpus with successor lines.
+      O2 ✓ every technique access-labeled; strict frequency-only subset explicitly identified with guarantees (FairRec, TEC, TaxRank/ElasticRank, FairSync, Fair-Learn floors, HFC ceilings, HMT, Shapley mediator).
+      O3 ✓ every classical line has named 2024–2026 advances + two newly emerged lines (LLM-era re-ranking; LLM-era feedback loops); 2025–2026 publications throughout.
+      O4 ✓ seven open problems, each with per-question completed-search evidence.
+    </p></div>
+    <div class="field f-neutral"><div class="f-label">Convergence</div><p class="f-content">
+      YES — CONVERGE. Broad-sweep conditions met (SP2, SP7, SP9 complete + both spawned SPs). next_sp: null. Proceeding to Phase 4 (conclusion) and Phase 5 (report).
+    </p></div>
+    <div class="field f-surprise"><div class="f-label">The seven O4 gaps (completed-search evidence on record)</div><p class="f-content">
+      (1) No Bayes-optimal exposure-fair post-processor over elicited scores. (2) Count→position-weighted transfer gap (final after 5 literatures). (3) Degenerate regime: exposure-only control over fixed noisy exogenous scores. (4) Strategy-proofness of exposure interventions absent (1 named residual documented inside the gap statement). (5) Generation-vs-reweighting loop transfer unproven. (6) Pacing↔fairness dual reduction confirmed at algorithm identity but unwritten in any paper. (7) Position-weighted concentration theorem for open-loop realization missing.
+    </p></div>
+    <div class="field f-revised"><div class="f-label">Objectives refined ✎</div><p class="f-content">Objectives unchanged in the final iteration; all solved-when criteria discharged as originally stated (O2's evidence standard was sharpened en route by the slate-reordering axis and the score-trust dichotomy, recorded as synthesis conventions).</p></div>
+  </div>
+</div>
+  </div>
+</div>
+</body>
+</html>

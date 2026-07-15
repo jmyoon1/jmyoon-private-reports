@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>[51] Vertical Allocation-based Fair Exposure Amortizing in Rankin — Exposure-Frequency Control Survey</title>
+
+<style>
+:root {
+  --bg: #0d1117; --card: #161b22; --border: #30363d;
+  --text: #e6edf3; --muted: #7d8590; --accent: #58a6ff;
+  --teal: #39d0c7; --green: #3fb950; --yellow: #d29922;
+  --red: #f85149; --purple: #bc8cff; --orange: #e3b341;
+  --sidebar-w: 262px; --toc-w: 210px; --hdr-h: 48px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+body { font-family: -apple-system, sans-serif; background: var(--bg);
+       color: var(--text); line-height: 1.6; }
+.bd-root { display: flex; height: 100vh; overflow: hidden; }
+.bd-sidebar-primary {
+  width: var(--sidebar-w); min-width: var(--sidebar-w);
+  overflow-y: auto; background: var(--card);
+  border-right: 1px solid var(--border);
+  padding: 0.75rem 0; flex-shrink: 0;
+}
+.bd-sidebar-primary::-webkit-scrollbar { width: 4px; }
+.bd-sidebar-primary::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+.bd-main { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-width: 0; }
+.article-header-bar {
+  height: var(--hdr-h); background: var(--card);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; padding: 0 1.5rem;
+  gap: 1rem; flex-shrink: 0;
+}
+.header-brand { color: var(--teal); font-weight: bold; font-size: 0.95em;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 1; }
+.header-brand a { color: inherit; text-decoration: none; }
+.breadcrumb { color: var(--muted); font-size: 0.82em; display: flex;
+  align-items: center; gap: 0.3rem; flex-shrink: 0; }
+.breadcrumb a { color: var(--accent); text-decoration: none; }
+.breadcrumb span { color: var(--border); }
+.bd-article { flex: 1; overflow-y: auto; padding: 2rem 2.5rem; }
+.bd-article::-webkit-scrollbar { width: 6px; }
+.bd-article::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+.bd-sidebar-secondary {
+  width: var(--toc-w); min-width: var(--toc-w);
+  overflow-y: auto; border-left: 1px solid var(--border);
+  padding: 1rem 0.75rem; flex-shrink: 0;
+}
+.bd-sidebar-secondary::-webkit-scrollbar { width: 4px; }
+.bd-sidebar-secondary::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+.sidebar-logo { padding: 0.5rem 1rem 0.75rem;
+  border-bottom: 1px solid var(--border); margin-bottom: 0.5rem; }
+.sidebar-logo a { color: var(--teal); font-weight: bold; font-size: 0.95em;
+  text-decoration: none; display: block; }
+.sidebar-section { color: var(--muted); font-size: 0.72em; font-weight: bold;
+  text-transform: uppercase; letter-spacing: 0.07em;
+  padding: 0.7rem 1rem 0.25rem; }
+.sidebar-nav-link { display: block; padding: 0.28rem 1rem 0.28rem 1.25rem;
+  color: var(--muted); font-size: 0.875em; text-decoration: none; }
+.sidebar-nav-link:hover { color: var(--text); background: rgba(255,255,255,0.03); }
+.sidebar-nav-link.active { color: var(--teal);
+  border-left: 2px solid var(--teal);
+  padding-left: calc(1.25rem - 2px); background: rgba(57,208,199,0.05); }
+.mini-toc-label { color: var(--muted); font-size: 0.72em; font-weight: bold;
+  text-transform: uppercase; letter-spacing: 0.07em; padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border); margin-bottom: 0.5rem; }
+.mini-toc { list-style: none; }
+.mini-toc li a { display: block; padding: 0.22rem 0;
+  color: var(--muted); font-size: 0.83em; text-decoration: none;
+  border-left: 2px solid transparent; padding-left: 0.5rem; }
+.mini-toc li a:hover { color: var(--text); }
+.mini-toc li a.toc-active { color: var(--teal); border-left-color: var(--teal); }
+.section-anchor { scroll-margin-top: calc(var(--hdr-h) + 8px); }
+h1 { color: var(--teal); font-size: 1.7em; margin-bottom: 0.5rem; line-height:1.3; }
+h2 { color: var(--teal); font-size: 1.25em; margin: 1.5rem 0 0.6rem; }
+h3 { color: var(--teal); font-size: 1.05em; margin: 1.2rem 0 0.4rem; }
+h4 { color: var(--teal); font-size: 0.95em; margin: 1rem 0 0.3rem; }
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+p { margin-bottom: 0.8rem; }
+ul, ol { margin: 0 0 0.8rem 1.4rem; }
+li { margin-bottom: 0.3rem; }
+code { background: rgba(255,255,255,0.06); border-radius: 3px; padding: 1px 4px; font-size: 0.9em; }
+blockquote { border-left: 3px solid var(--border); color: var(--muted);
+  padding: 0.2rem 0.8rem; margin-bottom: 0.8rem; }
+.card { background: var(--card); border: 1px solid var(--border);
+        border-radius: 8px; padding: 1.2rem; margin-bottom: 1rem; }
+table { width: 100%; border-collapse: collapse; font-size: 0.9em; margin-bottom: 0.8rem; }
+th { background: var(--card); color: var(--teal); padding: 8px;
+     border: 1px solid var(--border); text-align: left; }
+td { padding: 8px; border: 1px solid var(--border); vertical-align: top; }
+tr:nth-child(even) td { background: rgba(0,0,0,0.2); }
+.stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+             gap: 1rem; margin-bottom: 1.5rem; }
+.stat-box { background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+            padding: 1rem; text-align: center; }
+.stat-num { font-size: 2rem; font-weight: bold; color: var(--teal); }
+.stat-label { color: var(--muted); font-size: 0.85em; margin-top: 0.2rem; }
+.sp-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+           gap: 1rem; margin: 1rem 0; }
+.sp-card { background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+           padding: 1.2rem; cursor: pointer; transition: border-color 0.15s; height:100%; }
+.sp-card:hover { border-color: var(--teal); }
+.sp-card h3 { margin: 0 0 0.5rem; color: var(--teal); font-size: 1em; }
+.sp-card p { margin: 0; color: var(--muted); font-size: 0.88em; }
+.sp-badge { display: inline-block; background: rgba(57,208,199,0.1); color: var(--teal);
+            border-radius: 4px; padding: 2px 8px; font-size: 0.8em; margin-bottom: 0.5rem; }
+.paper-meta { color: var(--muted); font-size: 0.9em; margin-bottom: 1.5rem; }
+.paper-meta a { color: var(--accent); }
+.section-label { color: var(--teal); font-weight: bold; font-size: 0.85em;
+                 text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.4rem; }
+.pill { display: inline-block; border-radius: 4px; padding: 0.15rem 0.6rem;
+        font-size: 0.8em; font-weight: bold; margin-right: 0.4rem; }
+.pill-p0 { background: rgba(63,185,80,0.2); color: var(--green); }
+.pill-p1 { background: rgba(57,208,199,0.15); color: var(--teal); }
+.pill-p2 { background: rgba(210,153,34,0.2); color: var(--yellow); }
+.pill-p3 { background: rgba(188,140,255,0.2); color: var(--purple); }
+.pill-p4 { background: rgba(125,133,144,0.2); color: var(--muted); }
+.delta-row { margin: 0.4rem 0; padding: 0.4rem 0.8rem;
+             border-left: 3px solid var(--border); border-radius: 0 4px 4px 0; }
+.chain { position: relative; padding-left: 2rem; }
+.chain::before { content: ''; position: absolute; left: 0.95rem; top: 0;
+                 bottom: 0; width: 2px; background: var(--border); }
+.chain-node { position: relative; margin-bottom: 2rem; }
+.chain-node::before { content: ''; position: absolute; left: -1.55rem;
+                      top: 1.1rem; width: 12px; height: 12px;
+                      border-radius: 50%; background: var(--teal); }
+.chain-num { display: inline-block; width: 28px; height: 28px; background: var(--teal);
+             color: #000; border-radius: 50%; text-align: center; line-height: 28px;
+             font-weight: bold; font-size: 0.85em; margin-right: 0.6rem; flex-shrink: 0; }
+.chain-q { font-weight: bold; color: var(--text); margin: 0.4rem 0 0.3rem; font-size: 1em; }
+.chain-papers { color: var(--muted); font-size: 0.85em; margin-bottom: 0.6rem; }
+.chain-start { background: var(--card); border: 1px solid var(--teal);
+               border-radius: 8px; padding: 1rem; margin-bottom: 2rem; }
+.chain-start h3 { margin: 0 0 0.5rem; color: var(--teal); }
+.chain-converge { background: var(--card); border: 1px solid var(--green);
+                  border-radius: 8px; padding: 1rem; margin-top: 1rem; }
+.chain-converge h3 { margin: 0 0 0.5rem; color: var(--green); }
+.chain-label { display: inline-block; border-radius: 4px; padding: 0.15rem 0.6rem;
+               font-size: 0.8em; font-weight: bold; margin-right: 0.4rem; }
+.chain-status { border-radius: 0 4px 4px 0; padding: 0.5rem 0.8rem;
+                margin: 0.35rem 0; font-size: 0.88em; }
+.chain-status ul { margin: 0.3rem 0 0 1.2rem; padding: 0; }
+.chain-status li { margin-bottom: 0.25rem; }
+.chain-status.solved  { background: rgba(63,185,80,0.07);  border-left: 3px solid var(--green); }
+.chain-status.remains { background: rgba(210,153,34,0.07); border-left: 3px solid var(--yellow); }
+.chain-status.added   { background: rgba(248,81,73,0.07);  border-left: 3px solid var(--red); }
+.chain-status.pivoted { background: rgba(188,140,255,0.1); border-left: 3px solid var(--purple); }
+.chain-label.solved   { background: rgba(63,185,80,0.2);  color: var(--green); }
+.chain-label.remains  { background: rgba(210,153,34,0.2); color: var(--yellow); }
+.chain-label.added    { background: rgba(248,81,73,0.2);  color: var(--red); }
+.chain-label.pivoted  { background: rgba(188,140,255,0.2); color: var(--purple); }
+.chain-status.expected { background: rgba(88,166,255,0.07);  border-left: 3px solid var(--accent); }
+.chain-label.expected  { background: rgba(88,166,255,0.2);   color: var(--accent); }
+.chain-status.revised  { background: rgba(57,208,199,0.07);  border-left: 3px solid var(--teal); }
+.chain-label.revised   { background: rgba(57,208,199,0.2);   color: var(--teal); }
+.concept-box { border-left: 4px solid var(--teal); background: #0d1f1f;
+               border-radius: 4px; padding: 1.2rem; margin-bottom: 1.2rem; }
+.concept-name { font-weight: bold; color: var(--teal); font-size: 1.05em; margin-bottom: 0.5rem; }
+.hypothesis { border-left: 4px solid var(--teal); background: #0d1f1f;
+              border-radius: 4px; padding: 1rem; margin: 1rem 0; }
+.recommendation { border-left: 4px solid var(--purple); background: #1a0f2e;
+                  border-radius: 4px; padding: 1rem; margin: 1rem 0; }
+.rq-row { background: rgba(88,166,255,0.05); border-left: 3px solid var(--accent);
+          padding: 0.4rem 0.8rem; margin-bottom: 0.5rem; border-radius: 0 4px 4px 0; }
+.scroll-table-wrap { max-height: 420px; overflow-y: auto; border: 1px solid var(--border);
+                     border-radius: 4px; }
+.scroll-table-wrap table { margin-bottom: 0; }
+.scroll-table-wrap thead th { position: sticky; top: 0; background: #161b22; z-index: 1; }
+.page-nav { display: flex; justify-content: space-between; margin-top: 2rem;
+            padding-top: 1rem; border-top: 1px solid var(--border); gap: 1rem; }
+.page-nav a { color: var(--accent); font-size: 0.9em; }
+html.ko-active .en-only { display: none !important; }
+html.ko-active .ko-only { display: block !important; }
+.ko-only { display: none; }
+span.ko-only, .sidebar-logo a span.ko-only { display: none; }
+html.ko-active span.ko-only { display: inline !important; }
+.lang-btn { background: transparent; color: var(--muted); border: 1px solid var(--border);
+            border-radius: 4px; padding: 3px 9px; font-size: 0.8em; cursor: pointer; }
+.lang-btn.active { border-color: var(--teal); color: var(--teal); }
+details { margin-bottom: 0.8rem; }
+details summary { color: var(--muted); cursor: pointer; }
+@media (max-width: 1024px) { .bd-sidebar-secondary { display: none; } }
+@media (max-width: 768px) {
+  .bd-sidebar-primary { display: none; }
+  .bd-root { flex-direction: column; height: auto; overflow: visible; }
+  .bd-main { overflow: visible; }
+  .bd-article { overflow: visible; padding: 1rem; }
+  .stat-grid { grid-template-columns: repeat(2, 1fr); }
+  .sp-grid { grid-template-columns: 1fr; }
+}
+</style>
+
+<script>
+MathJax = { tex: { inlineMath: [['$','$']], displayMath: [['$$','$$']] },
+            options: { skipHtmlTags: ['script','noscript','style','textarea','pre','code'] } };
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<script>
+function toggleLanguage() {
+  const html = document.documentElement;
+  const isKo = html.classList.toggle('ko-active');
+  document.querySelectorAll('.lang-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.lang === (isKo ? 'ko' : 'en'));
+  });
+  localStorage.setItem('survey-lang', isKo ? 'ko' : 'en');
+}
+document.addEventListener('DOMContentLoaded', function() {
+  const saved = localStorage.getItem('survey-lang');
+  if (saved === 'ko') {
+    document.documentElement.classList.add('ko-active');
+    document.querySelectorAll('.lang-btn').forEach(b =>
+      b.classList.toggle('active', b.dataset.lang === 'ko'));
+  } else {
+    document.querySelectorAll('[data-lang="en"]').forEach(b => b.classList.add('active'));
+  }
+  const article = document.querySelector('.bd-article');
+  const sections = Array.from(document.querySelectorAll('.section-anchor[id]'));
+  const sideLinks = Array.from(document.querySelectorAll('.bd-sidebar-primary .sidebar-nav-link'));
+  const tocLinks = Array.from(document.querySelectorAll('.bd-sidebar-secondary .mini-toc a'));
+  if (!article || !sections.length) return;
+  function current() {
+    let id = sections[0].id;
+    const scrollTop = article.scrollTop + 60;
+    sections.forEach(function(s) { if (s.offsetTop <= scrollTop) id = s.id; });
+    return id;
+  }
+  function update() {
+    const id = current();
+    sideLinks.forEach(function(a) {
+      a.classList.toggle('active', a.getAttribute('href') === '#' + id);
+    });
+    tocLinks.forEach(function(a) {
+      a.classList.toggle('toc-active', a.getAttribute('href') === '#' + id);
+    });
+  }
+  article.addEventListener('scroll', update, { passive: true });
+  update();
+});
+</script>
+
+</head>
+<body>
+<div class="bd-root">
+
+<nav class="bd-sidebar-primary">
+  <div class="sidebar-logo">
+    <a href="../index.html">&#x2B21; <span class="en-only">Exposure-Frequency Control Survey</span><span class="ko-only">Exposure-빈도 제어 문헌 조사</span></a>
+  </div>
+  <div class="sidebar-section"><span class="en-only">Overview</span><span class="ko-only">개요</span></div>
+  <a href="../index.html#overview" class="sidebar-nav-link"><span class="en-only">Survey Hub</span><span class="ko-only">조사 허브</span></a>
+  <a href="../index.html#answers" class="sidebar-nav-link"><span class="en-only">Key Answers</span><span class="ko-only">핵심 답변</span></a>
+  <div class="sidebar-section"><span class="en-only">Sub-Problems</span><span class="ko-only">세부 문제</span></div>
+<a href="../sp1_fairness-of-exposure-fixed-scores.html" class="sidebar-nav-link">SP1: <span class="en-only">Exposure fairness</span><span class="ko-only">Exposure 공정성</span></a>
+<a href="../sp2_2024-2026-frontier-llm-era.html" class="sidebar-nav-link">SP2: <span class="en-only">2024–26 frontier / LLM</span><span class="ko-only">2024–26 최전선 / LLM</span></a>
+<a href="../sp3_postproc-rerank-blackbox.html" class="sidebar-nav-link">SP3: <span class="en-only">Post-proc re-ranking</span><span class="ko-only">Post-proc re-ranking</span></a>
+<a href="../sp4_stochastic-ranking-policies.html" class="sidebar-nav-link">SP4: <span class="en-only">Stochastic policies</span><span class="ko-only">확률적 정책</span></a>
+<a href="../sp5_amortized-equity-attention.html" class="sidebar-nav-link active">SP5: <span class="en-only">Amortized fairness</span><span class="ko-only">Amortized 공정성</span></a>
+<a href="../sp6_bandit-exposure-allocation.html" class="sidebar-nav-link">SP6: <span class="en-only">Bandit allocation</span><span class="ko-only">Bandit 배분</span></a>
+<a href="../sp7_capping-pacing-feeds-ads.html" class="sidebar-nav-link">SP7: <span class="en-only">Capping &amp; pacing</span><span class="ko-only">Capping·pacing</span></a>
+<a href="../sp8_popularity-debias-calibration.html" class="sidebar-nav-link">SP8: <span class="en-only">Debiasing &amp; calibration</span><span class="ko-only">Debiasing·calibration</span></a>
+<a href="../sp9_ecosystems-creator-incentives.html" class="sidebar-nav-link">SP9: <span class="en-only">Ecosystems &amp; creators</span><span class="ko-only">생태계·creator</span></a>
+<a href="../sp10_llm-exposure-feedback-loops.html" class="sidebar-nav-link">SP10: <span class="en-only">LLM feedback loops</span><span class="ko-only">LLM feedback loop</span></a>
+<a href="../sp11_strategyproof-exposure.html" class="sidebar-nav-link">SP11: <span class="en-only">Strategy-proofness</span><span class="ko-only">Strategy-proofness</span></a>
+
+  <div class="sidebar-section"><span class="en-only">Synthesis</span><span class="ko-only">종합</span></div>
+  <a href="../conclusion.html" class="sidebar-nav-link"><span class="en-only">Conclusion</span><span class="ko-only">결론</span></a>
+  <a href="../thinking-process.html" class="sidebar-nav-link"><span class="en-only">Thinking Process</span><span class="ko-only">추론 과정</span></a>
+</nav>
+  <div class="bd-main">
+<div class="article-header-bar"><div class="header-brand"><a href="../index.html"><span class="en-only">Exposure-Frequency Control Survey</span><span class="ko-only">Exposure-빈도 제어 문헌 조사</span></a></div><nav class="breadcrumb"><a href="../index.html"><span class="en-only">Survey</span><span class="ko-only">조사</span></a><span>&rsaquo;</span><a href="../sp5_amortized-equity-attention.html">SP5</a><span>&rsaquo;</span><span>[51] Vertical Allocation-based Fair Exposure </span></nav><button class="lang-btn" data-lang="en" onclick="toggleLanguage()">EN</button><button class="lang-btn" data-lang="ko" onclick="toggleLanguage()">KO</button></div>
+    <div class="bd-article">
+<section id="header" class="section-anchor"><div class="paper-meta">
+<h1 style="margin-bottom:0.3rem">Vertical Allocation-based Fair Exposure Amortizing in Ranking</h1>
+<p style="margin:0.3rem 0;color:var(--muted)">Yang et al. · arXiv · 2022</p>
+<p style="margin:0.3rem 0"><a href="https://arxiv.org/abs/2204.03046" target="_blank">arXiv:2204.03046</a> · <a href="https://arxiv.org/pdf/2204.03046.pdf" target="_blank">PDF</a> · SP: <a href="../sp5_amortized-equity-attention.html">SP5</a></p>
+<p><span class="pill pill-p4">P4</span><span class="pill" style="background:rgba(255,255,255,0.05);color:var(--muted)">Track C</span></p>
+</div>
+<div class="card ko-only" style="border-color:var(--teal)"><div class="section-label">한 줄 요약</div><p style="margin:0">원래의 amortization 메커니즘이 상위 슬롯에서 비효율적임을 보이고 수직 배분 기반 공정 exposure amortizing(VerFair)을 제안한다. 실현 오차를 position weight 1개 미만으로 묶는다.</p></div>
+</section>
+<section id="problem" class="section-anchor">
+<div class="card"><div class="section-label"><span class="en-only">Problem</span><span class="ko-only">해결하려는 문제</span></div><p>Existing amortized-exposure-fairness methods (Biega et al.'s per-round ILP, Singh &amp; Joachims' LP over probabilistic rankings, Morik et al.'s FairCo proportional controller) allocate exposure in an online/horizontal manner that assumes no prior knowledge of the consumer population. In settings where the system CAN pre-compute all ranklists at once (email advertising, offline recommendation), this assumption is wasteful: horizontal allocation creates avoidable conflicts for relevant items at top ranks, yielding a suboptimal fairness-relevance tradeoff (lower NDCG at top positions for the same fairness level). ILP methods are additionally too slow for large-scale serving (NP-complete; ~44–147 s per 1k ranklists vs VerFair's 0.1–0.2 s).</p></div>
+</section>
+<section id="solution" class="section-anchor">
+<div class="card"><div class="section-label"><span class="en-only">Solution / Contribution</span><span class="ko-only">해결책 / 기여</span></div><p>VerFair, a model-agnostic post-processing algorithm with three phases (Algorithm 1), operating on a pre-computed relevance matrix R(d,u) for all m consumers at once:</p>
+<ol><li><strong>Anchor-point search</strong> (Algorithm 2): scan slots backwards from (m,k) until accumulated position exposure ≥ α · E_total; start allocation there.</li><li><strong>Allocation Phase</strong>: vertical (column-first) greedy allocation from the anchor point — at each slot, among items whose group still has quota remaining (set H) intersected with the consumer's unused items F(u), pick the most relevant; update the group's allocated exposure.</li><li><strong>Appending Phase</strong>: fill remaining empty slots purely by personal relevance (no fairness constraint).</li><li><strong>Re-sorting Phase</strong>: sort each consumer's list by personal relevance. Because allocation started at the bottom-anchored region, quota-satisfying items can only move UP, so the minimum-exposure guarantee E(G) ≥ Quota(G|α) survives (proof sketch in §4.4.2: either all quotas are met exactly, or the per-group shortfall is bounded by one position's examination probability p_{c*,k} &lt; 1).</li></ol>
+<p>Individual fairness is the special case where every item is its own group. Complexity O(m·n·k), same as FairCo/FairRec but empirically faster.</p></div>
+<div class="card"><div class="section-label"><span class="en-only">Key Results</span><span class="ko-only">주요 결과</span></div><ul><li>On Yahoo! R3, Google Local, and Movielens-Groups, VerFair(Ind)/VerFair(Group) tradeoff curves dominate ILP-Pers, ILP-Aver, and FairCo on NDCG@3 vs fairness (1 − JSD between exposure and relevance distributions) across position-bias severities η = 0, 1, 2 (Fig. 1a–c, i–k). [Curve-level result; no single headline number reported.]</li><li>At NDCG@10 (full-list), VerFair is similar or slightly inferior to FairCo (Fig. 1d, h, l) — the gain is specifically at top ranks.</li><li>Speed: 0.1–0.2 s per 1k ranklists vs ILP-Pers 57.5–147.2 s, ILP-Aver 44.2–46.4 s, FairCo 0.1–4.7 s, FairRec 0.3–1.6 s (Table 6).</li><li>Minimum-exposure guarantee holds empirically for α ∈ {0.3, 0.7, 1.0} (Fig. 3a: VerFair exposure curves sit above the Quota curves); for α &lt; 1, items with higher relevance std (more personalized) earn exposure above quota (Fig. 3b).</li><li>Example consumer-side cost of pure fairness: PR-k (fairness-only baseline) drops NDCG@3 to ~0.34 median vs VerFair ~0.74 at comparable fairness on Yahoo! R3 (Fig. 2b).</li></ul></div>
+<details><summary><span class="en-only">5Cs Analysis</span><span class="ko-only">5Cs 분석</span></summary><div class="card" style="margin-top:0.5rem"><p><strong>Category</strong>: new method (post-processing fair-ranking algorithm) with light theoretical analysis. <strong>Context</strong>: direct successor/critic of the amortized-fairness line — Biega et al. 2018 (ILP), Singh &amp; Joachims 2018 (LP), Morik et al. 2020 (FairCo) — and borrows the batch-allocation framing from Patro et al. 2020 (FairRec). Track C limitation-successor of this survey's Track A seeds. <strong>Correctness</strong>: [SKIM] — proofs are informal sketches (e.g. §4.4.1 uses non-personal relevance and DCG only; §4.4.2's Scenario-1 bound is loose, "error less than p_{c*,k}"). No error bars / significance tests visible on the tradeoff curves; verify in deep read. <strong>Contributions</strong>: (1) vertical allocation paradigm exploiting known consumer sets for better top-rank NDCG at equal fairness; (2) anchor-point mechanism guaranteeing relevance-induced minimum exposure for a chosen unfairness tolerance α; (3) empirical dominance over ILP/FairCo on fairness-vs-NDCG@3 tradeoff curves plus large speedups. <strong>Clarity</strong>: high — full pseudocode (Algorithms 1–2), worked toy examples (Tables 3–4), code released.</p></div></details>
+<details><summary><span class="en-only">Contribution vs Claim</span><span class="ko-only">기여 대 주장</span></summary><div class="card" style="margin-top:0.5rem"><p>[SKIM - verify in deep read.] Noted from first pass: the abstract claims "significantly outperforms state-of-the-art" but the NDCG@10 results concede parity-or-worse vs FairCo, so the claim holds only for top-rank cutoffs; also the vertical-allocation advantage presupposes the full consumer set is known in advance, and the online extension is explicitly deferred to future work. Whether "significantly" is backed by statistical tests needs the deep read.</p></div></details>
+</section>
+<section id="results" class="section-anchor">
+<details><summary><span class="en-only">Concepts Introduced</span><span class="ko-only">도입된 개념</span></summary><div class="card" style="margin-top:0.5rem"><p><strong>Vertical allocation</strong></p>
+<ul><li><strong>What it computes</strong>: given an m-consumer x k-rank grid of ranklist slots and a relevance matrix R(d,u), it fills rank position r for ALL m consumers before moving to rank r+1 (column-by-column), greedily picking the most relevant still-feasible item per slot — versus the standard "horizontal" order that fills all k ranks for one consumer before moving to the next.</li><li><strong>Why it was created</strong>: horizontal allocation (used by the Biega ILP / FairCo line) creates conflicts at top ranks — relevant items get "used up" on early consumers' full lists — lowering NDCG at top positions for a given fairness level.</li><li><strong>Concrete example</strong>: with 3 consumers, 3 items of equal average relevance 0.70, k=2, exposure 1 per slot, α=1 (each item must appear exactly twice): vertical allocation reaches NDCG@1 = 1.000 vs horizontal's 0.989 (paper Table 3).</li><li><strong>How it is used in this paper</strong>: it is the core of VerFair's Allocation Phase (Algorithm 1) and the basis of the theoretical argument (§4.4.1) that greedy column-first filling maximizes top-rank DCG.</li></ul>
+<p><strong>Exposure Quota (relevance-induced minimum exposure)</strong></p>
+<ul><li><strong>What it computes</strong>: Quota(d|α) = R(d) · α · E_total / Σ_{d'} R(d'), i.e. item d's fair share of the fixed total exposure, scaled by a tolerance parameter α ∈ [0,1]; the constraint enforced is E(d) ≥ Quota(d|α) (and the group analogue with R(G), E(G)).</li><li><strong>Why it was created</strong>: prior amortized-fairness formulations (Biega et al., Singh &amp; Joachims) impose the strict equality "exposure proportional to relevance"; the quota relaxes this to a minimum-guarantee inequality, with α controlling how much of total exposure is reserved for fairness (α=1 recovers the strict amortized-fairness equality).</li><li><strong>Concrete example</strong>: 3 items of average relevance 0.80 each, total exposure 6, α=0.5 → each item's quota = 1 (must appear at least once at exposure-1 positions; paper Table 4).</li><li><strong>How it is used in this paper</strong>: defines the fairness constraint VerFair provably satisfies, and α is the tradeoff knob swept to produce the fairness-vs-NDCG curves.</li></ul>
+<p><strong>Anchor point</strong></p>
+<ul><li><strong>What it computes</strong>: the grid position (ĉ, r̂) found by scanning backwards from the last consumer's last rank (m,k) toward (1,1), accumulating position exposure until the running sum first reaches α · E_total (Algorithm 2); vertical allocation starts there instead of at (1,1).</li><li><strong>Why it was created</strong>: if fairness-constrained allocation starts at the top of ranklists, the later relevance-based re-sorting phase can only push quota-satisfying items DOWN (to lower-exposure ranks), breaking the minimum-exposure guarantee; starting from the bottom-anchored region means re-sorting can only move them UP, preserving the guarantee.</li><li><strong>Concrete example</strong>: in Table 4 (3 consumers, k=2, α=0.5), starting allocation at rank 2 (the anchor) instead of rank 1 keeps every item's exposure ≥ 1 after re-sorting; starting from the origin breaks it for item C.</li><li><strong>How it is used in this paper</strong>: step 7 of Algorithm 1; the exposure-guarantee proof (§4.4.2) relies on it.</li></ul>
+<p>Amortized fairness itself (exposure distribution should match relevance distribution, individual- and group-level) is inherited from Biega et al. 2018 and Singh &amp; Joachims 2018 — the Track A seeds of this survey (defined in the corresponding Track A notes, e.g. Equity of Attention / Fairness of Exposure).</p></div></details>
+<details><summary><span class="en-only">Implementation Feasibility</span><span class="ko-only">구현 가능성</span></summary><div class="card" style="margin-top:0.5rem"><ul><li><strong>Needs</strong>: a dense consumer-item relevance matrix (they impute via Surprise SVD, lr 5e-3, L2 2e-2, 100-d factors), position examination probabilities (NDCG-discount PBM), CPU only (Xeon E5-2640; sub-second per 1k ranklists).</li><li><strong>Code</strong>: available at https://github.com/Taosheng-ty/sigirAP-VerFair.git; datasets: Yahoo! R3, Google Local (via FairRec repo), Movielens-Groups (via FairCo/Dynamic-Fairness repo).</li><li><strong>Modifications</strong>: for our setting one would need (a) an online/streaming variant (limit U to active consumers per timestamp, as they suggest but do not implement); (b) estimated rather than oracle propensities; (c) robustness analysis when R(d,u) is noisy, since both the quota and NDCG use the same estimated R.</li><li><strong>Unknowns</strong>: missing link: sensitivity of the quota guarantee to relevance-estimation error; missing link: behavior at industrial catalog scale (n &gt;&gt; 1000); [SKIM] appendix-level proof details not checked.</li></ul></div></details>
+<details><summary><span class="en-only">Follow-up Papers</span><span class="ko-only">관련 후속 논문</span></summary><div class="card" style="margin-top:0.5rem"><ul><li>FARA: Future-aware Ranking Algorithm for Fairness Optimization (Yang et al., 2023) — same group's successor moving amortized fairness into learning-to-rank with lookahead; candidate Track C extension.</li><li>Marginal-Certainty-aware Fair Ranking Algorithm / MCFair (Yang et al., WSDM 2023) — successor handling relevance uncertainty, directly relevant to the noisy-relevance missing link above.</li><li>P-MMF: Provider Max-min Fairness Re-ranking (Xu et al., WWW 2023) — alternative provider-fairness objective (max-min rather than proportional-to-relevance) for contrast on the proxy assumption.</li><li>Fair Ranking as Fair Division (Saito &amp; Joachims, KDD 2022) — impact-based individual fairness, a competing critique of exposure-∝-relevance as the fairness target.</li></ul></div></details>
+</section>
+<section id="delta" class="section-anchor">
+<div class="card"><div class="section-label"><span class="en-only">Condition Delta — transfer to our setting</span><span class="ko-only">조건 차이 — 우리 설정으로의 전이</span></div><p><strong>Paper's setting</strong>: inputs = a fully pre-computed consumer-item relevance matrix (MF/SVD-imputed ratings) for m ≈ 10k–15k consumers, n = 100–1000 items; outputs = m ranklists of length k = 10; conditions = offline/batch serving, exposure = position-bias examination probability (PBM with known η), fairness target = exposure distribution ∝ (estimated) relevance distribution, post-processing only (relevance estimation and propensity estimation both assumed solved). <strong>Our setting</strong>: study of exposure frequency as it is governed by ranking systems where estimated relevance serves as the merit proxy for allocating exposure (SP5: the amortized-fairness Biega/FairCo lineage and its limitations). [SKIM - verify against SP5 synthesis framing.] <strong>Differences</strong>:</p>
+<ul><li>Batch/offline serving with the full consumer set known a priori vs typical online serving where consumers arrive sequentially: missing link — the paper's core advantage depends on this assumption; online extension is future work.</li><li>True relevance assumed given (imputed by MF and then treated as ground truth for both allocation and NDCG evaluation) vs our concern that estimated relevance is itself a noisy/biased proxy: reference only — the paper explicitly scopes relevance estimation out (§5.1.2), so it inherits, and does not examine, the exposure-∝-relevance proxy assumption central to this survey.</li><li>Known, homogeneous position-bias (PBM, shared η, known examination probabilities) vs settings where propensities must be estimated: reference only — scoped out (§5.1.3).</li><li>Small item catalogs (≤1000 items) vs industrial-scale catalogs: missing link — O(m·n·k) per full batch; scalability beyond thousands of items unreported.</li><li>Groups defined by producer/company, explicitly NOT sensitive attributes vs sensitive-attribute group fairness: reference only — the paper flags the extension as future work.</li></ul></div>
+<div class="card"><div class="section-label"><span class="en-only">Root-cause vs. Symptom</span><span class="ko-only">근본 원인 대 증상</span></div><p><code>Direct</code> — for the problem it names (horizontal/online allocation wastes the available prior knowledge of the consumer set, causing avoidable top-rank relevance loss under a fairness constraint), the paper fixes the actual structural cause: it redesigns the allocation ORDER (vertical, anchor-started) and proves the quota guarantee survives re-sorting, rather than merely tuning a tradeoff knob. Caveat relevant to this survey: it leaves the upstream proxy assumption (exposure should be proportional to estimated relevance) entirely intact.</p></div>
+</section>
+<div class="page-nav"><a href="50_ScoringNotEnough.html">&larr; [50] ScoringNotEnough</a><a href="../sp5_amortized-equity-attention.html">&uarr; SP5</a><a href="52_FARA.html">[52] FARA &rarr;</a></div>
+    </div>
+  </div>
+<nav class="bd-sidebar-secondary"><div class="mini-toc-label"><span class="en-only">On this page</span><span class="ko-only">이 페이지</span></div><ul class="mini-toc"><li><a href="#header"><span class="en-only">Paper info</span><span class="ko-only">논문 정보</span></a></li><li><a href="#problem"><span class="en-only">Problem</span><span class="ko-only">문제</span></a></li><li><a href="#solution"><span class="en-only">Solution &amp; Results</span><span class="ko-only">해결책 · 결과</span></a></li><li><a href="#results"><span class="en-only">Concepts &amp; Follow-ups</span><span class="ko-only">개념 · 후속</span></a></li><li><a href="#delta"><span class="en-only">Condition Delta</span><span class="ko-only">조건 차이</span></a></li></ul></nav>
+</div>
+</body>
+</html>

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8"><title>10_preloop_skim</title><style>
+:root{--bg:#0d1117;--card:#161b22;--border:#30363d;--text:#e6edf3;
+      --muted:#8b949e;--accent:#58a6ff;--green:#3fb950;--amber:#d29922;
+      --teal:#39d0c7;--purple:#bc8cff;}
+body{background:var(--bg);color:var(--text);font-family:-apple-system,sans-serif;
+     margin:0;padding:1rem;}
+.cell{border:1px solid var(--border);border-radius:8px;overflow:hidden;}
+.cell-header{background:var(--card);padding:.6rem 1rem;display:flex;
+             align-items:center;gap:.75rem;border-bottom:1px solid var(--border);}
+.badge{font-size:.72rem;font-weight:700;padding:.2rem .55rem;border-radius:4px;}
+.b-skim{background:rgba(63,185,80,.15);color:var(--green);}
+.cell-title{font-size:.9rem;font-weight:600;}
+.cell-ts{margin-left:auto;font-size:.72rem;color:var(--muted);}
+.cell-body{padding:1rem;display:flex;flex-direction:column;gap:.7rem;}
+.field{padding:.55rem .8rem;border-radius:6px;}
+.f-expected{background:rgba(88,166,255,.07);border-left:3px solid var(--accent);}
+.f-found{background:rgba(63,185,80,.07);border-left:3px solid var(--green);}
+.f-surprise{background:rgba(210,153,34,.07);border-left:3px solid var(--amber);}
+.f-revised{background:rgba(57,208,199,.07);border-left:3px solid var(--teal);}
+.f-neutral{background:rgba(139,148,158,.07);border-left:3px solid var(--muted);}
+.f-label{font-size:.71rem;font-weight:700;letter-spacing:.05em;
+         text-transform:uppercase;color:var(--muted);margin-bottom:.28rem;}
+.f-content{font-size:.88rem;line-height:1.55;margin:0;}
+</style></head>
+<body>
+<div class="cell" id="cell-preloop-skim">
+  <div class="cell-header">
+    <span class="badge b-skim">Phase 2a-all — Skim</span>
+    <span class="cell-title">Phase 2a-all — Skim (106 papers) + Phase 3.7-global citation pass</span>
+    <span class="cell-ts">2026-07-15 KST</span>
+  </div>
+  <div class="cell-body">
+    <div class="field f-found">
+      <div class="f-label">Tier breakdown &amp; coverage</div>
+      <p class="f-content">
+        All 106 unique candidates skimmed (0 vault-reused). Tiers: P0: 36, P1: 5, P2: 24, P3: 5, P4: 36.
+        PDFs cached for ~98 papers; 8 are abstract-tier (closed-access ACM/IEEE: OnlinePostProc, DualSideOnline,
+        LinkedInJobsPacing, FairAdDelivery, PrimalDualBudget, FreqCapTheory, CalibratedRec, ControllingPopBias).
+        74 notes carry confirmed non-arXiv venues after per-paper verification; several venues were upgraded during
+        skim (HEA→SIGIR 2026, LinkedInAudit→AAAI 2026, VerFair→SIGIR-AP 2023, CascadingExposure→CIKM 2024,
+        TopKFairLTR→TMLR 2025, LongTermConstraints→WSDM 2024, 53 more confirmed from PDF title pages).
+      </p>
+    </div>
+    <div class="field f-surprise">
+      <div class="f-label">Conceptual surprises</div>
+      <p class="f-content">
+        (1) <b>The proxy question is repeatedly flagged as open by the papers themselves</b>: nearly every skim's
+        Condition Delta hits the same wall — methods assume true relevance/merit is known and exposure follows from it,
+        while the survey's setting treats logged exposure frequency as a contaminated proxy. Equity of Attention
+        assumes relevance=worthiness; FairPGRank calls it out of scope; ExpectedExposure needs a known browsing model.
+        (2) <b>"Scoring Is Not Enough" (2026) proves score-then-sort is Pareto-suboptimal</b> for any non-decomposable
+        exposure objective — a structural argument FOR frequency-level intervention. (3) <b>Production evidence of proxy
+        failure</b>: Meta's VRS achieves impression-share parity while reducing unique-user reach ~9.8% (FAccT 2025
+        external audit) — impressions ≠ people; the Timee field experiment shows engagement flat while matches rose.
+        (4) FELIX and the Expohedron line are the most direct formalizations of the user's constraint (stochastic policy
+        over frozen scores realizing target exposure).
+      </p>
+    </div>
+    <div class="field f-revised">
+      <div class="f-label">Cross-SP theme signals</div>
+      <p class="f-content">
+        Themes appearing in 3+ SPs: (a) doubly-stochastic / BvN / expohedron realization machinery (SP1/SP2/SP3/SP4/SP5);
+        (b) exposure-to-merit calibration ("merit-proportional exposure") as the shared normative target
+        (SP1/SP4/SP5/SP6/SP8); (c) controller-style amortized correction (FairCo → LongTermConstraints → FARA/VerFair)
+        as the score-untouched intervention pattern (SP5/SP3/SP7-adjacent); (d) exposure as the platform's incentive
+        instrument, with StrategicProviders assuming exposure=payoff by construction (SP9/SP6/SP2).
+        The SP7 (ads capping/pacing) vocabulary remains disconnected from (a)–(c) at the citation level — confirmed by
+        the Phase 3.7 pass: zero cross-cluster reverse-citation links between SP7 notes and the fairness cluster.
+      </p>
+    </div>
+    <div class="field f-neutral">
+      <div class="f-label">Phase 3.7-global result + must-reads</div>
+      <p class="f-content">
+        Reverse-citation pass over all 106 notes: 28 cited-by links added across 11 notes. Baseline-citation hubs:
+        FairRec (8 citers), P-MMF (5), FairCo (4) — the re-ranking benchmark canon. Must-read (tier-1) set flagged for
+        synthesis: FoE, FairRec, EquityOfAttention, ExpectedExposure, FELIX, P-MMF, FairCo, FairSync, TaxRank,
+        ElasticityTradeoff, FairExposureBandits, ConcaveRewards, BlackwellFair, RestlessFairMAB, PLRank, SPOFR,
+        VRSImpressionFairness, MetaVRSEval, PrimalDualBudget, ImpressionDiscounting, CalibratedRec, LeapRec(CaliRec),
+        WelfareCompetingCreators, PPAGame, StrategicProviders, CreatorIncentives, SupplySideEq, FairLLMRec,
+        ItemSideLLM, LinkedInFairRanking.
+      </p>
+    </div>
+  </div>
+</div>
+</body>
+</html>

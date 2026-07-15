@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>[37] Fairness in Ranking: A Survey — Exposure-Frequency Control Survey</title>
+
+<style>
+:root {
+  --bg: #0d1117; --card: #161b22; --border: #30363d;
+  --text: #e6edf3; --muted: #7d8590; --accent: #58a6ff;
+  --teal: #39d0c7; --green: #3fb950; --yellow: #d29922;
+  --red: #f85149; --purple: #bc8cff; --orange: #e3b341;
+  --sidebar-w: 262px; --toc-w: 210px; --hdr-h: 48px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+body { font-family: -apple-system, sans-serif; background: var(--bg);
+       color: var(--text); line-height: 1.6; }
+.bd-root { display: flex; height: 100vh; overflow: hidden; }
+.bd-sidebar-primary {
+  width: var(--sidebar-w); min-width: var(--sidebar-w);
+  overflow-y: auto; background: var(--card);
+  border-right: 1px solid var(--border);
+  padding: 0.75rem 0; flex-shrink: 0;
+}
+.bd-sidebar-primary::-webkit-scrollbar { width: 4px; }
+.bd-sidebar-primary::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+.bd-main { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-width: 0; }
+.article-header-bar {
+  height: var(--hdr-h); background: var(--card);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; padding: 0 1.5rem;
+  gap: 1rem; flex-shrink: 0;
+}
+.header-brand { color: var(--teal); font-weight: bold; font-size: 0.95em;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 1; }
+.header-brand a { color: inherit; text-decoration: none; }
+.breadcrumb { color: var(--muted); font-size: 0.82em; display: flex;
+  align-items: center; gap: 0.3rem; flex-shrink: 0; }
+.breadcrumb a { color: var(--accent); text-decoration: none; }
+.breadcrumb span { color: var(--border); }
+.bd-article { flex: 1; overflow-y: auto; padding: 2rem 2.5rem; }
+.bd-article::-webkit-scrollbar { width: 6px; }
+.bd-article::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+.bd-sidebar-secondary {
+  width: var(--toc-w); min-width: var(--toc-w);
+  overflow-y: auto; border-left: 1px solid var(--border);
+  padding: 1rem 0.75rem; flex-shrink: 0;
+}
+.bd-sidebar-secondary::-webkit-scrollbar { width: 4px; }
+.bd-sidebar-secondary::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+.sidebar-logo { padding: 0.5rem 1rem 0.75rem;
+  border-bottom: 1px solid var(--border); margin-bottom: 0.5rem; }
+.sidebar-logo a { color: var(--teal); font-weight: bold; font-size: 0.95em;
+  text-decoration: none; display: block; }
+.sidebar-section { color: var(--muted); font-size: 0.72em; font-weight: bold;
+  text-transform: uppercase; letter-spacing: 0.07em;
+  padding: 0.7rem 1rem 0.25rem; }
+.sidebar-nav-link { display: block; padding: 0.28rem 1rem 0.28rem 1.25rem;
+  color: var(--muted); font-size: 0.875em; text-decoration: none; }
+.sidebar-nav-link:hover { color: var(--text); background: rgba(255,255,255,0.03); }
+.sidebar-nav-link.active { color: var(--teal);
+  border-left: 2px solid var(--teal);
+  padding-left: calc(1.25rem - 2px); background: rgba(57,208,199,0.05); }
+.mini-toc-label { color: var(--muted); font-size: 0.72em; font-weight: bold;
+  text-transform: uppercase; letter-spacing: 0.07em; padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border); margin-bottom: 0.5rem; }
+.mini-toc { list-style: none; }
+.mini-toc li a { display: block; padding: 0.22rem 0;
+  color: var(--muted); font-size: 0.83em; text-decoration: none;
+  border-left: 2px solid transparent; padding-left: 0.5rem; }
+.mini-toc li a:hover { color: var(--text); }
+.mini-toc li a.toc-active { color: var(--teal); border-left-color: var(--teal); }
+.section-anchor { scroll-margin-top: calc(var(--hdr-h) + 8px); }
+h1 { color: var(--teal); font-size: 1.7em; margin-bottom: 0.5rem; line-height:1.3; }
+h2 { color: var(--teal); font-size: 1.25em; margin: 1.5rem 0 0.6rem; }
+h3 { color: var(--teal); font-size: 1.05em; margin: 1.2rem 0 0.4rem; }
+h4 { color: var(--teal); font-size: 0.95em; margin: 1rem 0 0.3rem; }
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+p { margin-bottom: 0.8rem; }
+ul, ol { margin: 0 0 0.8rem 1.4rem; }
+li { margin-bottom: 0.3rem; }
+code { background: rgba(255,255,255,0.06); border-radius: 3px; padding: 1px 4px; font-size: 0.9em; }
+blockquote { border-left: 3px solid var(--border); color: var(--muted);
+  padding: 0.2rem 0.8rem; margin-bottom: 0.8rem; }
+.card { background: var(--card); border: 1px solid var(--border);
+        border-radius: 8px; padding: 1.2rem; margin-bottom: 1rem; }
+table { width: 100%; border-collapse: collapse; font-size: 0.9em; margin-bottom: 0.8rem; }
+th { background: var(--card); color: var(--teal); padding: 8px;
+     border: 1px solid var(--border); text-align: left; }
+td { padding: 8px; border: 1px solid var(--border); vertical-align: top; }
+tr:nth-child(even) td { background: rgba(0,0,0,0.2); }
+.stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+             gap: 1rem; margin-bottom: 1.5rem; }
+.stat-box { background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+            padding: 1rem; text-align: center; }
+.stat-num { font-size: 2rem; font-weight: bold; color: var(--teal); }
+.stat-label { color: var(--muted); font-size: 0.85em; margin-top: 0.2rem; }
+.sp-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+           gap: 1rem; margin: 1rem 0; }
+.sp-card { background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+           padding: 1.2rem; cursor: pointer; transition: border-color 0.15s; height:100%; }
+.sp-card:hover { border-color: var(--teal); }
+.sp-card h3 { margin: 0 0 0.5rem; color: var(--teal); font-size: 1em; }
+.sp-card p { margin: 0; color: var(--muted); font-size: 0.88em; }
+.sp-badge { display: inline-block; background: rgba(57,208,199,0.1); color: var(--teal);
+            border-radius: 4px; padding: 2px 8px; font-size: 0.8em; margin-bottom: 0.5rem; }
+.paper-meta { color: var(--muted); font-size: 0.9em; margin-bottom: 1.5rem; }
+.paper-meta a { color: var(--accent); }
+.section-label { color: var(--teal); font-weight: bold; font-size: 0.85em;
+                 text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.4rem; }
+.pill { display: inline-block; border-radius: 4px; padding: 0.15rem 0.6rem;
+        font-size: 0.8em; font-weight: bold; margin-right: 0.4rem; }
+.pill-p0 { background: rgba(63,185,80,0.2); color: var(--green); }
+.pill-p1 { background: rgba(57,208,199,0.15); color: var(--teal); }
+.pill-p2 { background: rgba(210,153,34,0.2); color: var(--yellow); }
+.pill-p3 { background: rgba(188,140,255,0.2); color: var(--purple); }
+.pill-p4 { background: rgba(125,133,144,0.2); color: var(--muted); }
+.delta-row { margin: 0.4rem 0; padding: 0.4rem 0.8rem;
+             border-left: 3px solid var(--border); border-radius: 0 4px 4px 0; }
+.chain { position: relative; padding-left: 2rem; }
+.chain::before { content: ''; position: absolute; left: 0.95rem; top: 0;
+                 bottom: 0; width: 2px; background: var(--border); }
+.chain-node { position: relative; margin-bottom: 2rem; }
+.chain-node::before { content: ''; position: absolute; left: -1.55rem;
+                      top: 1.1rem; width: 12px; height: 12px;
+                      border-radius: 50%; background: var(--teal); }
+.chain-num { display: inline-block; width: 28px; height: 28px; background: var(--teal);
+             color: #000; border-radius: 50%; text-align: center; line-height: 28px;
+             font-weight: bold; font-size: 0.85em; margin-right: 0.6rem; flex-shrink: 0; }
+.chain-q { font-weight: bold; color: var(--text); margin: 0.4rem 0 0.3rem; font-size: 1em; }
+.chain-papers { color: var(--muted); font-size: 0.85em; margin-bottom: 0.6rem; }
+.chain-start { background: var(--card); border: 1px solid var(--teal);
+               border-radius: 8px; padding: 1rem; margin-bottom: 2rem; }
+.chain-start h3 { margin: 0 0 0.5rem; color: var(--teal); }
+.chain-converge { background: var(--card); border: 1px solid var(--green);
+                  border-radius: 8px; padding: 1rem; margin-top: 1rem; }
+.chain-converge h3 { margin: 0 0 0.5rem; color: var(--green); }
+.chain-label { display: inline-block; border-radius: 4px; padding: 0.15rem 0.6rem;
+               font-size: 0.8em; font-weight: bold; margin-right: 0.4rem; }
+.chain-status { border-radius: 0 4px 4px 0; padding: 0.5rem 0.8rem;
+                margin: 0.35rem 0; font-size: 0.88em; }
+.chain-status ul { margin: 0.3rem 0 0 1.2rem; padding: 0; }
+.chain-status li { margin-bottom: 0.25rem; }
+.chain-status.solved  { background: rgba(63,185,80,0.07);  border-left: 3px solid var(--green); }
+.chain-status.remains { background: rgba(210,153,34,0.07); border-left: 3px solid var(--yellow); }
+.chain-status.added   { background: rgba(248,81,73,0.07);  border-left: 3px solid var(--red); }
+.chain-status.pivoted { background: rgba(188,140,255,0.1); border-left: 3px solid var(--purple); }
+.chain-label.solved   { background: rgba(63,185,80,0.2);  color: var(--green); }
+.chain-label.remains  { background: rgba(210,153,34,0.2); color: var(--yellow); }
+.chain-label.added    { background: rgba(248,81,73,0.2);  color: var(--red); }
+.chain-label.pivoted  { background: rgba(188,140,255,0.2); color: var(--purple); }
+.chain-status.expected { background: rgba(88,166,255,0.07);  border-left: 3px solid var(--accent); }
+.chain-label.expected  { background: rgba(88,166,255,0.2);   color: var(--accent); }
+.chain-status.revised  { background: rgba(57,208,199,0.07);  border-left: 3px solid var(--teal); }
+.chain-label.revised   { background: rgba(57,208,199,0.2);   color: var(--teal); }
+.concept-box { border-left: 4px solid var(--teal); background: #0d1f1f;
+               border-radius: 4px; padding: 1.2rem; margin-bottom: 1.2rem; }
+.concept-name { font-weight: bold; color: var(--teal); font-size: 1.05em; margin-bottom: 0.5rem; }
+.hypothesis { border-left: 4px solid var(--teal); background: #0d1f1f;
+              border-radius: 4px; padding: 1rem; margin: 1rem 0; }
+.recommendation { border-left: 4px solid var(--purple); background: #1a0f2e;
+                  border-radius: 4px; padding: 1rem; margin: 1rem 0; }
+.rq-row { background: rgba(88,166,255,0.05); border-left: 3px solid var(--accent);
+          padding: 0.4rem 0.8rem; margin-bottom: 0.5rem; border-radius: 0 4px 4px 0; }
+.scroll-table-wrap { max-height: 420px; overflow-y: auto; border: 1px solid var(--border);
+                     border-radius: 4px; }
+.scroll-table-wrap table { margin-bottom: 0; }
+.scroll-table-wrap thead th { position: sticky; top: 0; background: #161b22; z-index: 1; }
+.page-nav { display: flex; justify-content: space-between; margin-top: 2rem;
+            padding-top: 1rem; border-top: 1px solid var(--border); gap: 1rem; }
+.page-nav a { color: var(--accent); font-size: 0.9em; }
+html.ko-active .en-only { display: none !important; }
+html.ko-active .ko-only { display: block !important; }
+.ko-only { display: none; }
+span.ko-only, .sidebar-logo a span.ko-only { display: none; }
+html.ko-active span.ko-only { display: inline !important; }
+.lang-btn { background: transparent; color: var(--muted); border: 1px solid var(--border);
+            border-radius: 4px; padding: 3px 9px; font-size: 0.8em; cursor: pointer; }
+.lang-btn.active { border-color: var(--teal); color: var(--teal); }
+details { margin-bottom: 0.8rem; }
+details summary { color: var(--muted); cursor: pointer; }
+@media (max-width: 1024px) { .bd-sidebar-secondary { display: none; } }
+@media (max-width: 768px) {
+  .bd-sidebar-primary { display: none; }
+  .bd-root { flex-direction: column; height: auto; overflow: visible; }
+  .bd-main { overflow: visible; }
+  .bd-article { overflow: visible; padding: 1rem; }
+  .stat-grid { grid-template-columns: repeat(2, 1fr); }
+  .sp-grid { grid-template-columns: 1fr; }
+}
+</style>
+
+<script>
+MathJax = { tex: { inlineMath: [['$','$']], displayMath: [['$$','$$']] },
+            options: { skipHtmlTags: ['script','noscript','style','textarea','pre','code'] } };
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<script>
+function toggleLanguage() {
+  const html = document.documentElement;
+  const isKo = html.classList.toggle('ko-active');
+  document.querySelectorAll('.lang-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.lang === (isKo ? 'ko' : 'en'));
+  });
+  localStorage.setItem('survey-lang', isKo ? 'ko' : 'en');
+}
+document.addEventListener('DOMContentLoaded', function() {
+  const saved = localStorage.getItem('survey-lang');
+  if (saved === 'ko') {
+    document.documentElement.classList.add('ko-active');
+    document.querySelectorAll('.lang-btn').forEach(b =>
+      b.classList.toggle('active', b.dataset.lang === 'ko'));
+  } else {
+    document.querySelectorAll('[data-lang="en"]').forEach(b => b.classList.add('active'));
+  }
+  const article = document.querySelector('.bd-article');
+  const sections = Array.from(document.querySelectorAll('.section-anchor[id]'));
+  const sideLinks = Array.from(document.querySelectorAll('.bd-sidebar-primary .sidebar-nav-link'));
+  const tocLinks = Array.from(document.querySelectorAll('.bd-sidebar-secondary .mini-toc a'));
+  if (!article || !sections.length) return;
+  function current() {
+    let id = sections[0].id;
+    const scrollTop = article.scrollTop + 60;
+    sections.forEach(function(s) { if (s.offsetTop <= scrollTop) id = s.id; });
+    return id;
+  }
+  function update() {
+    const id = current();
+    sideLinks.forEach(function(a) {
+      a.classList.toggle('active', a.getAttribute('href') === '#' + id);
+    });
+    tocLinks.forEach(function(a) {
+      a.classList.toggle('toc-active', a.getAttribute('href') === '#' + id);
+    });
+  }
+  article.addEventListener('scroll', update, { passive: true });
+  update();
+});
+</script>
+
+</head>
+<body>
+<div class="bd-root">
+
+<nav class="bd-sidebar-primary">
+  <div class="sidebar-logo">
+    <a href="../index.html">&#x2B21; <span class="en-only">Exposure-Frequency Control Survey</span><span class="ko-only">Exposure-빈도 제어 문헌 조사</span></a>
+  </div>
+  <div class="sidebar-section"><span class="en-only">Overview</span><span class="ko-only">개요</span></div>
+  <a href="../index.html#overview" class="sidebar-nav-link"><span class="en-only">Survey Hub</span><span class="ko-only">조사 허브</span></a>
+  <a href="../index.html#answers" class="sidebar-nav-link"><span class="en-only">Key Answers</span><span class="ko-only">핵심 답변</span></a>
+  <div class="sidebar-section"><span class="en-only">Sub-Problems</span><span class="ko-only">세부 문제</span></div>
+<a href="../sp1_fairness-of-exposure-fixed-scores.html" class="sidebar-nav-link">SP1: <span class="en-only">Exposure fairness</span><span class="ko-only">Exposure 공정성</span></a>
+<a href="../sp2_2024-2026-frontier-llm-era.html" class="sidebar-nav-link">SP2: <span class="en-only">2024–26 frontier / LLM</span><span class="ko-only">2024–26 최전선 / LLM</span></a>
+<a href="../sp3_postproc-rerank-blackbox.html" class="sidebar-nav-link active">SP3: <span class="en-only">Post-proc re-ranking</span><span class="ko-only">Post-proc re-ranking</span></a>
+<a href="../sp4_stochastic-ranking-policies.html" class="sidebar-nav-link">SP4: <span class="en-only">Stochastic policies</span><span class="ko-only">확률적 정책</span></a>
+<a href="../sp5_amortized-equity-attention.html" class="sidebar-nav-link">SP5: <span class="en-only">Amortized fairness</span><span class="ko-only">Amortized 공정성</span></a>
+<a href="../sp6_bandit-exposure-allocation.html" class="sidebar-nav-link">SP6: <span class="en-only">Bandit allocation</span><span class="ko-only">Bandit 배분</span></a>
+<a href="../sp7_capping-pacing-feeds-ads.html" class="sidebar-nav-link">SP7: <span class="en-only">Capping &amp; pacing</span><span class="ko-only">Capping·pacing</span></a>
+<a href="../sp8_popularity-debias-calibration.html" class="sidebar-nav-link">SP8: <span class="en-only">Debiasing &amp; calibration</span><span class="ko-only">Debiasing·calibration</span></a>
+<a href="../sp9_ecosystems-creator-incentives.html" class="sidebar-nav-link">SP9: <span class="en-only">Ecosystems &amp; creators</span><span class="ko-only">생태계·creator</span></a>
+<a href="../sp10_llm-exposure-feedback-loops.html" class="sidebar-nav-link">SP10: <span class="en-only">LLM feedback loops</span><span class="ko-only">LLM feedback loop</span></a>
+<a href="../sp11_strategyproof-exposure.html" class="sidebar-nav-link">SP11: <span class="en-only">Strategy-proofness</span><span class="ko-only">Strategy-proofness</span></a>
+
+  <div class="sidebar-section"><span class="en-only">Synthesis</span><span class="ko-only">종합</span></div>
+  <a href="../conclusion.html" class="sidebar-nav-link"><span class="en-only">Conclusion</span><span class="ko-only">결론</span></a>
+  <a href="../thinking-process.html" class="sidebar-nav-link"><span class="en-only">Thinking Process</span><span class="ko-only">추론 과정</span></a>
+</nav>
+  <div class="bd-main">
+<div class="article-header-bar"><div class="header-brand"><a href="../index.html"><span class="en-only">Exposure-Frequency Control Survey</span><span class="ko-only">Exposure-빈도 제어 문헌 조사</span></a></div><nav class="breadcrumb"><a href="../index.html"><span class="en-only">Survey</span><span class="ko-only">조사</span></a><span>&rsaquo;</span><a href="../sp3_postproc-rerank-blackbox.html">SP3</a><span>&rsaquo;</span><span>[37] Fairness in Ranking: A Survey</span></nav><button class="lang-btn" data-lang="en" onclick="toggleLanguage()">EN</button><button class="lang-btn" data-lang="ko" onclick="toggleLanguage()">KO</button></div>
+    <div class="bd-article">
+<section id="header" class="section-anchor"><div class="paper-meta">
+<h1 style="margin-bottom:0.3rem">Fairness in Ranking: A Survey</h1>
+<p style="margin:0.3rem 0;color:var(--muted)">Zehlike, Yang &amp; Stoyanovich · ACM Computing Surveys 2022 · 2022 · 104 citations</p>
+<p style="margin:0.3rem 0"><a href="https://arxiv.org/abs/2103.14000" target="_blank">arXiv:2103.14000</a> · <a href="https://arxiv.org/pdf/2103.14000.pdf" target="_blank">PDF</a> · SP: <a href="../sp3_postproc-rerank-blackbox.html">SP3</a> · <a href="../sp5_amortized-equity-attention.html">SP5</a></p>
+<p><span class="pill pill-p1">P1</span><span class="pill" style="background:rgba(255,255,255,0.05);color:var(--muted)">Track A</span></p>
+</div>
+<div class="card ko-only" style="border-color:var(--teal)"><div class="section-label">한 줄 요약</div><p style="margin:0">ranking 공정성 연구 전반의 taxonomy를 정리한 ACM Computing Surveys survey. WYSIWYG/WAE 세계관 축이 실질적으로 score 신뢰 축임을 읽어낼 수 있는 기준 문헌.</p></div>
+</section>
+<section id="problem" class="section-anchor">
+<div class="card"><div class="section-label"><span class="en-only">Problem</span><span class="ko-only">해결하려는 문제</span></div><p>Fairness-in-ranking work is scattered across data management, algorithms, IR, and RecSys communities, with mutually incompatible fairness definitions (probability-based vs. exposure-based; merit-aware vs. merit-blind), no shared vocabulary, and — critically — no way to tell which methods are even comparable: papers compare methods whose disparate-exposure measures and targeted bias types differ entirely (e.g., Fair-PG-Rank vs. DELTR), producing meaningless comparisons. The normative value frameworks (worldview, equality-of-opportunity doctrine) that each technical choice silently encodes are almost never made explicit.</p></div>
+</section>
+<section id="solution" class="section-anchor">
+<div class="card"><div class="section-label"><span class="en-only">Solution / Contribution</span><span class="ko-only">해결책 / 기여</span></div><p>A systematic survey (72 pp., published as CSUR Part I score-based + Part II LtR/RecSys) organized around four classification frameworks applied uniformly to every surveyed method:</p>
+<ol><li><strong>Group structure</strong> — sensitive-attribute cardinality (binary/multinary), number (one/multiple), handling (independent/combination).</li><li><strong>Bias type</strong> — pre-existing (societal), technical (e.g., position bias), emergent (feedback loops).</li><li><strong>Mitigation objective</strong> — worldview (WYSIWYG ↔ WAE, incl. continuous interpolation) × equality-of-opportunity doctrine (formal, formal-plus, substantive: luck-egalitarian / Rawlsian) × intersectionality.</li><li><strong>Mitigation method</strong> — score-based: intervene on scores / scoring function / ranked outcome; LtR: pre- / in- / post-processing.</li></ol>
+<p>Section 5 covers score-based methods (rND-rRD-rKL, constrained ranking maximization, balanced diverse ranking, diverse k-choice secretary, implicit-bias selection, CIF-Rank, fair ranking-function design); Section 6 covers fair LtR (iFair, DELTR, Fair-PG-Rank, pairwise fairness, FA*IR, LinkedIn, CFAθ, Fairness of Exposure, Equity of Attention); Section 7 recommendation/matching; Sections 8–9 frameworks/benchmarks (FairSearch, TREC Fair Ranking, Ranking Facts) and evaluation recommendations.</p></div>
+<div class="card"><div class="section-label"><span class="en-only">Key Results</span><span class="ko-only">주요 결과</span></div><p>(Survey — no new experiments; representative synthesized findings:)</p>
+<ul><li>Two measurement families identified: <strong>probability-based</strong> (per-prefix statistical significance tests; strict, no compensation) vs. <strong>exposure-based</strong> (expected position-bias-weighted attention; serves individual or group fairness) — no consensus exposure definition exists, and methods disagree on whether merit belongs in the measure.</li><li>Methods that embed utility in the fairness objective (Fair-PG-Rank, Equity of Attention, Singh &amp; Joachims' "disparate treatment") map to WYSIWYG + formal EO; merit-excluding methods (DELTR, FA*IR, demographic-parity exposure) map to WAE + substantive EO — a small design detail can flip the framework (LinkedIn's tie-breaking by highest score makes it inconsistent with substantive EO for &gt;1 sensitive attribute, unlike the seemingly identical FA*IR).</li><li>Research gaps surfaced: only one method (Equity of Attention) explicitly addresses emergent bias, and none doing so is WAE-consistent; no LtR method handles intersectional discrimination.</li><li>Dataset practice is criticized: surveyed papers rarely justify dataset choice beyond availability (e.g., COMPAS reused for distributive-justice tasks though collected for legal decision-making).</li><li>Multiple surveyed results (DELTR, Sühr et al., Mehrotra et al.) show fairness does <em>not</em> always cost utility — sometimes optimizing fairness increases system utility.</li></ul></div>
+<details><summary><span class="en-only">5Cs Analysis</span><span class="ko-only">5Cs 분석</span></summary><div class="card" style="margin-top:0.5rem"><p><strong>Category</strong>: survey (systematization + normative classification framework). <strong>Context</strong>: unifies Friedler et al.'s worldviews and Heidari et al.'s EO framing with the fair-ranking technical literature (~2017–2021); within this survey it is the landscape anchor connecting exposure-based methods (<em>Singh &amp; Joachims 2018</em>, <em>Biega et al. 2018</em> if ingested) with probability-based ones (FA*IR). <strong>Correctness</strong>: classification is argued case-by-case with explicit caveats where papers under-specify (e.g., Beutel et al.'s CTR composition makes its worldview unclassifiable); no empirical claims of its own. [SKIM — full appendix-level checking not performed] <strong>Contributions</strong>: (1) the four-framework normative mapping of every major fair-ranking method; (2) the probability-based vs. exposure-based dichotomy for fairness measurement; (3) evaluation recommendations — make values/context explicit, surface normative consequences of technical choices, draw only meaningful comparisons (don't compare methods with opposing worldviews). <strong>Clarity</strong>: high — each method gets fairness definition, algorithm, experiments, and normative-insights subsections plus a uniform mind-map summary.</p></div></details>
+<details><summary><span class="en-only">Contribution vs Claim</span><span class="ko-only">기여 대 주장</span></summary><div class="card" style="margin-top:0.5rem"><ul><li><strong>Stated claims</strong>: systematic cross-subfield overview; a common narrative of value frameworks enabling method selection and trade-off identification.</li><li><strong>Demonstrated</strong>: the four-framework classification is actually carried out for ~17 score-based/LtR methods plus RecSys examples, with per-method normative mind-maps and an explicit comparability argument (Recommendation 3).</li><li><strong>Gap</strong>: the classification of several methods rests on the survey authors' <em>interpretation</em> of under-specified papers (they flag this themselves for Beutel et al. and iFair, where the choice of distance metric d determines the worldview); the mapping worldview→EO is asserted to be meaningful only for distributive-justice contexts and is not validated beyond argument. [SKIM — verify per-method mappings against originals in deep read if load-bearing]</li></ul></div></details>
+</section>
+<section id="results" class="section-anchor">
+<details><summary><span class="en-only">Concepts Introduced</span><span class="ko-only">도입된 개념</span></summary><div class="card" style="margin-top:0.5rem"><p><strong>Exposure (of a candidate / group in a ranking)</strong></p>
+<ul><li><strong>What it computes</strong>: ranking distribution $\pi$ over permutations + position-bias vector $v$ → expectation → $\mathrm{Exposure}(\tau(i)) = \mathbb{E}_{\tau\sim\pi}[v(\tau(i))]$, the expected attention a candidate receives given where rankings place it (Eq. 8, p. 9).</li><li><strong>Why it was created</strong>: raw rank position alone does not quantify how much <em>user attention</em> an item actually gets; attention decays geometrically/logarithmically with rank, so two adjacent ranks can differ enormously in visibility.</li><li><strong>Concrete example</strong>: in the survey's running example (Fig. 28), position biases for ranks 1–8 are v = 3.32, 2.10, 1.66, 1.43, 1.28, 1.18, 1.11, 1.04 — the top slot gets &gt;3x the attention of rank 8.</li><li><strong>How it is used in this paper</strong>: the organizing quantity for one of the two main families of fairness measures ("exposure-based fairness"); individual unfairness is $D(a,b) = |\mathrm{Exposure}(a)-\mathrm{Exposure}(b)|$ and group unfairness averages exposure within groups (Eqs. 9–10).</li></ul>
+<p><strong>Position bias</strong></p>
+<ul><li><strong>What it computes</strong>: rank position $i$ → empirical attention model → weight $v(i)$, decaying geometrically or logarithmically (e.g., $1/\log_2(i+1)$).</li><li><strong>Why it was created</strong>: models the observation that users of ranked interfaces attend far more to top positions (a <em>technical</em> bias inherent to any 1-D ranked list).</li><li><strong>Concrete example</strong>: DCG-style discount: utility of rank 3 is weighted $1/\log_2 4 = 0.5$ vs. 1.0 at rank 1.</li><li><strong>How it is used in this paper</strong>: the shared building block linking discounted utility (Eq. 3), NDCG (Eq. 7), and exposure (Eq. 8); classified as "technical bias" in the survey's bias-type framework.</li></ul>
+<p><strong>Probability-based fairness (vs. exposure-based)</strong></p>
+<ul><li><strong>What it computes</strong>: a ranking + minimum protected proportion $p$ → binomial/multinomial significance test at every prefix → pass/fail fairness verdict (e.g., FA*IR asks whether the ranking could have been generated by a fair Bernoulli process).</li><li><strong>Why it was created</strong>: gives a strict, per-prefix group-fairness guarantee — a ranking failing the test at <em>any</em> position is unfair, with no later compensation (unlike exposure averaging).</li><li><strong>Concrete example</strong>: FA*IR table (p. 46): with $p=0.7, \alpha=0.1$, at least 1 protected candidate required in top-2, 2 in top-4.</li><li><strong>How it is used in this paper</strong>: one of the two main measurement families; frames post-processing methods FA*IR [114, 117] and LinkedIn Recruiter re-ranking [46].</li></ul>
+<p><strong>Rank-aware proportional representation (rND / rRD / rKL)</strong></p>
+<ul><li><strong>What it computes</strong>: ranking → at cut-offs $k=10,20,\dots$ compute set-wise statistical-parity difference/ratio/KL-divergence between top-$k$ group proportion and overall proportion → sum with $1/\log_2 k$ discount, normalized (Eqs. 11–15).</li><li><strong>Why it was created</strong>: set-wise parity ignores <em>where</em> in the ranking the protected group appears; discounting makes parity at high ranks count more.</li><li><strong>Concrete example</strong>: rKL compares $P_k = (|\tau_{1..k}\cap G_1|/k, |\tau_{1..k}\cap G_2|/k)$ against overall $Q$ at each prefix.</li><li><strong>How it is used in this paper</strong>: presented as the first formalization of rank-aware fairness (Yang &amp; Stoyanovich [112]); rKL is the survey's recommended variant (smooth, multinary-capable).</li></ul>
+<p><strong>WYSIWYG vs. WAE worldviews (construct space / observed space / decision space)</strong></p>
+<ul><li><strong>What it computes</strong>: a classification of fairness methods by their implicit assumption about the mapping $g$: construct space (true qualification) → observed space (measured scores). WYSIWYG assumes distortion ≤ ε (scores trustworthy); WAE assumes group differences in scores are entirely observation bias.</li><li><strong>Why it was created</strong>: (Friedler et al.) makes explicit that no fairness definition is belief-free; the survey uses it to map every surveyed method to the normative stance it silently encodes.</li><li><strong>Concrete example</strong>: methods whose fairness objective <em>includes</em> utility/merit (Fair-PG-Rank, Equity of Attention) map to WYSIWYG + formal EO; methods that exclude merit (DELTR, FA*IR, demographic-parity exposure) map to WAE + substantive EO.</li><li><strong>How it is used in this paper</strong>: one of the four classification frameworks (with group structure, bias type, equality-of-opportunity doctrine) applied to every method via a recurring mind-map figure.</li></ul>
+<p>Not re-defined here (survey covers them as prior work): NDCG, statistical parity, individual vs. group fairness (Dwork et al.), Rooney Rule, structural causal models / counterfactual fairness.</p></div></details>
+<details><summary><span class="en-only">Implementation Feasibility</span><span class="ko-only">구현 가능성</span></summary><div class="card" style="margin-top:0.5rem"><ul><li><strong>Needs</strong>: nothing to run — a taxonomy. To reuse: the exposure definitions (Eqs. 8–10), rND/rRD/rKL (Eqs. 11–15), and the dataset table (Table 2: COMPAS, German Credit, XING, Yahoo! LTR, IIT-JEE, LSAC, ...) are directly reusable specifications.</li><li><strong>Code</strong>: survey itself has none; it points to FairSearch (https://github.com/fair-search — DELTR + FA*IR as Elasticsearch plugins) and Ranking Facts (https://github.com/DataResponsibly/RankingFacts).</li><li><strong>Modifications</strong>: to use exposure as a <em>proxy metric</em> (our setting) strip the fairness constraints and keep the measurement layer: position-bias model choice (geometric vs. logarithmic) + individual/group aggregation + optional amortization over ranking sequences.</li><li><strong>Unknowns</strong>: missing link — which position-bias model the survey considers empirically best-grounded for measurement (it notes "consensus on a definition of exposure has not yet been found"); missing link — Part II details on merit-weighted exposure interpretations (Sections 6–7 skimmed only at structure level).</li></ul></div></details>
+<details><summary><span class="en-only">Follow-up Papers</span><span class="ko-only">관련 후속 논문</span></summary><div class="card" style="margin-top:0.5rem"><ul><li>Singh &amp; Joachims, "Fairness of Exposure in Rankings" (KDD 2018) — origin of the exposure-allocation LP framework the survey builds Section 6.3.4 on; the core exposure formalization for our proxy use.</li><li>Biega, Gummadi &amp; Weikum, "Equity of Attention" (SIGIR 2018) — amortized individual exposure over ranking sequences; directly relevant if SP5 needs exposure-frequency accumulated over repeated rankings.</li><li>Yang &amp; Stoyanovich, "Measuring Fairness in Ranked Outputs" (SSDBM 2017) — rND/rRD/rKL rank-aware measures; the prefix-discounted measurement pattern.</li><li>Zehlike et al., "FA*IR" (CIKM 2017) — probability-based per-prefix testing alternative to exposure averaging.</li><li>Ekstrand, Burke &amp; Diaz, "Fairness and Discrimination in Retrieval and Recommendation" (SIGIR 2019 tutorial) — companion systematization for the IR/RecSys side cited by this survey.</li></ul></div></details>
+</section>
+<section id="delta" class="section-anchor">
+<div class="card"><div class="section-label"><span class="en-only">Condition Delta — transfer to our setting</span><span class="ko-only">조건 차이 — 우리 설정으로의 전이</span></div><p><strong>Paper's setting</strong>: inputs = candidates (people) with sensitive attributes + scores or preference-labeled training data; outputs = permutations/top-k; conditions = fairness toward <em>ranked items' producers</em> (group visibility shares), score-based (Part I) and supervised LtR (Part II); position bias treated as the attention model to be equalized over. <strong>Our setting</strong>: exposure <em>frequency</em> used as a measurable proxy for ranking quality/impact (SP3: fixed-scorer score-based setting; SP5): exposure is the survey's core measured quantity, but our interest is exposure as an evaluation/proxy signal rather than a fairness constraint to enforce. <strong>Differences</strong>:</p>
+<ul><li>Fairness-constraint framing (equalize/bound exposure across protected groups) vs. our proxy-measurement framing (use exposure as an observable stand-in): <strong>reference only</strong> — the exposure formalism (Eq. 8, position-bias models, amortization over rankings) transfers directly; the normative machinery does not need to.</li><li>Part I fixed-scorer score-based setting matches SP3's fixed-scorer setting exactly (per source note): <strong>resolved: adopt Section 5 taxonomy (intervene on scores / function / outcome) as the SP3 design-space map</strong>.</li><li>Survey assumes candidates are people with legally sensitive attributes; our items may be arbitrary: <strong>resolved: group structure generalizes to any categorical partition (survey itself notes techniques apply to non-person entities)</strong>.</li><li>Amortized/temporal exposure (Equity of Attention, Eq. 26–27) vs. single-shot ranking: <strong>missing link — whether SP5 needs amortized exposure accounting is not determinable from this skim</strong>.</li></ul></div>
+<div class="card"><div class="section-label"><span class="en-only">Root-cause vs. Symptom</span><span class="ko-only">근본 원인 대 증상</span></div><p><code>Direct</code> — for its target problem (unsystematized, incomparable fairness-in-ranking literature) the survey attacks the root cause: it traces each technical choice back to the normative assumption (worldview, EO doctrine, bias type) that generates the incompatibility, rather than merely cataloguing methods by surface features; the "don't compare apples to oranges" recommendation follows from that root-cause analysis.</p></div>
+</section>
+<div class="page-nav"><a href="36_SinkhornFairRank.html">&larr; [36] SinkhornFairRank</a><a href="../sp3_postproc-rerank-blackbox.html">&uarr; SP3</a><a href="38_FAIRTopK.html">[38] FAIRTopK &rarr;</a></div>
+    </div>
+  </div>
+<nav class="bd-sidebar-secondary"><div class="mini-toc-label"><span class="en-only">On this page</span><span class="ko-only">이 페이지</span></div><ul class="mini-toc"><li><a href="#header"><span class="en-only">Paper info</span><span class="ko-only">논문 정보</span></a></li><li><a href="#problem"><span class="en-only">Problem</span><span class="ko-only">문제</span></a></li><li><a href="#solution"><span class="en-only">Solution &amp; Results</span><span class="ko-only">해결책 · 결과</span></a></li><li><a href="#results"><span class="en-only">Concepts &amp; Follow-ups</span><span class="ko-only">개념 · 후속</span></a></li><li><a href="#delta"><span class="en-only">Condition Delta</span><span class="ko-only">조건 차이</span></a></li></ul></nav>
+</div>
+</body>
+</html>

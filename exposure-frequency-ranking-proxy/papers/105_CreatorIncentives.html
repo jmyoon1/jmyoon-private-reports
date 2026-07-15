@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>[105] Modeling Content Creator Incentives on Algorithm-Curated Pla — Exposure-Frequency Control Survey</title>
+
+<style>
+:root {
+  --bg: #0d1117; --card: #161b22; --border: #30363d;
+  --text: #e6edf3; --muted: #7d8590; --accent: #58a6ff;
+  --teal: #39d0c7; --green: #3fb950; --yellow: #d29922;
+  --red: #f85149; --purple: #bc8cff; --orange: #e3b341;
+  --sidebar-w: 262px; --toc-w: 210px; --hdr-h: 48px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+body { font-family: -apple-system, sans-serif; background: var(--bg);
+       color: var(--text); line-height: 1.6; }
+.bd-root { display: flex; height: 100vh; overflow: hidden; }
+.bd-sidebar-primary {
+  width: var(--sidebar-w); min-width: var(--sidebar-w);
+  overflow-y: auto; background: var(--card);
+  border-right: 1px solid var(--border);
+  padding: 0.75rem 0; flex-shrink: 0;
+}
+.bd-sidebar-primary::-webkit-scrollbar { width: 4px; }
+.bd-sidebar-primary::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+.bd-main { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-width: 0; }
+.article-header-bar {
+  height: var(--hdr-h); background: var(--card);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; padding: 0 1.5rem;
+  gap: 1rem; flex-shrink: 0;
+}
+.header-brand { color: var(--teal); font-weight: bold; font-size: 0.95em;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 1; }
+.header-brand a { color: inherit; text-decoration: none; }
+.breadcrumb { color: var(--muted); font-size: 0.82em; display: flex;
+  align-items: center; gap: 0.3rem; flex-shrink: 0; }
+.breadcrumb a { color: var(--accent); text-decoration: none; }
+.breadcrumb span { color: var(--border); }
+.bd-article { flex: 1; overflow-y: auto; padding: 2rem 2.5rem; }
+.bd-article::-webkit-scrollbar { width: 6px; }
+.bd-article::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+.bd-sidebar-secondary {
+  width: var(--toc-w); min-width: var(--toc-w);
+  overflow-y: auto; border-left: 1px solid var(--border);
+  padding: 1rem 0.75rem; flex-shrink: 0;
+}
+.bd-sidebar-secondary::-webkit-scrollbar { width: 4px; }
+.bd-sidebar-secondary::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+.sidebar-logo { padding: 0.5rem 1rem 0.75rem;
+  border-bottom: 1px solid var(--border); margin-bottom: 0.5rem; }
+.sidebar-logo a { color: var(--teal); font-weight: bold; font-size: 0.95em;
+  text-decoration: none; display: block; }
+.sidebar-section { color: var(--muted); font-size: 0.72em; font-weight: bold;
+  text-transform: uppercase; letter-spacing: 0.07em;
+  padding: 0.7rem 1rem 0.25rem; }
+.sidebar-nav-link { display: block; padding: 0.28rem 1rem 0.28rem 1.25rem;
+  color: var(--muted); font-size: 0.875em; text-decoration: none; }
+.sidebar-nav-link:hover { color: var(--text); background: rgba(255,255,255,0.03); }
+.sidebar-nav-link.active { color: var(--teal);
+  border-left: 2px solid var(--teal);
+  padding-left: calc(1.25rem - 2px); background: rgba(57,208,199,0.05); }
+.mini-toc-label { color: var(--muted); font-size: 0.72em; font-weight: bold;
+  text-transform: uppercase; letter-spacing: 0.07em; padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border); margin-bottom: 0.5rem; }
+.mini-toc { list-style: none; }
+.mini-toc li a { display: block; padding: 0.22rem 0;
+  color: var(--muted); font-size: 0.83em; text-decoration: none;
+  border-left: 2px solid transparent; padding-left: 0.5rem; }
+.mini-toc li a:hover { color: var(--text); }
+.mini-toc li a.toc-active { color: var(--teal); border-left-color: var(--teal); }
+.section-anchor { scroll-margin-top: calc(var(--hdr-h) + 8px); }
+h1 { color: var(--teal); font-size: 1.7em; margin-bottom: 0.5rem; line-height:1.3; }
+h2 { color: var(--teal); font-size: 1.25em; margin: 1.5rem 0 0.6rem; }
+h3 { color: var(--teal); font-size: 1.05em; margin: 1.2rem 0 0.4rem; }
+h4 { color: var(--teal); font-size: 0.95em; margin: 1rem 0 0.3rem; }
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+p { margin-bottom: 0.8rem; }
+ul, ol { margin: 0 0 0.8rem 1.4rem; }
+li { margin-bottom: 0.3rem; }
+code { background: rgba(255,255,255,0.06); border-radius: 3px; padding: 1px 4px; font-size: 0.9em; }
+blockquote { border-left: 3px solid var(--border); color: var(--muted);
+  padding: 0.2rem 0.8rem; margin-bottom: 0.8rem; }
+.card { background: var(--card); border: 1px solid var(--border);
+        border-radius: 8px; padding: 1.2rem; margin-bottom: 1rem; }
+table { width: 100%; border-collapse: collapse; font-size: 0.9em; margin-bottom: 0.8rem; }
+th { background: var(--card); color: var(--teal); padding: 8px;
+     border: 1px solid var(--border); text-align: left; }
+td { padding: 8px; border: 1px solid var(--border); vertical-align: top; }
+tr:nth-child(even) td { background: rgba(0,0,0,0.2); }
+.stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+             gap: 1rem; margin-bottom: 1.5rem; }
+.stat-box { background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+            padding: 1rem; text-align: center; }
+.stat-num { font-size: 2rem; font-weight: bold; color: var(--teal); }
+.stat-label { color: var(--muted); font-size: 0.85em; margin-top: 0.2rem; }
+.sp-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+           gap: 1rem; margin: 1rem 0; }
+.sp-card { background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+           padding: 1.2rem; cursor: pointer; transition: border-color 0.15s; height:100%; }
+.sp-card:hover { border-color: var(--teal); }
+.sp-card h3 { margin: 0 0 0.5rem; color: var(--teal); font-size: 1em; }
+.sp-card p { margin: 0; color: var(--muted); font-size: 0.88em; }
+.sp-badge { display: inline-block; background: rgba(57,208,199,0.1); color: var(--teal);
+            border-radius: 4px; padding: 2px 8px; font-size: 0.8em; margin-bottom: 0.5rem; }
+.paper-meta { color: var(--muted); font-size: 0.9em; margin-bottom: 1.5rem; }
+.paper-meta a { color: var(--accent); }
+.section-label { color: var(--teal); font-weight: bold; font-size: 0.85em;
+                 text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.4rem; }
+.pill { display: inline-block; border-radius: 4px; padding: 0.15rem 0.6rem;
+        font-size: 0.8em; font-weight: bold; margin-right: 0.4rem; }
+.pill-p0 { background: rgba(63,185,80,0.2); color: var(--green); }
+.pill-p1 { background: rgba(57,208,199,0.15); color: var(--teal); }
+.pill-p2 { background: rgba(210,153,34,0.2); color: var(--yellow); }
+.pill-p3 { background: rgba(188,140,255,0.2); color: var(--purple); }
+.pill-p4 { background: rgba(125,133,144,0.2); color: var(--muted); }
+.delta-row { margin: 0.4rem 0; padding: 0.4rem 0.8rem;
+             border-left: 3px solid var(--border); border-radius: 0 4px 4px 0; }
+.chain { position: relative; padding-left: 2rem; }
+.chain::before { content: ''; position: absolute; left: 0.95rem; top: 0;
+                 bottom: 0; width: 2px; background: var(--border); }
+.chain-node { position: relative; margin-bottom: 2rem; }
+.chain-node::before { content: ''; position: absolute; left: -1.55rem;
+                      top: 1.1rem; width: 12px; height: 12px;
+                      border-radius: 50%; background: var(--teal); }
+.chain-num { display: inline-block; width: 28px; height: 28px; background: var(--teal);
+             color: #000; border-radius: 50%; text-align: center; line-height: 28px;
+             font-weight: bold; font-size: 0.85em; margin-right: 0.6rem; flex-shrink: 0; }
+.chain-q { font-weight: bold; color: var(--text); margin: 0.4rem 0 0.3rem; font-size: 1em; }
+.chain-papers { color: var(--muted); font-size: 0.85em; margin-bottom: 0.6rem; }
+.chain-start { background: var(--card); border: 1px solid var(--teal);
+               border-radius: 8px; padding: 1rem; margin-bottom: 2rem; }
+.chain-start h3 { margin: 0 0 0.5rem; color: var(--teal); }
+.chain-converge { background: var(--card); border: 1px solid var(--green);
+                  border-radius: 8px; padding: 1rem; margin-top: 1rem; }
+.chain-converge h3 { margin: 0 0 0.5rem; color: var(--green); }
+.chain-label { display: inline-block; border-radius: 4px; padding: 0.15rem 0.6rem;
+               font-size: 0.8em; font-weight: bold; margin-right: 0.4rem; }
+.chain-status { border-radius: 0 4px 4px 0; padding: 0.5rem 0.8rem;
+                margin: 0.35rem 0; font-size: 0.88em; }
+.chain-status ul { margin: 0.3rem 0 0 1.2rem; padding: 0; }
+.chain-status li { margin-bottom: 0.25rem; }
+.chain-status.solved  { background: rgba(63,185,80,0.07);  border-left: 3px solid var(--green); }
+.chain-status.remains { background: rgba(210,153,34,0.07); border-left: 3px solid var(--yellow); }
+.chain-status.added   { background: rgba(248,81,73,0.07);  border-left: 3px solid var(--red); }
+.chain-status.pivoted { background: rgba(188,140,255,0.1); border-left: 3px solid var(--purple); }
+.chain-label.solved   { background: rgba(63,185,80,0.2);  color: var(--green); }
+.chain-label.remains  { background: rgba(210,153,34,0.2); color: var(--yellow); }
+.chain-label.added    { background: rgba(248,81,73,0.2);  color: var(--red); }
+.chain-label.pivoted  { background: rgba(188,140,255,0.2); color: var(--purple); }
+.chain-status.expected { background: rgba(88,166,255,0.07);  border-left: 3px solid var(--accent); }
+.chain-label.expected  { background: rgba(88,166,255,0.2);   color: var(--accent); }
+.chain-status.revised  { background: rgba(57,208,199,0.07);  border-left: 3px solid var(--teal); }
+.chain-label.revised   { background: rgba(57,208,199,0.2);   color: var(--teal); }
+.concept-box { border-left: 4px solid var(--teal); background: #0d1f1f;
+               border-radius: 4px; padding: 1.2rem; margin-bottom: 1.2rem; }
+.concept-name { font-weight: bold; color: var(--teal); font-size: 1.05em; margin-bottom: 0.5rem; }
+.hypothesis { border-left: 4px solid var(--teal); background: #0d1f1f;
+              border-radius: 4px; padding: 1rem; margin: 1rem 0; }
+.recommendation { border-left: 4px solid var(--purple); background: #1a0f2e;
+                  border-radius: 4px; padding: 1rem; margin: 1rem 0; }
+.rq-row { background: rgba(88,166,255,0.05); border-left: 3px solid var(--accent);
+          padding: 0.4rem 0.8rem; margin-bottom: 0.5rem; border-radius: 0 4px 4px 0; }
+.scroll-table-wrap { max-height: 420px; overflow-y: auto; border: 1px solid var(--border);
+                     border-radius: 4px; }
+.scroll-table-wrap table { margin-bottom: 0; }
+.scroll-table-wrap thead th { position: sticky; top: 0; background: #161b22; z-index: 1; }
+.page-nav { display: flex; justify-content: space-between; margin-top: 2rem;
+            padding-top: 1rem; border-top: 1px solid var(--border); gap: 1rem; }
+.page-nav a { color: var(--accent); font-size: 0.9em; }
+html.ko-active .en-only { display: none !important; }
+html.ko-active .ko-only { display: block !important; }
+.ko-only { display: none; }
+span.ko-only, .sidebar-logo a span.ko-only { display: none; }
+html.ko-active span.ko-only { display: inline !important; }
+.lang-btn { background: transparent; color: var(--muted); border: 1px solid var(--border);
+            border-radius: 4px; padding: 3px 9px; font-size: 0.8em; cursor: pointer; }
+.lang-btn.active { border-color: var(--teal); color: var(--teal); }
+details { margin-bottom: 0.8rem; }
+details summary { color: var(--muted); cursor: pointer; }
+@media (max-width: 1024px) { .bd-sidebar-secondary { display: none; } }
+@media (max-width: 768px) {
+  .bd-sidebar-primary { display: none; }
+  .bd-root { flex-direction: column; height: auto; overflow: visible; }
+  .bd-main { overflow: visible; }
+  .bd-article { overflow: visible; padding: 1rem; }
+  .stat-grid { grid-template-columns: repeat(2, 1fr); }
+  .sp-grid { grid-template-columns: 1fr; }
+}
+</style>
+
+<script>
+MathJax = { tex: { inlineMath: [['$','$']], displayMath: [['$$','$$']] },
+            options: { skipHtmlTags: ['script','noscript','style','textarea','pre','code'] } };
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<script>
+function toggleLanguage() {
+  const html = document.documentElement;
+  const isKo = html.classList.toggle('ko-active');
+  document.querySelectorAll('.lang-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.lang === (isKo ? 'ko' : 'en'));
+  });
+  localStorage.setItem('survey-lang', isKo ? 'ko' : 'en');
+}
+document.addEventListener('DOMContentLoaded', function() {
+  const saved = localStorage.getItem('survey-lang');
+  if (saved === 'ko') {
+    document.documentElement.classList.add('ko-active');
+    document.querySelectorAll('.lang-btn').forEach(b =>
+      b.classList.toggle('active', b.dataset.lang === 'ko'));
+  } else {
+    document.querySelectorAll('[data-lang="en"]').forEach(b => b.classList.add('active'));
+  }
+  const article = document.querySelector('.bd-article');
+  const sections = Array.from(document.querySelectorAll('.section-anchor[id]'));
+  const sideLinks = Array.from(document.querySelectorAll('.bd-sidebar-primary .sidebar-nav-link'));
+  const tocLinks = Array.from(document.querySelectorAll('.bd-sidebar-secondary .mini-toc a'));
+  if (!article || !sections.length) return;
+  function current() {
+    let id = sections[0].id;
+    const scrollTop = article.scrollTop + 60;
+    sections.forEach(function(s) { if (s.offsetTop <= scrollTop) id = s.id; });
+    return id;
+  }
+  function update() {
+    const id = current();
+    sideLinks.forEach(function(a) {
+      a.classList.toggle('active', a.getAttribute('href') === '#' + id);
+    });
+    tocLinks.forEach(function(a) {
+      a.classList.toggle('toc-active', a.getAttribute('href') === '#' + id);
+    });
+  }
+  article.addEventListener('scroll', update, { passive: true });
+  update();
+});
+</script>
+
+</head>
+<body>
+<div class="bd-root">
+
+<nav class="bd-sidebar-primary">
+  <div class="sidebar-logo">
+    <a href="../index.html">&#x2B21; <span class="en-only">Exposure-Frequency Control Survey</span><span class="ko-only">Exposure-빈도 제어 문헌 조사</span></a>
+  </div>
+  <div class="sidebar-section"><span class="en-only">Overview</span><span class="ko-only">개요</span></div>
+  <a href="../index.html#overview" class="sidebar-nav-link"><span class="en-only">Survey Hub</span><span class="ko-only">조사 허브</span></a>
+  <a href="../index.html#answers" class="sidebar-nav-link"><span class="en-only">Key Answers</span><span class="ko-only">핵심 답변</span></a>
+  <div class="sidebar-section"><span class="en-only">Sub-Problems</span><span class="ko-only">세부 문제</span></div>
+<a href="../sp1_fairness-of-exposure-fixed-scores.html" class="sidebar-nav-link">SP1: <span class="en-only">Exposure fairness</span><span class="ko-only">Exposure 공정성</span></a>
+<a href="../sp2_2024-2026-frontier-llm-era.html" class="sidebar-nav-link">SP2: <span class="en-only">2024–26 frontier / LLM</span><span class="ko-only">2024–26 최전선 / LLM</span></a>
+<a href="../sp3_postproc-rerank-blackbox.html" class="sidebar-nav-link">SP3: <span class="en-only">Post-proc re-ranking</span><span class="ko-only">Post-proc re-ranking</span></a>
+<a href="../sp4_stochastic-ranking-policies.html" class="sidebar-nav-link">SP4: <span class="en-only">Stochastic policies</span><span class="ko-only">확률적 정책</span></a>
+<a href="../sp5_amortized-equity-attention.html" class="sidebar-nav-link">SP5: <span class="en-only">Amortized fairness</span><span class="ko-only">Amortized 공정성</span></a>
+<a href="../sp6_bandit-exposure-allocation.html" class="sidebar-nav-link">SP6: <span class="en-only">Bandit allocation</span><span class="ko-only">Bandit 배분</span></a>
+<a href="../sp7_capping-pacing-feeds-ads.html" class="sidebar-nav-link">SP7: <span class="en-only">Capping &amp; pacing</span><span class="ko-only">Capping·pacing</span></a>
+<a href="../sp8_popularity-debias-calibration.html" class="sidebar-nav-link">SP8: <span class="en-only">Debiasing &amp; calibration</span><span class="ko-only">Debiasing·calibration</span></a>
+<a href="../sp9_ecosystems-creator-incentives.html" class="sidebar-nav-link active">SP9: <span class="en-only">Ecosystems &amp; creators</span><span class="ko-only">생태계·creator</span></a>
+<a href="../sp10_llm-exposure-feedback-loops.html" class="sidebar-nav-link">SP10: <span class="en-only">LLM feedback loops</span><span class="ko-only">LLM feedback loop</span></a>
+<a href="../sp11_strategyproof-exposure.html" class="sidebar-nav-link">SP11: <span class="en-only">Strategy-proofness</span><span class="ko-only">Strategy-proofness</span></a>
+
+  <div class="sidebar-section"><span class="en-only">Synthesis</span><span class="ko-only">종합</span></div>
+  <a href="../conclusion.html" class="sidebar-nav-link"><span class="en-only">Conclusion</span><span class="ko-only">결론</span></a>
+  <a href="../thinking-process.html" class="sidebar-nav-link"><span class="en-only">Thinking Process</span><span class="ko-only">추론 과정</span></a>
+</nav>
+  <div class="bd-main">
+<div class="article-header-bar"><div class="header-brand"><a href="../index.html"><span class="en-only">Exposure-Frequency Control Survey</span><span class="ko-only">Exposure-빈도 제어 문헌 조사</span></a></div><nav class="breadcrumb"><a href="../index.html"><span class="en-only">Survey</span><span class="ko-only">조사</span></a><span>&rsaquo;</span><a href="../sp9_ecosystems-creator-incentives.html">SP9</a><span>&rsaquo;</span><span>[105] Modeling Content Creator Incentives on A</span></nav><button class="lang-btn" data-lang="en" onclick="toggleLanguage()">EN</button><button class="lang-btn" data-lang="ko" onclick="toggleLanguage()">KO</button></div>
+    <div class="bd-article">
+<section id="header" class="section-anchor"><div class="paper-meta">
+<h1 style="margin-bottom:0.3rem">Modeling Content Creator Incentives on Algorithm-Curated Platforms</h1>
+<p style="margin:0.3rem 0;color:var(--muted)">Hron et al. · ICLR 2023 · 2023 · 58 citations</p>
+<p style="margin:0.3rem 0"><a href="https://arxiv.org/abs/2206.13102" target="_blank">arXiv:2206.13102</a> · <a href="https://arxiv.org/pdf/2206.13102.pdf" target="_blank">PDF</a> · SP: <a href="../sp9_ecosystems-creator-incentives.html">SP9</a></p>
+<p><span class="pill pill-p0">P0</span><span class="pill" style="background:rgba(255,255,255,0.05);color:var(--muted)">Track C</span></p>
+</div>
+<div class="card ko-only" style="border-color:var(--teal)"><div class="section-label">한 줄 요약</div><p style="margin:0">알고리즘 큐레이션 플랫폼에서 creator 인센티브를 모델링한 ICLR 2023 논문. 배분 규칙의 온도 파라미터에 따라 콘텐츠 균질화 상전이(τ-임계값)가 발생함을 보인다.</p></div>
+</section>
+<section id="problem" class="section-anchor">
+<div class="card"><div class="section-label"><span class="en-only">Problem</span><span class="ko-only">해결하려는 문제</span></div><p>Prior game-theoretic models of exposure-maximizing content creators restrict creators to choosing from a predefined finite item catalog, which excludes the dominant class of real deployed rankers — matrix factorization and (deep) two-tower models whose continuous embedding spaces admit infinitely many possible items. Separately, platforms have no ex-ante tool for assessing how an algorithm update shifts creator incentives: A/B tests cannot randomize producers into treatment groups and content adaptation lags deployment, so misaligned incentives (junk/divisive content, as in the 2018 Facebook feed update) surface only after harm and are handled post-hoc by moderation.</p></div>
+</section>
+<section id="solution" class="section-anchor">
+<div class="card"><div class="section-label"><span class="en-only">Solution / Contribution</span><span class="ko-only">해결책 / 기여</span></div><p>Two contributions:</p>
+<ol><li><strong>Exposure games</strong> (Definition 1): $n$ producers each pick a unit-norm embedding $s_i \in S^{d-1}$ to maximize expected exposure $u_i(s) = \mathbb{E}_{c \sim P_c}\big[\mathrm{softmax}(\tau^{-1}[\langle c, s_j\rangle]_{j=1}^n)_i\big]$ against a fixed demand distribution $P_c$ of user embeddings. Theory: mixed NE always exist (Thm 1); pure NE need not exist for either hardmax or softmax (Thm 2); for large enough $\tau$, all producers collapsing onto the normalized mean consumer $\bar{c}$ is an $\epsilon$-PNE with $\epsilon_\tau \le \epsilon/\tau$ (Thm 3); the same demand distribution can yield zero, one, multiple, or infinitely many $\epsilon$-NE depending solely on $\tau$ (Cor 1). Non-negative games (embeddings in the positive orthant, e.g. NMF) behave differently from unconstrained ones — e.g. PNE always exist for $n=d=2$ non-negative hardmax games but may not otherwise (Prop 1).</li><li><strong>Pre-deployment audit</strong>: fit a real recommender (PMF/NMF on MovieLens-100K, LastFM-360K), take its user embeddings as $P_c$, run simultaneous projected gradient ascent (Eq. 4) to find $\epsilon$-LNE, and read off properties of the incentivized content (diversity, group targeting) as a function of design choices ($\tau$, $d$, rating model).</li></ol>
+<p>Headline qualitative finding: <strong>more algorithmic exploration (higher $\tau$) incentivizes homogeneous, broadly appealing content; less exploration incentivizes niche specialization</strong> — the opposite of the intuition that exploration promotes diversity.</p></div>
+<div class="card"><div class="section-label"><span class="en-only">Key Results</span><span class="ko-only">주요 결과</span></div><ul><li>Pure NE can fail to exist even with $n=2$ producers in $d=2$ (Thm 2), while mixed NE always exist (Thm 1) — so stable creator content configurations are not guaranteed and persistent oscillation is possible at low $\tau$.</li><li>For $\tau$ above a threshold $\tau_0$, all-producers-at-$\bar{c}$ is an $\epsilon$-PNE with $\epsilon_\tau \le \epsilon/\tau$, and all better-responses concentrate within $\delta = 2\epsilon/(\|\hat{c}\|-\epsilon)$ of $\bar{c}$ (Thm 3): exploration → homogeneous mainstream content.</li><li>On MovieLens and LastFM, producer strategies collapse to ~1 cluster already at $\tau = 1$ for both $d=3$ and $d=50$; at $\tau = 0.01$ the clusters-to-producers ratio is high (specialization) — Figure 4.</li><li>Gender-targeting bias of incentivized content grows with embedding dimension ($d = 50$ ≫ $d = 3$), and NMF incentivizes more biased content than PMF relative to the pre-adaptation baseline on MovieLens (users 71% male) — Figure 5.</li><li>On LastFM, incentivized content sits closer to male creators' baseline embeddings, more so at $d = 50$ and (for the distance metric) under PMF — quantifying that strategic adaptation is easier for the majority creator group (Figure 6).</li><li>Hardmax ($\tau = 0$, i.e. deterministic top-1) NE-finding reduces to an NP-complete hitting-set problem; only exponential worst-case algorithms known (Appendix B).</li></ul></div>
+<details><summary><span class="en-only">5Cs Analysis</span><span class="ko-only">5Cs 분석</span></summary><div class="card" style="margin-top:0.5rem"><p><strong>Category</strong>: theoretical (game-theoretic model + existence/characterization results) with a system/audit demonstration. <strong>Context</strong>: builds on facility-location / catalog-constrained creator games (Hotelling 1929; Ben-Porat et al. 2018–2020; Raifer et al. 2017), strategic classification / performative prediction (Hardt et al. 2016; Perdomo et al. 2020), and concurrent work of Jagadeesan et al. 2022 (supply-side equilibria; hardmax non-negative special case with production cost instead of norm constraint). Directly relevant to this survey's creator-side track: it formalizes how exposure allocation rules reshape the content distribution itself. <strong>Correctness</strong>: proofs provided in appendix for all claims; experiments use 5 seeds × 10 restarts with a Riemannian second-order filter, and the appendix separately reports the stricter confirmed-LNE subset. <code>[SKIM - proof details not verified line-by-line]</code> <strong>Contributions</strong>: (a) the exposure-game model covering factorization/two-tower rankers; (b) equilibrium sensitivity results showing innocuous design choices ($\tau$, $d$, non-negativity) change equilibrium existence and character; (c) the pre-deployment incentive audit with numerical LNE-finding tools. <strong>Clarity</strong>: model and algorithm are reproducible from the paper (gradient formula, stopping criteria, hyperparameter grid all stated; code referenced in appendix).</p></div></details>
+<details><summary><span class="en-only">Contribution vs Claim</span><span class="ko-only">기여 대 주장</span></summary><div class="card" style="margin-top:0.5rem"><ul><li><strong>Stated claims</strong>: seemingly innocuous algorithmic choices significantly affect equilibria; exploration incentivizes uniformity; the audit can flag incentive misalignment pre-deployment.</li><li><strong>Demonstrated</strong>: existence/sensitivity theorems proven for the stylized model; the exploration→homogenization effect confirmed empirically on two datasets; bias findings shown via aggregate statistics of predicted ratings.</li><li><strong>Gap</strong> (acknowledged by the authors): the behavior model assumes rational, omniscient producers with full control of their item embeddings, linear utility in exposure, a fixed attention pool, and no recommendation diversification; no validation against real creator behavior (platform data inaccessible to academics). The audit's predictions are illustrative, not validated against observed post-deployment content shifts. <code>[SKIM - verify appendix caveats in deep read]</code></li></ul></div></details>
+</section>
+<section id="results" class="section-anchor">
+<details><summary><span class="en-only">Concepts Introduced</span><span class="ko-only">도입된 개념</span></summary><div class="card" style="margin-top:0.5rem"><p><strong>Exposure game</strong></p>
+<ul><li><strong>What it computes</strong>: input = embedding dimension $d$, demand distribution $P_c$ over user embeddings, $n$ producers each choosing a unit-norm item embedding $s_i \in S^{d-1}$; operation = each producer maximizes expected exposure $u_i(s) = \mathbb{E}_{c\sim P_c}[p_i(c)]$ where $p_i(c) = \mathrm{softmax}([\tau^{-1}\langle c, s_{i'}\rangle]_{i'=1}^n)_i$; output = a strategy profile (and its Nash equilibria) describing what content the ranking algorithm implicitly incentivizes.</li><li><strong>Why it was created</strong>: prior creator-incentive game models (Ben-Porat et al., Raifer et al.) constrain creators to a predefined finite item catalog, which excludes factorization-based and two-tower rankers whose continuous embedding space allows infinitely many possible items.</li><li><strong>Concrete example</strong>: with $n = d = 2$ and $P_c$ placing mass $1/3$ on three consumers $2\pi/3$ apart on the circle, no pure Nash equilibrium exists at any temperature (Theorem 2's counterexample).</li><li><strong>How it is used in this paper</strong>: the central object — all theory (Section 2) characterizes its equilibria; the audit (Section 3) finds its local equilibria numerically on MovieLens/LastFM.</li></ul>
+<p><strong>Temperature $\tau$ as exploration knob</strong></p>
+<ul><li><strong>What it computes</strong>: input = inner-product scores $\langle c, s_i\rangle$; operation = softmax with temperature $\tau \ge 0$; output = exposure probabilities. $\tau = 0$ is hardmax (deterministic top-1); $\tau &gt; 0$ spreads exposure over lower-ranked items, modeling ranked position effects and algorithmic exploration.</li><li><strong>Why it was created</strong>: to let a single model interpolate between deterministic top-k ranking and stochastic/exploratory rankers, and to isolate exploration's effect on creator incentives.</li><li><strong>Concrete example</strong>: at $\tau = 1$ producers collapse into one cluster near the average consumer embedding on both MovieLens and LastFM, regardless of $d$ and $n$; at $\tau = 0.01$ they scatter into distinct niches.</li><li><strong>How it is used in this paper</strong>: the main axis of both theory (Theorem 3, Corollary 1) and experiments (Figures 4–6).</li></ul>
+<p><strong>Pre-deployment (ex-ante) incentive audit</strong></p>
+<ul><li><strong>What it computes</strong>: input = trained recommender (user embeddings define $P_c$) + a creator behavior model (exposure game); operation = run simultaneous gradient ascent on producer utilities with reparametrization $s_i = \theta_i/\|\theta_i\|$ (Eq. 4), filter candidates with a Riemannian second-derivative test; output = approximate local Nash equilibria = the content the algorithm incentivizes, examined before deployment.</li><li><strong>Why it was created</strong>: A/B testing cannot measure producer impact because producers cannot be randomized into treatment groups and content adaptation lags deployment; harms are otherwise handled only post-hoc via filtering/moderation.</li><li><strong>Concrete example</strong>: the MovieLens/LastFM audit used gradient ascent runs (5 recommender seeds × 10 restarts per configuration, 50K iterations) over $\{$PMF, NMF$\}$ × $d \in \{3, 50\}$ × $\tau \in \{0.01, 0.1, 1.0\}$.</li><li><strong>How it is used in this paper</strong>: the second headline contribution; Section 3 demonstrates it end-to-end.</li></ul>
+<p><strong>$\epsilon$-local Nash equilibrium ($\epsilon$-LNE)</strong> <code>[SKIM - verify formal definition chain in deep read]</code></p>
+<ul><li><strong>What it computes</strong>: a strategy profile where no producer can gain more than $\epsilon$ utility by a small (local) unilateral deviation; found by first-order local search and certified (sufficient condition only) via the Riemannian gradient/Hessian test on $S^{d-1}$ (Definition 3).</li><li><strong>Why it was created</strong>: pure NE need not exist (Theorem 2) and hardmax NE-finding requires solving an NP-complete hitting-set problem, so a weaker, gradient-findable solution concept is needed for the practical audit.</li><li><strong>Concrete example</strong>: runs are ruled out if any Riemannian gradient norm exceeds $10^{-5}\sqrt{d}$ or the Riemannian Hessian has a positive eigenvalue.</li><li><strong>How it is used in this paper</strong>: the solution concept actually computed in all experiments.</li></ul></div></details>
+<details><summary><span class="en-only">Implementation Feasibility</span><span class="ko-only">구현 가능성</span></summary><div class="card" style="margin-top:0.5rem"><ul><li><strong>Needs</strong>: a trained factorization/two-tower recommender's user embeddings; Python + JAX/numpy/scikit-surprise/reclab; the paper's full sweep used ~50K CPU hours (72 AWS 4-core machines × 5h for final runs), but single-configuration audits are far cheaper.</li><li><strong>Code</strong>: referenced as provided (config.py, manifold.py, optimisation.py named in appendix); <code>[SKIM - locate repository URL]</code>.</li><li><strong>Modifications</strong>: for this survey's setting one would need (a) a feature-space (not embedding-space) creator action model, (b) closing the loop with recommender retraining on the strategically produced content, (c) extending exposure to explicit position-bias/top-k models.</li><li><strong>Unknowns</strong>: missing link: how well $\epsilon$-LNE of the stylized game predict real creator adaptation; missing link: equilibrium behavior in the $\beta \to \infty$ limit connecting to Jagadeesan et al.'s production-cost model; missing link: non-negativity effects beyond $d = 2$.</li></ul></div></details>
+<details><summary><span class="en-only">Follow-up Papers</span><span class="ko-only">관련 후속 논문</span></summary><div class="card" style="margin-top:0.5rem"><ul><li>Supply-Side Equilibria in Recommender Systems (Jagadeesan, Garg &amp; Steinhardt, 2022) — concurrent complementary model (hardmax non-negative exposure games with production cost instead of unit-norm constraint); studies genre formation and profitability; a natural sibling read for SP9.</li><li>Content Provider Dynamics and Coordination in Recommendation Ecosystems (Ben-Porat et al., NeurIPS 2020) — the finite-catalog predecessor line this paper generalizes; covers repeated interactions and user welfare that exposure games omit.</li><li>Towards Content Provider Aware Recommender Systems (Zhan et al., TheWebConf 2021) — designs rankers optimizing both user and provider utility; the "fix" side to this paper's "diagnose" side.</li><li>Top-K Off-Policy Correction for a REINFORCE Recommender System (Chen et al., WSDM 2019) — source of the softmax exposure model used here in a deployed YouTube system; grounds Eq. (2)'s realism.</li><li>Strategic Ranking (Liu, Garg &amp; Borgs, 2022) — closest strategic-adaptation-under-finite-resources analysis; single-score competitors vs. this paper's multi-dimensional embedding scores.</li></ul></div></details>
+</section>
+<section id="delta" class="section-anchor">
+<div class="card"><div class="section-label"><span class="en-only">Condition Delta — transfer to our setting</span><span class="ko-only">조건 차이 — 우리 설정으로의 전이</span></div><p><strong>Paper's setting</strong>: inputs = fixed trained factorization recommender (user embeddings → empirical demand distribution $P_c$) on MovieLens-100K / LastFM-360K; outputs = ($\epsilon$-local) Nash equilibria of creator embedding choices; conditions = creators fully control unit-norm item embeddings, exposure follows a softmax over inner-product scores, static one-shot game, fixed user population. <strong>Our setting</strong> (SP9 — creator-side failure modes of exposure/frequency as a ranking proxy): real ranking pipelines where exposure frequency both measures and confers quality, creators manipulate content features (not embeddings directly), interactions are repeated, and the user population and attention pool shift. <strong>Differences</strong>:</p>
+<ul><li>Creators control features, not embeddings; the feature→embedding map is unknown to them: <strong>missing link</strong> (paper explicitly abstracts this away as its least realistic assumption).</li><li>Static one-shot equilibrium vs. repeated ranker-retraining feedback loops (exposure → engagement data → retrained ranker): <strong>missing link</strong> — the paper fixes the recommender; the exposure→training-signal loop central to this survey is outside the model.</li><li>Softmax exposure (Eq. 2) vs. real position-bias/top-k cascade exposure: <strong>resolved: partially</strong> — $\tau$ interpolates toward hardmax and the softmax form is used in real systems (YouTube, Chen et al. 2019), but exact top-k with position curves is not covered (hardmax case is computationally intractable here).</li><li>Fixed finite attention pool vs. growing/shifting platform usage: <strong>reference only</strong> (acknowledged limitation).</li><li>Rating-prediction factorization models vs. modern LLM-based or multi-objective rankers: <strong>reference only</strong> — the theory needs only inner-product scoring, so two-tower LLM retrieval embeddings are formally covered, but nothing beyond inner-product scoring is.</li></ul></div>
+<div class="card"><div class="section-label"><span class="en-only">Root-cause vs. Symptom</span><span class="ko-only">근본 원인 대 증상</span></div><p><code>Direct</code> — the paper attacks the root cause of gaming-like content shifts (the incentive structure the exposure allocation rule itself induces on creators) and proposes auditing that structure ex-ante, rather than patching the symptom (junk content) with post-hoc filtering/moderation, which it explicitly positions itself as complementing.</p></div>
+</section>
+<div class="page-nav"><a href="104_StrategicProviders.html">&larr; [104] StrategicProviders</a><a href="../sp9_ecosystems-creator-incentives.html">&uarr; SP9</a><a href="106_SupplySideEq.html">[106] SupplySideEq &rarr;</a></div>
+    </div>
+  </div>
+<nav class="bd-sidebar-secondary"><div class="mini-toc-label"><span class="en-only">On this page</span><span class="ko-only">이 페이지</span></div><ul class="mini-toc"><li><a href="#header"><span class="en-only">Paper info</span><span class="ko-only">논문 정보</span></a></li><li><a href="#problem"><span class="en-only">Problem</span><span class="ko-only">문제</span></a></li><li><a href="#solution"><span class="en-only">Solution &amp; Results</span><span class="ko-only">해결책 · 결과</span></a></li><li><a href="#results"><span class="en-only">Concepts &amp; Follow-ups</span><span class="ko-only">개념 · 후속</span></a></li><li><a href="#delta"><span class="en-only">Condition Delta</span><span class="ko-only">조건 차이</span></a></li></ul></nav>
+</div>
+</body>
+</html>

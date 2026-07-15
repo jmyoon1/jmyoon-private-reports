@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>[48] FairSync: Ensuring Amortized Group Exposure in Distributed R — Exposure-Frequency Control Survey</title>
+
+<style>
+:root {
+  --bg: #0d1117; --card: #161b22; --border: #30363d;
+  --text: #e6edf3; --muted: #7d8590; --accent: #58a6ff;
+  --teal: #39d0c7; --green: #3fb950; --yellow: #d29922;
+  --red: #f85149; --purple: #bc8cff; --orange: #e3b341;
+  --sidebar-w: 262px; --toc-w: 210px; --hdr-h: 48px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+body { font-family: -apple-system, sans-serif; background: var(--bg);
+       color: var(--text); line-height: 1.6; }
+.bd-root { display: flex; height: 100vh; overflow: hidden; }
+.bd-sidebar-primary {
+  width: var(--sidebar-w); min-width: var(--sidebar-w);
+  overflow-y: auto; background: var(--card);
+  border-right: 1px solid var(--border);
+  padding: 0.75rem 0; flex-shrink: 0;
+}
+.bd-sidebar-primary::-webkit-scrollbar { width: 4px; }
+.bd-sidebar-primary::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+.bd-main { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-width: 0; }
+.article-header-bar {
+  height: var(--hdr-h); background: var(--card);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; padding: 0 1.5rem;
+  gap: 1rem; flex-shrink: 0;
+}
+.header-brand { color: var(--teal); font-weight: bold; font-size: 0.95em;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 1; }
+.header-brand a { color: inherit; text-decoration: none; }
+.breadcrumb { color: var(--muted); font-size: 0.82em; display: flex;
+  align-items: center; gap: 0.3rem; flex-shrink: 0; }
+.breadcrumb a { color: var(--accent); text-decoration: none; }
+.breadcrumb span { color: var(--border); }
+.bd-article { flex: 1; overflow-y: auto; padding: 2rem 2.5rem; }
+.bd-article::-webkit-scrollbar { width: 6px; }
+.bd-article::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+.bd-sidebar-secondary {
+  width: var(--toc-w); min-width: var(--toc-w);
+  overflow-y: auto; border-left: 1px solid var(--border);
+  padding: 1rem 0.75rem; flex-shrink: 0;
+}
+.bd-sidebar-secondary::-webkit-scrollbar { width: 4px; }
+.bd-sidebar-secondary::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+.sidebar-logo { padding: 0.5rem 1rem 0.75rem;
+  border-bottom: 1px solid var(--border); margin-bottom: 0.5rem; }
+.sidebar-logo a { color: var(--teal); font-weight: bold; font-size: 0.95em;
+  text-decoration: none; display: block; }
+.sidebar-section { color: var(--muted); font-size: 0.72em; font-weight: bold;
+  text-transform: uppercase; letter-spacing: 0.07em;
+  padding: 0.7rem 1rem 0.25rem; }
+.sidebar-nav-link { display: block; padding: 0.28rem 1rem 0.28rem 1.25rem;
+  color: var(--muted); font-size: 0.875em; text-decoration: none; }
+.sidebar-nav-link:hover { color: var(--text); background: rgba(255,255,255,0.03); }
+.sidebar-nav-link.active { color: var(--teal);
+  border-left: 2px solid var(--teal);
+  padding-left: calc(1.25rem - 2px); background: rgba(57,208,199,0.05); }
+.mini-toc-label { color: var(--muted); font-size: 0.72em; font-weight: bold;
+  text-transform: uppercase; letter-spacing: 0.07em; padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border); margin-bottom: 0.5rem; }
+.mini-toc { list-style: none; }
+.mini-toc li a { display: block; padding: 0.22rem 0;
+  color: var(--muted); font-size: 0.83em; text-decoration: none;
+  border-left: 2px solid transparent; padding-left: 0.5rem; }
+.mini-toc li a:hover { color: var(--text); }
+.mini-toc li a.toc-active { color: var(--teal); border-left-color: var(--teal); }
+.section-anchor { scroll-margin-top: calc(var(--hdr-h) + 8px); }
+h1 { color: var(--teal); font-size: 1.7em; margin-bottom: 0.5rem; line-height:1.3; }
+h2 { color: var(--teal); font-size: 1.25em; margin: 1.5rem 0 0.6rem; }
+h3 { color: var(--teal); font-size: 1.05em; margin: 1.2rem 0 0.4rem; }
+h4 { color: var(--teal); font-size: 0.95em; margin: 1rem 0 0.3rem; }
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+p { margin-bottom: 0.8rem; }
+ul, ol { margin: 0 0 0.8rem 1.4rem; }
+li { margin-bottom: 0.3rem; }
+code { background: rgba(255,255,255,0.06); border-radius: 3px; padding: 1px 4px; font-size: 0.9em; }
+blockquote { border-left: 3px solid var(--border); color: var(--muted);
+  padding: 0.2rem 0.8rem; margin-bottom: 0.8rem; }
+.card { background: var(--card); border: 1px solid var(--border);
+        border-radius: 8px; padding: 1.2rem; margin-bottom: 1rem; }
+table { width: 100%; border-collapse: collapse; font-size: 0.9em; margin-bottom: 0.8rem; }
+th { background: var(--card); color: var(--teal); padding: 8px;
+     border: 1px solid var(--border); text-align: left; }
+td { padding: 8px; border: 1px solid var(--border); vertical-align: top; }
+tr:nth-child(even) td { background: rgba(0,0,0,0.2); }
+.stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+             gap: 1rem; margin-bottom: 1.5rem; }
+.stat-box { background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+            padding: 1rem; text-align: center; }
+.stat-num { font-size: 2rem; font-weight: bold; color: var(--teal); }
+.stat-label { color: var(--muted); font-size: 0.85em; margin-top: 0.2rem; }
+.sp-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+           gap: 1rem; margin: 1rem 0; }
+.sp-card { background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+           padding: 1.2rem; cursor: pointer; transition: border-color 0.15s; height:100%; }
+.sp-card:hover { border-color: var(--teal); }
+.sp-card h3 { margin: 0 0 0.5rem; color: var(--teal); font-size: 1em; }
+.sp-card p { margin: 0; color: var(--muted); font-size: 0.88em; }
+.sp-badge { display: inline-block; background: rgba(57,208,199,0.1); color: var(--teal);
+            border-radius: 4px; padding: 2px 8px; font-size: 0.8em; margin-bottom: 0.5rem; }
+.paper-meta { color: var(--muted); font-size: 0.9em; margin-bottom: 1.5rem; }
+.paper-meta a { color: var(--accent); }
+.section-label { color: var(--teal); font-weight: bold; font-size: 0.85em;
+                 text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.4rem; }
+.pill { display: inline-block; border-radius: 4px; padding: 0.15rem 0.6rem;
+        font-size: 0.8em; font-weight: bold; margin-right: 0.4rem; }
+.pill-p0 { background: rgba(63,185,80,0.2); color: var(--green); }
+.pill-p1 { background: rgba(57,208,199,0.15); color: var(--teal); }
+.pill-p2 { background: rgba(210,153,34,0.2); color: var(--yellow); }
+.pill-p3 { background: rgba(188,140,255,0.2); color: var(--purple); }
+.pill-p4 { background: rgba(125,133,144,0.2); color: var(--muted); }
+.delta-row { margin: 0.4rem 0; padding: 0.4rem 0.8rem;
+             border-left: 3px solid var(--border); border-radius: 0 4px 4px 0; }
+.chain { position: relative; padding-left: 2rem; }
+.chain::before { content: ''; position: absolute; left: 0.95rem; top: 0;
+                 bottom: 0; width: 2px; background: var(--border); }
+.chain-node { position: relative; margin-bottom: 2rem; }
+.chain-node::before { content: ''; position: absolute; left: -1.55rem;
+                      top: 1.1rem; width: 12px; height: 12px;
+                      border-radius: 50%; background: var(--teal); }
+.chain-num { display: inline-block; width: 28px; height: 28px; background: var(--teal);
+             color: #000; border-radius: 50%; text-align: center; line-height: 28px;
+             font-weight: bold; font-size: 0.85em; margin-right: 0.6rem; flex-shrink: 0; }
+.chain-q { font-weight: bold; color: var(--text); margin: 0.4rem 0 0.3rem; font-size: 1em; }
+.chain-papers { color: var(--muted); font-size: 0.85em; margin-bottom: 0.6rem; }
+.chain-start { background: var(--card); border: 1px solid var(--teal);
+               border-radius: 8px; padding: 1rem; margin-bottom: 2rem; }
+.chain-start h3 { margin: 0 0 0.5rem; color: var(--teal); }
+.chain-converge { background: var(--card); border: 1px solid var(--green);
+                  border-radius: 8px; padding: 1rem; margin-top: 1rem; }
+.chain-converge h3 { margin: 0 0 0.5rem; color: var(--green); }
+.chain-label { display: inline-block; border-radius: 4px; padding: 0.15rem 0.6rem;
+               font-size: 0.8em; font-weight: bold; margin-right: 0.4rem; }
+.chain-status { border-radius: 0 4px 4px 0; padding: 0.5rem 0.8rem;
+                margin: 0.35rem 0; font-size: 0.88em; }
+.chain-status ul { margin: 0.3rem 0 0 1.2rem; padding: 0; }
+.chain-status li { margin-bottom: 0.25rem; }
+.chain-status.solved  { background: rgba(63,185,80,0.07);  border-left: 3px solid var(--green); }
+.chain-status.remains { background: rgba(210,153,34,0.07); border-left: 3px solid var(--yellow); }
+.chain-status.added   { background: rgba(248,81,73,0.07);  border-left: 3px solid var(--red); }
+.chain-status.pivoted { background: rgba(188,140,255,0.1); border-left: 3px solid var(--purple); }
+.chain-label.solved   { background: rgba(63,185,80,0.2);  color: var(--green); }
+.chain-label.remains  { background: rgba(210,153,34,0.2); color: var(--yellow); }
+.chain-label.added    { background: rgba(248,81,73,0.2);  color: var(--red); }
+.chain-label.pivoted  { background: rgba(188,140,255,0.2); color: var(--purple); }
+.chain-status.expected { background: rgba(88,166,255,0.07);  border-left: 3px solid var(--accent); }
+.chain-label.expected  { background: rgba(88,166,255,0.2);   color: var(--accent); }
+.chain-status.revised  { background: rgba(57,208,199,0.07);  border-left: 3px solid var(--teal); }
+.chain-label.revised   { background: rgba(57,208,199,0.2);   color: var(--teal); }
+.concept-box { border-left: 4px solid var(--teal); background: #0d1f1f;
+               border-radius: 4px; padding: 1.2rem; margin-bottom: 1.2rem; }
+.concept-name { font-weight: bold; color: var(--teal); font-size: 1.05em; margin-bottom: 0.5rem; }
+.hypothesis { border-left: 4px solid var(--teal); background: #0d1f1f;
+              border-radius: 4px; padding: 1rem; margin: 1rem 0; }
+.recommendation { border-left: 4px solid var(--purple); background: #1a0f2e;
+                  border-radius: 4px; padding: 1rem; margin: 1rem 0; }
+.rq-row { background: rgba(88,166,255,0.05); border-left: 3px solid var(--accent);
+          padding: 0.4rem 0.8rem; margin-bottom: 0.5rem; border-radius: 0 4px 4px 0; }
+.scroll-table-wrap { max-height: 420px; overflow-y: auto; border: 1px solid var(--border);
+                     border-radius: 4px; }
+.scroll-table-wrap table { margin-bottom: 0; }
+.scroll-table-wrap thead th { position: sticky; top: 0; background: #161b22; z-index: 1; }
+.page-nav { display: flex; justify-content: space-between; margin-top: 2rem;
+            padding-top: 1rem; border-top: 1px solid var(--border); gap: 1rem; }
+.page-nav a { color: var(--accent); font-size: 0.9em; }
+html.ko-active .en-only { display: none !important; }
+html.ko-active .ko-only { display: block !important; }
+.ko-only { display: none; }
+span.ko-only, .sidebar-logo a span.ko-only { display: none; }
+html.ko-active span.ko-only { display: inline !important; }
+.lang-btn { background: transparent; color: var(--muted); border: 1px solid var(--border);
+            border-radius: 4px; padding: 3px 9px; font-size: 0.8em; cursor: pointer; }
+.lang-btn.active { border-color: var(--teal); color: var(--teal); }
+details { margin-bottom: 0.8rem; }
+details summary { color: var(--muted); cursor: pointer; }
+@media (max-width: 1024px) { .bd-sidebar-secondary { display: none; } }
+@media (max-width: 768px) {
+  .bd-sidebar-primary { display: none; }
+  .bd-root { flex-direction: column; height: auto; overflow: visible; }
+  .bd-main { overflow: visible; }
+  .bd-article { overflow: visible; padding: 1rem; }
+  .stat-grid { grid-template-columns: repeat(2, 1fr); }
+  .sp-grid { grid-template-columns: 1fr; }
+}
+</style>
+
+<script>
+MathJax = { tex: { inlineMath: [['$','$']], displayMath: [['$$','$$']] },
+            options: { skipHtmlTags: ['script','noscript','style','textarea','pre','code'] } };
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<script>
+function toggleLanguage() {
+  const html = document.documentElement;
+  const isKo = html.classList.toggle('ko-active');
+  document.querySelectorAll('.lang-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.lang === (isKo ? 'ko' : 'en'));
+  });
+  localStorage.setItem('survey-lang', isKo ? 'ko' : 'en');
+}
+document.addEventListener('DOMContentLoaded', function() {
+  const saved = localStorage.getItem('survey-lang');
+  if (saved === 'ko') {
+    document.documentElement.classList.add('ko-active');
+    document.querySelectorAll('.lang-btn').forEach(b =>
+      b.classList.toggle('active', b.dataset.lang === 'ko'));
+  } else {
+    document.querySelectorAll('[data-lang="en"]').forEach(b => b.classList.add('active'));
+  }
+  const article = document.querySelector('.bd-article');
+  const sections = Array.from(document.querySelectorAll('.section-anchor[id]'));
+  const sideLinks = Array.from(document.querySelectorAll('.bd-sidebar-primary .sidebar-nav-link'));
+  const tocLinks = Array.from(document.querySelectorAll('.bd-sidebar-secondary .mini-toc a'));
+  if (!article || !sections.length) return;
+  function current() {
+    let id = sections[0].id;
+    const scrollTop = article.scrollTop + 60;
+    sections.forEach(function(s) { if (s.offsetTop <= scrollTop) id = s.id; });
+    return id;
+  }
+  function update() {
+    const id = current();
+    sideLinks.forEach(function(a) {
+      a.classList.toggle('active', a.getAttribute('href') === '#' + id);
+    });
+    tocLinks.forEach(function(a) {
+      a.classList.toggle('toc-active', a.getAttribute('href') === '#' + id);
+    });
+  }
+  article.addEventListener('scroll', update, { passive: true });
+  update();
+});
+</script>
+
+</head>
+<body>
+<div class="bd-root">
+
+<nav class="bd-sidebar-primary">
+  <div class="sidebar-logo">
+    <a href="../index.html">&#x2B21; <span class="en-only">Exposure-Frequency Control Survey</span><span class="ko-only">Exposure-빈도 제어 문헌 조사</span></a>
+  </div>
+  <div class="sidebar-section"><span class="en-only">Overview</span><span class="ko-only">개요</span></div>
+  <a href="../index.html#overview" class="sidebar-nav-link"><span class="en-only">Survey Hub</span><span class="ko-only">조사 허브</span></a>
+  <a href="../index.html#answers" class="sidebar-nav-link"><span class="en-only">Key Answers</span><span class="ko-only">핵심 답변</span></a>
+  <div class="sidebar-section"><span class="en-only">Sub-Problems</span><span class="ko-only">세부 문제</span></div>
+<a href="../sp1_fairness-of-exposure-fixed-scores.html" class="sidebar-nav-link">SP1: <span class="en-only">Exposure fairness</span><span class="ko-only">Exposure 공정성</span></a>
+<a href="../sp2_2024-2026-frontier-llm-era.html" class="sidebar-nav-link">SP2: <span class="en-only">2024–26 frontier / LLM</span><span class="ko-only">2024–26 최전선 / LLM</span></a>
+<a href="../sp3_postproc-rerank-blackbox.html" class="sidebar-nav-link">SP3: <span class="en-only">Post-proc re-ranking</span><span class="ko-only">Post-proc re-ranking</span></a>
+<a href="../sp4_stochastic-ranking-policies.html" class="sidebar-nav-link">SP4: <span class="en-only">Stochastic policies</span><span class="ko-only">확률적 정책</span></a>
+<a href="../sp5_amortized-equity-attention.html" class="sidebar-nav-link active">SP5: <span class="en-only">Amortized fairness</span><span class="ko-only">Amortized 공정성</span></a>
+<a href="../sp6_bandit-exposure-allocation.html" class="sidebar-nav-link">SP6: <span class="en-only">Bandit allocation</span><span class="ko-only">Bandit 배분</span></a>
+<a href="../sp7_capping-pacing-feeds-ads.html" class="sidebar-nav-link">SP7: <span class="en-only">Capping &amp; pacing</span><span class="ko-only">Capping·pacing</span></a>
+<a href="../sp8_popularity-debias-calibration.html" class="sidebar-nav-link">SP8: <span class="en-only">Debiasing &amp; calibration</span><span class="ko-only">Debiasing·calibration</span></a>
+<a href="../sp9_ecosystems-creator-incentives.html" class="sidebar-nav-link">SP9: <span class="en-only">Ecosystems &amp; creators</span><span class="ko-only">생태계·creator</span></a>
+<a href="../sp10_llm-exposure-feedback-loops.html" class="sidebar-nav-link">SP10: <span class="en-only">LLM feedback loops</span><span class="ko-only">LLM feedback loop</span></a>
+<a href="../sp11_strategyproof-exposure.html" class="sidebar-nav-link">SP11: <span class="en-only">Strategy-proofness</span><span class="ko-only">Strategy-proofness</span></a>
+
+  <div class="sidebar-section"><span class="en-only">Synthesis</span><span class="ko-only">종합</span></div>
+  <a href="../conclusion.html" class="sidebar-nav-link"><span class="en-only">Conclusion</span><span class="ko-only">결론</span></a>
+  <a href="../thinking-process.html" class="sidebar-nav-link"><span class="en-only">Thinking Process</span><span class="ko-only">추론 과정</span></a>
+</nav>
+  <div class="bd-main">
+<div class="article-header-bar"><div class="header-brand"><a href="../index.html"><span class="en-only">Exposure-Frequency Control Survey</span><span class="ko-only">Exposure-빈도 제어 문헌 조사</span></a></div><nav class="breadcrumb"><a href="../index.html"><span class="en-only">Survey</span><span class="ko-only">조사</span></a><span>&rsaquo;</span><a href="../sp5_amortized-equity-attention.html">SP5</a><span>&rsaquo;</span><span>[48] FairSync: Ensuring Amortized Group Expos</span></nav><button class="lang-btn" data-lang="en" onclick="toggleLanguage()">EN</button><button class="lang-btn" data-lang="ko" onclick="toggleLanguage()">KO</button></div>
+    <div class="bd-article">
+<section id="header" class="section-anchor"><div class="paper-meta">
+<h1 style="margin-bottom:0.3rem">FairSync: Ensuring Amortized Group Exposure in Distributed Recommendation Retrieval</h1>
+<p style="margin:0.3rem 0;color:var(--muted)">Xu et al. · WWW 2024 · 2024 · 20 citations</p>
+<p style="margin:0.3rem 0"><a href="https://arxiv.org/abs/2402.10628" target="_blank">arXiv:2402.10628</a> · <a href="https://arxiv.org/pdf/2402.10628.pdf" target="_blank">PDF</a> · SP: <a href="../sp5_amortized-equity-attention.html">SP5</a></p>
+<p><span class="pill pill-p0">P0</span><span class="pill" style="background:rgba(255,255,255,0.05);color:var(--muted)">Track B</span></p>
+</div>
+<div class="card ko-only" style="border-color:var(--teal)"><div class="section-label">한 줄 요약</div><p style="margin:0">분산 retrieval 단계에서 동기화된 dual price로 누적 집단 exposure 하한을 보장하는 FairSync(WWW 2024). 10억 규모 candidate에서 &lt;0.25ms 오버헤드로 동작하며, 1단계 포함(retrieval floor)이 모든 하류 exposure 보장의 필요조건임을 증명한다.</p></div>
+</section>
+<section id="problem" class="section-anchor">
+<div class="card"><div class="section-label"><span class="en-only">Problem</span><span class="ko-only">해결하려는 문제</span></div><p>Amortized minimum-exposure guarantees in recommendation have been enforced only in stage-2 (ranking) — FairRec, TFROM, CP-Fair, P-MMF, LTP-MMF all traverse the full item set and centrally aggregate exposure state. In production two-stage pipelines, stage-1 (retrieval) selects hundreds of candidates from millions of items sharded across servers within milliseconds; if stage-1 fails to retrieve items of a group, no stage-2 method can restore that group's exposure (the paper shows a strong positive correlation between stage-1 and stage-2 minimum exposures in a simulation, Fig. 1b). Existing stage-2 methods cannot run in stage-1 because full-item traversal is infeasible in distributed dense retrieval.</p></div>
+</section>
+<section id="solution" class="section-anchor">
+<div class="card"><div class="section-label"><span class="en-only">Solution / Contribution</span><span class="ko-only">해결책 / 기여</span></div><p>Formulate retrieval-with-exposure-floors as constrained resource allocation (Eq. 2: maximize $\sum_t \sum_i x_{u_t,i} r_{u_t,i}$ s.t. $|L|=K$ per request, $e_g \ge m_g$ per group). Theorem 1 gives the strong dual</p>
+<p>$$\min_{\mu} \Big[ \sum_{t=1}^{T}\sum_{k=1}^{K}(r_{u_t,i} - A\mu)_{[k]} + \sum_g m_g \mu_g + \max_g\{\mu_g\}(TK - \sum_g m_g) \Big]$$</p>
+<p>with dual variable $\mu \in \mathbb{R}^{|\mathcal{G}|}$ and item-group adjacency $A$. Inference: augment embeddings ($q_{u_t} = e_{u_t}\|-\mu_t$, $h_i = e_i\|A_i$) so plain distributed KNN in the dual space solves the per-request problem. Learning: buffer per-request sub-gradients (Eq. 6) and Adam-update $\mu$ every $B$ requests. [SKIM - proof of Theorem 1 (knapsack + minimax argument, Appendix A) read only at statement level.]</p></div>
+<div class="card"><div class="section-label"><span class="en-only">Key Results</span><span class="ko-only">주요 결과</span></div><ul><li>ESP = 100% (all groups meet $m_g = 200$) on both Amazon-Book and Taobao across all 5 base models (YoutubeDNN, GRU4Rec, MIND, ComiRec-SA/DR), while regularized-fair and IPW reach only ~34–83% ESP.</li><li>Among ESP-100% methods, FairSync dominates: e.g. ComiRec-DR top-20 Amazon-Book Recall 4.92 vs. Uncalibrated 4.76 and K-neighbor 0.09; accuracy is statistically significantly higher (p &lt; 0.05) and essentially matches the unconstrained-fairness baselines (IPW/regularized-fair) that violate the floors.</li><li>Latency: with dual-update batch $B &gt; 8$, per-user inference overhead &lt; 0.25 ms (industrially viable); constraint satisfaction breaks for $B &gt; 64$ — $B$ is the efficiency/effectiveness dial.</li><li>Extreme case (all users dislike group $g_2$, $m_2$=2000): recall drops exactly by $m_2/(KT) = 4\%$ — the accuracy cost equals the forced exposure fraction.</li></ul></div>
+<details><summary><span class="en-only">5Cs Analysis</span><span class="ko-only">5Cs 분석</span></summary><div class="card" style="margin-top:0.5rem"><p><strong>Category</strong>: new method (system-constrained optimization for retrieval-stage fairness) <strong>Context</strong>: direct extension of the P-MMF / LTP-MMF dual-mirror-descent line (same first author, Chen Xu) from stage-2 to distributed stage-1; builds on Balseiro et al. 2021 regularized online allocation; baselines adapted from Wang &amp; Joachims 2023 (two-stage fairness) and FairRec. <strong>Correctness</strong>: strong-duality claim proved in appendix; experiments report t-tests (p &lt; 0.05) vs. exposure-guaranteeing baselines. [SKIM - error bars / variance across seeds not checked.] <strong>Contributions</strong>: (1) identifies stage-1 retrieval as the binding bottleneck for amortized group exposure; (2) FairSync — dual-space embedding augmentation making exposure floors compatible with unmodified distributed KNN/ANN infra; (3) empirical validation on Amazon-Book and billion-scale Taobao across 5 base retrieval models. <strong>Clarity</strong>: Algorithm 1 + Eq. 5 make the method reproducible; code released.</p></div></details>
+<details><summary><span class="en-only">Contribution vs Claim</span><span class="ko-only">기여 대 주장</span></summary><div class="card" style="margin-top:0.5rem"><ul><li><strong>Stated claims</strong>: FairSync guarantees minimum amortized group exposure in distributed retrieval while maintaining accuracy and production latency; adaptable to any distributed retrieval architecture (ANN, tree-based like TDM).</li><li><strong>Demonstrated</strong>: ESP=100% + accuracy parity on two public datasets with faiss-based KNN; latency measured on a single RTX 3090.</li><li><strong>Gap</strong>: "any distributed retrieval architecture" (Sec. 4.3.3) is argued, not tested — only faiss KNN is evaluated; no experiment on tree-based indexes. Actual multi-server distributed deployment is simulated rather than run on a real sharded production cluster. [SKIM - verify appendix C for any further deployment evidence in deep read.]</li></ul></div></details>
+</section>
+<section id="results" class="section-anchor">
+<details><summary><span class="en-only">Concepts Introduced</span><span class="ko-only">도입된 개념</span></summary><div class="card" style="margin-top:0.5rem"><p><strong>Amortized group max-min fairness (MMF) with minimum-exposure thresholds</strong></p>
+<ul><li><strong>What it computes</strong>: for each item group $g$ (provider, category), the cumulative exposure count $e_g = \sum_{t=1}^{T}\sum_{i \in \mathcal{I}_g} x_{u_t,i}$ over a time horizon $t=1..T$ → constraint check $e_g \ge m_g$ where $m_g$ is a platform-set minimum ("minimum wage policy").</li><li><strong>Why it was created</strong>: per-list fairness is too strict for production; amortizing over a period is the realistic industrial requirement (line of Biega 2018, FairRec, P-MMF).</li><li><strong>Concrete example</strong>: main experiments set $m_g = 200$ exposures per group over the test horizon; the ESP metric = fraction of groups whose cumulative exposure exceeds $m_g$.</li><li><strong>How it is used in this paper</strong>: it is the constraint FairSync enforces in the retrieval (stage-1) rather than the ranking (stage-2) stage. Amortized-exposure concept is inherited from prior work (P-MMF etc.), the stage-1/distributed enforcement is new here.</li></ul>
+<p><strong>Dual-space retrieval (dual-vector-augmented KNN)</strong></p>
+<ul><li><strong>What it computes</strong>: the constrained allocation problem is dualized (Theorem 1, strong duality); the dual distance becomes $d^{Dual} = d(e_u, e_i) + \mu_g$ for $i \in \mathcal{I}_g$. Implemented by concatenation: query $q_{u_t} = e_{u_t} \| -\mu_t$ and item embedding $h_i = e_i \| A_i$ (one-hot group column), so $d^{Dual} = -q^\top h$ — standard dot-product KNN in an augmented space.</li><li><strong>Why it was created</strong>: stage-2 fairness methods traverse all items and aggregate exposure info centrally; infeasible when millions of items are sharded across servers under millisecond latency. The dual variable $\mu \in \mathbb{R}^{|\mathcal{G}|}$ ($|\mathcal{G}| \ll T \times |\mathcal{I}|$) is the only state that must be synced to servers.</li><li><strong>Concrete example</strong>: Amazon-Book has 313,966 items but only 165 groups, so the synced dual vector is 165-dimensional.</li><li><strong>How it is used in this paper</strong>: core mechanism — a central node aggregates historical exposure into $\mu$, distributes it; each server runs unmodified faiss KNN on the augmented embeddings.</li></ul>
+<p><strong>Periodic sub-gradient dual update (batch size $B$)</strong></p>
+<ul><li><strong>What it computes</strong>: sub-gradient $s \in \partial W^{Dual}/\partial \mu$ per request (Eq. 6, driven by which groups got exposed vs. their $m_g$), buffered and applied with Adam every $B$ users.</li><li><strong>Why it was created</strong>: per-request dual updates cause asynchronous update storms across servers and inflate recall latency; $B$ trades efficiency vs. constraint tightness.</li><li><strong>Concrete example</strong>: with $B \le 8$ FairSync adds ~0.2–1 ms per user vs. base model; with $B &gt; 8$ overhead &lt; 0.25 ms; constraint (ESP=100%) breaks for $B &gt; 64$.</li><li><strong>How it is used in this paper</strong>: the online learning phase of Algorithm 1; ablated in Figs. 5–6.</li></ul>
+<p><strong>ESP (Enough Satisfaction groups Percentage)</strong></p>
+<ul><li><strong>What it computes</strong>: $\frac{1}{|\mathcal{G}|}\sum_g \mathbb{I}(e_g &gt; m_g)$ — fraction of groups meeting their minimum-exposure requirement.</li><li><strong>Why it was created</strong>: needed a satisfaction metric for threshold-type (not equality-type) exposure constraints; adapted from the "enough relevant items" metric of Wang &amp; Joachims 2023.</li><li><strong>Concrete example</strong>: FairSync achieves ESP = 100% in all Table 2 settings; regularized-fair only 37–83%.</li><li><strong>How it is used in this paper</strong>: primary fairness metric in all experiments.</li></ul></div></details>
+<details><summary><span class="en-only">Implementation Feasibility</span><span class="ko-only">구현 가능성</span></summary><div class="card" style="margin-top:0.5rem"><ul><li><strong>Needs</strong>: trained two-tower embedding model, item-group mapping, faiss (or any ANN index), PyTorch for Adam dual updates; experiments ran on one RTX 3090. Public data: Amazon-Book, Taobao user-behavior.</li><li><strong>Code</strong>: available at https://github.com/XuChen0427/FairSync</li><li><strong>Modifications</strong>: for a general exposure-proxy study, replace the hard floor $m_g$ with the exposure schedule of interest; the $\mu$-augmentation trick ports to any dot-product retrieval index.</li><li><strong>Unknowns</strong>: missing link: behavior under non-stationary user arrival; missing link: interaction with stage-2 re-ranking when both stages run exposure control simultaneously (double-counting of exposure credit).</li></ul></div></details>
+<details><summary><span class="en-only">Follow-up Papers</span><span class="ko-only">관련 후속 논문</span></summary><div class="card" style="margin-top:0.5rem"><ul><li>P-MMF (Xu et al., WWW 2023) — direct predecessor: dual mirror descent for provider max-min fairness at stage-2; FairSync moves the same dual machinery to distributed stage-1.</li><li>LTP-MMF (Xu et al., 2023) — extends the line to long-term exposure under recommendation feedback loops; relevant to SP5's exposure-as-proxy feedback concerns.</li><li>Wang &amp; Joachims (WSDM 2023), "Uncertainty Quantification for Fairness in Two-Stage Recommender Systems" — source of the two-stage fairness framing and of the IPW/Uncalibrated baselines and ER metric.</li><li>FairRec (Patro et al., WWW 2020) / FairRec+ — origin of the minimum-exposure ("minimum wage") guarantee formulation at stage-2.</li><li>Balseiro et al. (ICML 2021), "Regularized online allocation problems" — the online dual/mirror-descent resource-allocation machinery FairSync's Theorem 1 rests on.</li></ul></div></details>
+</section>
+<section id="delta" class="section-anchor">
+<div class="card"><div class="section-label"><span class="en-only">Condition Delta — transfer to our setting</span><span class="ko-only">조건 차이 — 우리 설정으로의 전이</span></div><p><strong>Paper's setting</strong>: inputs = user/item embeddings from a trained two-tower retrieval model + item-group adjacency + platform-set exposure floors $m_g$; outputs = per-request top-$K$ candidate lists satisfying cumulative floors; conditions = single unique group per item, groups known and fixed, users arrive randomly (i.i.d. assumption inherited from P-MMF), offline replay of Amazon-Book/Taobao logs, floors enforced over a fixed horizon $T$. <strong>Our setting</strong> (SP5 — exposure frequency as ranking proxy in production feeds): concerned with how cumulative exposure counts function as a control variable / proxy in ranking pipelines, including feedback between exposure control and learned relevance. <strong>Differences</strong>:</p>
+<ul><li>Enforcement point: FairSync operates at retrieval (stage-1) candidate generation, whereas most exposure-control literature (and much of SP5) is at ranking — resolved: the paper itself bridges this, showing stage-1 floors are necessary for stage-2 exposure targets (Fig. 1b).</li><li>Exposure semantics: retrieval-list membership is counted as "exposure," which is a proxy for actual user-facing impressions after stage-2 — missing link: no analysis of how stage-1 candidate exposure translates to final impression counts beyond the correlation simulation.</li><li>Feedback loop: dual updates react to realized exposure but embeddings are frozen; long-term feedback (retraining on exposure-biased logs) is out of scope here — reference only (handled in the authors' LTP-MMF).</li><li>Single-group-per-item and known static groups: our setting may need overlapping/dynamic groups — missing link.</li><li>i.i.d. user-arrival assumption for sub-gradient validity — missing link for adversarial or bursty traffic. [SKIM - verify whether appendix discusses non-stationary arrivals.]</li></ul></div>
+<div class="card"><div class="section-label"><span class="en-only">Root-cause vs. Symptom</span><span class="ko-only">근본 원인 대 증상</span></div><p><code>Direct</code> — the paper identifies that exposure guarantees fail structurally upstream (a group absent from stage-1 candidates cannot be exposed downstream, regardless of the ranker) and fixes exactly that root cause with a dual decomposition compatible with distributed KNN, rather than further patching stage-2 re-ranking.</p></div>
+</section>
+<div class="page-nav"><a href="47_LongTermFairRec.html">&larr; [47] LongTermFairRec</a><a href="../sp5_amortized-equity-attention.html">&uarr; SP5</a><a href="49_ItemLifecycle.html">[49] ItemLifecycle &rarr;</a></div>
+    </div>
+  </div>
+<nav class="bd-sidebar-secondary"><div class="mini-toc-label"><span class="en-only">On this page</span><span class="ko-only">이 페이지</span></div><ul class="mini-toc"><li><a href="#header"><span class="en-only">Paper info</span><span class="ko-only">논문 정보</span></a></li><li><a href="#problem"><span class="en-only">Problem</span><span class="ko-only">문제</span></a></li><li><a href="#solution"><span class="en-only">Solution &amp; Results</span><span class="ko-only">해결책 · 결과</span></a></li><li><a href="#results"><span class="en-only">Concepts &amp; Follow-ups</span><span class="ko-only">개념 · 후속</span></a></li><li><a href="#delta"><span class="en-only">Condition Delta</span><span class="ko-only">조건 차이</span></a></li></ul></nav>
+</div>
+</body>
+</html>

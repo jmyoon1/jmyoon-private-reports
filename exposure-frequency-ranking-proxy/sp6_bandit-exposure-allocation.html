@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SP6: Bandit and Online Learning for Exposure Allocation — Exposure-Frequency Control Survey</title>
+
+<style>
+:root {
+  --bg: #0d1117; --card: #161b22; --border: #30363d;
+  --text: #e6edf3; --muted: #7d8590; --accent: #58a6ff;
+  --teal: #39d0c7; --green: #3fb950; --yellow: #d29922;
+  --red: #f85149; --purple: #bc8cff; --orange: #e3b341;
+  --sidebar-w: 262px; --toc-w: 210px; --hdr-h: 48px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+body { font-family: -apple-system, sans-serif; background: var(--bg);
+       color: var(--text); line-height: 1.6; }
+.bd-root { display: flex; height: 100vh; overflow: hidden; }
+.bd-sidebar-primary {
+  width: var(--sidebar-w); min-width: var(--sidebar-w);
+  overflow-y: auto; background: var(--card);
+  border-right: 1px solid var(--border);
+  padding: 0.75rem 0; flex-shrink: 0;
+}
+.bd-sidebar-primary::-webkit-scrollbar { width: 4px; }
+.bd-sidebar-primary::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+.bd-main { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-width: 0; }
+.article-header-bar {
+  height: var(--hdr-h); background: var(--card);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; padding: 0 1.5rem;
+  gap: 1rem; flex-shrink: 0;
+}
+.header-brand { color: var(--teal); font-weight: bold; font-size: 0.95em;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 1; }
+.header-brand a { color: inherit; text-decoration: none; }
+.breadcrumb { color: var(--muted); font-size: 0.82em; display: flex;
+  align-items: center; gap: 0.3rem; flex-shrink: 0; }
+.breadcrumb a { color: var(--accent); text-decoration: none; }
+.breadcrumb span { color: var(--border); }
+.bd-article { flex: 1; overflow-y: auto; padding: 2rem 2.5rem; }
+.bd-article::-webkit-scrollbar { width: 6px; }
+.bd-article::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+.bd-sidebar-secondary {
+  width: var(--toc-w); min-width: var(--toc-w);
+  overflow-y: auto; border-left: 1px solid var(--border);
+  padding: 1rem 0.75rem; flex-shrink: 0;
+}
+.bd-sidebar-secondary::-webkit-scrollbar { width: 4px; }
+.bd-sidebar-secondary::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+.sidebar-logo { padding: 0.5rem 1rem 0.75rem;
+  border-bottom: 1px solid var(--border); margin-bottom: 0.5rem; }
+.sidebar-logo a { color: var(--teal); font-weight: bold; font-size: 0.95em;
+  text-decoration: none; display: block; }
+.sidebar-section { color: var(--muted); font-size: 0.72em; font-weight: bold;
+  text-transform: uppercase; letter-spacing: 0.07em;
+  padding: 0.7rem 1rem 0.25rem; }
+.sidebar-nav-link { display: block; padding: 0.28rem 1rem 0.28rem 1.25rem;
+  color: var(--muted); font-size: 0.875em; text-decoration: none; }
+.sidebar-nav-link:hover { color: var(--text); background: rgba(255,255,255,0.03); }
+.sidebar-nav-link.active { color: var(--teal);
+  border-left: 2px solid var(--teal);
+  padding-left: calc(1.25rem - 2px); background: rgba(57,208,199,0.05); }
+.mini-toc-label { color: var(--muted); font-size: 0.72em; font-weight: bold;
+  text-transform: uppercase; letter-spacing: 0.07em; padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border); margin-bottom: 0.5rem; }
+.mini-toc { list-style: none; }
+.mini-toc li a { display: block; padding: 0.22rem 0;
+  color: var(--muted); font-size: 0.83em; text-decoration: none;
+  border-left: 2px solid transparent; padding-left: 0.5rem; }
+.mini-toc li a:hover { color: var(--text); }
+.mini-toc li a.toc-active { color: var(--teal); border-left-color: var(--teal); }
+.section-anchor { scroll-margin-top: calc(var(--hdr-h) + 8px); }
+h1 { color: var(--teal); font-size: 1.7em; margin-bottom: 0.5rem; line-height:1.3; }
+h2 { color: var(--teal); font-size: 1.25em; margin: 1.5rem 0 0.6rem; }
+h3 { color: var(--teal); font-size: 1.05em; margin: 1.2rem 0 0.4rem; }
+h4 { color: var(--teal); font-size: 0.95em; margin: 1rem 0 0.3rem; }
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+p { margin-bottom: 0.8rem; }
+ul, ol { margin: 0 0 0.8rem 1.4rem; }
+li { margin-bottom: 0.3rem; }
+code { background: rgba(255,255,255,0.06); border-radius: 3px; padding: 1px 4px; font-size: 0.9em; }
+blockquote { border-left: 3px solid var(--border); color: var(--muted);
+  padding: 0.2rem 0.8rem; margin-bottom: 0.8rem; }
+.card { background: var(--card); border: 1px solid var(--border);
+        border-radius: 8px; padding: 1.2rem; margin-bottom: 1rem; }
+table { width: 100%; border-collapse: collapse; font-size: 0.9em; margin-bottom: 0.8rem; }
+th { background: var(--card); color: var(--teal); padding: 8px;
+     border: 1px solid var(--border); text-align: left; }
+td { padding: 8px; border: 1px solid var(--border); vertical-align: top; }
+tr:nth-child(even) td { background: rgba(0,0,0,0.2); }
+.stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+             gap: 1rem; margin-bottom: 1.5rem; }
+.stat-box { background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+            padding: 1rem; text-align: center; }
+.stat-num { font-size: 2rem; font-weight: bold; color: var(--teal); }
+.stat-label { color: var(--muted); font-size: 0.85em; margin-top: 0.2rem; }
+.sp-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+           gap: 1rem; margin: 1rem 0; }
+.sp-card { background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+           padding: 1.2rem; cursor: pointer; transition: border-color 0.15s; height:100%; }
+.sp-card:hover { border-color: var(--teal); }
+.sp-card h3 { margin: 0 0 0.5rem; color: var(--teal); font-size: 1em; }
+.sp-card p { margin: 0; color: var(--muted); font-size: 0.88em; }
+.sp-badge { display: inline-block; background: rgba(57,208,199,0.1); color: var(--teal);
+            border-radius: 4px; padding: 2px 8px; font-size: 0.8em; margin-bottom: 0.5rem; }
+.paper-meta { color: var(--muted); font-size: 0.9em; margin-bottom: 1.5rem; }
+.paper-meta a { color: var(--accent); }
+.section-label { color: var(--teal); font-weight: bold; font-size: 0.85em;
+                 text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.4rem; }
+.pill { display: inline-block; border-radius: 4px; padding: 0.15rem 0.6rem;
+        font-size: 0.8em; font-weight: bold; margin-right: 0.4rem; }
+.pill-p0 { background: rgba(63,185,80,0.2); color: var(--green); }
+.pill-p1 { background: rgba(57,208,199,0.15); color: var(--teal); }
+.pill-p2 { background: rgba(210,153,34,0.2); color: var(--yellow); }
+.pill-p3 { background: rgba(188,140,255,0.2); color: var(--purple); }
+.pill-p4 { background: rgba(125,133,144,0.2); color: var(--muted); }
+.delta-row { margin: 0.4rem 0; padding: 0.4rem 0.8rem;
+             border-left: 3px solid var(--border); border-radius: 0 4px 4px 0; }
+.chain { position: relative; padding-left: 2rem; }
+.chain::before { content: ''; position: absolute; left: 0.95rem; top: 0;
+                 bottom: 0; width: 2px; background: var(--border); }
+.chain-node { position: relative; margin-bottom: 2rem; }
+.chain-node::before { content: ''; position: absolute; left: -1.55rem;
+                      top: 1.1rem; width: 12px; height: 12px;
+                      border-radius: 50%; background: var(--teal); }
+.chain-num { display: inline-block; width: 28px; height: 28px; background: var(--teal);
+             color: #000; border-radius: 50%; text-align: center; line-height: 28px;
+             font-weight: bold; font-size: 0.85em; margin-right: 0.6rem; flex-shrink: 0; }
+.chain-q { font-weight: bold; color: var(--text); margin: 0.4rem 0 0.3rem; font-size: 1em; }
+.chain-papers { color: var(--muted); font-size: 0.85em; margin-bottom: 0.6rem; }
+.chain-start { background: var(--card); border: 1px solid var(--teal);
+               border-radius: 8px; padding: 1rem; margin-bottom: 2rem; }
+.chain-start h3 { margin: 0 0 0.5rem; color: var(--teal); }
+.chain-converge { background: var(--card); border: 1px solid var(--green);
+                  border-radius: 8px; padding: 1rem; margin-top: 1rem; }
+.chain-converge h3 { margin: 0 0 0.5rem; color: var(--green); }
+.chain-label { display: inline-block; border-radius: 4px; padding: 0.15rem 0.6rem;
+               font-size: 0.8em; font-weight: bold; margin-right: 0.4rem; }
+.chain-status { border-radius: 0 4px 4px 0; padding: 0.5rem 0.8rem;
+                margin: 0.35rem 0; font-size: 0.88em; }
+.chain-status ul { margin: 0.3rem 0 0 1.2rem; padding: 0; }
+.chain-status li { margin-bottom: 0.25rem; }
+.chain-status.solved  { background: rgba(63,185,80,0.07);  border-left: 3px solid var(--green); }
+.chain-status.remains { background: rgba(210,153,34,0.07); border-left: 3px solid var(--yellow); }
+.chain-status.added   { background: rgba(248,81,73,0.07);  border-left: 3px solid var(--red); }
+.chain-status.pivoted { background: rgba(188,140,255,0.1); border-left: 3px solid var(--purple); }
+.chain-label.solved   { background: rgba(63,185,80,0.2);  color: var(--green); }
+.chain-label.remains  { background: rgba(210,153,34,0.2); color: var(--yellow); }
+.chain-label.added    { background: rgba(248,81,73,0.2);  color: var(--red); }
+.chain-label.pivoted  { background: rgba(188,140,255,0.2); color: var(--purple); }
+.chain-status.expected { background: rgba(88,166,255,0.07);  border-left: 3px solid var(--accent); }
+.chain-label.expected  { background: rgba(88,166,255,0.2);   color: var(--accent); }
+.chain-status.revised  { background: rgba(57,208,199,0.07);  border-left: 3px solid var(--teal); }
+.chain-label.revised   { background: rgba(57,208,199,0.2);   color: var(--teal); }
+.concept-box { border-left: 4px solid var(--teal); background: #0d1f1f;
+               border-radius: 4px; padding: 1.2rem; margin-bottom: 1.2rem; }
+.concept-name { font-weight: bold; color: var(--teal); font-size: 1.05em; margin-bottom: 0.5rem; }
+.hypothesis { border-left: 4px solid var(--teal); background: #0d1f1f;
+              border-radius: 4px; padding: 1rem; margin: 1rem 0; }
+.recommendation { border-left: 4px solid var(--purple); background: #1a0f2e;
+                  border-radius: 4px; padding: 1rem; margin: 1rem 0; }
+.rq-row { background: rgba(88,166,255,0.05); border-left: 3px solid var(--accent);
+          padding: 0.4rem 0.8rem; margin-bottom: 0.5rem; border-radius: 0 4px 4px 0; }
+.scroll-table-wrap { max-height: 420px; overflow-y: auto; border: 1px solid var(--border);
+                     border-radius: 4px; }
+.scroll-table-wrap table { margin-bottom: 0; }
+.scroll-table-wrap thead th { position: sticky; top: 0; background: #161b22; z-index: 1; }
+.page-nav { display: flex; justify-content: space-between; margin-top: 2rem;
+            padding-top: 1rem; border-top: 1px solid var(--border); gap: 1rem; }
+.page-nav a { color: var(--accent); font-size: 0.9em; }
+html.ko-active .en-only { display: none !important; }
+html.ko-active .ko-only { display: block !important; }
+.ko-only { display: none; }
+span.ko-only, .sidebar-logo a span.ko-only { display: none; }
+html.ko-active span.ko-only { display: inline !important; }
+.lang-btn { background: transparent; color: var(--muted); border: 1px solid var(--border);
+            border-radius: 4px; padding: 3px 9px; font-size: 0.8em; cursor: pointer; }
+.lang-btn.active { border-color: var(--teal); color: var(--teal); }
+details { margin-bottom: 0.8rem; }
+details summary { color: var(--muted); cursor: pointer; }
+@media (max-width: 1024px) { .bd-sidebar-secondary { display: none; } }
+@media (max-width: 768px) {
+  .bd-sidebar-primary { display: none; }
+  .bd-root { flex-direction: column; height: auto; overflow: visible; }
+  .bd-main { overflow: visible; }
+  .bd-article { overflow: visible; padding: 1rem; }
+  .stat-grid { grid-template-columns: repeat(2, 1fr); }
+  .sp-grid { grid-template-columns: 1fr; }
+}
+</style>
+
+<script>
+MathJax = { tex: { inlineMath: [['$','$']], displayMath: [['$$','$$']] },
+            options: { skipHtmlTags: ['script','noscript','style','textarea','pre','code'] } };
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<script>
+function toggleLanguage() {
+  const html = document.documentElement;
+  const isKo = html.classList.toggle('ko-active');
+  document.querySelectorAll('.lang-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.lang === (isKo ? 'ko' : 'en'));
+  });
+  localStorage.setItem('survey-lang', isKo ? 'ko' : 'en');
+}
+document.addEventListener('DOMContentLoaded', function() {
+  const saved = localStorage.getItem('survey-lang');
+  if (saved === 'ko') {
+    document.documentElement.classList.add('ko-active');
+    document.querySelectorAll('.lang-btn').forEach(b =>
+      b.classList.toggle('active', b.dataset.lang === 'ko'));
+  } else {
+    document.querySelectorAll('[data-lang="en"]').forEach(b => b.classList.add('active'));
+  }
+  const article = document.querySelector('.bd-article');
+  const sections = Array.from(document.querySelectorAll('.section-anchor[id]'));
+  const sideLinks = Array.from(document.querySelectorAll('.bd-sidebar-primary .sidebar-nav-link'));
+  const tocLinks = Array.from(document.querySelectorAll('.bd-sidebar-secondary .mini-toc a'));
+  if (!article || !sections.length) return;
+  function current() {
+    let id = sections[0].id;
+    const scrollTop = article.scrollTop + 60;
+    sections.forEach(function(s) { if (s.offsetTop <= scrollTop) id = s.id; });
+    return id;
+  }
+  function update() {
+    const id = current();
+    sideLinks.forEach(function(a) {
+      a.classList.toggle('active', a.getAttribute('href') === '#' + id);
+    });
+    tocLinks.forEach(function(a) {
+      a.classList.toggle('toc-active', a.getAttribute('href') === '#' + id);
+    });
+  }
+  article.addEventListener('scroll', update, { passive: true });
+  update();
+});
+</script>
+
+</head>
+<body>
+<div class="bd-root">
+
+<nav class="bd-sidebar-primary">
+  <div class="sidebar-logo">
+    <a href="index.html">&#x2B21; <span class="en-only">Exposure-Frequency Control Survey</span><span class="ko-only">Exposure-빈도 제어 문헌 조사</span></a>
+  </div>
+  <div class="sidebar-section"><span class="en-only">Overview</span><span class="ko-only">개요</span></div>
+  <a href="index.html#overview" class="sidebar-nav-link"><span class="en-only">Survey Hub</span><span class="ko-only">조사 허브</span></a>
+  <a href="index.html#answers" class="sidebar-nav-link"><span class="en-only">Key Answers</span><span class="ko-only">핵심 답변</span></a>
+  <div class="sidebar-section"><span class="en-only">Sub-Problems</span><span class="ko-only">세부 문제</span></div>
+<a href="sp1_fairness-of-exposure-fixed-scores.html" class="sidebar-nav-link">SP1: <span class="en-only">Exposure fairness</span><span class="ko-only">Exposure 공정성</span></a>
+<a href="sp2_2024-2026-frontier-llm-era.html" class="sidebar-nav-link">SP2: <span class="en-only">2024–26 frontier / LLM</span><span class="ko-only">2024–26 최전선 / LLM</span></a>
+<a href="sp3_postproc-rerank-blackbox.html" class="sidebar-nav-link">SP3: <span class="en-only">Post-proc re-ranking</span><span class="ko-only">Post-proc re-ranking</span></a>
+<a href="sp4_stochastic-ranking-policies.html" class="sidebar-nav-link">SP4: <span class="en-only">Stochastic policies</span><span class="ko-only">확률적 정책</span></a>
+<a href="sp5_amortized-equity-attention.html" class="sidebar-nav-link">SP5: <span class="en-only">Amortized fairness</span><span class="ko-only">Amortized 공정성</span></a>
+<a href="sp6_bandit-exposure-allocation.html" class="sidebar-nav-link active">SP6: <span class="en-only">Bandit allocation</span><span class="ko-only">Bandit 배분</span></a>
+<a href="sp7_capping-pacing-feeds-ads.html" class="sidebar-nav-link">SP7: <span class="en-only">Capping &amp; pacing</span><span class="ko-only">Capping·pacing</span></a>
+<a href="sp8_popularity-debias-calibration.html" class="sidebar-nav-link">SP8: <span class="en-only">Debiasing &amp; calibration</span><span class="ko-only">Debiasing·calibration</span></a>
+<a href="sp9_ecosystems-creator-incentives.html" class="sidebar-nav-link">SP9: <span class="en-only">Ecosystems &amp; creators</span><span class="ko-only">생태계·creator</span></a>
+<a href="sp10_llm-exposure-feedback-loops.html" class="sidebar-nav-link">SP10: <span class="en-only">LLM feedback loops</span><span class="ko-only">LLM feedback loop</span></a>
+<a href="sp11_strategyproof-exposure.html" class="sidebar-nav-link">SP11: <span class="en-only">Strategy-proofness</span><span class="ko-only">Strategy-proofness</span></a>
+
+  <div class="sidebar-section"><span class="en-only">Synthesis</span><span class="ko-only">종합</span></div>
+  <a href="conclusion.html" class="sidebar-nav-link"><span class="en-only">Conclusion</span><span class="ko-only">결론</span></a>
+  <a href="thinking-process.html" class="sidebar-nav-link"><span class="en-only">Thinking Process</span><span class="ko-only">추론 과정</span></a>
+</nav>
+  <div class="bd-main">
+<div class="article-header-bar"><div class="header-brand"><a href="index.html"><span class="en-only">Exposure-Frequency Control Survey</span><span class="ko-only">Exposure-빈도 제어 문헌 조사</span></a></div><nav class="breadcrumb"><a href="index.html"><span class="en-only">Survey</span><span class="ko-only">조사</span></a><span>&rsaquo;</span><span>SP6: <span class="en-only">Bandit allocation</span><span class="ko-only">Bandit 배분</span></span></nav><button class="lang-btn" data-lang="en" onclick="toggleLanguage()">EN</button><button class="lang-btn" data-lang="ko" onclick="toggleLanguage()">KO</button></div>
+    <div class="bd-article">
+<section id="intro" class="section-anchor">
+<div class="lang en-only"><h1>SP6: Bandit and Online Learning for Exposure Allocation</h1><p style="color:var(--muted)">15 papers · targets O1, O2, O4 · 2019-2026</p><p>Do bandit methods fill O2's score-free column — exposure allocation with regret guarantees under an immutable black-box scorer — and do their bounds transfer to position-weighted exposure units and non-stationary arrivals?</p></div><div class="lang ko-only"><h1>SP6: Exposure 배분을 위한 bandit·online learning</h1><p style="color:var(--muted)">15편 논문 · O1, O2, O4 목표 대상 · 2019-2026</p><p>bandit 방법이 O2의 score-free 열 — 불변 black-box scorer 하에서 regret 보장을 갖는 exposure 배분 — 을 채우는지, 그 한계가 position 가중 단위와 비정상(non-stationary) 도착으로 이전되는지를 검사한다.</p></div>
+</section>
+<section id="rationale" class="section-anchor"><div class="card" style="border-color:var(--accent)">
+<div class="lang en-only"><h2 style="margin-top:0">Entry Assumption vs. What Was Found</h2><p><strong>Expected</strong> (revised after SP2/SP4/SP5: separate 'learn the exposure estimate' from 'learn the scores'; check whether regret bounds double as the missing concentration bounds; check ledger-state regret under non-stationarity and position-weighted denomination): Bandit/exploration methods allocate impressions online without access to the underlying scorer, making them score-free candidates for O2's feasibility map; fairness-constrained bandits give regret guarantees under minimum-exposure constraints.</p><p><strong>Found:</strong> The split is structural: FairX-style merit-proportional methods define merit as a function of their own estimated means — they replace the scorer, and under trusted immutable scores the learning problem degenerates to a closed-form target plus SP4 realization. The genuine score-free column is the quota-floor family: Fair-Learn wraps any black-box decision-maker with an O(1)-per-round debt-priority override and a deterministic anytime count floor.</p><p><strong>Assessment:</strong> Pivoted — FairX was expected to be the flagship applicable method, but under the user's constraint its learning problem vanishes; the user's actual regime (fixed noisy scores, exposure-only control) is addressed by nobody — this became O4 gap 1 (the degenerate regime). Also negative: bandit regret bounds cannot close SP4's open-loop concentration gap even in principle (fairness regret is a policy-space distance).</p></div><div class="lang ko-only"><h2 style="margin-top:0">사전 가정과 실제 발견</h2><p><strong>기대</strong> (SP2/SP4/SP5 이후 수정: exposure 추정 학습과 score 학습의 분리, regret 한계가 결핍된 집중 한계를 겸하는지, 비정상 도착과 position 가중 단위 검사): bandit/탐색 방법은 기저 scorer에 접근하지 않고 온라인으로 impression을 배분하므로 O2 실행 가능성 지도의 score-free 후보이며, 공정성 제약 bandit이 최소 exposure 제약 하의 regret 보장을 줄 것으로 기대하였다.</p><p><strong>발견</strong>: 분리는 구조적이다: FairX류 merit 비례 방법은 merit를 자신이 추정한 평균의 함수로 정의하므로 scorer를 대체하며, 신뢰된 불변 score 아래에서는 학습 문제가 폐형 목표 + SP4 실현으로 퇴화한다. 진짜 score-free 열은 quota-floor 계열이다: Fair-Learn은 임의의 black-box 의사결정자를 라운드당 O(1)의 debt-priority override로 감싸 결정론적 anytime count floor를 준다.</p><p><strong>평가</strong>: 전환됨 — FairX가 대표 적용 방법일 것으로 기대했으나 사용자 제약 하에서는 학습 문제 자체가 소멸한다. 사용자의 실제 regime(고정된 잡음 score, exposure 전용 제어)은 아무도 다루지 않는다 — 이것이 O4 gap 1(퇴화 regime)이 되었다. 또한 bandit regret 한계는 원리적으로도 SP4의 open-loop 집중 gap을 닫을 수 없다(공정성 regret는 정책 공간 거리이다).</p></div>
+</div></section>
+<section id="establishes" class="section-anchor"><div class="card" style="border-color:var(--teal)">
+<div class="lang en-only"><h2 style="margin-top:0">What SP6 Establishes</h2><p>The bandit exposure-allocation literature splits cleanly along the survey's respect-vs-replace axis, and the split is structural, not incidental. The dominant merit-proportional line (FairX <a href="papers/55_FairExposureBandits.html">[55] FairExposureBandits</a> and its restless-bandit descendant <a href="papers/64_OnlineRestlessExposure.html">[64] OnlineRestlessExposure</a>) REPLACES the scorer: merit is defined as a function $f(\mu^*)$ of the bandit's own estimated mean reward, so its fairness-regret bounds are bounds on <em>learning the scores</em> — under the user's constraint (scores given, immutable, trusted) the entire learning problem degenerates, because the optimal fair policy $\pi^* \propto f(\text{score})$ is computable in closed form and only a realization mechanism (SP4) is needed. The constraint-based line is the genuine score-free column: minimum-exposure floors enforced by debt counters or virtual queues (<a href="papers/66_FairSMAB.html">[66] FairSMAB</a>, <a href="papers/65_SleepingFairness.html">[65] SleepingFairness</a>, <a href="papers/67_FairContextualMAB.html">[67] FairContextualMAB</a>, <a href="papers/58_RestlessFairMAB.html">[58] RestlessFairMAB</a>) hold <em>irrespective of the learner</em> — Fair-Learn <a href="papers/66_FairSMAB.html">[66] FairSMAB</a> explicitly wraps any black-box decision-maker with an O(1)-per-round debt-priority override and delivers the strongest realized-exposure guarantee found anywhere in this survey: a deterministic, anytime, uniform-in-time count floor ($\lfloor r_i t\rfloor - N_{i,t} \le \alpha$ at every round), with the utility price exactly characterized (regret becomes $O(T)$ precisely when quotas bind on truly suboptimal arms).</p>
+<p>Three qualifications bound this answer. (1) Every constraint-violation guarantee is count/pull-denominated; exactly one paper (<a href="papers/56_ConcaveRewards.html">[56] ConcaveRewards</a>) proves regret in position-weighted exposure units, and that bound is on the amortized concave objective (target side), not on realized-exposure concentration — the count→position transfer gap survives a fourth SP. (2) No bandit bound closes SP4's open-loop concentration gap: fairness regrets ($\sum_t \|\pi^* - \pi_t\|_1$) live in policy space, and the results that do bound realized counts (Fair-Learn's debt rule, LFG's virtual queues) are ledger-feedback mechanisms — closed-loop by construction, confirming SP5's pattern (uuid 18) across a fourth literature. (3) Non-stationarity and estimated relevance are handled at most one at a time: <a href="papers/67_FairContextualMAB.html">[67] FairContextualMAB</a> takes adversarial losses but requires a known stationary context distribution and single pulls; the restless line (<a href="papers/58_RestlessFairMAB.html">[58] RestlessFairMAB</a>, <a href="papers/64_OnlineRestlessExposure.html">[64] OnlineRestlessExposure</a>) handles Markov item-state drift but not arrival drift; nobody combines either with position-weighted exposure. On the production question, <a href="papers/62_ItemCentricExploration.html">[62] ItemCentricExploration</a> (RecSys 2025 Industry, YouTube Shorts) documents deliberate cold-start over-exposure as a managed impression budget, gated by a score-read-only show/don't-show filter — a new member of the strict frequency-only family, and evidence that match quality dominates exposure quantity (−20% exploration impressions with better cold-start outcomes).</p></div><div class="lang ko-only"><h2 style="margin-top:0">SP6이 확립한 것</h2><p>SP6는 bandit 문헌이 조사의 respect-vs-replace 축을 따라 깔끔히 갈라짐을 확립한다. merit 비례 라인(FairX와 그 restless 후속)은 merit = f(자체 추정 평균)으로 scorer를 대체한다 — 신뢰된 불변 score 아래에서는 최적 공정 정책 π* ∝ f(score)가 폐형으로 계산되어 학습 문제 전체가 퇴화하고 SP4의 실현 메커니즘만 남는다. 진짜 score-free 열은 제약 기반 quota-floor 계열이다: Fair-Learn은 임의의 black-box 학습기를 감싸 매 라운드 ⌊r_i t⌋−N_{i,t}≤α의 결정론적·anytime·학습기 독립 count floor를 O(1)/라운드에 보장하며, 효용 대가도 정확히 특성화된다(quota가 진짜 열등 arm에 구속될 때만 regret O(T)). 한정 사항: 제약 위반 보장은 전부 count 단위이고(position 가중 regret는 ConcaveRewards의 목표 측 하나뿐), 실현 count 보장은 다시 폐루프 ledger 메커니즘이며, 비정상 도착과 추정 relevance는 한 번에 하나씩만 다뤄진다.</p></div>
+</div>
+<details><summary><span class="en-only">Convergences</span><span class="ko-only">수렴 지점</span></summary><div class="card" style="margin-top:0.5rem"><ul><li><strong>Score-free exposure floors with learner-independent guarantees are a solved problem — in count units.</strong> <a href="papers/66_FairSMAB.html">[66] FairSMAB</a> (deterministic anytime), <a href="papers/65_SleepingFairness.html">[65] SleepingFairness</a> (asymptotic, feasibility-optimal), <a href="papers/67_FairContextualMAB.html">[67] FairContextualMAB</a> (adversarial losses, no rate loss), and <a href="papers/58_RestlessFairMAB.html">[58] RestlessFairMAB</a> (restless, sublinear violation regret) independently establish that minimum-exposure constraints can be enforced without any score access, and converge on the same cost characterization: the floor is free until the quota exceeds the exposure an arm would naturally earn, after which the price is linear in the excess. The mechanism is shared: a debt/queue dual variable converted into per-round forced allocation.</li><li><strong>Exploration is not an exposure-balancing mechanism.</strong> <a href="papers/63_CascadingExposure.html">[63] CascadingExposure</a> (larger UCB α does not improve fairness; bias stops falling once exploration decays), <a href="papers/55_FairExposureBandits.html">[55] FairExposureBandits</a> (UCB/TS concentrate all exposure winner-takes-all even between near-equal arms), and <a href="papers/68_EARS.html">[68] EARS</a> (greedy selection converts ε relevance gaps into maximal exposure gaps) agree via different models: fair exposure requires an explicit allocation target or constraint, not exploration noise.</li><li><strong>Realized-exposure guarantees come only from closed-loop ledger mechanisms.</strong> Fairness regrets (<a href="papers/55_FairExposureBandits.html">[55] FairExposureBandits</a>, <a href="papers/64_OnlineRestlessExposure.html">[64] OnlineRestlessExposure</a>) are policy-space quantities ($\ell^1$ to the target <em>policy</em>), leaving the sampling deviation of realized counts unbounded; the results that do bound realized counts — <a href="papers/66_FairSMAB.html">[66] FairSMAB</a>'s debt invariant, <a href="papers/65_SleepingFairness.html">[65] SleepingFairness</a>'s queues — feed realized counts back into the decision. This is the same pattern SP5 found (uuid 18), now confirmed in a fourth literature: no open-loop realized-vs-target concentration bound exists here either.</li><li><strong>Merit-proportional learnability requires merit-function regularity.</strong> <a href="papers/55_FairExposureBandits.html">[55] FairExposureBandits</a> proves necessity (linear fairness regret without min-merit $\gamma$ or Lipschitz $L$); <a href="papers/64_OnlineRestlessExposure.html">[64] OnlineRestlessExposure</a> inherits $\gamma, L$ multiplicatively in its restless-bandit bound — two settings, same structural conditions.</li></ul></div></details>
+<details><summary><span class="en-only">Divergences</span><span class="ko-only">분기 지점</span></summary><div class="card" style="margin-top:0.5rem"><ul><li><strong>Hard floors vs proportional control, round two.</strong> <a href="papers/59_FairOLTR.html">[59] FairOLTR</a> finds FairCo's proportional exposure control "overreacts" (worse online NDCG and unfairness than hard placement templates) in OL2R, while SP5's adjudication found FairCo reaches the LP unfairness floor in the known-relevance amortized regime. Likely cause: regime difference again — under a <em>learning</em> ranker with uncertain relevance, proportional control amplifies estimation error (it promotes all under-exposed-group items uniformly), whereas with converged relevance the same controller is target-adequate. Consistent with, and extends, uuid 15's regime-dependence: relevance-estimate maturity is a second moderator alongside steepness. Unresolved formally (FairOLTR is arXiv-only, no cumulative-regret bound).</li><li><strong>Equality-Gini vs merit-proportional metrics rank methods oppositely.</strong> <a href="papers/63_CascadingExposure.html">[63] CascadingExposure</a>'s EALinUCB beats FRMLinUCB (=<a href="papers/55_FairExposureBandits.html">[55] FairExposureBandits</a>) on 1−Gini equality metrics — but FairX optimizes merit-<em>proportional</em> exposure, which a Gini-uniformity metric penalizes by design. Cause: different fairness targets, not method quality; a comparison is only meaningful within a target family (same lesson as SP3's target dichotomy).</li><li><strong>"Under-exposed items need more exposure" vs "wrong-audience exposure harms them."</strong> The fairness-bandit line treats exposure as the terminal currency to be topped up; <a href="papers/62_ItemCentricExploration.html">[62] ItemCentricExploration</a> shows in production that <em>removing</em> 20% of exploration impressions (the badly-matched ones) improves cold-item outcomes and corpus growth. Cause: exposure→utility conversion is heterogeneous across (item, audience) pairs (uuid 8) — a floor denominated in raw impressions can be satisfied with worthless impressions.</li></ul></div></details>
+<details><summary><span class="en-only">Prior Beliefs and Surprises (full)</span><span class="ko-only">사전 믿음과 놀라움 (전문)</span></summary><div class="card" style="margin-top:0.5rem"><p><strong>What the entry rationale expected to find</strong> (revised rationale after SP1/SP2/SP4/SP5):</p>
+<blockquote>Bandit methods fill O2's score-free column with regret guarantees; separate "respect black-box scores" from "replace them"; check whether any exposure-allocation regret bound doubles as SP4's missing open-loop concentration bound; check ledger-state regret bounds under non-stationary arrivals and estimated relevance, and position-weighted denomination.</blockquote>
+<p><strong>Confirmed</strong>:</p>
+<ul><li>The respect-vs-replace separation is real and structural: the merit-proportional line replaces the scorer (merit = function of learned means); the quota-floor line is genuinely score-free (<a href="papers/66_FairSMAB.html">[66] FairSMAB</a> learner-independent by proof).</li><li>Bandits do fill the score-free column with regret guarantees — but only for count-denominated floors, exactly as the pre-loop landscape read anticipated ("must separate respect from replace").</li><li>Google production cold-start over-exposure documented as expected (<a href="papers/62_ItemCentricExploration.html">[62] ItemCentricExploration</a>).</li></ul>
+<p><strong>Surprised</strong>:</p>
+<ul><li>(a) Assumed: bandit fairness regret bounds might double as SP4's open-loop concentration bounds. Found: they cannot even in principle — fairness regret is a policy-space distance, leaving realized-draw deviation unbounded; every realized-count guarantee is again a closed-loop ledger mechanism. Why wrong: conflated "bound involving exposure" with "bound on realized exposure"; the literature's regret currency is target-side.</li><li>(b) Assumed: under the user's constraint, FairX would be the flagship applicable method. Found: with trusted immutable scores the FairX learning problem degenerates entirely (closed-form target, SP4 realization); its machinery is relevant only in the score-distrust regime it uses to justify replacing the scorer. The user's actual regime — fixed <em>noisy</em> scores, exposure-only control — is addressed by nobody. Why wrong: the pre-loop read centered Wang &amp; Joachims 2021 without checking what remains of the problem once scores are exogenous.</li><li>(c) Assumed: cold-start exploration = over-exposure boosting. Found: the production system's win came from <em>reducing</em> exploration impressions via better matching — impression quantity is not the binding resource. Why wrong: carried the fairness literature's exposure-as-terminal-currency premise into the production setting where exposure→utility heterogeneity (uuid 8) dominates.</li></ul>
+<p><strong>KB impact</strong>:</p>
+<ul><li>UUID 18: confirmed (4th literature) — realized-exposure guarantees only via closed-loop ledger feedback.</li><li>UUID 12: refined — bandit line splits along the same score-trust axis (merit-proportional imports score/estimation error; quota floors are merit-blind and survive any scorer).</li><li>UUID 6: refined — two bandit legs added (LFG virtual queue = drift-plus-penalty dual; CBCR FW gradient = concave-welfare generalization of ledger boosting).</li><li>UUID 19: refined — FW sorters achieve target-convergence optimality with regret guarantees; ceiling confined to trajectory-efficiency (consistent with uuid 15 adjudication).</li><li>UUID 8: confirmed — production evidence that match quality dominates exposure quantity for cold items.</li><li>UUID 3: refined — <a href="papers/62_ItemCentricExploration.html">[62] ItemCentricExploration</a> joins the strict show/don't-show family (production); <a href="papers/66_FairSMAB.html">[66] FairSMAB</a> is its bandit-theoretic anchor.</li><li>New claims: score-free anytime floor guarantee (Fair-Learn); count-denomination of all bandit floor guarantees (position-weighted gap survives 4th SP); degenerate-regime gap (fixed-noisy-scores + exposure-only control unaddressed).</li></ul></div></details>
+</section>
+<section id="concepts" class="section-anchor"><h2><span class="en-only">Key Concepts</span><span class="ko-only">핵심 개념</span></h2><p><strong>Merit-proportional exposure target and fairness regret (FairX)</strong></p>
+<ul><li><strong>What it computes</strong>: given per-arm mean rewards $\mu^*$ and a designer-chosen increasing merit function $f$ with $f \ge \gamma &gt; 0$ and Lipschitz constant $L$, the target policy is $\pi^*(a) = f(\mu^*_a)/\sum_{a'} f(\mu^*_{a'})$; fairness regret is $FR_T = \sum_{t=1}^T \sum_a |\pi^*(a) - \pi_t(a)|$, the cumulative $\ell^1$ distance between deployed and target policies.</li><li><strong>Why it was created</strong>: conventional bandits converge to winner-takes-all — two arms with nearly identical merit receive drastically different exposure; a regret notion against the <em>fair</em> policy (not the argmax arm) was needed to measure how fast an algorithm learns to allocate exposure proportionally.</li><li><strong>Concrete example</strong>: two arms with means $(\theta, 2\theta)$ and identity merit give target $[1/3, 2/3]$ instead of $[0,1]$; UCB accumulates $FR_T$ linear in $T$ (~12,000 at $T$=200k on Yahoo! data) vs sub-linear $\tilde{O}(L\sqrt{KT}/\gamma)$ for FairX.</li><li><strong>Role in this SP</strong>: the shared normative target of <a href="papers/55_FairExposureBandits.html">[55] FairExposureBandits</a>, <a href="papers/64_OnlineRestlessExposure.html">[64] OnlineRestlessExposure</a>, and the FRM baseline in <a href="papers/63_CascadingExposure.html">[63] CascadingExposure</a>; its necessity conditions ($\gamma$, $L$) are exactly conditions on the score→exposure map when the user adopts merit-proportional targets over black-box scores.</li></ul>
+<p><strong>Minimum-selection-fraction floor with debt/virtual-queue enforcement</strong></p>
+<ul><li><strong>What it computes</strong>: an exogenous quota vector $r$ ($r_i$ = required long-run selection fraction of arm $i$); enforcement maintains a per-arm debt counter — Fair-Learn's $r_i(t-1) - N_{i,t-1}$ or LFG's virtual queue $Q_i(t) = [Q_i(t-1) + r_i - d_i(t-1)]^+$ — and forces a pull of the most-indebted arm when debt exceeds a tolerance, otherwise delegates to the base learner.</li><li><strong>Why it was created</strong>: long-term average constraints are structurally incompatible with per-round greedy selection; the debt/queue device (imported from Lyapunov drift-plus-penalty network optimization) converts the time-average constraint into per-round dynamics without touching the learner's scores.</li><li><strong>Concrete example</strong>: $r = (0.2, 0.3, 0.25)$, tolerance $\alpha = 0$: at $t=100$, arm 2 must have been pulled ≥ 30 times, deterministically, regardless of its rewards or of which learner is plugged in.</li><li><strong>Role in this SP</strong>: the score-free mechanism of <a href="papers/66_FairSMAB.html">[66] FairSMAB</a>, <a href="papers/65_SleepingFairness.html">[65] SleepingFairness</a>, <a href="papers/67_FairContextualMAB.html">[67] FairContextualMAB</a>, <a href="papers/58_RestlessFairMAB.html">[58] RestlessFairMAB</a>, <a href="papers/61_MinRevenueBandits.html">[61] MinRevenueBandits</a>; the bandit-theory anchor for O2's frequency-only floors and the formal ancestor of SP5/SP7-style dual-variable pacing (a virtual queue is a dual variable).</li></ul>
+<p><strong>α-fairness (anytime deterministic floor)</strong></p>
+<ul><li><strong>What it computes</strong>: the certificate $\lfloor r_i t \rfloor - N_{i,t} \le \alpha$ for all arms $i$ and <em>all</em> rounds $t$ — a uniform-in-time, deterministic (not in-expectation, not asymptotic) bound on realized count shortfall, with slack knob $\alpha \ge 0$.</li><li><strong>Why it was created</strong>: prior floors held only asymptotically (LFG's lim-inf) or in expectation (Celis et al.), so any finite prefix could violate the quota; production exposure contracts need every-round guarantees with unknown horizon.</li><li><strong>Concrete example</strong>: $\alpha = 2$, $r_i = 0.1$: the arm is never more than 2 pulls behind $\lfloor 0.1 t\rfloor$ at any time, no matter what the wrapped learner does.</li><li><strong>Role in this SP</strong>: proven learner-independently in <a href="papers/66_FairSMAB.html">[66] FairSMAB</a> (Theorem 1); the strongest realized-exposure guarantee in the survey to date — but count-based and floor-only.</li></ul>
+<p><strong>Frank-Wolfe reduction for contextual bandits with concave rewards (CBCR)</strong></p>
+<ul><li><strong>What it computes</strong>: for a known concave welfare $f$ over the vector of average rewards (e.g., user utility minus a Gini penalty on per-item cumulative exposures), run Frank-Wolfe in reward space: the per-round FW gradient $\nabla f(\hat{s}_{t-1})$ (computed from the realized exposure ledger $\hat{s}_{t-1}$) defines a scalar-reward bandit; any scalar bandit with regret $R^{scal}_T$ yields welfare regret $R_T \le (R^{scal}_T + O(\sqrt{T}))/T$.</li><li><strong>Why it was created</strong>: policy-space optimization over continuous contexts is intractable; the reduction bypasses policy space and lets any exploration principle plug in.</li><li><strong>Concrete example</strong>: FW-LinUCBRank serves a ranking per round by top-$\bar{k}$ sorting UCB scores plus an adaptive $\nabla f$ bonus that boosts under-exposed items; welfare regret $O(d\bar{k}\ln(T/\delta)/\sqrt{T})$ with position weights $b_k$ inside the exposure coordinates.</li><li><strong>Role in this SP</strong>: <a href="papers/56_ConcaveRewards.html">[56] ConcaveRewards</a> — the only regret guarantee in the entire SP denominated in position-weighted exposure units, and the regret-theoretic foundation for ledger-boosted sorting (its full-information counterpart is SP5's OFFR).</li></ul>
+<p>Position-based exposure, amortized fairness ledgers, and dual-variable pacing: see SP1/SP5 Key Concepts.</p></section>
+<section id="rqs" class="section-anchor"><h2><span class="en-only">Research Questions Extracted</span><span class="ko-only">추출된 연구 질문</span></h2><div class="scroll-table-wrap"><table><thead><tr><th>ID</th><th>Question</th><th>Key Papers</th><th>Objective</th></tr></thead><tbody><tr><td>RQ6.1</td><td>Which bandit exposure-allocation formulations operate score-free or score-read-only over an immutable scorer, versus replacing it?</td><td><a href="papers/66_FairSMAB.html">[66] FairSMAB</a>, <a href="papers/65_SleepingFairness.html">[65] SleepingFairness</a>, <a href="papers/68_EARS.html">[68] EARS</a>, <a href="papers/62_ItemCentricExploration.html">[62] ItemCentricExploration</a>, <a href="papers/55_FairExposureBandits.html">[55] FairExposureBandits</a></td><td>O2</td></tr><tr><td>RQ6.2</td><td>What guarantees exist for minimum-exposure floors during learning, and what is the exact utility price?</td><td><a href="papers/66_FairSMAB.html">[66] FairSMAB</a>, <a href="papers/67_FairContextualMAB.html">[67] FairContextualMAB</a>, <a href="papers/58_RestlessFairMAB.html">[58] RestlessFairMAB</a>, <a href="papers/61_MinRevenueBandits.html">[61] MinRevenueBandits</a></td><td>O1, O2</td></tr><tr><td>RQ6.3</td><td>Is any bandit regret bound denominated in position-weighted exposure units?</td><td><a href="papers/56_ConcaveRewards.html">[56] ConcaveRewards</a></td><td>O2, O4</td></tr><tr><td>RQ6.4</td><td>Do bandit bounds double as open-loop realized-vs-target exposure concentration bounds?</td><td><a href="papers/55_FairExposureBandits.html">[55] FairExposureBandits</a>, <a href="papers/66_FairSMAB.html">[66] FairSMAB</a>, <a href="papers/65_SleepingFairness.html">[65] SleepingFairness</a></td><td>O4</td></tr><tr><td>RQ6.5</td><td>Under what conditions on the merit function is merit-proportional exposure learnable at all?</td><td><a href="papers/55_FairExposureBandits.html">[55] FairExposureBandits</a>, <a href="papers/64_OnlineRestlessExposure.html">[64] OnlineRestlessExposure</a></td><td>O1, O4</td></tr><tr><td>RQ6.6</td><td>Is there production evidence of deliberate exploration over-exposure as a frequency-level intervention over an unmodified scorer?</td><td><a href="papers/62_ItemCentricExploration.html">[62] ItemCentricExploration</a></td><td>O1, O3</td></tr><tr><td>RQ6.7</td><td>What is the formal relationship between bandit ledger-boosting and SP5's amortized controllers?</td><td><a href="papers/56_ConcaveRewards.html">[56] ConcaveRewards</a>, <a href="papers/65_SleepingFairness.html">[65] SleepingFairness</a></td><td>O1, O4</td></tr></tbody></table></div></section>
+<section id="papers" class="section-anchor"><div class="card" style="margin-top:1.5rem">
+<h3 style="margin-top:0"><span class="en-only">Papers in SP6 (DIR table)</span><span class="ko-only">SP6 논문 목록 (DIR 표)</span></h3><div class="scroll-table-wrap"><table><thead><tr><th>Ref</th><th>Title</th><th>Track</th><th>Tier</th><th>Key Contribution</th><th>Fit</th><th>Gap</th></tr></thead><tbody><tr><td><a href="papers/55_FairExposureBandits.html">[55] FairExposureBandits</a></td><td>Fairness of Exposure in Stochastic Bandits</td><td>A</td><td>P0</td><td>Merit-proportional target + fairness regret; necessity lower bounds ($\gamma$, $L$)</td><td>Canonical merit→exposure formulation; conditions transfer to score-derived targets</td><td>Replaces the scorer; single-slot; merit function assumed known</td></tr><tr><td><a href="papers/56_ConcaveRewards.html">[56] ConcaveRewards</a></td><td>Contextual Bandits with Concave Rewards</td><td>A</td><td>P0</td><td>FW reduction; only position-weighted regret bound; ledger-boost with guarantees</td><td>Position-weighted exposure inside the bound; scores enter as estimated relevance</td><td>iid contexts; needs designer $f$ and observed exposure; objective-side bound only</td></tr><tr><td><a href="papers/57_BlackwellFair.html">[57] BlackwellFair</a></td><td>Unified Fair Online Learning via Blackwell Approachability</td><td>A</td><td>P0</td><td>Necessary-and-sufficient compatibility condition for objective+fairness pairs; exact TV-governed Pareto frontier</td><td>Feasibility machinery for "is this exposure target achievable at all"</td><td>No ranking/exposure instantiation; scalar actions; asymptotic</td></tr><tr><td><a href="papers/58_RestlessFairMAB.html">[58] RestlessFairMAB</a></td><td>Online Restless MAB with Long-Term Fairness Constraints</td><td>A</td><td>P0</td><td>First simultaneous sublinear reward + fairness-violation regrets; zero-violation variant</td><td>Activation-fraction floor = literal minimum exposure-frequency guarantee</td><td>Binary activation, small tabular states; count-denominated</td></tr><tr><td><a href="papers/59_FairOLTR.html">[59] FairOLTR</a></td><td>Calibrating Explore-Exploit for Fair OL2R</td><td>A</td><td>P4</td><td>Hard placement templates + FairSwap; dominates FairCo empirically in OL2R</td><td>Shows exploration itself allocates exposure; hard-constraint alternative to proportional control</td><td>arXiv-only; no cumulative regret bound; 2 groups</td></tr><tr><td><a href="papers/60_CreatorBandits.html">[60] CreatorBandits</a></td><td>Creator Incentives via Cooperative Bandits</td><td>B</td><td>P4</td><td>TU-game over coalition regrets; core/stability results; computation-free payout</td><td>Creator-side coupling of exposure economics</td><td>Fairness over payouts, not exposure; platform abstracted away</td></tr><tr><td><a href="papers/61_MinRevenueBandits.html">[61] MinRevenueBandits</a></td><td>MAB with Minimum Aggregated Revenue Constraints</td><td>B</td><td>P4</td><td>OLP/OPLP regret-violation Pareto pair; free-exploration breakdown lower bound</td><td>Per-provider minimum guarantees with LP structure</td><td>Revenue-, not exposure-denominated; single pull; synthetic only</td></tr><tr><td><a href="papers/62_ItemCentricExploration.html">[62] ItemCentricExploration</a></td><td>Item-centric Exploration for Cold Start</td><td>B</td><td>P3</td><td>Production μ−2σ Beta-posterior filter; user-corpus co-diverted A/B</td><td>Score-read-only show/don't-show over unmodified ranker; production frequency intervention</td><td>4-page industry paper; anonymized metrics; no replication</td></tr><tr><td><a href="papers/63_CascadingExposure.html">[63] CascadingExposure</a></td><td>Exposure-Aware Reward for Cascading Bandits</td><td>B</td><td>P4</td><td>Position-weighted reward reshaping preserving regret order</td><td>Names the exploration≠fairness finding; feedback-loop intervention point</td><td>Modifies the learning signal (incompatible with immutable scores); γ dataset-sensitive</td></tr><tr><td><a href="papers/64_OnlineRestlessExposure.html">[64] OnlineRestlessExposure</a></td><td>Fairness of Exposure in Online Restless MAB</td><td>B</td><td>P4</td><td>Merit-proportional fairness regret $O(\sqrt{T\ln T})$ for restless arms ($K=1$)</td><td>Extends FairX conditions to dynamic item states</td><td>Multi-pull case undefined; merit assumed policy-independent</td></tr><tr><td><a href="papers/65_SleepingFairness.html">[65] SleepingFairness</a></td><td>Combinatorial Sleeping Bandits with Fairness Constraints</td><td>C</td><td>P2</td><td>LFG virtual-queue + UCB; feasibility-optimality</td><td>Drift-plus-penalty dual = pacing ancestor; availability model fits eligibility filtering</td><td>Asymptotic-only floor; set (not positioned) selection; iid rewards</td></tr><tr><td><a href="papers/66_FairSMAB.html">[66] FairSMAB</a></td><td>Achieving Fairness in the Stochastic MAB</td><td>C</td><td>P2</td><td>Fair-Learn: deterministic anytime α-fairness independent of the learner; $O(\ln T)$ r-Regret</td><td>Cleanest score-free floor over a black-box learner in the survey</td><td>Count floors, single pull, exogenous static quotas $r_i &lt; 1/k$</td></tr><tr><td><a href="papers/67_FairContextualMAB.html">[67] FairContextualMAB</a></td><td>Fair Contextual MAB: Theory and Experiments</td><td>C</td><td>P2</td><td>Marginal floor under adversarial losses at unchanged $O(\sqrt{T})$ rate</td><td>Floor survives non-stationary rewards; cost-of-floor characterization</td><td>Known context distribution; small finite contexts; single pull</td></tr><tr><td><a href="papers/68_EARS.html">[68] EARS</a></td><td>Top-K Contextual Bandits with Equity of Exposure</td><td>C</td><td>P4</td><td>Model-agnostic ε-constrained top-K′ shuffling; P(C)=P(R)·P(E) diagnostic</td><td>Score-read-only arm-selection layer; personalised randomization</td><td>Cascade-model-specific; $O(2^K)$; simulation-only; ε offline-tuned</td></tr><tr><td><a href="papers/14_FairPGRank.html">[14] FairPGRank</a></td><td>Policy Learning for Fairness in Ranking</td><td>C</td><td>P2</td><td>(SP1 carry-over) one-sided exposure-to-merit constraints; corrupted-scores failure mode</td><td>Grounds the score-trust caveat on merit-proportional bandit targets</td><td>In-processing (retrains scorer); covered in SP1</td></tr></tbody></table></div>
+</div>
+<details><summary><span class="en-only">Design Implication Registry</span><span class="ko-only">설계 함의 레지스트리</span></summary><div class="card" style="margin-top:0.5rem"><div class="scroll-table-wrap"><table><thead><tr><th>Requirement</th><th>Evidence</th><th>Implication</th><th>Risk</th><th>Mitigation</th></tr></thead><tbody><tr><td>Enforce minimum-exposure floors over an immutable scorer</td><td><a href="papers/66_FairSMAB.html">[66] FairSMAB</a>, <a href="papers/65_SleepingFairness.html">[65] SleepingFairness</a></td><td>Wrap the black-box ranker with a debt-priority override (Fair-Learn): deterministic anytime count floors at O(1)/round, learner-independent; utility price exactly characterized</td><td>Floors are count-based and single-pull; position-weighted exposure can remain unfair behind a satisfied count floor</td><td>Pair with SP4 stride delivery / position-aware accounting; watch SP7 for position-denominated floor guarantees</td></tr><tr><td>Merit-proportional exposure targets from black-box scores</td><td><a href="papers/55_FairExposureBandits.html">[55] FairExposureBandits</a>, <a href="papers/64_OnlineRestlessExposure.html">[64] OnlineRestlessExposure</a></td><td>If scores are trusted, compute $\pi^* \propto f(\text{score})$ in closed form — no bandit needed, realization via SP4; choose $f$ with $\gamma$ floor and small $L$</td><td>Score error imports into the target (SP3 dichotomy); FairX lower bounds imply sensitivity blows up as min-merit $\to 0$</td><td>Floor $f$ away from zero; Lipschitz $f$; treat the noisy-score regime as open (see Open Questions)</td></tr><tr><td>Amortized position-weighted exposure control with estimated relevance</td><td><a href="papers/56_ConcaveRewards.html">[56] ConcaveRewards</a></td><td>Use the FW gradient bonus on top of a UCB sort (FW-LinUCBRank) — the only position-weighted regret guarantee; works without knowing context-dependent position weights</td><td>Needs a designer concave $f$ and per-item exposure observations $e_{t,i}$; iid contexts assumed; feedback loops explicitly out of scope</td><td>Infer exposure from position; elicit $f$ (open per the paper); fall back to SP5 planners when trajectory efficiency matters</td></tr><tr><td>Efficient cold-start exposure budgeting in production</td><td><a href="papers/62_ItemCentricExploration.html">[62] ItemCentricExploration</a></td><td>Gate exploration impressions with a score-read-only μ−2σ Beta-posterior filter; expect quality gains with <em>less</em> exploration traffic</td><td>Proprietary satisfaction labels and priors; no public replication; single A/B without CIs</td><td>Simulate the filter on public impression logs (KuaiRand/MIND); treat magnitudes as directional</td></tr><tr><td>Floor guarantees under adversarial engagement</td><td><a href="papers/67_FairContextualMAB.html">[67] FairContextualMAB</a></td><td>FTRL over the fairness-constrained joint decision set keeps $O(\sqrt{TMK\ln K})$ — the floor costs nothing in rate</td><td>Known stationary context distribution; small finite context set; single pull per round</td><td>Online estimation of $q$ (paper's Sec. 7); slate extension is open</td></tr><tr><td>Avoid relying on exploration noise for exposure balance</td><td><a href="papers/63_CascadingExposure.html">[63] CascadingExposure</a>, <a href="papers/55_FairExposureBandits.html">[55] FairExposureBandits</a>, <a href="papers/68_EARS.html">[68] EARS</a></td><td>Exposure balance must be an explicit allocation mechanism; UCB/TS exploration provably/empirically does not deliver it long-run</td><td>Adding explicit balance mechanisms (γ-penalties, shuffling) has dataset-sensitive strength knobs</td><td>Tune correction strength online — currently an open problem (see Open Questions)</td></tr></tbody></table></div></div></details>
+</section>
+<section id="open" class="section-anchor"><div class="card">
+<h3 style="margin-top:0"><span class="en-only">Open Questions After SP6</span><span class="ko-only">SP6 이후 미해결 질문</span></h3><ul><li><strong>Position-weighted floor guarantees</strong>: every constraint-violation bound in this SP is count/pull-denominated; <a href="papers/65_SleepingFairness.html">[65] SleepingFairness</a> and <a href="papers/66_FairSMAB.html">[66] FairSMAB</a> both flag the slate/position-weighted extension as an explicit unknown (<code>missing link</code> in both notes: whether the queue/debt invariants survive unequal per-slot exposure weights), and <a href="papers/56_ConcaveRewards.html">[56] ConcaveRewards</a>'s position-weighted bound is objective-side only. The count→position transfer gap has now survived SP1, SP3, SP5, and SP6 — SP7 (ads pacing, where impressions are the native currency) is the last candidate before it is O4-final. What would resolve it: a concentration or violation bound for a debt-style controller where the "pull" is a position-weighted exposure increment.</li><li><strong>The intermediate score-trust regime</strong>: no paper treats scores as <em>given, immutable, partially informative</em> inputs to exposure allocation. <a href="papers/55_FairExposureBandits.html">[55] FairExposureBandits</a> assumes merit is a function of the true mean (learned by the bandit itself — <code>missing link</code>: sensitivity to misspecified/estimated merit); <a href="papers/64_OnlineRestlessExposure.html">[64] OnlineRestlessExposure</a> assumes merit identifiable independently of the exposure policy (<code>missing link</code>: no exposure→merit feedback). Under trusted scores the problem degenerates to realization; under untrusted scores the literature replaces the scorer. The user's actual regime — fixed noisy scores, exposure-frequency-only control, guarantees on realized exposure vs a score-derived target — is unaddressed by any of the 15 papers. What would resolve it: a regret/violation analysis where the merit input is an exogenous score with bounded (or adversarial) error and the only decision variable is impression allocation.</li><li><strong>Online tuning of correction strength</strong>: <a href="papers/63_CascadingExposure.html">[63] CascadingExposure</a>'s γ is dataset-sensitive (γ≈0.005 helps, γ=0.2 collapses clicks) and offline-tuned; <a href="papers/68_EARS.html">[68] EARS</a>'s ε is a fixed designer knob. Despite SP2's seed (correction-strength tuning as an online-learning problem) and both quantities being one-dimensional online decisions with observable feedback, no paper formulates the tuning itself as a bandit/online-learning problem. What would resolve it: regret analysis for adapting γ/ε online against a drift or utility-floor criterion.</li><li><strong>Non-stationary arrivals + estimated relevance + slates, jointly</strong>: <a href="papers/67_FairContextualMAB.html">[67] FairContextualMAB</a> achieves adversarial losses only with known stationary context distribution and single pulls; <a href="papers/56_ConcaveRewards.html">[56] ConcaveRewards</a> requires iid contexts and defers feedback loops; the restless line covers item-state drift only. No paper delivers a ledger-state guarantee under arrival drift with estimated relevance in a ranking action space — the question SP5 handed to SP6 comes back negative.</li><li><strong>Multi-pull merit-proportional feasibility</strong>: <a href="papers/64_OnlineRestlessExposure.html">[64] OnlineRestlessExposure</a> concedes merit-proportional exposure can be structurally infeasible for $K&gt;1$ (one arm's merit exceeding $K\times$ others') and offers no formal fairness notion for the multi-pull case — precisely the slate regime rankings need.</li></ul>
+</div>
+<details><summary><span class="en-only">Cross-SP Dependencies</span><span class="ko-only">SP 간 의존성</span></summary><div class="card" style="margin-top:0.5rem"><ul><li><strong>Feeds into</strong>: SP7 — the count→position transfer gap is handed over for its final check (ads pacing is the last literature where a position-denominated floor guarantee could exist); the LFG virtual-queue = drift-plus-penalty identity predicts SP7's pacing duals are the same object (uuid 6 test); guaranteed-delivery advertising should be checked as the ads-side analogue of Fair-Learn floors.</li><li><strong>Feeds into</strong>: SP8 — the intermediate score-trust regime (fixed noisy scores + exposure-only control) is the gap SP8's debiasing literature could address; the exploration≠debiasing finding (<a href="papers/63_CascadingExposure.html">[63] CascadingExposure</a>) constrains what SP8 methods can claim.</li><li><strong>Shared methods with</strong>: SP5 — FW-LinUCBRank (<a href="papers/56_ConcaveRewards.html">[56] ConcaveRewards</a>) is the bandit-feedback version of OFFR (same group, same FW machinery); ledger-boosted sorting now spans both SPs with a regret foundation on the target-convergence side.</li><li><strong>Shared methods with</strong>: SP4 — under trusted scores, FairX's target collapses to SP4's realization problem; SP4's open-loop concentration gap is confirmed unclosed by bandit bounds.</li><li><strong>Depends on</strong>: SP1/SP3 — the score-trust dichotomy (uuid 12) supplies the respect-vs-replace lens; SP2 — the γ-tuning seed (checked: still open); SP5 — the non-stationarity + ledger-state question (checked: negative).</li></ul></div></details>
+</section>
+<div class="page-nav"><a href="sp5_amortized-equity-attention.html">&larr; <span class="en-only">SP5</span><span class="ko-only">SP5</span></a><a href="index.html"><span class="en-only">&uarr; Survey Hub</span><span class="ko-only">&uarr; 조사 허브</span></a><a href="sp7_capping-pacing-feeds-ads.html"><span class="en-only">SP7</span><span class="ko-only">SP7</span> &rarr;</a></div>
+    </div>
+  </div>
+<nav class="bd-sidebar-secondary"><div class="mini-toc-label"><span class="en-only">On this page</span><span class="ko-only">이 페이지</span></div><ul class="mini-toc"><li><a href="#intro"><span class="en-only">Introduction</span><span class="ko-only">개요</span></a></li><li><a href="#rationale"><span class="en-only">Entry Assumption</span><span class="ko-only">사전 가정</span></a></li><li><a href="#establishes"><span class="en-only">What SP6 Establishes</span><span class="ko-only">확립한 것</span></a></li><li><a href="#concepts"><span class="en-only">Key Concepts</span><span class="ko-only">핵심 개념</span></a></li><li><a href="#rqs"><span class="en-only">Research Questions</span><span class="ko-only">연구 질문</span></a></li><li><a href="#papers"><span class="en-only">Papers</span><span class="ko-only">논문</span></a></li><li><a href="#open"><span class="en-only">Open Questions</span><span class="ko-only">미해결 질문</span></a></li></ul></nav>
+</div>
+</body>
+</html>

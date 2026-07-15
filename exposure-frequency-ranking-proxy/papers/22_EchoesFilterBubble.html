@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>[22] Echoes in Filter Bubble: Diagnosing and Curing Popularity Bi — Exposure-Frequency Control Survey</title>
+
+<style>
+:root {
+  --bg: #0d1117; --card: #161b22; --border: #30363d;
+  --text: #e6edf3; --muted: #7d8590; --accent: #58a6ff;
+  --teal: #39d0c7; --green: #3fb950; --yellow: #d29922;
+  --red: #f85149; --purple: #bc8cff; --orange: #e3b341;
+  --sidebar-w: 262px; --toc-w: 210px; --hdr-h: 48px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+body { font-family: -apple-system, sans-serif; background: var(--bg);
+       color: var(--text); line-height: 1.6; }
+.bd-root { display: flex; height: 100vh; overflow: hidden; }
+.bd-sidebar-primary {
+  width: var(--sidebar-w); min-width: var(--sidebar-w);
+  overflow-y: auto; background: var(--card);
+  border-right: 1px solid var(--border);
+  padding: 0.75rem 0; flex-shrink: 0;
+}
+.bd-sidebar-primary::-webkit-scrollbar { width: 4px; }
+.bd-sidebar-primary::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+.bd-main { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-width: 0; }
+.article-header-bar {
+  height: var(--hdr-h); background: var(--card);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; padding: 0 1.5rem;
+  gap: 1rem; flex-shrink: 0;
+}
+.header-brand { color: var(--teal); font-weight: bold; font-size: 0.95em;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 1; }
+.header-brand a { color: inherit; text-decoration: none; }
+.breadcrumb { color: var(--muted); font-size: 0.82em; display: flex;
+  align-items: center; gap: 0.3rem; flex-shrink: 0; }
+.breadcrumb a { color: var(--accent); text-decoration: none; }
+.breadcrumb span { color: var(--border); }
+.bd-article { flex: 1; overflow-y: auto; padding: 2rem 2.5rem; }
+.bd-article::-webkit-scrollbar { width: 6px; }
+.bd-article::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+.bd-sidebar-secondary {
+  width: var(--toc-w); min-width: var(--toc-w);
+  overflow-y: auto; border-left: 1px solid var(--border);
+  padding: 1rem 0.75rem; flex-shrink: 0;
+}
+.bd-sidebar-secondary::-webkit-scrollbar { width: 4px; }
+.bd-sidebar-secondary::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+.sidebar-logo { padding: 0.5rem 1rem 0.75rem;
+  border-bottom: 1px solid var(--border); margin-bottom: 0.5rem; }
+.sidebar-logo a { color: var(--teal); font-weight: bold; font-size: 0.95em;
+  text-decoration: none; display: block; }
+.sidebar-section { color: var(--muted); font-size: 0.72em; font-weight: bold;
+  text-transform: uppercase; letter-spacing: 0.07em;
+  padding: 0.7rem 1rem 0.25rem; }
+.sidebar-nav-link { display: block; padding: 0.28rem 1rem 0.28rem 1.25rem;
+  color: var(--muted); font-size: 0.875em; text-decoration: none; }
+.sidebar-nav-link:hover { color: var(--text); background: rgba(255,255,255,0.03); }
+.sidebar-nav-link.active { color: var(--teal);
+  border-left: 2px solid var(--teal);
+  padding-left: calc(1.25rem - 2px); background: rgba(57,208,199,0.05); }
+.mini-toc-label { color: var(--muted); font-size: 0.72em; font-weight: bold;
+  text-transform: uppercase; letter-spacing: 0.07em; padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border); margin-bottom: 0.5rem; }
+.mini-toc { list-style: none; }
+.mini-toc li a { display: block; padding: 0.22rem 0;
+  color: var(--muted); font-size: 0.83em; text-decoration: none;
+  border-left: 2px solid transparent; padding-left: 0.5rem; }
+.mini-toc li a:hover { color: var(--text); }
+.mini-toc li a.toc-active { color: var(--teal); border-left-color: var(--teal); }
+.section-anchor { scroll-margin-top: calc(var(--hdr-h) + 8px); }
+h1 { color: var(--teal); font-size: 1.7em; margin-bottom: 0.5rem; line-height:1.3; }
+h2 { color: var(--teal); font-size: 1.25em; margin: 1.5rem 0 0.6rem; }
+h3 { color: var(--teal); font-size: 1.05em; margin: 1.2rem 0 0.4rem; }
+h4 { color: var(--teal); font-size: 0.95em; margin: 1rem 0 0.3rem; }
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+p { margin-bottom: 0.8rem; }
+ul, ol { margin: 0 0 0.8rem 1.4rem; }
+li { margin-bottom: 0.3rem; }
+code { background: rgba(255,255,255,0.06); border-radius: 3px; padding: 1px 4px; font-size: 0.9em; }
+blockquote { border-left: 3px solid var(--border); color: var(--muted);
+  padding: 0.2rem 0.8rem; margin-bottom: 0.8rem; }
+.card { background: var(--card); border: 1px solid var(--border);
+        border-radius: 8px; padding: 1.2rem; margin-bottom: 1rem; }
+table { width: 100%; border-collapse: collapse; font-size: 0.9em; margin-bottom: 0.8rem; }
+th { background: var(--card); color: var(--teal); padding: 8px;
+     border: 1px solid var(--border); text-align: left; }
+td { padding: 8px; border: 1px solid var(--border); vertical-align: top; }
+tr:nth-child(even) td { background: rgba(0,0,0,0.2); }
+.stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+             gap: 1rem; margin-bottom: 1.5rem; }
+.stat-box { background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+            padding: 1rem; text-align: center; }
+.stat-num { font-size: 2rem; font-weight: bold; color: var(--teal); }
+.stat-label { color: var(--muted); font-size: 0.85em; margin-top: 0.2rem; }
+.sp-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+           gap: 1rem; margin: 1rem 0; }
+.sp-card { background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+           padding: 1.2rem; cursor: pointer; transition: border-color 0.15s; height:100%; }
+.sp-card:hover { border-color: var(--teal); }
+.sp-card h3 { margin: 0 0 0.5rem; color: var(--teal); font-size: 1em; }
+.sp-card p { margin: 0; color: var(--muted); font-size: 0.88em; }
+.sp-badge { display: inline-block; background: rgba(57,208,199,0.1); color: var(--teal);
+            border-radius: 4px; padding: 2px 8px; font-size: 0.8em; margin-bottom: 0.5rem; }
+.paper-meta { color: var(--muted); font-size: 0.9em; margin-bottom: 1.5rem; }
+.paper-meta a { color: var(--accent); }
+.section-label { color: var(--teal); font-weight: bold; font-size: 0.85em;
+                 text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.4rem; }
+.pill { display: inline-block; border-radius: 4px; padding: 0.15rem 0.6rem;
+        font-size: 0.8em; font-weight: bold; margin-right: 0.4rem; }
+.pill-p0 { background: rgba(63,185,80,0.2); color: var(--green); }
+.pill-p1 { background: rgba(57,208,199,0.15); color: var(--teal); }
+.pill-p2 { background: rgba(210,153,34,0.2); color: var(--yellow); }
+.pill-p3 { background: rgba(188,140,255,0.2); color: var(--purple); }
+.pill-p4 { background: rgba(125,133,144,0.2); color: var(--muted); }
+.delta-row { margin: 0.4rem 0; padding: 0.4rem 0.8rem;
+             border-left: 3px solid var(--border); border-radius: 0 4px 4px 0; }
+.chain { position: relative; padding-left: 2rem; }
+.chain::before { content: ''; position: absolute; left: 0.95rem; top: 0;
+                 bottom: 0; width: 2px; background: var(--border); }
+.chain-node { position: relative; margin-bottom: 2rem; }
+.chain-node::before { content: ''; position: absolute; left: -1.55rem;
+                      top: 1.1rem; width: 12px; height: 12px;
+                      border-radius: 50%; background: var(--teal); }
+.chain-num { display: inline-block; width: 28px; height: 28px; background: var(--teal);
+             color: #000; border-radius: 50%; text-align: center; line-height: 28px;
+             font-weight: bold; font-size: 0.85em; margin-right: 0.6rem; flex-shrink: 0; }
+.chain-q { font-weight: bold; color: var(--text); margin: 0.4rem 0 0.3rem; font-size: 1em; }
+.chain-papers { color: var(--muted); font-size: 0.85em; margin-bottom: 0.6rem; }
+.chain-start { background: var(--card); border: 1px solid var(--teal);
+               border-radius: 8px; padding: 1rem; margin-bottom: 2rem; }
+.chain-start h3 { margin: 0 0 0.5rem; color: var(--teal); }
+.chain-converge { background: var(--card); border: 1px solid var(--green);
+                  border-radius: 8px; padding: 1rem; margin-top: 1rem; }
+.chain-converge h3 { margin: 0 0 0.5rem; color: var(--green); }
+.chain-label { display: inline-block; border-radius: 4px; padding: 0.15rem 0.6rem;
+               font-size: 0.8em; font-weight: bold; margin-right: 0.4rem; }
+.chain-status { border-radius: 0 4px 4px 0; padding: 0.5rem 0.8rem;
+                margin: 0.35rem 0; font-size: 0.88em; }
+.chain-status ul { margin: 0.3rem 0 0 1.2rem; padding: 0; }
+.chain-status li { margin-bottom: 0.25rem; }
+.chain-status.solved  { background: rgba(63,185,80,0.07);  border-left: 3px solid var(--green); }
+.chain-status.remains { background: rgba(210,153,34,0.07); border-left: 3px solid var(--yellow); }
+.chain-status.added   { background: rgba(248,81,73,0.07);  border-left: 3px solid var(--red); }
+.chain-status.pivoted { background: rgba(188,140,255,0.1); border-left: 3px solid var(--purple); }
+.chain-label.solved   { background: rgba(63,185,80,0.2);  color: var(--green); }
+.chain-label.remains  { background: rgba(210,153,34,0.2); color: var(--yellow); }
+.chain-label.added    { background: rgba(248,81,73,0.2);  color: var(--red); }
+.chain-label.pivoted  { background: rgba(188,140,255,0.2); color: var(--purple); }
+.chain-status.expected { background: rgba(88,166,255,0.07);  border-left: 3px solid var(--accent); }
+.chain-label.expected  { background: rgba(88,166,255,0.2);   color: var(--accent); }
+.chain-status.revised  { background: rgba(57,208,199,0.07);  border-left: 3px solid var(--teal); }
+.chain-label.revised   { background: rgba(57,208,199,0.2);   color: var(--teal); }
+.concept-box { border-left: 4px solid var(--teal); background: #0d1f1f;
+               border-radius: 4px; padding: 1.2rem; margin-bottom: 1.2rem; }
+.concept-name { font-weight: bold; color: var(--teal); font-size: 1.05em; margin-bottom: 0.5rem; }
+.hypothesis { border-left: 4px solid var(--teal); background: #0d1f1f;
+              border-radius: 4px; padding: 1rem; margin: 1rem 0; }
+.recommendation { border-left: 4px solid var(--purple); background: #1a0f2e;
+                  border-radius: 4px; padding: 1rem; margin: 1rem 0; }
+.rq-row { background: rgba(88,166,255,0.05); border-left: 3px solid var(--accent);
+          padding: 0.4rem 0.8rem; margin-bottom: 0.5rem; border-radius: 0 4px 4px 0; }
+.scroll-table-wrap { max-height: 420px; overflow-y: auto; border: 1px solid var(--border);
+                     border-radius: 4px; }
+.scroll-table-wrap table { margin-bottom: 0; }
+.scroll-table-wrap thead th { position: sticky; top: 0; background: #161b22; z-index: 1; }
+.page-nav { display: flex; justify-content: space-between; margin-top: 2rem;
+            padding-top: 1rem; border-top: 1px solid var(--border); gap: 1rem; }
+.page-nav a { color: var(--accent); font-size: 0.9em; }
+html.ko-active .en-only { display: none !important; }
+html.ko-active .ko-only { display: block !important; }
+.ko-only { display: none; }
+span.ko-only, .sidebar-logo a span.ko-only { display: none; }
+html.ko-active span.ko-only { display: inline !important; }
+.lang-btn { background: transparent; color: var(--muted); border: 1px solid var(--border);
+            border-radius: 4px; padding: 3px 9px; font-size: 0.8em; cursor: pointer; }
+.lang-btn.active { border-color: var(--teal); color: var(--teal); }
+details { margin-bottom: 0.8rem; }
+details summary { color: var(--muted); cursor: pointer; }
+@media (max-width: 1024px) { .bd-sidebar-secondary { display: none; } }
+@media (max-width: 768px) {
+  .bd-sidebar-primary { display: none; }
+  .bd-root { flex-direction: column; height: auto; overflow: visible; }
+  .bd-main { overflow: visible; }
+  .bd-article { overflow: visible; padding: 1rem; }
+  .stat-grid { grid-template-columns: repeat(2, 1fr); }
+  .sp-grid { grid-template-columns: 1fr; }
+}
+</style>
+
+<script>
+MathJax = { tex: { inlineMath: [['$','$']], displayMath: [['$$','$$']] },
+            options: { skipHtmlTags: ['script','noscript','style','textarea','pre','code'] } };
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<script>
+function toggleLanguage() {
+  const html = document.documentElement;
+  const isKo = html.classList.toggle('ko-active');
+  document.querySelectorAll('.lang-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.lang === (isKo ? 'ko' : 'en'));
+  });
+  localStorage.setItem('survey-lang', isKo ? 'ko' : 'en');
+}
+document.addEventListener('DOMContentLoaded', function() {
+  const saved = localStorage.getItem('survey-lang');
+  if (saved === 'ko') {
+    document.documentElement.classList.add('ko-active');
+    document.querySelectorAll('.lang-btn').forEach(b =>
+      b.classList.toggle('active', b.dataset.lang === 'ko'));
+  } else {
+    document.querySelectorAll('[data-lang="en"]').forEach(b => b.classList.add('active'));
+  }
+  const article = document.querySelector('.bd-article');
+  const sections = Array.from(document.querySelectorAll('.section-anchor[id]'));
+  const sideLinks = Array.from(document.querySelectorAll('.bd-sidebar-primary .sidebar-nav-link'));
+  const tocLinks = Array.from(document.querySelectorAll('.bd-sidebar-secondary .mini-toc a'));
+  if (!article || !sections.length) return;
+  function current() {
+    let id = sections[0].id;
+    const scrollTop = article.scrollTop + 60;
+    sections.forEach(function(s) { if (s.offsetTop <= scrollTop) id = s.id; });
+    return id;
+  }
+  function update() {
+    const id = current();
+    sideLinks.forEach(function(a) {
+      a.classList.toggle('active', a.getAttribute('href') === '#' + id);
+    });
+    tocLinks.forEach(function(a) {
+      a.classList.toggle('toc-active', a.getAttribute('href') === '#' + id);
+    });
+  }
+  article.addEventListener('scroll', update, { passive: true });
+  update();
+});
+</script>
+
+</head>
+<body>
+<div class="bd-root">
+
+<nav class="bd-sidebar-primary">
+  <div class="sidebar-logo">
+    <a href="../index.html">&#x2B21; <span class="en-only">Exposure-Frequency Control Survey</span><span class="ko-only">Exposure-빈도 제어 문헌 조사</span></a>
+  </div>
+  <div class="sidebar-section"><span class="en-only">Overview</span><span class="ko-only">개요</span></div>
+  <a href="../index.html#overview" class="sidebar-nav-link"><span class="en-only">Survey Hub</span><span class="ko-only">조사 허브</span></a>
+  <a href="../index.html#answers" class="sidebar-nav-link"><span class="en-only">Key Answers</span><span class="ko-only">핵심 답변</span></a>
+  <div class="sidebar-section"><span class="en-only">Sub-Problems</span><span class="ko-only">세부 문제</span></div>
+<a href="../sp1_fairness-of-exposure-fixed-scores.html" class="sidebar-nav-link">SP1: <span class="en-only">Exposure fairness</span><span class="ko-only">Exposure 공정성</span></a>
+<a href="../sp2_2024-2026-frontier-llm-era.html" class="sidebar-nav-link active">SP2: <span class="en-only">2024–26 frontier / LLM</span><span class="ko-only">2024–26 최전선 / LLM</span></a>
+<a href="../sp3_postproc-rerank-blackbox.html" class="sidebar-nav-link">SP3: <span class="en-only">Post-proc re-ranking</span><span class="ko-only">Post-proc re-ranking</span></a>
+<a href="../sp4_stochastic-ranking-policies.html" class="sidebar-nav-link">SP4: <span class="en-only">Stochastic policies</span><span class="ko-only">확률적 정책</span></a>
+<a href="../sp5_amortized-equity-attention.html" class="sidebar-nav-link">SP5: <span class="en-only">Amortized fairness</span><span class="ko-only">Amortized 공정성</span></a>
+<a href="../sp6_bandit-exposure-allocation.html" class="sidebar-nav-link">SP6: <span class="en-only">Bandit allocation</span><span class="ko-only">Bandit 배분</span></a>
+<a href="../sp7_capping-pacing-feeds-ads.html" class="sidebar-nav-link">SP7: <span class="en-only">Capping &amp; pacing</span><span class="ko-only">Capping·pacing</span></a>
+<a href="../sp8_popularity-debias-calibration.html" class="sidebar-nav-link">SP8: <span class="en-only">Debiasing &amp; calibration</span><span class="ko-only">Debiasing·calibration</span></a>
+<a href="../sp9_ecosystems-creator-incentives.html" class="sidebar-nav-link">SP9: <span class="en-only">Ecosystems &amp; creators</span><span class="ko-only">생태계·creator</span></a>
+<a href="../sp10_llm-exposure-feedback-loops.html" class="sidebar-nav-link">SP10: <span class="en-only">LLM feedback loops</span><span class="ko-only">LLM feedback loop</span></a>
+<a href="../sp11_strategyproof-exposure.html" class="sidebar-nav-link">SP11: <span class="en-only">Strategy-proofness</span><span class="ko-only">Strategy-proofness</span></a>
+
+  <div class="sidebar-section"><span class="en-only">Synthesis</span><span class="ko-only">종합</span></div>
+  <a href="../conclusion.html" class="sidebar-nav-link"><span class="en-only">Conclusion</span><span class="ko-only">결론</span></a>
+  <a href="../thinking-process.html" class="sidebar-nav-link"><span class="en-only">Thinking Process</span><span class="ko-only">추론 과정</span></a>
+</nav>
+  <div class="bd-main">
+<div class="article-header-bar"><div class="header-brand"><a href="../index.html"><span class="en-only">Exposure-Frequency Control Survey</span><span class="ko-only">Exposure-빈도 제어 문헌 조사</span></a></div><nav class="breadcrumb"><a href="../index.html"><span class="en-only">Survey</span><span class="ko-only">조사</span></a><span>&rsaquo;</span><a href="../sp2_2024-2026-frontier-llm-era.html">SP2</a><span>&rsaquo;</span><span>[22] Echoes in Filter Bubble: Diagnosing and </span></nav><button class="lang-btn" data-lang="en" onclick="toggleLanguage()">EN</button><button class="lang-btn" data-lang="ko" onclick="toggleLanguage()">KO</button></div>
+    <div class="bd-article">
+<section id="header" class="section-anchor"><div class="paper-meta">
+<h1 style="margin-bottom:0.3rem">Echoes in Filter Bubble: Diagnosing and Curing Popularity Bias in Generative Recommenders</h1>
+<p style="margin:0.3rem 0;color:var(--muted)">Jun Yin et al. · arXiv · 2026</p>
+<p style="margin:0.3rem 0"><a href="https://arxiv.org/abs/2605.16825" target="_blank">arXiv:2605.16825</a> · <a href="https://arxiv.org/pdf/2605.16825.pdf" target="_blank">PDF</a> · SP: <a href="../sp2_2024-2026-frontier-llm-era.html">SP2</a></p>
+<p><span class="pill pill-p4">P4</span><span class="pill" style="background:rgba(255,255,255,0.05);color:var(--muted)">Track B</span></p>
+</div>
+<div class="card ko-only" style="border-color:var(--teal)"><div class="section-label">한 줄 요약</div><p style="margin:0">생성형 recommender의 인기 편향을 MLE gradient 결핍과 공유 tokenization의 기하급수적 증폭으로 진단하고, tokenization 재설계와 재학습으로 교정한다. 백본을 0.6B에서 8B로 키워도 편향이 제거되지 않음을 보인다.</p></div>
+</section>
+<section id="problem" class="section-anchor">
+<div class="card"><div class="section-label"><span class="en-only">Problem</span><span class="ko-only">해결하려는 문제</span></div><p>SID-based generative recommenders (LETTER, LC-Rec, ED2) severely over-recommend popular head items — head/tail HR@10 gaps up to 45x, &gt;97% of recommendation-list slots taken by head items — and scaling the backbone from 0.6B to 8B does not fix it. Traditional debiasing transplants (re-weighting, re-ranking, e.g. IFairLRS) are marginally effective, and the fundamental mechanism by which the generative paradigm produces popularity bias (as opposed to the discriminative paradigm) was unexplained.</p></div>
+</section>
+<section id="solution" class="section-anchor">
+<div class="card"><div class="section-label"><span class="en-only">Solution / Contribution</span><span class="ko-only">해결책 / 기여</span></div><p>Two-part diagnosis + matched cure ("Ghost"):</p>
+<ol><li><strong>Diagnosis</strong> (theoretical): (i) under MLE/NLL training on a long-tailed interaction distribution, tail-item SID tokens receive expected gradient $\leq 0$ projected onto user preference (gradient starvation, Lemma 1); (ii) undifferentiated tokenization forces tail items through $z$ head-dominated branching points, geometrically suppressing tail probability by $(\gamma_{min})^{-z}$ (Lemma 2).</li><li><strong>Cure</strong>: SKT (tail items inherit head-item SID prefixes, deferring competition to one predictable step) + AUO (unlikelihood penalty on a per-tail-item collection of textually-similar / SID-divergent head items), combined as $\mathcal{L} = \mathcal{L}_{NLL} + \alpha\mathcal{L}_{AUO}$.</li></ol></div>
+<div class="card"><div class="section-label"><span class="en-only">Key Results</span><span class="ko-only">주요 결과</span></div><ul><li>Popularity-bias magnitude in SOTA GRs: head/tail HR@10 gap up to 45x (LC-Rec: 0.1800 vs 0.0040); head items fill &gt;97% of top-10 lists (LC-Rec: 24,212 head vs 560 tail items retrieved); bias persists as backbone scales 0.6B→8B.</li><li>Ghost improves tail HR/NDCG over standard GRs by +63.9%/+70.7% avg across three Amazon datasets (Instruments, Arts, Games); over existing debiasing baselines by +28.4%/+15.0% avg.</li><li>Fairness: MGU reduced 55.8% avg vs standard GRs, and a further 16.7% avg vs the strongest debiasing baseline IFairLRS-RR.</li><li>Cost: overall HR/NDCG drops only 7.5%/6.3% vs the strongest utility baseline (LC-Rec); composite CNS score gains 16.8% avg (max 22.1%).</li><li>Ablation: without SKT, tail HR@10 falls 0.0173→0.0095 and MGU@10 rises 0.096→0.306 — tokenization structure is the dominant factor; AUO alone is insufficient.</li></ul></div>
+<details><summary><span class="en-only">5Cs Analysis</span><span class="ko-only">5Cs 분석</span></summary><div class="card" style="margin-top:0.5rem"><p><strong>Category</strong>: new method (with a theoretical diagnosis component) <strong>Context</strong>: builds on SID-based GRs (TIGER/Rajput 2023, LC-Rec, LETTER, ED2), unlikelihood training (Welleck 2020), gradient starvation (Pezeshki 2021); extends the popularity-bias literature (IFairLRS 2024) to the generative paradigm. <strong>Correctness</strong>: lemmas are gradient-analysis derivations under stated prerequisites (long-tail distribution, inner-product softmax head, undifferentiated token space) — plausible but the "≈" steps are heuristic; no error bars / significance tests on Table I. [SKIM - verify derivation rigor in Appendix F on deep read] <strong>Contributions</strong>: (1) mechanism-level diagnosis of popularity bias specific to generative recommendation (gradient starvation + tokenization bias amplification); (2) Ghost = SKT + AUO; (3) evidence that scaling (0.6B→8B) does not remove the bias. <strong>Clarity</strong>: method reproducible from description (equations, hyperparameters $K_a{=}200$, $K_b{=}5$, $\alpha{=}0.1$, Qwen2.5-3B backbone given); code link is a placeholder "Ghost Project" — availability unverified.</p></div></details>
+<details><summary><span class="en-only">Contribution vs Claim</span><span class="ko-only">기여 대 주장</span></summary><div class="card" style="margin-top:0.5rem"><ul><li><strong>Stated claims</strong>: identifies "the fundamental reason" GRs suffer popularity bias; Ghost "approaches Pareto optimality."</li><li><strong>Demonstrated</strong>: gradient-analysis lemmas + consistent offline improvements on three Amazon-review datasets with one backbone family (Qwen).</li><li><strong>Gap</strong>: analysis and cure are restricted to the SFT/MLE regime — the paper itself flags that RL-trained GRs are unanalyzed; no online A/B test; "Pareto optimality" is proximity on a self-defined min-max-normalized composite (CNS), not a proven frontier. [SKIM - flag, consistent with paper's own Appendix G limitations]</li></ul></div></details>
+</section>
+<section id="results" class="section-anchor">
+<details><summary><span class="en-only">Concepts Introduced</span><span class="ko-only">도입된 개념</span></summary><div class="card" style="margin-top:0.5rem"><p><strong>Generative Recommender (GR) with Semantic IDs (SIDs)</strong></p>
+<ul><li><strong>What it computes</strong>: item text features → vector quantization (RQ-VAE / RQ-KMeans) → a discrete token sequence (SID) per item; an LLM backbone then autoregressively generates the next item's SID token-by-token from the user's interaction history.</li><li><strong>Why it was created</strong>: replaces discrete item-ID embedding tables of discriminative recommenders with a unified end-to-end sequence-generation formulation that leverages LLM capabilities.</li><li><strong>Concrete example</strong>: an item is encoded as a 4-token SID $(c^{(1)},c^{(2)},c^{(3)},c^{(4)})$, each token chosen from a 256-entry codebook per residual-quantization level.</li><li><strong>How it is used in this paper</strong>: the paradigm whose popularity bias is diagnosed; LETTER, LC-Rec, ED2 are the studied SID-based GRs.</li></ul>
+<p><strong>Gradient starvation of tail tokens (LEMMA 1)</strong></p>
+<ul><li><strong>What it computes</strong>: expected MLE gradient update for a token embedding, $\mathbb{E}_\mathcal{D}[\Delta e_c] \propto \mathbb{E}[\sum_i (\mathbb{I}\{c=c_v^{(i)}\} - P_\theta(c|h_u,c^{&lt;i}))X_{h_u}]$; for tokens that almost never appear as targets, the indicator term vanishes and the expected projection onto the user-preference vector is $\leq 0$.</li><li><strong>Why it was created</strong>: explains <em>why</em> GRs are popularity-biased at the token level — prior debiasing work extended item-level heuristics without an optimization-level diagnosis.</li><li><strong>Concrete example</strong>: a tail-specific SID token acts only as a softmax negative sample, so its embedding is consistently pushed away from $X_{h_u}$; empirically, LC-Rec's head/tail HR@10 gap reaches 45x (0.1800 vs 0.0040).</li><li><strong>How it is used in this paper</strong>: motivates the AUO loss that supplies corrective gradients.</li></ul>
+<p><strong>Bias amplification via undifferentiated tokenization (LEMMA 2)</strong></p>
+<ul><li><strong>What it computes</strong>: since standard tokenization ignores popularity, a tail item's SID shares prefixes with many head items and must survive $z$ competitive "branching points"; its generation probability is geometrically suppressed by $\leq (\gamma_{min})^{-z}$ relative to the true data distribution, with per-step amplification factor $\gamma_i &gt; 1$.</li><li><strong>Why it was created</strong>: shows how the token-level flaw compounds into item-level exposure distortion during autoregressive decoding.</li><li><strong>Concrete example</strong>: LC-Rec's top-10 lists contain 24,212 head vs 560 tail items (&gt;97% head) on the Instruments dataset.</li><li><strong>How it is used in this paper</strong>: motivates skeleton-founded tokenization (SKT), which fixes the branching point at a single predictable step.</li></ul>
+<p><strong>Skeleton-founded tokenization (SKT)</strong></p>
+<ul><li><strong>What it computes</strong>: head items get $L^h$-token SIDs via RQ-KMeans (the "skeleton"); each tail item inherits the full $L^h$-token prefix of its semantically closest head item, then appends $L^t$ residual-quantized tokens of its own — variable-length SIDs with the head-vs-tail competition deferred to the single step $L^h{+}1$ (where the head item emits EOS).</li><li><strong>Why it was created</strong>: eliminates the unpredictable multi-step head/tail token competition of undifferentiated tokenization (reduces suppression from $O(\gamma_{min}^z)$ to a single-step $O(\gamma_{EOS})$, LEMMA 3).</li><li><strong>Concrete example</strong>: with $L^h{=}4$, $L^t{=}2$, a tail violin item inherits the 4-token prefix of the closest head instrument and adds 2 distinguishing tokens.</li><li><strong>How it is used in this paper</strong>: one of Ghost's two components; ablation shows removing SKT collapses tail HR@10 from 0.0173 to 0.0095.</li></ul>
+<p><strong>Asymmetric unlikelihood optimization (AUO)</strong></p>
+<ul><li><strong>What it computes</strong>: for each tail target item, builds an "undesired collection" $\bar\Omega$ = head items with high textual similarity but low SID similarity (top-$K_a$=200 by cosine, then top-$K_b$=5 by shortest common prefix), and adds $\mathcal{L}_{AUO} = -\sum_{\Omega\in\bar\Omega}\sum_i \log(1 - P_\theta(c^{(i)}|h_u,c^{&lt;i}))$; total loss $\mathcal{L}_{NLL} + \alpha\,\mathcal{L}_{AUO}$ with $\alpha{=}0.1$.</li><li><strong>Why it was created</strong>: MLE never penalizes over-confident head tokens, so tail tokens stay gradient-starved; unlikelihood penalties on "hijacking" head tokens redistribute probability mass back to tail tokens (LEMMA 4 gradient-rescue analysis).</li><li><strong>Concrete example</strong>: for a tail violin, the undesired set is 5 popular instruments that are textually similar but SID-divergent.</li><li><strong>How it is used in this paper</strong>: the second Ghost component; applied only to tail-item training instances (hence "asymmetric").</li></ul></div></details>
+<details><summary><span class="en-only">Implementation Feasibility</span><span class="ko-only">구현 가능성</span></summary><div class="card" style="margin-top:0.5rem"><ul><li><strong>Needs</strong>: Amazon review datasets (public); Qwen2.5-3B+ backbone; RQ-KMeans tokenizer pipeline; 8x A100 80GB for training.</li><li><strong>Code</strong>: paper says "The Ghost project is available at Ghost Project" — a placeholder link; [not verified available].</li><li><strong>Modifications</strong>: head/tail split threshold (top-20%) and $K_a, K_b, \alpha$ would need retuning per catalog; SKT presumes item text embeddings exist.</li><li><strong>Unknowns</strong>: missing link: whether SKT's prefix inheritance harms head-item retrieval at industrial catalog scale; missing link: actual code release location.</li></ul></div></details>
+<details><summary><span class="en-only">Follow-up Papers</span><span class="ko-only">관련 후속 논문</span></summary><div class="card" style="margin-top:0.5rem"><ul><li>Lin et al., "How do recommendation models amplify popularity bias? An analysis from the spectral perspective" (WSDM 2025) — complementary mechanism analysis for the discriminative paradigm; useful contrast for SP2.</li><li>Jiang et al., "Item-side fairness of large language model-based recommendation system" (WWW 2024, IFairLRS) — the predecessor this paper shows to be marginally effective on GRs; the verified predecessor→successor gap edge.</li><li>Pezeshki et al., "Gradient starvation: A learning proclivity in neural networks" (NeurIPS 2021) — the general phenomenon this paper instantiates for SID tokens.</li><li>Gao et al., "SPRec: Self-play to debias LLM-based recommendation" (WWW 2025) — cited as the RL-regime direction the paper's analysis does not cover.</li></ul></div></details>
+</section>
+<section id="delta" class="section-anchor">
+<div class="card"><div class="section-label"><span class="en-only">Condition Delta — transfer to our setting</span><span class="ko-only">조건 차이 — 우리 설정으로의 전이</span></div><p><strong>Paper's setting</strong>: inputs = user interaction sequences + item text (3 Amazon categories, 10k–21k items, 99.9% sparsity); outputs = next-item SID generation from an LLM (Qwen 0.6B–8B); condition = offline sequential recommendation with head/tail split at top-20% popularity. <strong>Our setting</strong> (SP2 — exposure frequency as a distorted ranking proxy): analyzing how interaction/exposure frequency distorts what ranking systems surface, and whether the newest paradigms escape or inherit that distortion. <strong>Differences</strong>:</p>
+<ul><li>Paradigm: generative (SID-generation) vs. our general ranking-proxy framing — resolved: the paper shows the exposure distortion <em>transfers into and is amplified by</em> the generative paradigm, i.e., limitation-type evidence that changing the scoring machinery does not remove frequency bias.</li><li>Mechanism granularity: token-level gradient dynamics vs. item-level exposure statistics — resolved: paper explicitly bridges the two (Lemma 2 propagation from token to item exposure).</li><li>Feedback loop: paper treats a single training round; long-run exposure→data→exposure feedback (filter-bubble dynamics over time) is invoked in the title but not simulated — missing link.</li><li>Training regime: SFT/MLE only; RL-aligned GRs — reference only (paper's own stated future work).</li></ul></div>
+<div class="card"><div class="section-label"><span class="en-only">Root-cause vs. Symptom</span><span class="ko-only">근본 원인 대 증상</span></div><p><code>Direct</code> — the paper traces the observable exposure skew back to two identified structural causes (expected-gradient sign for rarely-targeted tokens under MLE, and popularity-agnostic token-space sharing) and designs one intervention per cause, rather than re-ranking or re-weighting the symptom; the ablation confirms the causal ordering (tokenization structure dominant, AUO corrective).</p></div>
+</section>
+<div class="page-nav"><a href="21_ExposureAwareRetrieval.html">&larr; [21] ExposureAwareRetrieval</a><a href="../sp2_2024-2026-frontier-llm-era.html">&uarr; SP2</a><a href="23_CRAB.html">[23] CRAB &rarr;</a></div>
+    </div>
+  </div>
+<nav class="bd-sidebar-secondary"><div class="mini-toc-label"><span class="en-only">On this page</span><span class="ko-only">이 페이지</span></div><ul class="mini-toc"><li><a href="#header"><span class="en-only">Paper info</span><span class="ko-only">논문 정보</span></a></li><li><a href="#problem"><span class="en-only">Problem</span><span class="ko-only">문제</span></a></li><li><a href="#solution"><span class="en-only">Solution &amp; Results</span><span class="ko-only">해결책 · 결과</span></a></li><li><a href="#results"><span class="en-only">Concepts &amp; Follow-ups</span><span class="ko-only">개념 · 후속</span></a></li><li><a href="#delta"><span class="en-only">Condition Delta</span><span class="ko-only">조건 차이</span></a></li></ul></nav>
+</div>
+</body>
+</html>

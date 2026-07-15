@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8"><title>25_sp8_synthesis</title><style>
+:root{--bg:#0d1117;--card:#161b22;--border:#30363d;--text:#e6edf3;
+      --muted:#8b949e;--accent:#58a6ff;--green:#3fb950;--amber:#d29922;
+      --teal:#39d0c7;--purple:#bc8cff;}
+body{background:var(--bg);color:var(--text);font-family:-apple-system,sans-serif;margin:0;padding:1rem;}
+.cell{border:1px solid var(--border);border-radius:8px;overflow:hidden;}
+.cell-header{background:var(--card);padding:.6rem 1rem;display:flex;align-items:center;gap:.75rem;border-bottom:1px solid var(--border);}
+.badge{font-size:.72rem;font-weight:700;padding:.2rem .55rem;border-radius:4px;}
+.b-synth{background:rgba(188,140,255,.15);color:var(--purple);}
+.cell-title{font-size:.9rem;font-weight:600;}
+.cell-ts{margin-left:auto;font-size:.72rem;color:var(--muted);}
+.cell-body{padding:1rem;display:flex;flex-direction:column;gap:.7rem;}
+.field{padding:.55rem .8rem;border-radius:6px;}
+.f-expected{background:rgba(88,166,255,.07);border-left:3px solid var(--accent);}
+.f-found{background:rgba(63,185,80,.07);border-left:3px solid var(--green);}
+.f-surprise{background:rgba(210,153,34,.07);border-left:3px solid var(--amber);}
+.f-revised{background:rgba(57,208,199,.07);border-left:3px solid var(--teal);}
+.f-neutral{background:rgba(139,148,158,.07);border-left:3px solid var(--muted);}
+.f-label{font-size:.71rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);margin-bottom:.28rem;}
+.f-content{font-size:.88rem;line-height:1.55;margin:0;}
+</style></head>
+<body>
+<div class="cell" id="cell-sp8-synthesis">
+  <div class="cell-header">
+    <span class="badge b-synth">Phase 3 ✓ Synthesis</span>
+    <span class="cell-title">SP8: Popularity debiasing and calibrated exposure versus relevance</span>
+    <span class="cell-ts">2026-07-16 KST</span>
+  </div>
+  <div class="cell-body">
+    <div class="field f-expected"><div class="f-label">Prior belief ◈</div><p class="f-content">
+      The controlled-objective axis beyond fairness proper, carrying seven accumulated lenses — most decisively the FINAL check on the degenerate-regime gap (uuid 23) and the dynamic-immutability lens from SP7.
+    </p></div>
+    <div class="field f-found"><div class="f-label">Dominant approach found</div><p class="f-content">
+      Debiasing splits by reference distribution — the new four-class taxonomy: historical-frequency (exposure-contaminated, circular), merit-proportional (imports score error), engagement-learned (myopic), uniform-floor (normatively arbitrary). No paper adjudicates between classes or constructs a contamination-free reference. Methods are either retraining (CausalEPP, CDN, LTR regularizers) or trusted-score re-ranking (Steck calibration line, LeapRec).
+    </p></div>
+    <div class="field f-surprise"><div class="f-label">Surprise / Confirmation</div><p class="f-content">
+      (a) uuid 23 FINAL check complete — the degenerate-regime gap is O4-FINAL: no paper in SP6/SP7/SP8 gives exposure-only correction guarantees over fixed noisy exogenous scores. (b) Dynamic immutability refined three ways: formal skeleton (θᵗ compounding — any logged uplift monotonically amplifies), the survey's first closed-loop intervention evaluation (600-round loop: memoryless per-round constraints fail cumulatively; cumulative-ledger normalization fixes empirically), and a constructive face (InvR kick-start: floors supply ~40% of minimum exposure before organic takeover — the coupling can be deliberately exploited). (c) Double-win divergence ADJUDICATED with five independent online/field legs: the accuracy-vs-exposure trade-off is largely an offline-evaluation artifact on exposure-biased logs — conditional, not universal. (d) LLM-era feedback loops: SP8 MISSED — spawn decision rests entirely on SP9.
+    </p></div>
+    <div class="field f-neutral"><div class="f-label">KB delta</div><p class="f-content">
+      1 claim added (reference-distribution taxonomy), 7 refined. Total 26. 7 RQs. Seeds → SP9: exposure-endogenous scorer modeling; LLM feedback-loop decisive check; deconvolution-based reference estimation; reach-vs-impression payoff denomination.
+    </p></div>
+    <div class="field f-revised"><div class="f-label">SP revisions ✎</div><p class="f-content">
+      SP9 revised with three decisive lenses: exposure-endogenous scorer modeling (uuid 25's last chance), the LLM feedback-loop trigger, and the reference-distribution normative axis with reach-vs-impression denomination.
+    </p></div>
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8"><title>14_sp2_verification</title><style>
+:root{--bg:#0d1117;--card:#161b22;--border:#30363d;--text:#e6edf3;
+      --muted:#8b949e;--accent:#58a6ff;--green:#3fb950;--amber:#d29922;
+      --teal:#39d0c7;--purple:#bc8cff;}
+body{background:var(--bg);color:var(--text);font-family:-apple-system,sans-serif;margin:0;padding:1rem;}
+.cell{border:1px solid var(--border);border-radius:8px;overflow:hidden;}
+.cell-header{background:var(--card);padding:.6rem 1rem;display:flex;align-items:center;gap:.75rem;border-bottom:1px solid var(--border);}
+.badge{font-size:.72rem;font-weight:700;padding:.2rem .55rem;border-radius:4px;}
+.b-verify{background:rgba(57,208,199,.15);color:var(--teal);}
+.cell-title{font-size:.9rem;font-weight:600;}
+.cell-ts{margin-left:auto;font-size:.72rem;color:var(--muted);}
+.cell-body{padding:1rem;display:flex;flex-direction:column;gap:.7rem;}
+.field{padding:.55rem .8rem;border-radius:6px;}
+.f-found{background:rgba(63,185,80,.07);border-left:3px solid var(--green);}
+.f-surprise{background:rgba(210,153,34,.07);border-left:3px solid var(--amber);}
+.f-revised{background:rgba(57,208,199,.07);border-left:3px solid var(--teal);}
+.f-neutral{background:rgba(139,148,158,.07);border-left:3px solid var(--muted);}
+.f-label{font-size:.71rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);margin-bottom:.28rem;}
+.f-content{font-size:.88rem;line-height:1.55;margin:0;}
+</style></head>
+<body>
+<div class="cell" id="cell-sp2-verification">
+  <div class="cell-header">
+    <span class="badge b-verify">Phase V — Verification</span>
+    <span class="cell-title">Iteration 2 — after SP2</span>
+    <span class="cell-ts">2026-07-15 KST</span>
+  </div>
+  <div class="cell-body">
+    <div class="field f-found"><div class="f-label">Coverage</div><p class="f-content">
+      0% of P1 objectives fully covered (0/3) · target: 100% · SPs run: 2/12.
+      O1: partial (backbone + realization machinery in place; capping/boosting and bandit families still absent — named in solved_when).
+      O2: partial (all 30 surveyed papers access-labeled with the frequency-vs-reordering axis; SP3–SP6 families pending).
+      O3: partial-marginal (strongest so far: RQ2.1–2.5, 2.7 name 2025–2026 papers with deltas incl. a 2026 production field experiment; pacing/feeds + ecosystem recency pending).
+      O4: open (8 candidate gaps banked, completed-search checks pending).
+    </p></div>
+    <div class="field f-neutral"><div class="f-label">Convergence</div><p class="f-content">No — continue to SP3 (highest-ranked incomplete).</p></div>
+    <div class="field f-surprise"><div class="f-label">New SPs discovered</div><p class="f-content">
+      Held as watch item: "LLM-era exposure feedback loops" (SP2 missing_sp seed). SP8's concept groups + SP9's longitudinal dynamics plausibly cover it; explicit re-evaluation trigger recorded — if SP8 and SP9 finish without surfacing LLM-era loop work, append SP10 (O3/O4). SP1's discretization seed still waits on SP7.
+    </p></div>
+    <div class="field f-revised"><div class="f-label">Objectives refined ✎</div><p class="f-content">
+      Unchanged after SP2. SP2's third load-bearing assumption (homogeneous exposure→utility conversion) sharpens the O4 gap inventory but does not change any objective statement or solved-when criterion.
+    </p></div>
+  </div>
+</div>
+</body>
+</html>

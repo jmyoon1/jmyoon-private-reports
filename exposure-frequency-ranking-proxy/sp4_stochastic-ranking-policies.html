@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SP4: Stochastic Ranking Policies and Randomized Exposure Allocation — Exposure-Frequency Control Survey</title>
+
+<style>
+:root {
+  --bg: #0d1117; --card: #161b22; --border: #30363d;
+  --text: #e6edf3; --muted: #7d8590; --accent: #58a6ff;
+  --teal: #39d0c7; --green: #3fb950; --yellow: #d29922;
+  --red: #f85149; --purple: #bc8cff; --orange: #e3b341;
+  --sidebar-w: 262px; --toc-w: 210px; --hdr-h: 48px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+body { font-family: -apple-system, sans-serif; background: var(--bg);
+       color: var(--text); line-height: 1.6; }
+.bd-root { display: flex; height: 100vh; overflow: hidden; }
+.bd-sidebar-primary {
+  width: var(--sidebar-w); min-width: var(--sidebar-w);
+  overflow-y: auto; background: var(--card);
+  border-right: 1px solid var(--border);
+  padding: 0.75rem 0; flex-shrink: 0;
+}
+.bd-sidebar-primary::-webkit-scrollbar { width: 4px; }
+.bd-sidebar-primary::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+.bd-main { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-width: 0; }
+.article-header-bar {
+  height: var(--hdr-h); background: var(--card);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; padding: 0 1.5rem;
+  gap: 1rem; flex-shrink: 0;
+}
+.header-brand { color: var(--teal); font-weight: bold; font-size: 0.95em;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 1; }
+.header-brand a { color: inherit; text-decoration: none; }
+.breadcrumb { color: var(--muted); font-size: 0.82em; display: flex;
+  align-items: center; gap: 0.3rem; flex-shrink: 0; }
+.breadcrumb a { color: var(--accent); text-decoration: none; }
+.breadcrumb span { color: var(--border); }
+.bd-article { flex: 1; overflow-y: auto; padding: 2rem 2.5rem; }
+.bd-article::-webkit-scrollbar { width: 6px; }
+.bd-article::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+.bd-sidebar-secondary {
+  width: var(--toc-w); min-width: var(--toc-w);
+  overflow-y: auto; border-left: 1px solid var(--border);
+  padding: 1rem 0.75rem; flex-shrink: 0;
+}
+.bd-sidebar-secondary::-webkit-scrollbar { width: 4px; }
+.bd-sidebar-secondary::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+.sidebar-logo { padding: 0.5rem 1rem 0.75rem;
+  border-bottom: 1px solid var(--border); margin-bottom: 0.5rem; }
+.sidebar-logo a { color: var(--teal); font-weight: bold; font-size: 0.95em;
+  text-decoration: none; display: block; }
+.sidebar-section { color: var(--muted); font-size: 0.72em; font-weight: bold;
+  text-transform: uppercase; letter-spacing: 0.07em;
+  padding: 0.7rem 1rem 0.25rem; }
+.sidebar-nav-link { display: block; padding: 0.28rem 1rem 0.28rem 1.25rem;
+  color: var(--muted); font-size: 0.875em; text-decoration: none; }
+.sidebar-nav-link:hover { color: var(--text); background: rgba(255,255,255,0.03); }
+.sidebar-nav-link.active { color: var(--teal);
+  border-left: 2px solid var(--teal);
+  padding-left: calc(1.25rem - 2px); background: rgba(57,208,199,0.05); }
+.mini-toc-label { color: var(--muted); font-size: 0.72em; font-weight: bold;
+  text-transform: uppercase; letter-spacing: 0.07em; padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border); margin-bottom: 0.5rem; }
+.mini-toc { list-style: none; }
+.mini-toc li a { display: block; padding: 0.22rem 0;
+  color: var(--muted); font-size: 0.83em; text-decoration: none;
+  border-left: 2px solid transparent; padding-left: 0.5rem; }
+.mini-toc li a:hover { color: var(--text); }
+.mini-toc li a.toc-active { color: var(--teal); border-left-color: var(--teal); }
+.section-anchor { scroll-margin-top: calc(var(--hdr-h) + 8px); }
+h1 { color: var(--teal); font-size: 1.7em; margin-bottom: 0.5rem; line-height:1.3; }
+h2 { color: var(--teal); font-size: 1.25em; margin: 1.5rem 0 0.6rem; }
+h3 { color: var(--teal); font-size: 1.05em; margin: 1.2rem 0 0.4rem; }
+h4 { color: var(--teal); font-size: 0.95em; margin: 1rem 0 0.3rem; }
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+p { margin-bottom: 0.8rem; }
+ul, ol { margin: 0 0 0.8rem 1.4rem; }
+li { margin-bottom: 0.3rem; }
+code { background: rgba(255,255,255,0.06); border-radius: 3px; padding: 1px 4px; font-size: 0.9em; }
+blockquote { border-left: 3px solid var(--border); color: var(--muted);
+  padding: 0.2rem 0.8rem; margin-bottom: 0.8rem; }
+.card { background: var(--card); border: 1px solid var(--border);
+        border-radius: 8px; padding: 1.2rem; margin-bottom: 1rem; }
+table { width: 100%; border-collapse: collapse; font-size: 0.9em; margin-bottom: 0.8rem; }
+th { background: var(--card); color: var(--teal); padding: 8px;
+     border: 1px solid var(--border); text-align: left; }
+td { padding: 8px; border: 1px solid var(--border); vertical-align: top; }
+tr:nth-child(even) td { background: rgba(0,0,0,0.2); }
+.stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+             gap: 1rem; margin-bottom: 1.5rem; }
+.stat-box { background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+            padding: 1rem; text-align: center; }
+.stat-num { font-size: 2rem; font-weight: bold; color: var(--teal); }
+.stat-label { color: var(--muted); font-size: 0.85em; margin-top: 0.2rem; }
+.sp-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+           gap: 1rem; margin: 1rem 0; }
+.sp-card { background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+           padding: 1.2rem; cursor: pointer; transition: border-color 0.15s; height:100%; }
+.sp-card:hover { border-color: var(--teal); }
+.sp-card h3 { margin: 0 0 0.5rem; color: var(--teal); font-size: 1em; }
+.sp-card p { margin: 0; color: var(--muted); font-size: 0.88em; }
+.sp-badge { display: inline-block; background: rgba(57,208,199,0.1); color: var(--teal);
+            border-radius: 4px; padding: 2px 8px; font-size: 0.8em; margin-bottom: 0.5rem; }
+.paper-meta { color: var(--muted); font-size: 0.9em; margin-bottom: 1.5rem; }
+.paper-meta a { color: var(--accent); }
+.section-label { color: var(--teal); font-weight: bold; font-size: 0.85em;
+                 text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.4rem; }
+.pill { display: inline-block; border-radius: 4px; padding: 0.15rem 0.6rem;
+        font-size: 0.8em; font-weight: bold; margin-right: 0.4rem; }
+.pill-p0 { background: rgba(63,185,80,0.2); color: var(--green); }
+.pill-p1 { background: rgba(57,208,199,0.15); color: var(--teal); }
+.pill-p2 { background: rgba(210,153,34,0.2); color: var(--yellow); }
+.pill-p3 { background: rgba(188,140,255,0.2); color: var(--purple); }
+.pill-p4 { background: rgba(125,133,144,0.2); color: var(--muted); }
+.delta-row { margin: 0.4rem 0; padding: 0.4rem 0.8rem;
+             border-left: 3px solid var(--border); border-radius: 0 4px 4px 0; }
+.chain { position: relative; padding-left: 2rem; }
+.chain::before { content: ''; position: absolute; left: 0.95rem; top: 0;
+                 bottom: 0; width: 2px; background: var(--border); }
+.chain-node { position: relative; margin-bottom: 2rem; }
+.chain-node::before { content: ''; position: absolute; left: -1.55rem;
+                      top: 1.1rem; width: 12px; height: 12px;
+                      border-radius: 50%; background: var(--teal); }
+.chain-num { display: inline-block; width: 28px; height: 28px; background: var(--teal);
+             color: #000; border-radius: 50%; text-align: center; line-height: 28px;
+             font-weight: bold; font-size: 0.85em; margin-right: 0.6rem; flex-shrink: 0; }
+.chain-q { font-weight: bold; color: var(--text); margin: 0.4rem 0 0.3rem; font-size: 1em; }
+.chain-papers { color: var(--muted); font-size: 0.85em; margin-bottom: 0.6rem; }
+.chain-start { background: var(--card); border: 1px solid var(--teal);
+               border-radius: 8px; padding: 1rem; margin-bottom: 2rem; }
+.chain-start h3 { margin: 0 0 0.5rem; color: var(--teal); }
+.chain-converge { background: var(--card); border: 1px solid var(--green);
+                  border-radius: 8px; padding: 1rem; margin-top: 1rem; }
+.chain-converge h3 { margin: 0 0 0.5rem; color: var(--green); }
+.chain-label { display: inline-block; border-radius: 4px; padding: 0.15rem 0.6rem;
+               font-size: 0.8em; font-weight: bold; margin-right: 0.4rem; }
+.chain-status { border-radius: 0 4px 4px 0; padding: 0.5rem 0.8rem;
+                margin: 0.35rem 0; font-size: 0.88em; }
+.chain-status ul { margin: 0.3rem 0 0 1.2rem; padding: 0; }
+.chain-status li { margin-bottom: 0.25rem; }
+.chain-status.solved  { background: rgba(63,185,80,0.07);  border-left: 3px solid var(--green); }
+.chain-status.remains { background: rgba(210,153,34,0.07); border-left: 3px solid var(--yellow); }
+.chain-status.added   { background: rgba(248,81,73,0.07);  border-left: 3px solid var(--red); }
+.chain-status.pivoted { background: rgba(188,140,255,0.1); border-left: 3px solid var(--purple); }
+.chain-label.solved   { background: rgba(63,185,80,0.2);  color: var(--green); }
+.chain-label.remains  { background: rgba(210,153,34,0.2); color: var(--yellow); }
+.chain-label.added    { background: rgba(248,81,73,0.2);  color: var(--red); }
+.chain-label.pivoted  { background: rgba(188,140,255,0.2); color: var(--purple); }
+.chain-status.expected { background: rgba(88,166,255,0.07);  border-left: 3px solid var(--accent); }
+.chain-label.expected  { background: rgba(88,166,255,0.2);   color: var(--accent); }
+.chain-status.revised  { background: rgba(57,208,199,0.07);  border-left: 3px solid var(--teal); }
+.chain-label.revised   { background: rgba(57,208,199,0.2);   color: var(--teal); }
+.concept-box { border-left: 4px solid var(--teal); background: #0d1f1f;
+               border-radius: 4px; padding: 1.2rem; margin-bottom: 1.2rem; }
+.concept-name { font-weight: bold; color: var(--teal); font-size: 1.05em; margin-bottom: 0.5rem; }
+.hypothesis { border-left: 4px solid var(--teal); background: #0d1f1f;
+              border-radius: 4px; padding: 1rem; margin: 1rem 0; }
+.recommendation { border-left: 4px solid var(--purple); background: #1a0f2e;
+                  border-radius: 4px; padding: 1rem; margin: 1rem 0; }
+.rq-row { background: rgba(88,166,255,0.05); border-left: 3px solid var(--accent);
+          padding: 0.4rem 0.8rem; margin-bottom: 0.5rem; border-radius: 0 4px 4px 0; }
+.scroll-table-wrap { max-height: 420px; overflow-y: auto; border: 1px solid var(--border);
+                     border-radius: 4px; }
+.scroll-table-wrap table { margin-bottom: 0; }
+.scroll-table-wrap thead th { position: sticky; top: 0; background: #161b22; z-index: 1; }
+.page-nav { display: flex; justify-content: space-between; margin-top: 2rem;
+            padding-top: 1rem; border-top: 1px solid var(--border); gap: 1rem; }
+.page-nav a { color: var(--accent); font-size: 0.9em; }
+html.ko-active .en-only { display: none !important; }
+html.ko-active .ko-only { display: block !important; }
+.ko-only { display: none; }
+span.ko-only, .sidebar-logo a span.ko-only { display: none; }
+html.ko-active span.ko-only { display: inline !important; }
+.lang-btn { background: transparent; color: var(--muted); border: 1px solid var(--border);
+            border-radius: 4px; padding: 3px 9px; font-size: 0.8em; cursor: pointer; }
+.lang-btn.active { border-color: var(--teal); color: var(--teal); }
+details { margin-bottom: 0.8rem; }
+details summary { color: var(--muted); cursor: pointer; }
+@media (max-width: 1024px) { .bd-sidebar-secondary { display: none; } }
+@media (max-width: 768px) {
+  .bd-sidebar-primary { display: none; }
+  .bd-root { flex-direction: column; height: auto; overflow: visible; }
+  .bd-main { overflow: visible; }
+  .bd-article { overflow: visible; padding: 1rem; }
+  .stat-grid { grid-template-columns: repeat(2, 1fr); }
+  .sp-grid { grid-template-columns: 1fr; }
+}
+</style>
+
+<script>
+MathJax = { tex: { inlineMath: [['$','$']], displayMath: [['$$','$$']] },
+            options: { skipHtmlTags: ['script','noscript','style','textarea','pre','code'] } };
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<script>
+function toggleLanguage() {
+  const html = document.documentElement;
+  const isKo = html.classList.toggle('ko-active');
+  document.querySelectorAll('.lang-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.lang === (isKo ? 'ko' : 'en'));
+  });
+  localStorage.setItem('survey-lang', isKo ? 'ko' : 'en');
+}
+document.addEventListener('DOMContentLoaded', function() {
+  const saved = localStorage.getItem('survey-lang');
+  if (saved === 'ko') {
+    document.documentElement.classList.add('ko-active');
+    document.querySelectorAll('.lang-btn').forEach(b =>
+      b.classList.toggle('active', b.dataset.lang === 'ko'));
+  } else {
+    document.querySelectorAll('[data-lang="en"]').forEach(b => b.classList.add('active'));
+  }
+  const article = document.querySelector('.bd-article');
+  const sections = Array.from(document.querySelectorAll('.section-anchor[id]'));
+  const sideLinks = Array.from(document.querySelectorAll('.bd-sidebar-primary .sidebar-nav-link'));
+  const tocLinks = Array.from(document.querySelectorAll('.bd-sidebar-secondary .mini-toc a'));
+  if (!article || !sections.length) return;
+  function current() {
+    let id = sections[0].id;
+    const scrollTop = article.scrollTop + 60;
+    sections.forEach(function(s) { if (s.offsetTop <= scrollTop) id = s.id; });
+    return id;
+  }
+  function update() {
+    const id = current();
+    sideLinks.forEach(function(a) {
+      a.classList.toggle('active', a.getAttribute('href') === '#' + id);
+    });
+    tocLinks.forEach(function(a) {
+      a.classList.toggle('toc-active', a.getAttribute('href') === '#' + id);
+    });
+  }
+  article.addEventListener('scroll', update, { passive: true });
+  update();
+});
+</script>
+
+</head>
+<body>
+<div class="bd-root">
+
+<nav class="bd-sidebar-primary">
+  <div class="sidebar-logo">
+    <a href="index.html">&#x2B21; <span class="en-only">Exposure-Frequency Control Survey</span><span class="ko-only">Exposure-빈도 제어 문헌 조사</span></a>
+  </div>
+  <div class="sidebar-section"><span class="en-only">Overview</span><span class="ko-only">개요</span></div>
+  <a href="index.html#overview" class="sidebar-nav-link"><span class="en-only">Survey Hub</span><span class="ko-only">조사 허브</span></a>
+  <a href="index.html#answers" class="sidebar-nav-link"><span class="en-only">Key Answers</span><span class="ko-only">핵심 답변</span></a>
+  <div class="sidebar-section"><span class="en-only">Sub-Problems</span><span class="ko-only">세부 문제</span></div>
+<a href="sp1_fairness-of-exposure-fixed-scores.html" class="sidebar-nav-link">SP1: <span class="en-only">Exposure fairness</span><span class="ko-only">Exposure 공정성</span></a>
+<a href="sp2_2024-2026-frontier-llm-era.html" class="sidebar-nav-link">SP2: <span class="en-only">2024–26 frontier / LLM</span><span class="ko-only">2024–26 최전선 / LLM</span></a>
+<a href="sp3_postproc-rerank-blackbox.html" class="sidebar-nav-link">SP3: <span class="en-only">Post-proc re-ranking</span><span class="ko-only">Post-proc re-ranking</span></a>
+<a href="sp4_stochastic-ranking-policies.html" class="sidebar-nav-link active">SP4: <span class="en-only">Stochastic policies</span><span class="ko-only">확률적 정책</span></a>
+<a href="sp5_amortized-equity-attention.html" class="sidebar-nav-link">SP5: <span class="en-only">Amortized fairness</span><span class="ko-only">Amortized 공정성</span></a>
+<a href="sp6_bandit-exposure-allocation.html" class="sidebar-nav-link">SP6: <span class="en-only">Bandit allocation</span><span class="ko-only">Bandit 배분</span></a>
+<a href="sp7_capping-pacing-feeds-ads.html" class="sidebar-nav-link">SP7: <span class="en-only">Capping &amp; pacing</span><span class="ko-only">Capping·pacing</span></a>
+<a href="sp8_popularity-debias-calibration.html" class="sidebar-nav-link">SP8: <span class="en-only">Debiasing &amp; calibration</span><span class="ko-only">Debiasing·calibration</span></a>
+<a href="sp9_ecosystems-creator-incentives.html" class="sidebar-nav-link">SP9: <span class="en-only">Ecosystems &amp; creators</span><span class="ko-only">생태계·creator</span></a>
+<a href="sp10_llm-exposure-feedback-loops.html" class="sidebar-nav-link">SP10: <span class="en-only">LLM feedback loops</span><span class="ko-only">LLM feedback loop</span></a>
+<a href="sp11_strategyproof-exposure.html" class="sidebar-nav-link">SP11: <span class="en-only">Strategy-proofness</span><span class="ko-only">Strategy-proofness</span></a>
+
+  <div class="sidebar-section"><span class="en-only">Synthesis</span><span class="ko-only">종합</span></div>
+  <a href="conclusion.html" class="sidebar-nav-link"><span class="en-only">Conclusion</span><span class="ko-only">결론</span></a>
+  <a href="thinking-process.html" class="sidebar-nav-link"><span class="en-only">Thinking Process</span><span class="ko-only">추론 과정</span></a>
+</nav>
+  <div class="bd-main">
+<div class="article-header-bar"><div class="header-brand"><a href="index.html"><span class="en-only">Exposure-Frequency Control Survey</span><span class="ko-only">Exposure-빈도 제어 문헌 조사</span></a></div><nav class="breadcrumb"><a href="index.html"><span class="en-only">Survey</span><span class="ko-only">조사</span></a><span>&rsaquo;</span><span>SP4: <span class="en-only">Stochastic policies</span><span class="ko-only">확률적 정책</span></span></nav><button class="lang-btn" data-lang="en" onclick="toggleLanguage()">EN</button><button class="lang-btn" data-lang="ko" onclick="toggleLanguage()">KO</button></div>
+    <div class="bd-article">
+<section id="intro" class="section-anchor">
+<div class="lang en-only"><h1>SP4: Stochastic Ranking Policies and Randomized Exposure Allocation</h1><p style="color:var(--muted)">15 papers · targets O1, O2 · 2018-2026</p><p>How a target exposure distribution becomes actual served impressions under an immutable black-box scorer — the realization axis of the survey (BvN decomposition, expohedron/Carathéodory, Plackett-Luce sampling, balanced-word delivery), and whether any paper bounds the gap between realized and target exposure.</p></div><div class="lang ko-only"><h1>SP4: 확률적 ranking 정책과 무작위 exposure 배분</h1><p style="color:var(--muted)">15편 논문 · O1, O2 목표 대상 · 2018-2026</p><p>목표 exposure 분포가 불변 black-box scorer 아래에서 실제 서빙 impression이 되는 과정 — 조사의 실현(realization) 축 — 을 다루며, 실현된 exposure와 목표 사이의 편차를 묶는 논문이 있는지 검사한다.</p></div>
+</section>
+<section id="rationale" class="section-anchor"><div class="card" style="border-color:var(--accent)">
+<div class="lang en-only"><h2 style="margin-top:0">Entry Assumption vs. What Was Found</h2><p><strong>Expected</strong> (revised after SP1: how are policy weights discretized into serving-frequency budgets?; revised after SP3: bound the realized-vs-target gap): The canonical mechanism for realizing a target exposure distribution over repeated impressions without changing scores — the user's exposure-frequency knob formalized — plus two injected questions: policy-weight discretization (SP1) and realized-vs-target concentration (SP3).</p><p><strong>Found:</strong> Three realization families with a strict cost/expressiveness ordering; under fixed scores PL sampling degenerates to a one-parameter temperature family (Pareto-dominated). Headline: decomposition and delivery never touch scores — scores enter exactly once, at target selection. Exactly one per-realization mechanism exists (balanced-word/stride delivery, deterministic m=N−1 discrepancy) but no exposure-unit theorem.</p><p><strong>Assessment:</strong> Surprised — (a) the realized-vs-target mechanism was assumed absent, but stride delivery exists buried as 'step 3' of a geometry paper (only the theorem is missing); (b) the pipeline is stronger than score-read-only: it is score-free given the target, relocating O2's entire feasibility question to target selection; (c) realization machinery froze in 2022 — 2024–2026 papers change targets, never mechanisms.</p></div><div class="lang ko-only"><h2 style="margin-top:0">사전 가정과 실제 발견</h2><p><strong>기대</strong> (SP1 이후 수정: 정책 가중치의 서빙 빈도 예산 이산화 질문 추가; SP3 이후 수정: 실현 대 목표 편차 한계 검사 추가): score를 바꾸지 않고 반복 impression에 걸쳐 목표 exposure 분포를 실현하는 정준 메커니즘 — 사용자의 빈도 knob을 정식화한 것 — 을 기대했고, 두 가지 주입된 질문(정책 가중치 이산화, 실현 대 목표 집중 한계)을 함께 검사하였다.</p><p><strong>발견</strong>: 엄격한 비용/표현력 순서를 갖는 세 실현 계열을 확인하였다. 고정 score 아래에서 PL 표집은 온도 1-파라미터 곡선족으로 퇴화한다(Pareto 열등). 핵심 발견: 분해와 전달은 score를 전혀 건드리지 않는다 — score는 목표 선택에서 정확히 한 번만 개입한다. per-realization 메커니즘은 balanced-word(stride) 전달 단 하나뿐이며(결정론적, 창당 m=N−1), exposure 단위의 정리는 없다.</p><p><strong>평가</strong>: 예상과 다름 — (a) 실현 대 목표 메커니즘이 없을 것으로 가정했으나 stride 전달이 기하 논문의 '3단계'로 숨어 있었다(정리만 부재). (b) 파이프라인은 read-only보다 강한 score-free(목표 조건부)로, O2의 실행 가능성 질문 전체가 목표 선택으로 이동한다. (c) 실현 기계는 2022년 이후 동결 — 2024–2026 논문은 목표만 바꾼다.</p></div>
+</div></section>
+<section id="establishes" class="section-anchor"><div class="card" style="border-color:var(--teal)">
+<div class="lang en-only"><h2 style="margin-top:0">What SP4 Establishes</h2><p>SP4's question splits into a machinery question (how is a target exposure vector turned into impressions?) and a guarantee question (how far can realized exposure drift from the target?). The literature answers the first completely and the second only partially.</p>
+<p><strong>Machinery.</strong> Three realization families exist, with a strict cost/expressiveness ordering. (1) The LP + Birkhoff-von Neumann pipeline <a href="papers/01_FoE.html">[01] FoE</a> attains any feasible target exactly in expectation, at O(n⁵) total cost with a support of up to (n−1)²+1 rankings; <a href="papers/05_IncompleteExposure.html">[05] IncompleteExposure</a> generalizes it to top-k display at O(k³n²). (2) The expohedron + Carathéodory pipeline <a href="papers/28_Expohedron.html">[28] Expohedron</a>, <a href="papers/10_ParetoRepeatedRankings.html">[10] ParetoRepeatedRankings</a> attains the same targets exactly at O(n² log n), with support ≤ n rankings, and recovers the entire utility-fairness Pareto front rather than one point. (3) Plackett-Luce/Gumbel sampling <a href="papers/40_PLRank.html">[40] PLRank</a> costs only O(n log n) per impression, but under immutable scores it spans only the one-parameter temperature family of exposure vectors — hitting an arbitrary target requires training the scores, which violates the survey's constraint — and its achievable trade-off curve is Pareto-dominated by decomposition-based realization except near nDCG = 1 <a href="papers/28_Expohedron.html">[28] Expohedron</a>.</p>
+<p><strong>The key structural finding</strong>: the entire decompose-and-deliver pipeline is <em>score-free given the target</em>. Scores are read exactly once, to orient the utility direction during target selection; the decomposition and delivery steps never touch them. The immutable-scores constraint therefore does not bind on the realization axis at all — it binds only on which targets are meaningful (merit-proportional targets need trusted scores; see SP3's score-trust dichotomy).</p>
+<p><strong>Per-realization guarantees.</strong> Exactly one mechanism controls realized-vs-target deviation: balanced-word (stride-scheduling) delivery of the decomposed support <a href="papers/28_Expohedron.html">[28] Expohedron</a>. It is deterministic — any ranking's frequency in equal-length serving windows deviates from its target proportion by at most m = N−1, where N is the support size — and is empirically ~10× tighter than i.i.d. sampling (normalized unfairness ~10⁻⁴ vs ~10⁻³ at T = 1000). This is precisely why support size matters: Carathéodory's ≤ n support permits m = n−1 balance where BvN's (n−1)²+1 support cannot. However, no paper states a concentration or deviation theorem <em>in position-weighted exposure units</em>, none handles heterogeneous (non-identical) query streams, and the general policy-weights → discrete-impression-budget mapping remains an explicitly flagged missing link <a href="papers/05_IncompleteExposure.html">[05] IncompleteExposure</a>. The SP3 seed (realized-vs-target concentration) is thus narrowed — a mechanism exists — but not closed: the theorem is absent.</p>
+<p><strong>Position-bias curve dependence</strong> is architecturally confined: the curve enters at target computation (the LP objective/constraints; the expohedron's very geometry is defined by γ) and at exposure accounting (crediting the amortized ledger), while all delivery machinery — BvN sampling, Carathéodory decomposition, Gumbel top-K, stride scheduling — is curve-free. The only paper addressing where the curve comes from is <a href="papers/43_UnbiasedLTR.html">[43] UnbiasedLTR</a> (low-impact swap intervention; conservative overestimation of small propensities is safe, underestimation is harmful).</p></div><div class="lang ko-only"><h2 style="margin-top:0">SP4이 확립한 것</h2><p>SP4는 실현 축을 완결한다. 세 계열의 엄격한 순서: LP+BvN(기대값 기준 정확, O(n⁵), support ≤(n−1)²+1), expohedron+Caratheodory(동일 목표를 O(n² log n)에, support ≤ n, Pareto front 전체), PL/Gumbel 표집(impression당 O(n log n)이지만 고정 score 하에서는 온도 곡선족만 도달 가능 — 분해 기반 실현에 Pareto 지배됨). 구조적 핵심: 분해-전달 파이프라인은 목표가 주어지면 score-free이므로 score 불변 제약은 실현 축에 전혀 구속되지 않는다. 실현 대 목표 편차를 다루는 유일한 메커니즘은 balanced-word 전달(결정론적, 창당 m=N−1, i.i.d. 표집보다 ~10배 조밀)이나 position 가중 단위의 집중 정리는 존재하지 않는다 — gap 7의 근거.</p></div>
+</div>
+<details><summary><span class="en-only">Dominant Approach</span><span class="ko-only">지배적 접근</span></summary><div class="card" style="margin-top:0.5rem"><p>The dominant approach is open-loop two-stage realization: (stage 1) solve a convex program for the target in marginal or exposure space — feasible because utility and exposure are both linear in the marginal rank-probability matrix (SP1, KB uuid 1) — then (stage 2) decompose the solution into a small distribution over concrete rankings and serve them across repeated impressions. It originates in <a href="papers/01_FoE.html">[01] FoE</a> (LP over doubly stochastic matrices + BvN decomposition + i.i.d. sampling) and was successively cheapened along the same architecture: <a href="papers/05_IncompleteExposure.html">[05] IncompleteExposure</a> generalizes BvN to top-k slates at O(k³n²) and shows the decomposition's <em>non-uniqueness</em> is itself a design degree of freedom (FELIX re-selects decompositions to avoid rankings whose exposure cannot be estimated, cutting their probability mass from 0.39 to 0.20 at literally identical NDCG and expected-exposure loss); <a href="papers/28_Expohedron.html">[28] Expohedron</a> moves the whole problem into n-dimensional exposure space (Carathéodory decomposition, support ≤ n, O(n² log n), whole Pareto front, balanced-word delivery); <a href="papers/10_ParetoRepeatedRankings.html">[10] ParetoRepeatedRankings</a> extends the geometry to group-fairness targets. The approach became dominant because it is <em>exact</em>: the served distribution attains the optimized target exactly in expectation, with utility optimality by construction — a property neither sampling heuristics nor score-proxy regularizers offer.</p>
+<p>Its limitations are equally clear. Guarantees are expectation-level; the delivery step was an afterthought until <a href="papers/28_Expohedron.html">[28] Expohedron</a>'s balanced words, and even there no exposure-unit deviation theorem is stated. The geometric machinery numerically caps at n ≤ 100 items per query (both <a href="papers/28_Expohedron.html">[28] Expohedron</a> and <a href="papers/10_ParetoRepeatedRankings.html">[10] ParetoRepeatedRankings</a> discard larger queries). And the expohedron's feasible set is constitutively defined by the position-bias curve — a wrong curve silently deforms what "achievable exposure" even means. The alternatives each trade away the exactness: PL sampling (<a href="papers/40_PLRank.html">[40] PLRank</a>, <a href="papers/14_FairPGRank.html">[14] FairPGRank</a>, <a href="papers/15_ExpectedExposure.html">[15] ExpectedExposure</a>) is cheap per impression but score-parameterized — under immutable scores it degenerates to a one-knob (temperature) family and is Pareto-dominated by decomposition; closed-loop controllers (<a href="papers/11_EquityOfAttention.html">[11] EquityOfAttention</a>'s ILP ledger; the Ctrl baseline in <a href="papers/28_Expohedron.html">[28] Expohedron</a>/<a href="papers/10_ParetoRepeatedRankings.html">[10] ParetoRepeatedRankings</a>) skip target decomposition entirely and greedily repay accumulated exposure deficit, with divergent evidence on whether that suffices (see Divergences); and the in-processing contrast class (<a href="papers/41_ScalableExposureControl.html">[41] ScalableExposureControl</a>, <a href="papers/42_TopKFairLTR.html">[42] TopKFairLTR</a>, <a href="papers/44_DELTR.html">[44] DELTR</a>) shapes exposure by retraining scores — infeasible under the survey's constraint, and notably yielding no guarantee on realized ranked exposure at all (exADMM's "provably fair" means provable ADMM convergence on a score-second-moment proxy, with the proxy-to-Gini gap formally unbounded).</p>
+<p>For the survey's objectives this settles the realization column of O1 and sharpens O2 substantially: given any feasible target exposure vector, realization is a solved, score-free, black-box-compatible problem for repeated queries up to ~100 candidates — and the binding open problems are exactly the three the entry rationale predicted: the finite-T deviation bound (partially solved by balanced words, theorem absent), the policy→impression-budget discretization for heterogeneous production traffic (open), and curve dependence (confined but unquantified under misspecification). A separate O3-relevant finding: the realization machinery itself has been frozen since 2022 — every 2024–2026 paper in this SP (<a href="papers/41_ScalableExposureControl.html">[41] ScalableExposureControl</a>, <a href="papers/10_ParetoRepeatedRankings.html">[10] ParetoRepeatedRankings</a>, <a href="papers/42_TopKFairLTR.html">[42] TopKFairLTR</a>, <a href="papers/06_HEA.html">[06] HEA</a>, <a href="papers/24_BeyondExposure.html">[24] BeyondExposure</a>) changes the <em>target</em> (income, hierarchical KL, top-k disparity) or the <em>scale</em>, never the realization mechanism.</p></div></details>
+<details><summary><span class="en-only">Convergences</span><span class="ko-only">수렴 지점</span></summary><div class="card" style="margin-top:0.5rem"><ul><li><strong>Realization is score-free given the target.</strong> <a href="papers/01_FoE.html">[01] FoE</a>, <a href="papers/05_IncompleteExposure.html">[05] IncompleteExposure</a>, <a href="papers/28_Expohedron.html">[28] Expohedron</a>, and <a href="papers/10_ParetoRepeatedRankings.html">[10] ParetoRepeatedRankings</a> all architect the same separation: scores are consumed once as the merit/utility direction in the convex program; decomposition and delivery operate on the target and the position-bias vector only. Mechanism: utility-linearity in the marginal matrix pushes all score dependence into the objective, leaving the feasible set and its decomposition purely combinatorial.</li><li><strong>BvN's cost and support size are the recognized bottleneck, independently attacked.</strong> <a href="papers/05_IncompleteExposure.html">[05] IncompleteExposure</a> (top-k generalization, O(k³n²)) and <a href="papers/28_Expohedron.html">[28] Expohedron</a> (exposure-space geometry, O(n² log n), support n) reach the same conclusion by different routes: realization cost drops by orders of magnitude (15–56× end-to-end in <a href="papers/28_Expohedron.html">[28] Expohedron</a> Table 1) with the achieved target unchanged.</li><li><strong>Randomization-policy dominance ordering.</strong> <a href="papers/15_ExpectedExposure.html">[15] ExpectedExposure</a> shows score-aware PL dominates score-free rank-transposition shuffling at every disparity level; <a href="papers/28_Expohedron.html">[28] Expohedron</a> shows decomposition-based realization Pareto-dominates PL except near nDCG = 1. Combined ordering: score-free shuffle &lt; PL sampling &lt; decomposition. <a href="papers/40_PLRank.html">[40] PLRank</a> improves PL's training cost, not its expressiveness, so the ordering stands through 2021+.</li><li><strong>Fair exposure is achievable only in expectation or amortized — never within a single ranking.</strong> Stated independently as a framework premise by <a href="papers/01_FoE.html">[01] FoE</a> (constraints hold in expectation), <a href="papers/45_FairInfoAccess.html">[45] FairInfoAccess</a> (§6.2, as the field's consensus), and <a href="papers/15_ExpectedExposure.html">[15] ExpectedExposure</a> (by metric construction). This is the formal reason the survey's exposure-frequency knob must be an over-time schedule.</li></ul></div></details>
+<details><summary><span class="en-only">Divergences</span><span class="ko-only">분기 지점</span></summary><div class="card" style="margin-top:0.5rem"><ul><li><strong>Does a closed-loop controller adequately realize exposure targets?</strong> <a href="papers/28_Expohedron.html">[28] Expohedron</a> finds the heuristic controller (Ctrl) near-Pareto-optimal and fastest for horizons under a few thousand impressions; <a href="papers/10_ParetoRepeatedRankings.html">[10] ParetoRepeatedRankings</a> finds Ctrl converging to a single point with catastrophic normalized unfairness 0.93 on MSLR at T = 1000. Likely cause: different fairness targets (individual merit-proportional vs group-exposure) and MSLR's steeper relevance distribution — under flat relevance a reactive controller can rotate within ties cheaply, under steep relevance it gets pinned (consistent with the utility-cost flatness law, KB uuid 5). Unadjudicated; flagged for SP5.</li><li><strong>What "provable exposure control" means.</strong> The decomposition line proves exact expectation-level target attainment with utility optimality (<a href="papers/01_FoE.html">[01] FoE</a>, <a href="papers/28_Expohedron.html">[28] Expohedron</a>); the scalable in-processing line proves only optimization convergence on a score-level proxy — <a href="papers/41_ScalableExposureControl.html">[41] ScalableExposureControl</a>'s "provably fair" title means ADMM convergence to KKT points of a score-second-moment objective, with no bound relating the proxy to Gini@K of actual rankings (the paper asserts monotonicity, does not bound the gap). The same word covers an exact-attainment guarantee and a no-realized-guarantee regime. Cause: different optimization substrates (marginal matrix vs embedding parameters), not different rigor.</li></ul></div></details>
+<details><summary><span class="en-only">Prior Beliefs and Surprises (full)</span><span class="ko-only">사전 믿음과 놀라움 (전문)</span></summary><div class="card" style="margin-top:0.5rem"><p><strong>What the entry rationale expected to find</strong> (revised after SP1 and SP3):</p>
+<blockquote>The canonical mechanism for realizing a target exposure distribution over repeated impressions without changing scores; plus two injected questions — how are policy weights discretized into serving-frequency budgets (SP1's IncompleteExposure flag), and can the realized-vs-target gap be bounded (SP3's seed, which taxation and BvN both leave unbounded)?</blockquote>
+<p><strong>Confirmed</strong>:</p>
+<ul><li>The realization mechanism exists and is mature: three families with a clean cost/support/expressiveness ordering, all consuming a fixed merit vector — the "exposure-frequency knob formalized" exactly as the rationale predicted.</li><li>The discretization question is genuinely open in general: <a href="papers/05_IncompleteExposure.html">[05] IncompleteExposure</a>'s missing link stands after reading all 15 papers.</li></ul>
+<p><strong>Surprised</strong>:</p>
+<ul><li>(a) Assumed: the realized-vs-target gap is left entirely unbounded. Found: <a href="papers/28_Expohedron.html">[28] Expohedron</a>'s balanced-word delivery is a deterministic per-realization mechanism with an implicit discrepancy guarantee (m = N−1 per window) and ~10× empirical improvement — the mechanism exists; only the exposure-unit <em>theorem</em> is missing. The assumption was wrong because the delivery step is buried as "step 3" of a geometry paper and never advertised as a concentration result.</li><li>(b) Assumed (from SP1's framing): the whole pipeline is score-read-only. Found: it is stronger — decomposition and delivery are score-<em>free</em>; scores enter only at target selection. The immutable-scores constraint does not bind on realization at all, which relocates the entire feasibility question of O2 to target selection (where SP3's score-trust dichotomy governs).</li><li>(c) Assumed: 2024–2026 would advance realization machinery. Found: the machinery froze in 2022 (expohedron); the recent papers change targets and scale only. The assumption was wrong because the field treats realization as solved and moved to target semantics (income, hierarchy, top-k).</li><li>(d) PL sampling, the family this SP is named after, turns out to be the <em>weakest</em> realization mechanism under the survey's constraint: score-parameterized, one-knob under immutability, Pareto-dominated.</li></ul>
+<p><strong>KB impact</strong>:</p>
+<ul><li>UUID 1: confirmed — realization-as-frequency-schedule now has the full machinery inventory behind it.</li><li>UUID 2: refined — dominance chain extended (shuffle &lt; PL &lt; decomposition); PL-based exposure control reclassified as effectively score-modifying when targets are arbitrary.</li><li>UUID 6: refined — stride scheduling/balanced words is the fairness literature's own pacing algorithm, strengthening the SP7 formal-equivalence hypothesis.</li><li>New claims: score-free realization; per-realization guarantee status; curve-dependence locus (see rqs_4.json kb_updates).</li></ul></div></details>
+</section>
+<section id="concepts" class="section-anchor"><h2><span class="en-only">Key Concepts</span><span class="ko-only">핵심 개념</span></h2><p>(Exposure, the doubly stochastic marginal rank-probability matrix, and the LP formulation were defined in SP1 Key Concepts; expected exposure / EE-D / EE-R in SP1 via <a href="papers/15_ExpectedExposure.html">[15] ExpectedExposure</a>. New in SP4:)</p>
+<p><strong>Generalized top-k Birkhoff-von Neumann decomposition</strong></p>
+<ul><li><strong>What it computes</strong>: an n×k marginal rank-probability matrix (columns sum to 1, row sums ≤ 1) → extend with one aggregate column and run iterated bipartite perfect matching (adjusted Hopcroft-Karp) → a convex combination of top-k permutation matrices, i.e. an executable stochastic top-k policy. Complexity O(k³n²) versus O(n⁴√n) for square BvN.</li><li><strong>Why it was created</strong>: the classical BvN theorem covers only square doubly stochastic matrices (full-length rankings); real systems serve top-k slates, and square BvN is infeasible for large n.</li><li><strong>Concrete example</strong>: for n = 200 candidates and k = 10 slots, decomposition cost drops from order 200^4.5 to order 10³ · 200².</li><li><strong>Role in this SP</strong>: <a href="papers/05_IncompleteExposure.html">[05] IncompleteExposure</a> Theorem 4.1/Algorithm 1; makes the convex-optimization realization pipeline applicable to the top-k serving that production systems actually do (O1, O2).</li></ul>
+<p><strong>Expohedron + Carathéodory (GLS) decomposition</strong></p>
+<ul><li><strong>What it computes</strong>: the expohedron is the convex hull of all n! permutations of the position-bias vector γ — exactly the set of expected item-exposure vectors achievable by any distribution over rankings. The GLS Carathéodory decomposition takes any interior point (target exposure vector) and expresses it as a convex combination of ≤ n vertices (rankings), using the majorization test x ≺ γ for membership, in O(n² log n).</li><li><strong>Why it was created</strong>: the Birkhoff polytope has n² dimensions but utility and exposure depend only on n exposure marginals; optimizing and decomposing in exposure space cuts cost from O(n⁵) to O(n² log n) and support from (n−1)²+1 to n.</li><li><strong>Concrete example</strong>: at n = 100 items, GLS decomposition takes ≈0.5–0.8 s versus ≈29–70 s for BvN <a href="papers/28_Expohedron.html">[28] Expohedron</a> Table 1.</li><li><strong>Role in this SP</strong>: the 2022-frontier realization machinery <a href="papers/28_Expohedron.html">[28] Expohedron</a>, extended to group fairness by <a href="papers/10_ParetoRepeatedRankings.html">[10] ParetoRepeatedRankings</a>; its small support is what enables tight balanced-word delivery (O1, O2).</li></ul>
+<p><strong>Balanced-word (stride-scheduling) delivery</strong></p>
+<ul><li><strong>What it computes</strong>: a distribution over N rankings → a deterministic serving sequence (argmin of accumulated inverse-density counters) in which any ranking's frequency within equal-length substrings deviates from its target proportion by at most m = N−1.</li><li><strong>Why it was created</strong>: i.i.d. sampling converges slowly to target proportions at finite horizons (10 fair coin flips land exactly 5/5 only ~25% of the time); a deterministic schedule removes sampling variance entirely.</li><li><strong>Concrete example</strong>: <a href="papers/28_Expohedron.html">[28] Expohedron</a> Fig. 6 — balanced-word delivery reaches normalized unfairness ~10⁻⁴ by T = 1000 while sampled delivery stalls near 10⁻³.</li><li><strong>Role in this SP</strong>: the only per-realization mechanism in the surveyed literature; the formal bridge from policy weights to an actual impression-frequency schedule for a repeated query (O2).</li></ul>
+<p><strong>Plackett-Luce policy with Gumbel top-K sampling</strong></p>
+<ul><li><strong>What it computes</strong>: per-item log-scores m(d) → sequential softmax without replacement defines a distribution over rankings; sampling is done by adding i.i.d. Gumbel noise to log-scores and sorting, an exact PL sample in O(n log n) with no renormalization.</li><li><strong>Why it was created</strong>: deterministic sort-by-score can never give two items equal probability of the top slot; PL is the standard differentiable stochastic-ranking family, and Gumbel top-K makes serving cheap.</li><li><strong>Concrete example</strong>: with scores m = (2, 2, 0), items 1 and 2 each get probability ≈0.47 of rank 1 — a deterministic sorter must pick one of them 100% of the time <a href="papers/40_PLRank.html">[40] PLRank</a>.</li><li><strong>Role in this SP</strong>: the third realization family; <a href="papers/40_PLRank.html">[40] PLRank</a> makes optimizing PL policies sample-efficient (PL-Rank-2 converges at N = 10–100 sampled rankings where REINFORCE needs 1000), but the exposure vector realized by a PL policy is a function of the scores — under immutable scores only the temperature can move it (O2 feasibility boundary).</li></ul>
+<p><strong>Swap-intervention propensity estimation</strong></p>
+<ul><li><strong>What it computes</strong>: randomly swap the result at landmark rank k with the result at rank r before serving; the CTR ratio of the swapped document at position r versus k estimates the position-bias ratio p_r/p_k (propensities are needed only up to a constant).</li><li><strong>Why it was created</strong>: uniform randomization of rankings degrades user experience; a single swap is a low-impact intervention sufficient to calibrate the position-bias curve that every exposure target and accounting step depends on.</li><li><strong>Concrete example</strong>: <a href="papers/43_UnbiasedLTR.html">[43] UnbiasedLTR</a>'s production deployment swapped the top document with a uniformly random rank j ∈ {1..21} for 7 days, estimating p_r decaying to ≈0.12 at rank 21.</li><li><strong>Role in this SP</strong>: the only surveyed answer to "where does the position-bias curve come from"; its misspecification analysis (conservative overestimation of small propensities is safe; underestimation is harmful; clipping is principled conservatism) is the risk-management result for every curve-dependent realization step (O2).</li></ul></section>
+<section id="rqs" class="section-anchor"><h2><span class="en-only">Research Questions Extracted</span><span class="ko-only">추출된 연구 질문</span></h2><div class="scroll-table-wrap"><table><thead><tr><th>ID</th><th>Question</th><th>Key Papers</th><th>Objective</th></tr></thead><tbody><tr><td>RQ4.1</td><td>What is the full inventory of realization machinery (LP+BvN, top-k BvN, expohedron/Carathéodory, PL/Gumbel sampling, balanced-word delivery, amortized ledger), with per-family cost, support size, and delivery mode?</td><td><a href="papers/01_FoE.html">[01] FoE</a>, <a href="papers/05_IncompleteExposure.html">[05] IncompleteExposure</a>, <a href="papers/28_Expohedron.html">[28] Expohedron</a>, <a href="papers/10_ParetoRepeatedRankings.html">[10] ParetoRepeatedRankings</a>, <a href="papers/40_PLRank.html">[40] PLRank</a>, <a href="papers/11_EquityOfAttention.html">[11] EquityOfAttention</a></td><td>O1</td></tr><tr><td>RQ4.2</td><td>Which steps of the realization pipeline require score access, and is the pipeline feasible under strictly immutable black-box scores? (Answer: decomposition and delivery are score-free; scores enter only at target selection.)</td><td><a href="papers/01_FoE.html">[01] FoE</a>, <a href="papers/05_IncompleteExposure.html">[05] IncompleteExposure</a>, <a href="papers/28_Expohedron.html">[28] Expohedron</a></td><td>O2</td></tr><tr><td>RQ4.3</td><td>What per-realization (finite-T) guarantees exist for served exposure, versus expectation-level guarantees? (Answer: balanced-word delivery's deterministic m = N−1 discrepancy, ~10× tighter empirically; everything else expectation-only.)</td><td><a href="papers/28_Expohedron.html">[28] Expohedron</a>, <a href="papers/01_FoE.html">[01] FoE</a>, <a href="papers/45_FairInfoAccess.html">[45] FairInfoAccess</a>, <a href="papers/11_EquityOfAttention.html">[11] EquityOfAttention</a></td><td>O2</td></tr><tr><td>RQ4.4</td><td>Where does the position-bias curve enter each realization method, which steps are curve-free, and how can the curve be estimated at low cost?</td><td><a href="papers/43_UnbiasedLTR.html">[43] UnbiasedLTR</a>, <a href="papers/28_Expohedron.html">[28] Expohedron</a>, <a href="papers/15_ExpectedExposure.html">[15] ExpectedExposure</a>, <a href="papers/01_FoE.html">[01] FoE</a></td><td>O2</td></tr><tr><td>RQ4.5</td><td>Can Plackett-Luce sampling realize arbitrary exposure targets under immutable scores? (Answer: no — PL is score-parameterized; only temperature remains, spanning a one-dimensional family, and PL is Pareto-dominated by decomposition.)</td><td><a href="papers/40_PLRank.html">[40] PLRank</a>, <a href="papers/15_ExpectedExposure.html">[15] ExpectedExposure</a>, <a href="papers/28_Expohedron.html">[28] Expohedron</a>, <a href="papers/14_FairPGRank.html">[14] FairPGRank</a></td><td>O2</td></tr><tr><td>RQ4.6</td><td>What does the in-processing contrast class show about the cost of forgoing realization guarantees — and what access-level labels do these methods take in the feasibility map? (Answer: model-retraining; scalability gained, realized-exposure guarantee lost.)</td><td><a href="papers/41_ScalableExposureControl.html">[41] ScalableExposureControl</a>, <a href="papers/42_TopKFairLTR.html">[42] TopKFairLTR</a>, <a href="papers/44_DELTR.html">[44] DELTR</a></td><td>O2</td></tr><tr><td>RQ4.7</td><td>What do the 2024–2026 papers add on the realization axis? (Answer: scale <a href="papers/41_ScalableExposureControl.html">[41] ScalableExposureControl</a>, group-Pareto geometry <a href="papers/10_ParetoRepeatedRankings.html">[10] ParetoRepeatedRankings</a>, new targets <a href="papers/42_TopKFairLTR.html">[42] TopKFairLTR</a>, <a href="papers/06_HEA.html">[06] HEA</a>, <a href="papers/24_BeyondExposure.html">[24] BeyondExposure</a> — but no new realization mechanism since the 2022 expohedron.)</td><td><a href="papers/41_ScalableExposureControl.html">[41] ScalableExposureControl</a>, <a href="papers/10_ParetoRepeatedRankings.html">[10] ParetoRepeatedRankings</a>, <a href="papers/42_TopKFairLTR.html">[42] TopKFairLTR</a>, <a href="papers/06_HEA.html">[06] HEA</a>, <a href="papers/24_BeyondExposure.html">[24] BeyondExposure</a></td><td>O3</td></tr></tbody></table></div></section>
+<section id="papers" class="section-anchor"><div class="card" style="margin-top:1.5rem">
+<h3 style="margin-top:0"><span class="en-only">Papers in SP4 (DIR table)</span><span class="ko-only">SP4 논문 목록 (DIR 표)</span></h3><div class="scroll-table-wrap"><table><thead><tr><th>Ref</th><th>Title</th><th>Track</th><th>Tier</th><th>Key Contribution</th><th>Fit</th><th>Gap</th></tr></thead><tbody><tr><td><a href="papers/01_FoE.html">[01] FoE</a></td><td>Fairness of Exposure in Rankings</td><td>A</td><td>P0</td><td>LP over marginal matrix + BvN realization (origin of the pipeline)</td><td>Exact expectation-level realization, score-read-only</td><td>Expectation-only; O(n⁵); per-realization deferred</td></tr><tr><td><a href="papers/05_IncompleteExposure.html">[05] IncompleteExposure</a></td><td>Incomplete Exposure Estimation (FELIX)</td><td>A</td><td>P0</td><td>Top-k BvN theorem O(k³n²); decomposition re-selection via non-uniqueness</td><td>Top-k serving; support engineering at fixed target</td><td>Policy→impression-budget mapping explicitly open</td></tr><tr><td><a href="papers/06_HEA.html">[06] HEA</a></td><td>Hierarchical Exposure Alignment</td><td>B</td><td>P4</td><td>Adapter + hierarchical KL exposing pseudo-fairness of aggregate targets</td><td>Frozen backbone (retraining-free adapter)</td><td>Additive score patch — modifies effective scores; curve sensitivity untested</td></tr><tr><td><a href="papers/10_ParetoRepeatedRankings.html">[10] ParetoRepeatedRankings</a></td><td>Pareto-optimal Utility-Fairness in Repeated Rankings</td><td>B</td><td>P3</td><td>Group-fairness Pareto front on the expohedron; Sphere-Expo approximation</td><td>Whole-front realization for group targets</td><td>n ≤ 100 numerics; Ctrl divergence evidence</td></tr><tr><td><a href="papers/11_EquityOfAttention.html">[11] EquityOfAttention</a></td><td>Equity of Attention</td><td>C</td><td>P0</td><td>Amortized ledger: ILP repaying realized attention deficit per query</td><td>Closed-loop realization on <em>realized</em> exposure</td><td>No formal bound; ILP scale; relevance trusted</td></tr><tr><td><a href="papers/14_FairPGRank.html">[14] FairPGRank</a></td><td>Policy Learning for Fairness in Ranking</td><td>C</td><td>P2</td><td>PL policy gradient with one-sided exposure-to-merit constraints</td><td>Shows post-processing on corrupted scores fails</td><td>In-processing (trains scores); expectation-level</td></tr><tr><td><a href="papers/15_ExpectedExposure.html">[15] ExpectedExposure</a></td><td>Expected Exposure (EE-D/EE-R)</td><td>C</td><td>P2</td><td>Canonical exposure formalism; PL dominates rank-transposition</td><td>Evaluation layer for any realization</td><td>γ-sensitivity unstudied; per-query only</td></tr><tr><td><a href="papers/24_BeyondExposure.html">[24] BeyondExposure</a></td><td>Non-linear Time-Income Fairness</td><td>B</td><td>P4</td><td>Income (not exposure) as target; exposure×conversion decomposition</td><td>Target-redefinition frontier (2026)</td><td>μ assumed known; realization machinery unchanged</td></tr><tr><td><a href="papers/28_Expohedron.html">[28] Expohedron</a></td><td>Expohedron (Carathéodory + balanced words)</td><td>C</td><td>P2</td><td>O(n² log n) decomposition, support ≤ n, deterministic delivery</td><td>THE per-realization mechanism; whole Pareto front</td><td>No exposure-unit theorem; n ≤ 100; PBM-only</td></tr><tr><td><a href="papers/40_PLRank.html">[40] PLRank</a></td><td>PL-Rank</td><td>A</td><td>P0</td><td>Structured PL gradient estimators (N=10–100 vs 1000 samples)</td><td>Efficient PL policy optimization</td><td>Realizing targets requires training scores — score-modifying under our constraint</td></tr><tr><td><a href="papers/41_ScalableExposureControl.html">[41] ScalableExposureControl</a></td><td>exADMM (WWW 2024)</td><td>B</td><td>P0</td><td>iALS-scale exposure control via ADMM; convergence proof</td><td>Scale contrast class (571K users)</td><td>Retraining; proxy-to-realized-Gini gap unbounded</td></tr><tr><td><a href="papers/42_TopKFairLTR.html">[42] TopKFairLTR</a></td><td>Top-K Fair LTR (TMLR 2025)</td><td>B</td><td>P4</td><td>Top-k-masked exposure disparity, differentiable threshold</td><td>Top-k target definition (transferable metric)</td><td>In-processing; needs group labels; skim-limited</td></tr><tr><td><a href="papers/43_UnbiasedLTR.html">[43] UnbiasedLTR</a></td><td>Unbiased LTR with Biased Feedback</td><td>C</td><td>P2</td><td>IPS + swap-intervention propensity estimation</td><td>The curve-estimation route; safe-error direction</td><td>Zero-propensity items (never-exposed) break support condition</td></tr><tr><td><a href="papers/44_DELTR.html">[44] DELTR</a></td><td>DELTR (disparate exposure LTR)</td><td>C</td><td>P2</td><td>Listwise in-processing exposure parity (top-one form)</td><td>Contrast class; asymmetric hinge design</td><td>Retraining; top-one exposure only; linear scorer</td></tr><tr><td><a href="papers/45_FairInfoAccess.html">[45] FairInfoAccess</a></td><td>Fairness in Information Access (FnTIR)</td><td>A</td><td>P1</td><td>Taxonomy; "expectation-or-amortized only" consensus; metric ontology</td><td>Definitional foundation for the realization axis</td><td>Coverage ends ~2021; no empirical exposure→utility quantification</td></tr></tbody></table></div>
+</div>
+<details><summary><span class="en-only">Design Implication Registry</span><span class="ko-only">설계 함의 레지스트리</span></summary><div class="card" style="margin-top:0.5rem"><div class="scroll-table-wrap"><table><thead><tr><th>Requirement</th><th>Evidence</th><th>Implication</th><th>Risk</th><th>Mitigation</th></tr></thead><tbody><tr><td>Realize a target exposure vector over repeated impressions without touching scores</td><td><a href="papers/01_FoE.html">[01] FoE</a>, <a href="papers/05_IncompleteExposure.html">[05] IncompleteExposure</a>, <a href="papers/28_Expohedron.html">[28] Expohedron</a></td><td>Use two-stage decompose-then-deliver; scores enter only at target selection, so black-box constraint is non-binding on realization</td><td>Target may be infeasible (outside the achievable polytope)</td><td>Test majorization membership x ≺ γ before commissioning the target <a href="papers/28_Expohedron.html">[28] Expohedron</a>; <a href="papers/01_FoE.html">[01] FoE</a> §5 gives the LP feasibility bound</td></tr><tr><td>Small-support distribution for tight frequency delivery</td><td><a href="papers/28_Expohedron.html">[28] Expohedron</a>, <a href="papers/10_ParetoRepeatedRankings.html">[10] ParetoRepeatedRankings</a></td><td>Prefer Carathéodory decomposition (≤ n rankings) over BvN ((n−1)²+1); balanced-word discrepancy scales with support size</td><td>Numerical failures beyond n ≈ 100 items</td><td>Truncate to top-k candidates and use the n×k BvN of <a href="papers/05_IncompleteExposure.html">[05] IncompleteExposure</a>; tolerance hacks documented in <a href="papers/28_Expohedron.html">[28] Expohedron</a> App. A</td></tr><tr><td>Realized (not just expected) exposure near target at finite T</td><td><a href="papers/28_Expohedron.html">[28] Expohedron</a>, <a href="papers/11_EquityOfAttention.html">[11] EquityOfAttention</a></td><td>Serve via deterministic balanced-word/stride scheduling, never i.i.d. sampling</td><td>No formal exposure-unit bound; heterogeneous query streams unstudied</td><td>Keep a realized-exposure ledger (<a href="papers/11_EquityOfAttention.html">[11] EquityOfAttention</a>'s cumulated A_i vs R_i) as a closed-loop monitor/fallback</td></tr><tr><td>Valid position-bias curve before fixing targets</td><td><a href="papers/43_UnbiasedLTR.html">[43] UnbiasedLTR</a>, <a href="papers/28_Expohedron.html">[28] Expohedron</a>, <a href="papers/15_ExpectedExposure.html">[15] ExpectedExposure</a></td><td>Estimate the curve with low-impact swap interventions; treat the expohedron geometry as curve-conditional</td><td>Curve misspecification silently deforms the feasible set and mis-credits the ledger</td><td>Conservatively overestimate small propensities (clipping), which <a href="papers/43_UnbiasedLTR.html">[43] UnbiasedLTR</a> proves is the safe direction of error</td></tr><tr><td>Exclude undeliverable/unmeasurable rankings from the support</td><td><a href="papers/05_IncompleteExposure.html">[05] IncompleteExposure</a></td><td>Exploit BvN non-uniqueness: re-decompose to avoid flagged rankings while keeping the marginal matrix (hence fairness and utility) exactly fixed</td><td>The "bad ranking" predicate is a proxy, never validated against real attention</td><td>Keep the predicate conservative; FELIX preserves the target regardless of predicate quality</td></tr><tr><td>Exposure control at catalog scale (10⁵–10⁶ users/items)</td><td><a href="papers/41_ScalableExposureControl.html">[41] ScalableExposureControl</a></td><td>Score-proxy in-processing regularizers scale where geometric methods cannot (exADMM: 1,533 s on 571K users where FairRec/Multi-FR are infeasible)</td><td>No guarantee on realized ranked exposure (proxy-to-Gini gap unbounded); requires retraining — outside the survey's constraint</td><td>Use only as contrast class / upper bound on scalability; measure realized Gini post hoc</td></tr></tbody></table></div></div></details>
+</section>
+<section id="open" class="section-anchor"><div class="card">
+<h3 style="margin-top:0"><span class="en-only">Open Questions After SP4</span><span class="ko-only">SP4 이후 미해결 질문</span></h3><ul><li><strong>Realized-exposure concentration theorem</strong>: no paper bounds the deviation between realized cumulative exposure and the target vector in position-weighted exposure units. Missing link in <a href="papers/01_FoE.html">[01] FoE</a> (expectation-only, per-realization explicitly deferred), <a href="papers/05_IncompleteExposure.html">[05] IncompleteExposure</a> ("how to certify realized exposure when only impression frequency is controlled"), and SP3's <a href="papers/32_TaxRank.html">[32] TaxRank</a> (sampling variance of realized exposure vs e*). Balanced words <a href="papers/28_Expohedron.html">[28] Expohedron</a> give a deterministic ranking-frequency discrepancy for a single repeated query, but the exposure-unit translation, i.i.d.-sampling concentration rates, and heterogeneous query streams are all unaddressed. What would resolve it: a Hoeffding/discrepancy-style theorem "after T impressions, realized exposure deviates from target by ≤ f(n, support size, γ, T)" for both sampled and stride-scheduled delivery.</li><li><strong>Policy weights → discrete impression budgets in production</strong>: explicit missing link in <a href="papers/05_IncompleteExposure.html">[05] IncompleteExposure</a>; <a href="papers/28_Expohedron.html">[28] Expohedron</a>'s stride scheduling solves only the single-query fixed-support case. No paper maps a distribution over rankings onto per-item impression caps/budgets across heterogeneous traffic with finite, unknown horizons. What would resolve it: a reduction from the decomposition-support schedule to per-item pacing budgets, or a direct budget-space formulation (SP7's native vocabulary).</li><li><strong>Curve-misspecification sensitivity of realization</strong>: the expohedron's feasible set and every exposure ledger are defined by γ, yet no paper propagates curve error to realized-fairness error. Missing links in <a href="papers/15_ExpectedExposure.html">[15] ExpectedExposure</a> (γ-sensitivity unstudied), <a href="papers/06_HEA.html">[06] HEA</a> (curve-choice sensitivity), <a href="papers/11_EquityOfAttention.html">[11] EquityOfAttention</a> (assumed generic click models vs real attention); <a href="papers/43_UnbiasedLTR.html">[43] UnbiasedLTR</a> gives the only directional result (conservative overestimation safe) but for IPS training, not realization. What would resolve it: a perturbation bound ‖γ − γ̂‖ → realized-unfairness error, or an empirical audit with eye-tracking-calibrated curves.</li><li><strong>Exact realization at catalog scale</strong>: <a href="papers/28_Expohedron.html">[28] Expohedron</a> and <a href="papers/10_ParetoRepeatedRankings.html">[10] ParetoRepeatedRankings</a> both cap at n ≤ 100 for numerical reasons; BvN is O(n⁵); the only method demonstrated at 10⁵+ users (<a href="papers/41_ScalableExposureControl.html">[41] ScalableExposureControl</a>) abandons realized-exposure guarantees and score immutability. No surveyed method provides exact realization guarantees at production candidate-set sizes.</li></ul>
+</div>
+<details><summary><span class="en-only">Cross-SP Dependencies</span><span class="ko-only">SP 간 의존성</span></summary><div class="card" style="margin-top:0.5rem"><ul><li><strong>Feeds into</strong>: SP5 (amortized fairness) — the Ctrl controller divergence (<a href="papers/28_Expohedron.html">[28] Expohedron</a> vs <a href="papers/10_ParetoRepeatedRankings.html">[10] ParetoRepeatedRankings</a>) needs adjudication by the amortization line (FARA, FairSync); and SP5 should check whether any amortized method provides a finite-T realized-exposure bound (the ledger of <a href="papers/11_EquityOfAttention.html">[11] EquityOfAttention</a> is per-realization by construction but bound-free).</li><li><strong>Feeds into</strong>: SP6 (bandits) — bandit regret bounds are statements about <em>realized</em> cumulative quantities; SP6 should check whether any exposure-allocation regret bound doubles as the missing realized-vs-target concentration bound.</li><li><strong>Feeds into</strong>: SP7 (capping/pacing) — stride scheduling/balanced words is functionally the smooth-delivery requirement of ad pacing (strengthens KB uuid 6); the open policy-weights→impression-budget mapping is SP7's native problem under "budget/delivery" vocabulary; note also that impression-count-based delivery is curve-free, sidestepping SP4's curve dependence at the cost of count-vs-position-weighted units (SP3 seed).</li><li><strong>Shared methods with</strong>: SP1 (LP+BvN, <a href="papers/01_FoE.html">[01] FoE</a>, <a href="papers/05_IncompleteExposure.html">[05] IncompleteExposure</a>), SP3 (the taxation line's e* vector is a target for exactly this SP's realization machinery), SP5 (<a href="papers/11_EquityOfAttention.html">[11] EquityOfAttention</a>).</li><li><strong>Depends on</strong>: SP1 — the convex-reduction mechanism (KB uuid 1) is the premise of the entire realization axis; SP3 — the realized-vs-target seed that this SP was revised to answer.</li></ul></div></details>
+</section>
+<div class="page-nav"><a href="sp3_postproc-rerank-blackbox.html">&larr; <span class="en-only">SP3</span><span class="ko-only">SP3</span></a><a href="index.html"><span class="en-only">&uarr; Survey Hub</span><span class="ko-only">&uarr; 조사 허브</span></a><a href="sp5_amortized-equity-attention.html"><span class="en-only">SP5</span><span class="ko-only">SP5</span> &rarr;</a></div>
+    </div>
+  </div>
+<nav class="bd-sidebar-secondary"><div class="mini-toc-label"><span class="en-only">On this page</span><span class="ko-only">이 페이지</span></div><ul class="mini-toc"><li><a href="#intro"><span class="en-only">Introduction</span><span class="ko-only">개요</span></a></li><li><a href="#rationale"><span class="en-only">Entry Assumption</span><span class="ko-only">사전 가정</span></a></li><li><a href="#establishes"><span class="en-only">What SP4 Establishes</span><span class="ko-only">확립한 것</span></a></li><li><a href="#concepts"><span class="en-only">Key Concepts</span><span class="ko-only">핵심 개념</span></a></li><li><a href="#rqs"><span class="en-only">Research Questions</span><span class="ko-only">연구 질문</span></a></li><li><a href="#papers"><span class="en-only">Papers</span><span class="ko-only">논문</span></a></li><li><a href="#open"><span class="en-only">Open Questions</span><span class="ko-only">미해결 질문</span></a></li></ul></nav>
+</div>
+</body>
+</html>

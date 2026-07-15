@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8"><title>13_sp2_synthesis</title><style>
+:root{--bg:#0d1117;--card:#161b22;--border:#30363d;--text:#e6edf3;
+      --muted:#8b949e;--accent:#58a6ff;--green:#3fb950;--amber:#d29922;
+      --teal:#39d0c7;--purple:#bc8cff;}
+body{background:var(--bg);color:var(--text);font-family:-apple-system,sans-serif;margin:0;padding:1rem;}
+.cell{border:1px solid var(--border);border-radius:8px;overflow:hidden;}
+.cell-header{background:var(--card);padding:.6rem 1rem;display:flex;align-items:center;gap:.75rem;border-bottom:1px solid var(--border);}
+.badge{font-size:.72rem;font-weight:700;padding:.2rem .55rem;border-radius:4px;}
+.b-synth{background:rgba(188,140,255,.15);color:var(--purple);}
+.cell-title{font-size:.9rem;font-weight:600;}
+.cell-ts{margin-left:auto;font-size:.72rem;color:var(--muted);}
+.cell-body{padding:1rem;display:flex;flex-direction:column;gap:.7rem;}
+.field{padding:.55rem .8rem;border-radius:6px;}
+.f-expected{background:rgba(88,166,255,.07);border-left:3px solid var(--accent);}
+.f-found{background:rgba(63,185,80,.07);border-left:3px solid var(--green);}
+.f-surprise{background:rgba(210,153,34,.07);border-left:3px solid var(--amber);}
+.f-revised{background:rgba(57,208,199,.07);border-left:3px solid var(--teal);}
+.f-neutral{background:rgba(139,148,158,.07);border-left:3px solid var(--muted);}
+.f-label{font-size:.71rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);margin-bottom:.28rem;}
+.f-content{font-size:.88rem;line-height:1.55;margin:0;}
+</style></head>
+<body>
+<div class="cell" id="cell-sp2-synthesis">
+  <div class="cell-header">
+    <span class="badge b-synth">Phase 3 ✓ Synthesis</span>
+    <span class="cell-title">SP2: 2024–2026 frontier — exposure control and LLM-era re-ranking</span>
+    <span class="cell-ts">2026-07-15 KST</span>
+  </div>
+  <div class="cell-body">
+    <div class="field f-expected"><div class="f-label">Prior belief ◈</div><p class="f-content">
+      Recency probe for O3; revised after SP1 to check whether frontier papers relax the two universal assumptions (known position-bias curve, trusted scores). Pre-loop search assessed WWW 2026's FUDLR as an "almost verbatim" match to the user constraint.
+    </p></div>
+    <div class="field f-found"><div class="f-label">Dominant approach found</div><p class="f-content">
+      The frontier empirically demolishes the trusted-scores assumption for LLM/generative scorers via three identified mechanisms (prompt-position bias; pre-training content priors; gradient starvation + tokenization amplification) — and scaling does not fix it. But the strongest repairs abandon black-box feasibility (FUDLR needs gradients, Ghost retrains the tokenizer, CRAB edits the codebook). The known-position-bias assumption is untouched, and LLM re-rankers stack a second, unmeasured internal position-bias curve (prompt slots) on top of the display one.
+    </p></div>
+    <div class="field f-surprise"><div class="f-label">Surprise / Confirmation</div><p class="f-content">
+      Corrected a pre-loop belief: FUDLR is NOT black-box feasible (needs gradients + training data). The true near-verbatim match to the user's setting is TEC (Timee 2026 production field experiment) — purely frequency-level, exposure-debited eligibility control over an unmodified scorer, the first production successor to FairRec's show/don't-show pattern (KB claim 3 refined). Also new: three independent 2026 papers converge that exposure is a lossy proxy for provider utility when exposure→utility conversion is heterogeneous — a THIRD load-bearing assumption identified. Inference-time exposure correction is non-monotone in correction strength (fully removing the exposure signal hurts; γ-tuning required).
+    </p></div>
+    <div class="field f-neutral"><div class="f-label">KB delta</div><p class="f-content">
+      5 claims added, 3 refined (uuids 2, 3, 4), 0 contradicted — total 11. 7 RQs (5 for O3). 4 follow-up seeds: Bayes-optimal exposure post-processing theory (→SP3), log-only post-hoc correction (→SP7/SP8; the user's exact setting, untested), LLM-era exposure feedback loops (missing_sp candidate), per-slot prompt-position-bias estimation.
+    </p></div>
+    <div class="field f-revised"><div class="f-label">SP revisions ✎</div><p class="f-content">
+      6 SPs revised: SP3 (Bayes-optimal post-processor lens), SP5 (exposure- vs utility-ledgers), SP6 (γ-tuning + log-only estimation as online learning), SP7 (TEC as the pacing≡dual-targeting bridge case), SP8 (organize by reference distribution), SP9 (test exposure=payoff against heterogeneous conversion).
+    </p></div>
+  </div>
+</div>
+</body>
+</html>

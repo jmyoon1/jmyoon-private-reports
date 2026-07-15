@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>[81] Modeling impression discounting in large-scale recommender s — Exposure-Frequency Control Survey</title>
+
+<style>
+:root {
+  --bg: #0d1117; --card: #161b22; --border: #30363d;
+  --text: #e6edf3; --muted: #7d8590; --accent: #58a6ff;
+  --teal: #39d0c7; --green: #3fb950; --yellow: #d29922;
+  --red: #f85149; --purple: #bc8cff; --orange: #e3b341;
+  --sidebar-w: 262px; --toc-w: 210px; --hdr-h: 48px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+body { font-family: -apple-system, sans-serif; background: var(--bg);
+       color: var(--text); line-height: 1.6; }
+.bd-root { display: flex; height: 100vh; overflow: hidden; }
+.bd-sidebar-primary {
+  width: var(--sidebar-w); min-width: var(--sidebar-w);
+  overflow-y: auto; background: var(--card);
+  border-right: 1px solid var(--border);
+  padding: 0.75rem 0; flex-shrink: 0;
+}
+.bd-sidebar-primary::-webkit-scrollbar { width: 4px; }
+.bd-sidebar-primary::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+.bd-main { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-width: 0; }
+.article-header-bar {
+  height: var(--hdr-h); background: var(--card);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; padding: 0 1.5rem;
+  gap: 1rem; flex-shrink: 0;
+}
+.header-brand { color: var(--teal); font-weight: bold; font-size: 0.95em;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 1; }
+.header-brand a { color: inherit; text-decoration: none; }
+.breadcrumb { color: var(--muted); font-size: 0.82em; display: flex;
+  align-items: center; gap: 0.3rem; flex-shrink: 0; }
+.breadcrumb a { color: var(--accent); text-decoration: none; }
+.breadcrumb span { color: var(--border); }
+.bd-article { flex: 1; overflow-y: auto; padding: 2rem 2.5rem; }
+.bd-article::-webkit-scrollbar { width: 6px; }
+.bd-article::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+.bd-sidebar-secondary {
+  width: var(--toc-w); min-width: var(--toc-w);
+  overflow-y: auto; border-left: 1px solid var(--border);
+  padding: 1rem 0.75rem; flex-shrink: 0;
+}
+.bd-sidebar-secondary::-webkit-scrollbar { width: 4px; }
+.bd-sidebar-secondary::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+.sidebar-logo { padding: 0.5rem 1rem 0.75rem;
+  border-bottom: 1px solid var(--border); margin-bottom: 0.5rem; }
+.sidebar-logo a { color: var(--teal); font-weight: bold; font-size: 0.95em;
+  text-decoration: none; display: block; }
+.sidebar-section { color: var(--muted); font-size: 0.72em; font-weight: bold;
+  text-transform: uppercase; letter-spacing: 0.07em;
+  padding: 0.7rem 1rem 0.25rem; }
+.sidebar-nav-link { display: block; padding: 0.28rem 1rem 0.28rem 1.25rem;
+  color: var(--muted); font-size: 0.875em; text-decoration: none; }
+.sidebar-nav-link:hover { color: var(--text); background: rgba(255,255,255,0.03); }
+.sidebar-nav-link.active { color: var(--teal);
+  border-left: 2px solid var(--teal);
+  padding-left: calc(1.25rem - 2px); background: rgba(57,208,199,0.05); }
+.mini-toc-label { color: var(--muted); font-size: 0.72em; font-weight: bold;
+  text-transform: uppercase; letter-spacing: 0.07em; padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border); margin-bottom: 0.5rem; }
+.mini-toc { list-style: none; }
+.mini-toc li a { display: block; padding: 0.22rem 0;
+  color: var(--muted); font-size: 0.83em; text-decoration: none;
+  border-left: 2px solid transparent; padding-left: 0.5rem; }
+.mini-toc li a:hover { color: var(--text); }
+.mini-toc li a.toc-active { color: var(--teal); border-left-color: var(--teal); }
+.section-anchor { scroll-margin-top: calc(var(--hdr-h) + 8px); }
+h1 { color: var(--teal); font-size: 1.7em; margin-bottom: 0.5rem; line-height:1.3; }
+h2 { color: var(--teal); font-size: 1.25em; margin: 1.5rem 0 0.6rem; }
+h3 { color: var(--teal); font-size: 1.05em; margin: 1.2rem 0 0.4rem; }
+h4 { color: var(--teal); font-size: 0.95em; margin: 1rem 0 0.3rem; }
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+p { margin-bottom: 0.8rem; }
+ul, ol { margin: 0 0 0.8rem 1.4rem; }
+li { margin-bottom: 0.3rem; }
+code { background: rgba(255,255,255,0.06); border-radius: 3px; padding: 1px 4px; font-size: 0.9em; }
+blockquote { border-left: 3px solid var(--border); color: var(--muted);
+  padding: 0.2rem 0.8rem; margin-bottom: 0.8rem; }
+.card { background: var(--card); border: 1px solid var(--border);
+        border-radius: 8px; padding: 1.2rem; margin-bottom: 1rem; }
+table { width: 100%; border-collapse: collapse; font-size: 0.9em; margin-bottom: 0.8rem; }
+th { background: var(--card); color: var(--teal); padding: 8px;
+     border: 1px solid var(--border); text-align: left; }
+td { padding: 8px; border: 1px solid var(--border); vertical-align: top; }
+tr:nth-child(even) td { background: rgba(0,0,0,0.2); }
+.stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+             gap: 1rem; margin-bottom: 1.5rem; }
+.stat-box { background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+            padding: 1rem; text-align: center; }
+.stat-num { font-size: 2rem; font-weight: bold; color: var(--teal); }
+.stat-label { color: var(--muted); font-size: 0.85em; margin-top: 0.2rem; }
+.sp-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+           gap: 1rem; margin: 1rem 0; }
+.sp-card { background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+           padding: 1.2rem; cursor: pointer; transition: border-color 0.15s; height:100%; }
+.sp-card:hover { border-color: var(--teal); }
+.sp-card h3 { margin: 0 0 0.5rem; color: var(--teal); font-size: 1em; }
+.sp-card p { margin: 0; color: var(--muted); font-size: 0.88em; }
+.sp-badge { display: inline-block; background: rgba(57,208,199,0.1); color: var(--teal);
+            border-radius: 4px; padding: 2px 8px; font-size: 0.8em; margin-bottom: 0.5rem; }
+.paper-meta { color: var(--muted); font-size: 0.9em; margin-bottom: 1.5rem; }
+.paper-meta a { color: var(--accent); }
+.section-label { color: var(--teal); font-weight: bold; font-size: 0.85em;
+                 text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.4rem; }
+.pill { display: inline-block; border-radius: 4px; padding: 0.15rem 0.6rem;
+        font-size: 0.8em; font-weight: bold; margin-right: 0.4rem; }
+.pill-p0 { background: rgba(63,185,80,0.2); color: var(--green); }
+.pill-p1 { background: rgba(57,208,199,0.15); color: var(--teal); }
+.pill-p2 { background: rgba(210,153,34,0.2); color: var(--yellow); }
+.pill-p3 { background: rgba(188,140,255,0.2); color: var(--purple); }
+.pill-p4 { background: rgba(125,133,144,0.2); color: var(--muted); }
+.delta-row { margin: 0.4rem 0; padding: 0.4rem 0.8rem;
+             border-left: 3px solid var(--border); border-radius: 0 4px 4px 0; }
+.chain { position: relative; padding-left: 2rem; }
+.chain::before { content: ''; position: absolute; left: 0.95rem; top: 0;
+                 bottom: 0; width: 2px; background: var(--border); }
+.chain-node { position: relative; margin-bottom: 2rem; }
+.chain-node::before { content: ''; position: absolute; left: -1.55rem;
+                      top: 1.1rem; width: 12px; height: 12px;
+                      border-radius: 50%; background: var(--teal); }
+.chain-num { display: inline-block; width: 28px; height: 28px; background: var(--teal);
+             color: #000; border-radius: 50%; text-align: center; line-height: 28px;
+             font-weight: bold; font-size: 0.85em; margin-right: 0.6rem; flex-shrink: 0; }
+.chain-q { font-weight: bold; color: var(--text); margin: 0.4rem 0 0.3rem; font-size: 1em; }
+.chain-papers { color: var(--muted); font-size: 0.85em; margin-bottom: 0.6rem; }
+.chain-start { background: var(--card); border: 1px solid var(--teal);
+               border-radius: 8px; padding: 1rem; margin-bottom: 2rem; }
+.chain-start h3 { margin: 0 0 0.5rem; color: var(--teal); }
+.chain-converge { background: var(--card); border: 1px solid var(--green);
+                  border-radius: 8px; padding: 1rem; margin-top: 1rem; }
+.chain-converge h3 { margin: 0 0 0.5rem; color: var(--green); }
+.chain-label { display: inline-block; border-radius: 4px; padding: 0.15rem 0.6rem;
+               font-size: 0.8em; font-weight: bold; margin-right: 0.4rem; }
+.chain-status { border-radius: 0 4px 4px 0; padding: 0.5rem 0.8rem;
+                margin: 0.35rem 0; font-size: 0.88em; }
+.chain-status ul { margin: 0.3rem 0 0 1.2rem; padding: 0; }
+.chain-status li { margin-bottom: 0.25rem; }
+.chain-status.solved  { background: rgba(63,185,80,0.07);  border-left: 3px solid var(--green); }
+.chain-status.remains { background: rgba(210,153,34,0.07); border-left: 3px solid var(--yellow); }
+.chain-status.added   { background: rgba(248,81,73,0.07);  border-left: 3px solid var(--red); }
+.chain-status.pivoted { background: rgba(188,140,255,0.1); border-left: 3px solid var(--purple); }
+.chain-label.solved   { background: rgba(63,185,80,0.2);  color: var(--green); }
+.chain-label.remains  { background: rgba(210,153,34,0.2); color: var(--yellow); }
+.chain-label.added    { background: rgba(248,81,73,0.2);  color: var(--red); }
+.chain-label.pivoted  { background: rgba(188,140,255,0.2); color: var(--purple); }
+.chain-status.expected { background: rgba(88,166,255,0.07);  border-left: 3px solid var(--accent); }
+.chain-label.expected  { background: rgba(88,166,255,0.2);   color: var(--accent); }
+.chain-status.revised  { background: rgba(57,208,199,0.07);  border-left: 3px solid var(--teal); }
+.chain-label.revised   { background: rgba(57,208,199,0.2);   color: var(--teal); }
+.concept-box { border-left: 4px solid var(--teal); background: #0d1f1f;
+               border-radius: 4px; padding: 1.2rem; margin-bottom: 1.2rem; }
+.concept-name { font-weight: bold; color: var(--teal); font-size: 1.05em; margin-bottom: 0.5rem; }
+.hypothesis { border-left: 4px solid var(--teal); background: #0d1f1f;
+              border-radius: 4px; padding: 1rem; margin: 1rem 0; }
+.recommendation { border-left: 4px solid var(--purple); background: #1a0f2e;
+                  border-radius: 4px; padding: 1rem; margin: 1rem 0; }
+.rq-row { background: rgba(88,166,255,0.05); border-left: 3px solid var(--accent);
+          padding: 0.4rem 0.8rem; margin-bottom: 0.5rem; border-radius: 0 4px 4px 0; }
+.scroll-table-wrap { max-height: 420px; overflow-y: auto; border: 1px solid var(--border);
+                     border-radius: 4px; }
+.scroll-table-wrap table { margin-bottom: 0; }
+.scroll-table-wrap thead th { position: sticky; top: 0; background: #161b22; z-index: 1; }
+.page-nav { display: flex; justify-content: space-between; margin-top: 2rem;
+            padding-top: 1rem; border-top: 1px solid var(--border); gap: 1rem; }
+.page-nav a { color: var(--accent); font-size: 0.9em; }
+html.ko-active .en-only { display: none !important; }
+html.ko-active .ko-only { display: block !important; }
+.ko-only { display: none; }
+span.ko-only, .sidebar-logo a span.ko-only { display: none; }
+html.ko-active span.ko-only { display: inline !important; }
+.lang-btn { background: transparent; color: var(--muted); border: 1px solid var(--border);
+            border-radius: 4px; padding: 3px 9px; font-size: 0.8em; cursor: pointer; }
+.lang-btn.active { border-color: var(--teal); color: var(--teal); }
+details { margin-bottom: 0.8rem; }
+details summary { color: var(--muted); cursor: pointer; }
+@media (max-width: 1024px) { .bd-sidebar-secondary { display: none; } }
+@media (max-width: 768px) {
+  .bd-sidebar-primary { display: none; }
+  .bd-root { flex-direction: column; height: auto; overflow: visible; }
+  .bd-main { overflow: visible; }
+  .bd-article { overflow: visible; padding: 1rem; }
+  .stat-grid { grid-template-columns: repeat(2, 1fr); }
+  .sp-grid { grid-template-columns: 1fr; }
+}
+</style>
+
+<script>
+MathJax = { tex: { inlineMath: [['$','$']], displayMath: [['$$','$$']] },
+            options: { skipHtmlTags: ['script','noscript','style','textarea','pre','code'] } };
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<script>
+function toggleLanguage() {
+  const html = document.documentElement;
+  const isKo = html.classList.toggle('ko-active');
+  document.querySelectorAll('.lang-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.lang === (isKo ? 'ko' : 'en'));
+  });
+  localStorage.setItem('survey-lang', isKo ? 'ko' : 'en');
+}
+document.addEventListener('DOMContentLoaded', function() {
+  const saved = localStorage.getItem('survey-lang');
+  if (saved === 'ko') {
+    document.documentElement.classList.add('ko-active');
+    document.querySelectorAll('.lang-btn').forEach(b =>
+      b.classList.toggle('active', b.dataset.lang === 'ko'));
+  } else {
+    document.querySelectorAll('[data-lang="en"]').forEach(b => b.classList.add('active'));
+  }
+  const article = document.querySelector('.bd-article');
+  const sections = Array.from(document.querySelectorAll('.section-anchor[id]'));
+  const sideLinks = Array.from(document.querySelectorAll('.bd-sidebar-primary .sidebar-nav-link'));
+  const tocLinks = Array.from(document.querySelectorAll('.bd-sidebar-secondary .mini-toc a'));
+  if (!article || !sections.length) return;
+  function current() {
+    let id = sections[0].id;
+    const scrollTop = article.scrollTop + 60;
+    sections.forEach(function(s) { if (s.offsetTop <= scrollTop) id = s.id; });
+    return id;
+  }
+  function update() {
+    const id = current();
+    sideLinks.forEach(function(a) {
+      a.classList.toggle('active', a.getAttribute('href') === '#' + id);
+    });
+    tocLinks.forEach(function(a) {
+      a.classList.toggle('toc-active', a.getAttribute('href') === '#' + id);
+    });
+  }
+  article.addEventListener('scroll', update, { passive: true });
+  update();
+});
+</script>
+
+</head>
+<body>
+<div class="bd-root">
+
+<nav class="bd-sidebar-primary">
+  <div class="sidebar-logo">
+    <a href="../index.html">&#x2B21; <span class="en-only">Exposure-Frequency Control Survey</span><span class="ko-only">Exposure-빈도 제어 문헌 조사</span></a>
+  </div>
+  <div class="sidebar-section"><span class="en-only">Overview</span><span class="ko-only">개요</span></div>
+  <a href="../index.html#overview" class="sidebar-nav-link"><span class="en-only">Survey Hub</span><span class="ko-only">조사 허브</span></a>
+  <a href="../index.html#answers" class="sidebar-nav-link"><span class="en-only">Key Answers</span><span class="ko-only">핵심 답변</span></a>
+  <div class="sidebar-section"><span class="en-only">Sub-Problems</span><span class="ko-only">세부 문제</span></div>
+<a href="../sp1_fairness-of-exposure-fixed-scores.html" class="sidebar-nav-link">SP1: <span class="en-only">Exposure fairness</span><span class="ko-only">Exposure 공정성</span></a>
+<a href="../sp2_2024-2026-frontier-llm-era.html" class="sidebar-nav-link">SP2: <span class="en-only">2024–26 frontier / LLM</span><span class="ko-only">2024–26 최전선 / LLM</span></a>
+<a href="../sp3_postproc-rerank-blackbox.html" class="sidebar-nav-link">SP3: <span class="en-only">Post-proc re-ranking</span><span class="ko-only">Post-proc re-ranking</span></a>
+<a href="../sp4_stochastic-ranking-policies.html" class="sidebar-nav-link">SP4: <span class="en-only">Stochastic policies</span><span class="ko-only">확률적 정책</span></a>
+<a href="../sp5_amortized-equity-attention.html" class="sidebar-nav-link">SP5: <span class="en-only">Amortized fairness</span><span class="ko-only">Amortized 공정성</span></a>
+<a href="../sp6_bandit-exposure-allocation.html" class="sidebar-nav-link">SP6: <span class="en-only">Bandit allocation</span><span class="ko-only">Bandit 배분</span></a>
+<a href="../sp7_capping-pacing-feeds-ads.html" class="sidebar-nav-link active">SP7: <span class="en-only">Capping &amp; pacing</span><span class="ko-only">Capping·pacing</span></a>
+<a href="../sp8_popularity-debias-calibration.html" class="sidebar-nav-link">SP8: <span class="en-only">Debiasing &amp; calibration</span><span class="ko-only">Debiasing·calibration</span></a>
+<a href="../sp9_ecosystems-creator-incentives.html" class="sidebar-nav-link">SP9: <span class="en-only">Ecosystems &amp; creators</span><span class="ko-only">생태계·creator</span></a>
+<a href="../sp10_llm-exposure-feedback-loops.html" class="sidebar-nav-link">SP10: <span class="en-only">LLM feedback loops</span><span class="ko-only">LLM feedback loop</span></a>
+<a href="../sp11_strategyproof-exposure.html" class="sidebar-nav-link">SP11: <span class="en-only">Strategy-proofness</span><span class="ko-only">Strategy-proofness</span></a>
+
+  <div class="sidebar-section"><span class="en-only">Synthesis</span><span class="ko-only">종합</span></div>
+  <a href="../conclusion.html" class="sidebar-nav-link"><span class="en-only">Conclusion</span><span class="ko-only">결론</span></a>
+  <a href="../thinking-process.html" class="sidebar-nav-link"><span class="en-only">Thinking Process</span><span class="ko-only">추론 과정</span></a>
+</nav>
+  <div class="bd-main">
+<div class="article-header-bar"><div class="header-brand"><a href="../index.html"><span class="en-only">Exposure-Frequency Control Survey</span><span class="ko-only">Exposure-빈도 제어 문헌 조사</span></a></div><nav class="breadcrumb"><a href="../index.html"><span class="en-only">Survey</span><span class="ko-only">조사</span></a><span>&rsaquo;</span><a href="../sp7_capping-pacing-feeds-ads.html">SP7</a><span>&rsaquo;</span><span>[81] Modeling impression discounting in large</span></nav><button class="lang-btn" data-lang="en" onclick="toggleLanguage()">EN</button><button class="lang-btn" data-lang="ko" onclick="toggleLanguage()">KO</button></div>
+    <div class="bd-article">
+<section id="header" class="section-anchor"><div class="paper-meta">
+<h1 style="margin-bottom:0.3rem">Modeling impression discounting in large-scale recommender systems</h1>
+<p style="margin:0.3rem 0;color:var(--muted)">Lee et al. · KDD 2014 · 2014 · 36 citations</p>
+<p style="margin:0.3rem 0">· SP: <a href="../sp7_capping-pacing-feeds-ads.html">SP7</a></p>
+<p><span class="pill pill-p0">P0</span><span class="pill" style="background:rgba(255,255,255,0.05);color:var(--muted)">Track C</span></p>
+</div>
+<div class="card ko-only" style="border-color:var(--teal)"><div class="section-label">한 줄 요약</div><p style="margin:0">대규모 recommender에서 이미 본 item의 노출을 감쇠하는 impression discounting(LinkedIn, KDD 2014). production 빈도 개입의 고전.</p></div>
+</section>
+<section id="problem" class="section-anchor">
+<div class="card"><div class="section-label"><span class="en-only">Problem</span><span class="ko-only">해결하려는 문제</span></div><p>Recommender systems at LinkedIn (PYMK, Skill Endorsements) repeatedly re-show items the user has already seen and ignored. Prior work models explicit feedback (ratings, accepts) or estimates CTR for <em>new/first-exposure</em> items (Agarwal 2009; Richardson 2007); the link between an item's <em>impression history</em> and its future <em>conversion</em> (not click) probability was unmodeled — so high-scored but repeatedly ignored items dominate the list and depress overall conversion rate.</p></div>
+</section>
+<section id="solution" class="section-anchor">
+<div class="card"><div class="section-label"><span class="en-only">Solution / Contribution</span><span class="ko-only">해결책 / 기여</span></div><p>A plugin re-ranking layer, deliberately external to the (black-box) recommendation engine:</p>
+<ol><li>Formalize each impression as a tuple $\mathcal{T} = (user, item, conversion, [behaviors], t, R)$; group by (user, item) into impression sequences.</li><li>Verify Hypothesis 1 (no-action impression = negative feedback) empirically: conversion rate decreases monotonically with ImpCount on all three datasets (PYMK, Endorsement, Tencent SearchAds).</li><li>Per behavior, pick the decay function (linear/inverse/exponential/quadratic) with the lowest fit RMSE via GAM-guided correlation analysis; aggregate multiple behaviors linearly or multiplicatively, linearize to one linear regression.</li><li>Fit coefficients with anti-noise regression (outlier removal + density-weighted least squares, ridge fallback).</li><li>At serving time compute $d \in (0,1]$ and re-rank by $R \cdot d$.</li></ol>
+<p>[SKIM note — full text was available in the cached PDF, so method details above are verified against the paper body; this remains a skim-depth note for tracking purposes.]</p></div>
+<div class="card"><div class="section-label"><span class="en-only">Key Results</span><span class="ko-only">주요 결과</span></div><ul><li>Offline PYMK: P@10 improvement +13.7% with (LastSeen, ImpCount); +31.3% adding Position + UserFreq (vs. no-discounting ranking).</li><li>Online A/B on LinkedIn PYMK: invitation-rate P@10 improvement +11.97% to +13.26% (±0.2%) across three decay-function combinations; best = inverse decay on LastSeen × exponential decay on ImpCount.</li><li>Endorsement (short sequences): only +1.3% to +3.4% — discounting matters most where impression sequences are long.</li><li>Exponential decay best fits conversion-vs-behavior curves (RMSE 0.0012 on LastSeen vs. 0.0041 linear).</li><li>Anti-noise regression: support-weighted RMSE 0.0188 vs. 0.1121 for ordinary linear regression on PYMK.</li></ul></div>
+<details><summary><span class="en-only">5Cs Analysis</span><span class="ko-only">5Cs 분석</span></summary><div class="card" style="margin-top:0.5rem"><p><strong>Category</strong>: new method (system/engineering flavor — deployed industrial plugin) <strong>Context</strong>: builds on implicit-feedback CF (Hu/Koren/Volinsky 2008; Koren SVD++ 2008) and CTR estimation (Richardson 2007; Agarwal 2009); closest prior is Gupta et al. KDD 2012 (past ad exposure in display-ad targeting) — this is the feed-native recommendation sibling of ad frequency capping. <strong>Correctness</strong>: A/B improvements reported with ±0.2% intervals; conversion rates deliberately scaled per LinkedIn NDA so absolute numbers are unrecoverable; the causal reading (repeated impression ⇒ lower propensity) is only established as correlation — selection effects (bad items accumulate impressions) are not separated. [SKIM - verify in deep read] <strong>Contributions</strong>: (1) large-scale empirical characterization of conversion-rate decay vs. impression signals on 1.08B+ impressions; (2) the plugin discounting framework with four decay-function families; (3) anti-noise density-weighted regression for sparse-support curve fitting. <strong>Clarity</strong>: reproducible in structure (all equations given); exact fitted coefficients and the observation-window length are not disclosed.</p></div></details>
+<details><summary><span class="en-only">Contribution vs Claim</span><span class="ko-only">기여 대 주장</span></summary><div class="card" style="margin-top:0.5rem"><ul><li><strong>Stated claims</strong>: no-action impressions are negative feedback (Hypothesis 1); the plugin approach improves conversion; anti-noise regression beats ordinary regression on skewed-support data.</li><li><strong>Demonstrated</strong>: monotone conversion decay on 3 datasets; offline P@k and online A/B gains on PYMK; RMSE gains for the regression method.</li><li><strong>Gap</strong>: Hypothesis 1 is verified as aggregate correlation only — the paper does not disentangle exposure fatigue (causal) from item-quality selection (items surviving many impressions without conversion are simply worse matches), yet the discount is interpreted causally. Online A/B is reported only for PYMK, not Endorsement/SearchAds. [SKIM - verify in deep read]</li></ul></div></details>
+</section>
+<section id="results" class="section-anchor">
+<details><summary><span class="en-only">Concepts Introduced</span><span class="ko-only">도입된 개념</span></summary><div class="card" style="margin-top:0.5rem"><p><strong>Impression discounting factor $d$</strong></p>
+<ul><li><strong>What it computes</strong>: input = a candidate item's historical impression sequence for a given (user, item) pair (behaviors such as ImpCount, LastSeen, Position, UserFreq) → operation = evaluate a learned regression model $\tilde{y} = \sum_{i=0}^{m} u_i \tilde{X}_i$ predicting conversion rate, then normalize $d = \tilde{y} / \max \tilde{y} \in (0, 1]$ → output = a multiplier applied to the base recommendation score: $\mathcal{T}^*.R = \mathcal{T}.R \cdot d$.</li><li><strong>Why it was created</strong>: prior recommenders modeled explicit feedback (ratings, accepts) but ignored "no-action" implicit negative feedback — an item repeatedly shown without conversion kept its high score and kept being re-shown.</li><li><strong>Concrete example</strong>: in PYMK, normalized conversion rate falls steeply as ImpCount grows from 1 to ~6 (Figure 3); an item impressed many times without an invite gets $d \ll 1$ and drops in the re-ranked list.</li><li><strong>How it is used in this paper</strong>: the core mechanism — a plugin multiplied onto the black-box engine's score $R$ to re-rank the top-100 candidate list before display.</li></ul>
+<p><strong>Behavior signals (ImpCount, LastSeen, Position, UserFreq)</strong></p>
+<ul><li><strong>What it computes</strong>: per (user, item) impression tuple, four observable features: ImpCount = number of historical impressions before the current one; LastSeen = days since the last impression of the same pair; Position = rank offset in the displayed list; UserFreq = the user's visit frequency to the recommender.</li><li><strong>Why it was created</strong>: to formalize the facets of no-action impression history that correlate with future conversion.</li><li><strong>Concrete example</strong>: GAM correlation analysis on PYMK shows LastSeen has a stronger (narrower-CI) negative correlation with conversion rate than ImpCount; UserFreq correlates <em>positively</em> (active users convert more).</li><li><strong>How it is used in this paper</strong>: as the $X_i$ inputs to the aggregated discounting model; adding Position + UserFreq on top of (LastSeen, ImpCount) more than doubles offline precision gains.</li></ul>
+<p><strong>Discounting functions (linear / inverse / exponential / quadratic decay)</strong></p>
+<ul><li><strong>What it computes</strong>: parametric forms $f_L(x) = \alpha_1 x + \alpha_2$, $f_I(x) = \frac{\alpha_1}{x} + \alpha_2$, $f_E(x) = e^{\alpha_1 x + \alpha_2}$, $f_Q(x) = \alpha_1 (x-\alpha_2)^2 + \alpha_3$ mapping one behavior value to a predicted conversion-rate component; combined by linear ($\hat{y} = \sum_i w_i f(X_i)$) or multiplicative ($\hat{y} = w \prod_i f(X_i)$) aggregation, then linearized to a single linear regression.</li><li><strong>Why it was created</strong>: to give the plugin an interpretable functional form for the empirically observed decay of conversion with each behavior, instead of an opaque classifier.</li><li><strong>Concrete example</strong>: exponential discounting achieves the minimal RMSE for both ConveRate~LastSeen (0.0012) and ConveRate~ImpCount (0.0028) on PYMK (Table 1).</li><li><strong>How it is used in this paper</strong>: the "atoms" of the aggregated model; the deployed A/B model fixes exponential decay on ImpCount and varies the LastSeen atom.</li></ul>
+<p><strong>Anti-noise (density weighted) regression</strong></p>
+<ul><li><strong>What it computes</strong>: input = observations $(X, y)$ with support counts → operation = (1) migrate density-based-clustering concepts to regression: classify observations as core/border/outlier via support-sum density in an $\varepsilon$-neighborhood with tolerance $\gamma$, discard outliers (~5%); (2) weight each squared error by $v_i$ = neighborhood support share, solving $\hat{u} = (X^T V^2 X + \lambda I)^{-1} X^T V^2 y$ → output = regression coefficients robust to sparse-tail noise.</li><li><strong>Why it was created</strong>: at high ImpCount/LastSeen values observation support is sparse, so the empirical conversion-rate curve tail fluctuates wildly and ordinary least squares overfits to those noisy tail points; naive support-threshold truncation is hard to calibrate at billion-record scale.</li><li><strong>Concrete example</strong>: on PYMK with $\varepsilon = 2, \gamma = 0.01, \delta = 2$, support-weighted RMSE drops from 0.1121 (plain linear regression) to 0.0188.</li><li><strong>How it is used in this paper</strong>: the fitting procedure for all discounting-model coefficients; claimed as a standalone methodological contribution.</li></ul></div></details>
+<details><summary><span class="en-only">Implementation Feasibility</span><span class="ko-only">구현 가능성</span></summary><div class="card" style="margin-top:0.5rem"><ul><li><strong>Needs</strong>: impression-level logging with (user, item, timestamp, conversion, position); any linear-regression package; trivially cheap at serving time (evaluate a small parametric function).</li><li><strong>Code</strong>: not available (industrial system; no public repo).</li><li><strong>Modifications</strong>: for a research setting, decay-function fitting is directly reproducible on any public impression log (e.g., the KDD Cup 2012 Tencent SearchAds data they used, which is public); the anti-noise regression needs {ε, γ, δ} retuning per dataset.</li><li><strong>Unknowns</strong>: missing link: observation-window length, fitted coefficient values, and how discount interacts with position bias at serving time are not disclosed.</li></ul></div></details>
+<details><summary><span class="en-only">Follow-up Papers</span><span class="ko-only">관련 후속 논문</span></summary><div class="card" style="margin-top:0.5rem"><ul><li>Gupta et al., "Factoring past exposure in display advertising targeting" (KDD 2012) — the ad-side predecessor this paper positions itself against; the frequency-capping lineage for SP7's taxonomy.</li><li>Hu, Koren &amp; Volinsky, "Collaborative filtering for implicit feedback datasets" (ICDM 2008) — the in-model implicit-feedback alternative to the plugin approach.</li><li>Post-2016 exposure-bias / propensity-weighting work (e.g., Joachims et al. unbiased LTR) — addresses the causal gap this paper leaves open; check which survey refs cover it.</li></ul></div></details>
+</section>
+<section id="delta" class="section-anchor">
+<div class="card"><div class="section-label"><span class="en-only">Condition Delta — transfer to our setting</span><span class="ko-only">조건 차이 — 우리 설정으로의 전이</span></div><p><strong>Paper's setting</strong>: inputs = logged impression tuples with per-(user,item) impression counts and recency from LinkedIn feed-style recommenders + Tencent search ads; outputs = multiplicative discount on an existing engine's score; conditions = billions of impressions, binary conversion label, item deduplication after conversion, 2014-era linear-regression tooling. <strong>Our setting</strong>: exposure frequency as a <em>ranking proxy</em> — understanding when impression/exposure counts are a valid signal (or confounded proxy) inside ranking objectives for modern recommenders/LLM-era systems. <strong>Differences</strong>:</p>
+<ul><li>Uses ImpCount as a <em>demotion</em> signal learned from aggregate conversion decay, exactly the O1 taxonomy entry (feed-native sibling of frequency capping): reference only — this is the taxonomic anchor SP7 needs.</li><li>Correlational treatment of impression→conversion decay; no causal/selection-bias correction (no IPS, no exposure model): missing link — modern exposure-bias literature (post-2016) addresses precisely this hole.</li><li>Plugin (score × d) architecture vs. in-model exposure features: resolved — the paper explicitly discusses the plugin-vs-in-model tradeoff (modularity, model confidentiality) and picks plugin.</li><li>2014 linear/parametric decay functions vs. learned sequence models of exposure: reference only.</li></ul></div>
+<div class="card"><div class="section-label"><span class="en-only">Root-cause vs. Symptom</span><span class="ko-only">근본 원인 대 증상</span></div><p><strong>Symptom</strong> — the paper demotes items along the observed aggregate conversion-decay curve without identifying <em>why</em> conversion decays with impressions (user fatigue vs. self-selection of low-affinity items into long impression sequences), so the underlying exposure/relevance confound remains unmodeled; the fix improves the metric while leaving the causal structure of "no action" unresolved.</p></div>
+</section>
+<div class="page-nav"><a href="80_FreqCapTheory.html">&larr; [80] FreqCapTheory</a><a href="../sp7_capping-pacing-feeds-ads.html">&uarr; SP7</a><a href="82_VRSImpressionFairness.html">[82] VRSImpressionFairness &rarr;</a></div>
+    </div>
+  </div>
+<nav class="bd-sidebar-secondary"><div class="mini-toc-label"><span class="en-only">On this page</span><span class="ko-only">이 페이지</span></div><ul class="mini-toc"><li><a href="#header"><span class="en-only">Paper info</span><span class="ko-only">논문 정보</span></a></li><li><a href="#problem"><span class="en-only">Problem</span><span class="ko-only">문제</span></a></li><li><a href="#solution"><span class="en-only">Solution &amp; Results</span><span class="ko-only">해결책 · 결과</span></a></li><li><a href="#results"><span class="en-only">Concepts &amp; Follow-ups</span><span class="ko-only">개념 · 후속</span></a></li><li><a href="#delta"><span class="en-only">Condition Delta</span><span class="ko-only">조건 차이</span></a></li></ul></nav>
+</div>
+</body>
+</html>

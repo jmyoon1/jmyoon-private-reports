@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8"><title>16_sp3_verification</title><style>
+:root{--bg:#0d1117;--card:#161b22;--border:#30363d;--text:#e6edf3;
+      --muted:#8b949e;--accent:#58a6ff;--green:#3fb950;--amber:#d29922;
+      --teal:#39d0c7;--purple:#bc8cff;}
+body{background:var(--bg);color:var(--text);font-family:-apple-system,sans-serif;margin:0;padding:1rem;}
+.cell{border:1px solid var(--border);border-radius:8px;overflow:hidden;}
+.cell-header{background:var(--card);padding:.6rem 1rem;display:flex;align-items:center;gap:.75rem;border-bottom:1px solid var(--border);}
+.badge{font-size:.72rem;font-weight:700;padding:.2rem .55rem;border-radius:4px;}
+.b-verify{background:rgba(57,208,199,.15);color:var(--teal);}
+.cell-title{font-size:.9rem;font-weight:600;}
+.cell-ts{margin-left:auto;font-size:.72rem;color:var(--muted);}
+.cell-body{padding:1rem;display:flex;flex-direction:column;gap:.7rem;}
+.field{padding:.55rem .8rem;border-radius:6px;}
+.f-found{background:rgba(63,185,80,.07);border-left:3px solid var(--green);}
+.f-surprise{background:rgba(210,153,34,.07);border-left:3px solid var(--amber);}
+.f-revised{background:rgba(57,208,199,.07);border-left:3px solid var(--teal);}
+.f-neutral{background:rgba(139,148,158,.07);border-left:3px solid var(--muted);}
+.f-label{font-size:.71rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);margin-bottom:.28rem;}
+.f-content{font-size:.88rem;line-height:1.55;margin:0;}
+</style></head>
+<body>
+<div class="cell" id="cell-sp3-verification">
+  <div class="cell-header">
+    <span class="badge b-verify">Phase V — Verification</span>
+    <span class="cell-title">Iteration 3 — after SP3</span>
+    <span class="cell-ts">2026-07-16 KST</span>
+  </div>
+  <div class="cell-body">
+    <div class="field f-found"><div class="f-label">Coverage</div><p class="f-content">
+      0% of P1 objectives fully covered (0/3) · target: 100% · SPs run: 3/12.
+      O1: partial (post-hoc branch complete incl. diversity/impact objectives; capping/boosting + bandit families still zero-RQ).
+      O2: partial, substantially narrowed (post-processing column done; frequency-only subset grew to FairRec + TEC + TaxRank/ElasticRank with first controllability guarantees; SP4–SP7 columns pending).
+      O3: partial-marginal (5 lines carry 2024–2026 deltas; SP7/SP9 frontiers unprobed).
+      O4: first O4-ready gap with completed-search evidence — no Bayes-optimal exposure-fair post-processor over elicited scores (verified by SP3's dedicated 15-paper pass).
+    </p></div>
+    <div class="field f-neutral"><div class="f-label">Convergence</div><p class="f-content">No — continue to SP4 (inherits the realized-vs-target concentration lens from SP3 and the discretization lens from SP1).</p></div>
+    <div class="field f-surprise"><div class="f-label">New SPs discovered</div><p class="f-content">None. Both watch items held: discretization seed (waits on SP7, now strengthened by TaxRank's two-stage e*→assignment bridge case); LLM feedback loops (waits on SP8+SP9).</p></div>
+    <div class="field f-revised"><div class="f-label">Objectives refined ✎</div><p class="f-content">Unchanged after SP3. The score-trust dichotomy of fairness targets refines O2's evidence standard (robustness column now split by target type), recorded as synthesis convention rather than an objectives edit.</p></div>
+  </div>
+</div>
+</body>
+</html>

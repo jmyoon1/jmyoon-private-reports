@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SP11: Strategy-proofness of Frequency-level Exposure Interventions — Exposure-Frequency Control Survey</title>
+
+<style>
+:root {
+  --bg: #0d1117; --card: #161b22; --border: #30363d;
+  --text: #e6edf3; --muted: #7d8590; --accent: #58a6ff;
+  --teal: #39d0c7; --green: #3fb950; --yellow: #d29922;
+  --red: #f85149; --purple: #bc8cff; --orange: #e3b341;
+  --sidebar-w: 262px; --toc-w: 210px; --hdr-h: 48px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+body { font-family: -apple-system, sans-serif; background: var(--bg);
+       color: var(--text); line-height: 1.6; }
+.bd-root { display: flex; height: 100vh; overflow: hidden; }
+.bd-sidebar-primary {
+  width: var(--sidebar-w); min-width: var(--sidebar-w);
+  overflow-y: auto; background: var(--card);
+  border-right: 1px solid var(--border);
+  padding: 0.75rem 0; flex-shrink: 0;
+}
+.bd-sidebar-primary::-webkit-scrollbar { width: 4px; }
+.bd-sidebar-primary::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+.bd-main { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-width: 0; }
+.article-header-bar {
+  height: var(--hdr-h); background: var(--card);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; padding: 0 1.5rem;
+  gap: 1rem; flex-shrink: 0;
+}
+.header-brand { color: var(--teal); font-weight: bold; font-size: 0.95em;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 1; }
+.header-brand a { color: inherit; text-decoration: none; }
+.breadcrumb { color: var(--muted); font-size: 0.82em; display: flex;
+  align-items: center; gap: 0.3rem; flex-shrink: 0; }
+.breadcrumb a { color: var(--accent); text-decoration: none; }
+.breadcrumb span { color: var(--border); }
+.bd-article { flex: 1; overflow-y: auto; padding: 2rem 2.5rem; }
+.bd-article::-webkit-scrollbar { width: 6px; }
+.bd-article::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+.bd-sidebar-secondary {
+  width: var(--toc-w); min-width: var(--toc-w);
+  overflow-y: auto; border-left: 1px solid var(--border);
+  padding: 1rem 0.75rem; flex-shrink: 0;
+}
+.bd-sidebar-secondary::-webkit-scrollbar { width: 4px; }
+.bd-sidebar-secondary::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+.sidebar-logo { padding: 0.5rem 1rem 0.75rem;
+  border-bottom: 1px solid var(--border); margin-bottom: 0.5rem; }
+.sidebar-logo a { color: var(--teal); font-weight: bold; font-size: 0.95em;
+  text-decoration: none; display: block; }
+.sidebar-section { color: var(--muted); font-size: 0.72em; font-weight: bold;
+  text-transform: uppercase; letter-spacing: 0.07em;
+  padding: 0.7rem 1rem 0.25rem; }
+.sidebar-nav-link { display: block; padding: 0.28rem 1rem 0.28rem 1.25rem;
+  color: var(--muted); font-size: 0.875em; text-decoration: none; }
+.sidebar-nav-link:hover { color: var(--text); background: rgba(255,255,255,0.03); }
+.sidebar-nav-link.active { color: var(--teal);
+  border-left: 2px solid var(--teal);
+  padding-left: calc(1.25rem - 2px); background: rgba(57,208,199,0.05); }
+.mini-toc-label { color: var(--muted); font-size: 0.72em; font-weight: bold;
+  text-transform: uppercase; letter-spacing: 0.07em; padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border); margin-bottom: 0.5rem; }
+.mini-toc { list-style: none; }
+.mini-toc li a { display: block; padding: 0.22rem 0;
+  color: var(--muted); font-size: 0.83em; text-decoration: none;
+  border-left: 2px solid transparent; padding-left: 0.5rem; }
+.mini-toc li a:hover { color: var(--text); }
+.mini-toc li a.toc-active { color: var(--teal); border-left-color: var(--teal); }
+.section-anchor { scroll-margin-top: calc(var(--hdr-h) + 8px); }
+h1 { color: var(--teal); font-size: 1.7em; margin-bottom: 0.5rem; line-height:1.3; }
+h2 { color: var(--teal); font-size: 1.25em; margin: 1.5rem 0 0.6rem; }
+h3 { color: var(--teal); font-size: 1.05em; margin: 1.2rem 0 0.4rem; }
+h4 { color: var(--teal); font-size: 0.95em; margin: 1rem 0 0.3rem; }
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+p { margin-bottom: 0.8rem; }
+ul, ol { margin: 0 0 0.8rem 1.4rem; }
+li { margin-bottom: 0.3rem; }
+code { background: rgba(255,255,255,0.06); border-radius: 3px; padding: 1px 4px; font-size: 0.9em; }
+blockquote { border-left: 3px solid var(--border); color: var(--muted);
+  padding: 0.2rem 0.8rem; margin-bottom: 0.8rem; }
+.card { background: var(--card); border: 1px solid var(--border);
+        border-radius: 8px; padding: 1.2rem; margin-bottom: 1rem; }
+table { width: 100%; border-collapse: collapse; font-size: 0.9em; margin-bottom: 0.8rem; }
+th { background: var(--card); color: var(--teal); padding: 8px;
+     border: 1px solid var(--border); text-align: left; }
+td { padding: 8px; border: 1px solid var(--border); vertical-align: top; }
+tr:nth-child(even) td { background: rgba(0,0,0,0.2); }
+.stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+             gap: 1rem; margin-bottom: 1.5rem; }
+.stat-box { background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+            padding: 1rem; text-align: center; }
+.stat-num { font-size: 2rem; font-weight: bold; color: var(--teal); }
+.stat-label { color: var(--muted); font-size: 0.85em; margin-top: 0.2rem; }
+.sp-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+           gap: 1rem; margin: 1rem 0; }
+.sp-card { background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+           padding: 1.2rem; cursor: pointer; transition: border-color 0.15s; height:100%; }
+.sp-card:hover { border-color: var(--teal); }
+.sp-card h3 { margin: 0 0 0.5rem; color: var(--teal); font-size: 1em; }
+.sp-card p { margin: 0; color: var(--muted); font-size: 0.88em; }
+.sp-badge { display: inline-block; background: rgba(57,208,199,0.1); color: var(--teal);
+            border-radius: 4px; padding: 2px 8px; font-size: 0.8em; margin-bottom: 0.5rem; }
+.paper-meta { color: var(--muted); font-size: 0.9em; margin-bottom: 1.5rem; }
+.paper-meta a { color: var(--accent); }
+.section-label { color: var(--teal); font-weight: bold; font-size: 0.85em;
+                 text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.4rem; }
+.pill { display: inline-block; border-radius: 4px; padding: 0.15rem 0.6rem;
+        font-size: 0.8em; font-weight: bold; margin-right: 0.4rem; }
+.pill-p0 { background: rgba(63,185,80,0.2); color: var(--green); }
+.pill-p1 { background: rgba(57,208,199,0.15); color: var(--teal); }
+.pill-p2 { background: rgba(210,153,34,0.2); color: var(--yellow); }
+.pill-p3 { background: rgba(188,140,255,0.2); color: var(--purple); }
+.pill-p4 { background: rgba(125,133,144,0.2); color: var(--muted); }
+.delta-row { margin: 0.4rem 0; padding: 0.4rem 0.8rem;
+             border-left: 3px solid var(--border); border-radius: 0 4px 4px 0; }
+.chain { position: relative; padding-left: 2rem; }
+.chain::before { content: ''; position: absolute; left: 0.95rem; top: 0;
+                 bottom: 0; width: 2px; background: var(--border); }
+.chain-node { position: relative; margin-bottom: 2rem; }
+.chain-node::before { content: ''; position: absolute; left: -1.55rem;
+                      top: 1.1rem; width: 12px; height: 12px;
+                      border-radius: 50%; background: var(--teal); }
+.chain-num { display: inline-block; width: 28px; height: 28px; background: var(--teal);
+             color: #000; border-radius: 50%; text-align: center; line-height: 28px;
+             font-weight: bold; font-size: 0.85em; margin-right: 0.6rem; flex-shrink: 0; }
+.chain-q { font-weight: bold; color: var(--text); margin: 0.4rem 0 0.3rem; font-size: 1em; }
+.chain-papers { color: var(--muted); font-size: 0.85em; margin-bottom: 0.6rem; }
+.chain-start { background: var(--card); border: 1px solid var(--teal);
+               border-radius: 8px; padding: 1rem; margin-bottom: 2rem; }
+.chain-start h3 { margin: 0 0 0.5rem; color: var(--teal); }
+.chain-converge { background: var(--card); border: 1px solid var(--green);
+                  border-radius: 8px; padding: 1rem; margin-top: 1rem; }
+.chain-converge h3 { margin: 0 0 0.5rem; color: var(--green); }
+.chain-label { display: inline-block; border-radius: 4px; padding: 0.15rem 0.6rem;
+               font-size: 0.8em; font-weight: bold; margin-right: 0.4rem; }
+.chain-status { border-radius: 0 4px 4px 0; padding: 0.5rem 0.8rem;
+                margin: 0.35rem 0; font-size: 0.88em; }
+.chain-status ul { margin: 0.3rem 0 0 1.2rem; padding: 0; }
+.chain-status li { margin-bottom: 0.25rem; }
+.chain-status.solved  { background: rgba(63,185,80,0.07);  border-left: 3px solid var(--green); }
+.chain-status.remains { background: rgba(210,153,34,0.07); border-left: 3px solid var(--yellow); }
+.chain-status.added   { background: rgba(248,81,73,0.07);  border-left: 3px solid var(--red); }
+.chain-status.pivoted { background: rgba(188,140,255,0.1); border-left: 3px solid var(--purple); }
+.chain-label.solved   { background: rgba(63,185,80,0.2);  color: var(--green); }
+.chain-label.remains  { background: rgba(210,153,34,0.2); color: var(--yellow); }
+.chain-label.added    { background: rgba(248,81,73,0.2);  color: var(--red); }
+.chain-label.pivoted  { background: rgba(188,140,255,0.2); color: var(--purple); }
+.chain-status.expected { background: rgba(88,166,255,0.07);  border-left: 3px solid var(--accent); }
+.chain-label.expected  { background: rgba(88,166,255,0.2);   color: var(--accent); }
+.chain-status.revised  { background: rgba(57,208,199,0.07);  border-left: 3px solid var(--teal); }
+.chain-label.revised   { background: rgba(57,208,199,0.2);   color: var(--teal); }
+.concept-box { border-left: 4px solid var(--teal); background: #0d1f1f;
+               border-radius: 4px; padding: 1.2rem; margin-bottom: 1.2rem; }
+.concept-name { font-weight: bold; color: var(--teal); font-size: 1.05em; margin-bottom: 0.5rem; }
+.hypothesis { border-left: 4px solid var(--teal); background: #0d1f1f;
+              border-radius: 4px; padding: 1rem; margin: 1rem 0; }
+.recommendation { border-left: 4px solid var(--purple); background: #1a0f2e;
+                  border-radius: 4px; padding: 1rem; margin: 1rem 0; }
+.rq-row { background: rgba(88,166,255,0.05); border-left: 3px solid var(--accent);
+          padding: 0.4rem 0.8rem; margin-bottom: 0.5rem; border-radius: 0 4px 4px 0; }
+.scroll-table-wrap { max-height: 420px; overflow-y: auto; border: 1px solid var(--border);
+                     border-radius: 4px; }
+.scroll-table-wrap table { margin-bottom: 0; }
+.scroll-table-wrap thead th { position: sticky; top: 0; background: #161b22; z-index: 1; }
+.page-nav { display: flex; justify-content: space-between; margin-top: 2rem;
+            padding-top: 1rem; border-top: 1px solid var(--border); gap: 1rem; }
+.page-nav a { color: var(--accent); font-size: 0.9em; }
+html.ko-active .en-only { display: none !important; }
+html.ko-active .ko-only { display: block !important; }
+.ko-only { display: none; }
+span.ko-only, .sidebar-logo a span.ko-only { display: none; }
+html.ko-active span.ko-only { display: inline !important; }
+.lang-btn { background: transparent; color: var(--muted); border: 1px solid var(--border);
+            border-radius: 4px; padding: 3px 9px; font-size: 0.8em; cursor: pointer; }
+.lang-btn.active { border-color: var(--teal); color: var(--teal); }
+details { margin-bottom: 0.8rem; }
+details summary { color: var(--muted); cursor: pointer; }
+@media (max-width: 1024px) { .bd-sidebar-secondary { display: none; } }
+@media (max-width: 768px) {
+  .bd-sidebar-primary { display: none; }
+  .bd-root { flex-direction: column; height: auto; overflow: visible; }
+  .bd-main { overflow: visible; }
+  .bd-article { overflow: visible; padding: 1rem; }
+  .stat-grid { grid-template-columns: repeat(2, 1fr); }
+  .sp-grid { grid-template-columns: 1fr; }
+}
+</style>
+
+<script>
+MathJax = { tex: { inlineMath: [['$','$']], displayMath: [['$$','$$']] },
+            options: { skipHtmlTags: ['script','noscript','style','textarea','pre','code'] } };
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<script>
+function toggleLanguage() {
+  const html = document.documentElement;
+  const isKo = html.classList.toggle('ko-active');
+  document.querySelectorAll('.lang-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.lang === (isKo ? 'ko' : 'en'));
+  });
+  localStorage.setItem('survey-lang', isKo ? 'ko' : 'en');
+}
+document.addEventListener('DOMContentLoaded', function() {
+  const saved = localStorage.getItem('survey-lang');
+  if (saved === 'ko') {
+    document.documentElement.classList.add('ko-active');
+    document.querySelectorAll('.lang-btn').forEach(b =>
+      b.classList.toggle('active', b.dataset.lang === 'ko'));
+  } else {
+    document.querySelectorAll('[data-lang="en"]').forEach(b => b.classList.add('active'));
+  }
+  const article = document.querySelector('.bd-article');
+  const sections = Array.from(document.querySelectorAll('.section-anchor[id]'));
+  const sideLinks = Array.from(document.querySelectorAll('.bd-sidebar-primary .sidebar-nav-link'));
+  const tocLinks = Array.from(document.querySelectorAll('.bd-sidebar-secondary .mini-toc a'));
+  if (!article || !sections.length) return;
+  function current() {
+    let id = sections[0].id;
+    const scrollTop = article.scrollTop + 60;
+    sections.forEach(function(s) { if (s.offsetTop <= scrollTop) id = s.id; });
+    return id;
+  }
+  function update() {
+    const id = current();
+    sideLinks.forEach(function(a) {
+      a.classList.toggle('active', a.getAttribute('href') === '#' + id);
+    });
+    tocLinks.forEach(function(a) {
+      a.classList.toggle('toc-active', a.getAttribute('href') === '#' + id);
+    });
+  }
+  article.addEventListener('scroll', update, { passive: true });
+  update();
+});
+</script>
+
+</head>
+<body>
+<div class="bd-root">
+
+<nav class="bd-sidebar-primary">
+  <div class="sidebar-logo">
+    <a href="index.html">&#x2B21; <span class="en-only">Exposure-Frequency Control Survey</span><span class="ko-only">Exposure-빈도 제어 문헌 조사</span></a>
+  </div>
+  <div class="sidebar-section"><span class="en-only">Overview</span><span class="ko-only">개요</span></div>
+  <a href="index.html#overview" class="sidebar-nav-link"><span class="en-only">Survey Hub</span><span class="ko-only">조사 허브</span></a>
+  <a href="index.html#answers" class="sidebar-nav-link"><span class="en-only">Key Answers</span><span class="ko-only">핵심 답변</span></a>
+  <div class="sidebar-section"><span class="en-only">Sub-Problems</span><span class="ko-only">세부 문제</span></div>
+<a href="sp1_fairness-of-exposure-fixed-scores.html" class="sidebar-nav-link">SP1: <span class="en-only">Exposure fairness</span><span class="ko-only">Exposure 공정성</span></a>
+<a href="sp2_2024-2026-frontier-llm-era.html" class="sidebar-nav-link">SP2: <span class="en-only">2024–26 frontier / LLM</span><span class="ko-only">2024–26 최전선 / LLM</span></a>
+<a href="sp3_postproc-rerank-blackbox.html" class="sidebar-nav-link">SP3: <span class="en-only">Post-proc re-ranking</span><span class="ko-only">Post-proc re-ranking</span></a>
+<a href="sp4_stochastic-ranking-policies.html" class="sidebar-nav-link">SP4: <span class="en-only">Stochastic policies</span><span class="ko-only">확률적 정책</span></a>
+<a href="sp5_amortized-equity-attention.html" class="sidebar-nav-link">SP5: <span class="en-only">Amortized fairness</span><span class="ko-only">Amortized 공정성</span></a>
+<a href="sp6_bandit-exposure-allocation.html" class="sidebar-nav-link">SP6: <span class="en-only">Bandit allocation</span><span class="ko-only">Bandit 배분</span></a>
+<a href="sp7_capping-pacing-feeds-ads.html" class="sidebar-nav-link">SP7: <span class="en-only">Capping &amp; pacing</span><span class="ko-only">Capping·pacing</span></a>
+<a href="sp8_popularity-debias-calibration.html" class="sidebar-nav-link">SP8: <span class="en-only">Debiasing &amp; calibration</span><span class="ko-only">Debiasing·calibration</span></a>
+<a href="sp9_ecosystems-creator-incentives.html" class="sidebar-nav-link">SP9: <span class="en-only">Ecosystems &amp; creators</span><span class="ko-only">생태계·creator</span></a>
+<a href="sp10_llm-exposure-feedback-loops.html" class="sidebar-nav-link">SP10: <span class="en-only">LLM feedback loops</span><span class="ko-only">LLM feedback loop</span></a>
+<a href="sp11_strategyproof-exposure.html" class="sidebar-nav-link active">SP11: <span class="en-only">Strategy-proofness</span><span class="ko-only">Strategy-proofness</span></a>
+
+  <div class="sidebar-section"><span class="en-only">Synthesis</span><span class="ko-only">종합</span></div>
+  <a href="conclusion.html" class="sidebar-nav-link"><span class="en-only">Conclusion</span><span class="ko-only">결론</span></a>
+  <a href="thinking-process.html" class="sidebar-nav-link"><span class="en-only">Thinking Process</span><span class="ko-only">추론 과정</span></a>
+</nav>
+  <div class="bd-main">
+<div class="article-header-bar"><div class="header-brand"><a href="index.html"><span class="en-only">Exposure-Frequency Control Survey</span><span class="ko-only">Exposure-빈도 제어 문헌 조사</span></a></div><nav class="breadcrumb"><a href="index.html"><span class="en-only">Survey</span><span class="ko-only">조사</span></a><span>&rsaquo;</span><span>SP11: <span class="en-only">Strategy-proofness</span><span class="ko-only">Strategy-proofness</span></span></nav><button class="lang-btn" data-lang="en" onclick="toggleLanguage()">EN</button><button class="lang-btn" data-lang="ko" onclick="toggleLanguage()">KO</button></div>
+    <div class="bd-article">
+<section id="intro" class="section-anchor">
+<div class="lang en-only"><h1>SP11: Strategy-proofness of Frequency-level Exposure Interventions</h1><p style="color:var(--muted)">10 papers · targets O4 · 2019-2026</p><p>Completed-search verification for SP9's gaming gap: does ANY adjacent literature (strategyproof mechanism design, Sybil-proofness, strategic bandits, adversarial attacks on recommenders) already give strategy-proofness results for exposure floors/caps/boosts over an immutable black-box scorer? Targets O4's per-question completed-search requirement.</p></div><div class="lang ko-only"><h1>SP11: 빈도 수준 exposure 개입의 strategy-proofness</h1><p style="color:var(--muted)">10편 논문 · O4 목표 대상 · 2019-2026</p><p>SP9의 gaming gap에 대한 완료-탐색 검증으로 스폰됨: strategyproof mechanism design, Sybil-proofness, strategic bandit, recommender 적대적 공격이라는 인접 문헌이 불변 black-box scorer 위 exposure floor/cap/boost의 strategy-proofness를 이미 다루는지를 검사한다. O4의 질문별 완료-탐색 요건을 겨냥한다.</p></div>
+</section>
+<section id="rationale" class="section-anchor"><div class="card" style="border-color:var(--accent)">
+<div class="lang en-only"><h2 style="margin-top:0">Entry Assumption vs. What Was Found</h2><p><strong>Expected</strong> (spawned at iteration 9 — completed-search verification for SP9's gaming gap): SP9 found strategic gaming of caps/floors/boosts (re-upload to reset cold-start boosts, content splitting to farm floors) unmodeled in the ecosystem line — but adjacent literatures (strategyproof mechanism design, Sybil-proofness, adversarial attacks on recommenders) may already address it. Searcher's preliminary verdict: three disconnected pieces, intersection apparently unaddressed.</p><p><strong>Found:</strong> Strategy-proofness of frequency-level exposure interventions is ABSENT — neither proven nor disproven — and the search is complete. Sybil-proofness theory affirmatively leans impossibility (symmetric monotone rules collapse to second-price; count-proportional splitting is always identity-inflatable without pie-shrinking), but every theorem is payment-load-bearing and one-shot. StrategicBandits formalizes the exact incentive model (arm utility = selection count) but defends the learner's own rule, and its grim trigger is defeated by re-registration.</p><p><strong>Assessment:</strong> Confirmed with a sharpening — the three-piece disconnection verdict held in full, but the mechanism-design piece is sharper than 'adjacent': the 2024 uniqueness theorem affirmatively predicts an impossibility-shaped answer for floor-like allocation. One honest residual is recorded inside the gap statement: the replication-proof bandit line (Esmaeili et al. 2023), surfaced via related work only, not ingested.</p></div><div class="lang ko-only"><h2 style="margin-top:0">사전 가정과 실제 발견</h2><p><strong>기대</strong> (반복 9에서 스폰 — SP9 gaming gap의 완료-탐색 검증): SP9은 cap/floor/boost에 대한 전략적 gaming(재업로드로 cold-start boost 초기화, 콘텐츠 분할로 floor 수확)이 생태계 라인에서 모델링되지 않음을 발견하였다 — 다만 인접 문헌(strategyproof mechanism design, Sybil-proofness, recommender 적대 공격)이 이미 다룰 가능성이 있어 이를 검증하기로 하였다. 검색자의 예비 판정: 세 개의 단절된 조각, 교집합은 미해결로 보임.</p><p><strong>발견</strong>: 빈도 수준 exposure 개입의 strategy-proofness는 부재한다 — 증명도 반증도 없다 — 그리고 탐색은 완료되었다. Sybil-proofness 이론은 불가능성 쪽으로 기운다(대칭 단조 규칙은 second-price로 붕괴; 개수 비례 분할은 pie-shrinking 없이는 항상 신원 부풀리기 가능). 다만 모든 정리가 지불 의존적이고 one-shot이다. StrategicBandits는 정확한 인센티브 모델(arm 효용 = 선택 횟수)을 정식화하지만 학습기 자신의 규칙을 방어하며, grim trigger는 재등록에 무력화된다.</p><p><strong>평가</strong>: 확인됨(단 더 날카로워짐) — 세 조각 단절 판정은 그대로 성립했으나, mechanism-design 조각은 '인접' 이상이다: 2024년 유일성 정리는 floor형 배분에 대해 불가능성 형태의 답을 적극적으로 예고한다. 정직한 잔여 하나를 gap 진술 안에 기록했다: replication-proof bandit 라인(Esmaeili et al. 2023) — related work를 통해서만 표면화, 미수집.</p></div>
+</div></section>
+<section id="establishes" class="section-anchor"><div class="card" style="border-color:var(--teal)">
+<div class="lang en-only"><h2 style="margin-top:0">What SP11 Establishes</h2><p><strong>Strategy-proofness of frequency-level exposure interventions is ABSENT from the literature — neither proven nor disproven — and the search is now complete.</strong> Three disconnected literatures each hold one necessary piece, and their intersection exists nowhere:</p>
+<ol><li><strong>Mechanism-design Sybil/false-name-proofness</strong> (<a href="papers/126_FalseNameBids.html">[126] FalseNameBids</a>, <a href="papers/121_SybilProofMech.html">[121] SybilProofMech</a>, <a href="papers/118_CostOfSybils.html">[118] CostOfSybils</a>) supplies the impossibility machinery for exactly the manipulation SP9 flagged: content splitting is structurally a false-name bid (one economic agent presenting as many mechanism-visible units). The adjacent theory affirmatively leans toward impossibility — Pan et al. prove that ex-post Sybil-proofness collapses the entire space of symmetric monotone allocation rules to the second-price auction, i.e. <em>any</em> rule that spreads allocation away from the top signal-holder (lotteries, and by structural analogy exposure floors) invites Sybil amplification; Mazorra &amp; Della Penna prove count-proportional reward splitting without "pie shrinking" is always identity-inflatable and that resistance costs exponential welfare decay ($r(n)=nR/2^{n-1}$). <strong>But every one of these theorems is payment-load-bearing and one-shot</strong>: Myerson payments drive Pan's uniqueness proof, and both notes flag the no-payment analogue as an explicit missing link. Exposure allocation is payment-free, repeated, and divisible — the theorems do not transfer; they only shape the conjecture.</li><li><strong>Strategic ranking/bandit games</strong> (<a href="papers/123_StrategicBandits.html">[123] StrategicBandits</a>, <a href="papers/122_PropRankingConvergence.html">[122] PropRankingConvergence</a>, <a href="papers/119_StrategicPublishers.html">[119] StrategicPublishers</a>, <a href="papers/120_IncentiveAwareTwoSided.html">[120] IncentiveAwareTwoSided</a>) formalize the right incentive model — Kleine Buening et al. define arm utility as <em>expected selection count</em>, precisely exposure frequency — and give the survey's only incentive-aware exposure-allocation mechanism (OptGTM: truthful reporting is an $\tilde O(d\sqrt{KT})$-approximate NE; incentive-unaware algorithms suffer $\Omega(T)$ strategic regret in every NE). But the gamed object is the learner's own selection rule via misreported contexts, <strong>not a cap/floor/boost layer over an immutable scorer</strong>, and OptGTM's grim-trigger threat is explicitly defeated by arm re-entry — the note's own missing link "robustness to Sybil/replica arms" is exactly the re-upload gaming move.</li><li><strong>Empirical attacks</strong> (<a href="papers/117_AIP.html">[117] AIP</a>, <a href="papers/124_PUDA.html">[124] PUDA</a>, <a href="papers/125_RecSysPoisoningSurvey.html">[125] RecSysPoisoningSurvey</a>) demonstrate that the levers frequency interventions institutionalize are already gamed in practice: AIP games the cold-start pipeline (the proxy regime where boosts operate) and shows defenses fail; PUDA games recommendation frequency itself (its $\mathcal{I}_{easy}$ anchor set imitates items the system already surfaces frequently); poisoning attacks forge the interaction counts that adaptive reweighting consumes. But no attack paper targets an intervention layer as such, and none measures exposure-distribution distortion (only HR@k-style metrics).</li></ol>
+<p>The synthesis-level mechanism: <strong>a frequency intervention converts a statistical attack surface into a contractual one.</strong> A cold-start boost is a guaranteed exposure payout for satisfying the "new item" predicate; a per-item floor is a guaranteed payout for the "under-exposed item" predicate. Both predicates are cheaply satisfiable by re-upload and splitting; the attack literature shows their inputs are forgeable; the mechanism literature shows predicate-triggered guarantees cannot be made ex-post splitting-proof without payments or verified identity; and no paper combines the halves. This confirms KB uuid 28 with completed-search evidence — <strong>O4-confirmed</strong>, with one named residual check (the replication-proof bandit line surfaced only via <a href="papers/123_StrategicBandits.html">[123] StrategicBandits</a>'s related work, not ingested; see Follow-up Seeds).</p>
+<p><strong>What a strategy-proof exposure floor would even mean</strong> (the candidate problem statement the gap implies): let creator $j$ control a set of mechanism-visible units it can partition at cost $c$ per extra unit. A floor mechanism assigning unit $i$ guaranteed exposure $f_i$ is <em>splitting-proof</em> if for every creator and every partition, total (position-weighted) exposure under the partition is at most that under single-unit participation plus cost. Per-item constant floors violate this whenever the floor exceeds organic exposure, because total floor mass is linear in unit count. The three known repairs each fail a requirement: (i) identity-aggregated budgets assume the identity verification Sybil settings void; (ii) pie shrinking makes total floor mass sublinear in reported units but then the per-unit floor decays exponentially, destroying the fairness guarantee the floor exists to provide (the CostOfSybils welfare bound transfers as guarantee decay); (iii) Bayesian splitting-proofness (Pan Thm 2's threshold-lottery escape) makes splitting unprofitable only in expectation at equilibrium — unexplored for exposure. The one structural asset exposure allocation has that one-shot auctions lack is <strong>repeated interaction with observable delivery history</strong> — the grim-trigger resource — and whether it buys a better splitting-proofness/fairness trade-off is the open problem.</p></div><div class="lang ko-only"><h2 style="margin-top:0">SP11이 확립한 것</h2><p>SP11은 gap 판정을 확정한다: 빈도 수준 exposure 개입의 strategy-proofness는 문헌에 부재하며 — 증명도 반증도 없으며 — 탐색은 이제 완료되었다. 세 개의 단절된 문헌이 각각 필요 조각 하나씩을 쥔다. (1) mechanism-design의 Sybil/false-name-proofness: 콘텐츠 분할은 구조적으로 false-name 입찰이며, Pan et al.의 유일성 정리(ex-post Sybil-proofness는 대칭 단조 규칙을 second-price로 붕괴)와 Mazorra &amp; Della Penna의 지수적 후생 감소 결과가 불가능성을 예고한다 — 그러나 모든 정리가 Myerson 지불에 의존하고 one-shot이라, 지불 없고 반복적이며 분할 가능한 exposure 배분으로 이전되지 않는다. (2) 전략적 ranking/bandit 게임: arm 효용 = 기대 선택 횟수라는 정확한 인센티브 모델과 유일한 구성적 메커니즘(OptGTM의 약속 대비 전달 grim trigger)을 주지만, 개입 레이어가 아닌 학습기 자신을 방어하며 재등록에 무력화된다. (3) 공격 문헌(AIP, PUDA, poisoning survey): 개입이 제도화하는 레버가 이미 공격당하고 방어가 뒤처짐을 보이지만 개입 레이어 자체를 겨냥한 적은 없다. 종합 메커니즘: 빈도 개입은 통계적 공격 표면을 계약적 공격 표면으로 바꾼다 — boost/floor는 값싸게 만족 가능한 술어에 대한 보장된 exposure 지급이다.</p></div>
+</div>
+<details><summary><span class="en-only">Dominant Approach</span><span class="ko-only">지배적 접근</span></summary><div class="card" style="margin-top:0.5rem"><p>The dominant approach <em>in each adjacent literature</em> is mature; the dominant approach <em>to SP11's question</em> does not exist. Mechanism design's dominant tool is the axiomatic impossibility: false-name-proofness jointly with efficiency is unattainable (<a href="papers/126_FalseNameBids.html">[126] FalseNameBids</a>), and by 2024 the ex-post version collapses all symmetric monotone single-parameter rules to the second-price auction (<a href="papers/121_SybilProofMech.html">[121] SybilProofMech</a>) — a line that became dominant because payments give the designer a lever that makes splitting costly, and whose key limitation for us is exactly that lever: the proofs are Myerson-payment-load-bearing, and exposure allocation has no transfers. The strategic-learning line's dominant approach is descriptive equilibrium analysis of the <em>base</em> allocation rule (PRP/softmax/linear/proportional: <a href="papers/119_StrategicPublishers.html">[119] StrategicPublishers</a>, <a href="papers/122_PropRankingConvergence.html">[122] PropRankingConvergence</a>, and SP9's Ben-Porat/Hron/PPA-Game cluster), with one prescriptive exception — <a href="papers/123_StrategicBandits.html">[123] StrategicBandits</a> designs the learner itself as a mechanism. The attack line's dominant approach is promotion attacks on the base recommender via forged inputs (images, prompts, interaction sequences, co-visitation counts), with a survey-level consensus that defenses lag attacks (<a href="papers/125_RecSysPoisoningSurvey.html">[125] RecSysPoisoningSurvey</a>: GAN-era unnoticeable attacks evade the classic frequency-anomaly detectors).</p>
+<p>For the survey objectives this means: O4's gaming gap (uuid 28) graduates from "unmodeled in the ecosystem line" (SP9's finding) to "unmodeled in every adjacent literature that could plausibly have modeled it, with the adjacent theory suggesting the answer will be an impossibility-shaped trade-off" — the strongest completed-search evidence any O4 gap in this survey carries.</p></div></details>
+<details><summary><span class="en-only">Convergences</span><span class="ko-only">수렴 지점</span></summary><div class="card" style="margin-top:0.5rem"><ul><li><strong>Allocation rules that spread exposure away from the top signal-holder are structurally splitting-gameable</strong> — three independent formalisms agree: the false-name impossibility (<a href="papers/126_FalseNameBids.html">[126] FalseNameBids</a>), the uniqueness-of-second-price characterization (<a href="papers/121_SybilProofMech.html">[121] SybilProofMech</a>), and the pie-shrinking necessity with exponential welfare cost (<a href="papers/118_CostOfSybils.html">[118] CostOfSybils</a>). Mechanism: any rule granting positive allocation to non-top units makes an extra reported unit worth more than its cost; only top-only allocation (or exponentially shrinking pools) removes the incentive. Exposure floors are by design non-top-only allocations.</li><li><strong>Incentive-unawareness is provably and empirically costly</strong>: <a href="papers/123_StrategicBandits.html">[123] StrategicBandits</a> proves $\Omega(T)$ strategic regret for every incentive-unaware algorithm (LinUCB, greedy, corruption-robust bandits) in every NE; <a href="papers/117_AIP.html">[117] AIP</a> and <a href="papers/124_PUDA.html">[124] PUDA</a> empirically promote cold/long-tail items into top-N of thousands of users against unaware production-style recommenders; <a href="papers/125_RecSysPoisoningSurvey.html">[125] RecSysPoisoningSurvey</a> documents the attack/defense imbalance (many new attacks, few new countermeasures).</li><li><strong>Exposure/selection count is the shared creator-utility model across the entire strategic line</strong>: <a href="papers/123_StrategicBandits.html">[123] StrategicBandits</a> formalizes it exactly ($u_i = \mathbb E[n_T(i)]$); <a href="papers/119_StrategicPublishers.html">[119] StrategicPublishers</a>, <a href="papers/122_PropRankingConvergence.html">[122] PropRankingConvergence</a>, and SP9's papers assume it. Consistent with uuid 8's exposure=payoff finding — and inherits its defect (raw count denomination; position weighting and impressions-vs-reach inexpressible).</li><li><strong>Frequency statistics are dual-use — simultaneously the gamed signal and the detection signal</strong>: <a href="papers/124_PUDA.html">[124] PUDA</a>'s $\mathcal{I}_{easy}$ uses recommendation frequency to <em>attack</em> (imitate frequently-surfaced items to inherit exposure); <a href="papers/125_RecSysPoisoningSurvey.html">[125] RecSysPoisoningSurvey</a>'s detection features (RDMA, crowdability = rating-frequency spikes) use frequency anomalies to <em>defend</em>. Any intervention layer consuming frequency statistics therefore consumes adversarial inputs.</li><li><strong>Smoothing exposure stabilizes the strategic ecosystem at user-welfare cost</strong>, convergent across two different dynamics: better-response (<a href="papers/119_StrategicPublishers.html">[119] StrategicPublishers</a>: PRP &lt;10% convergence vs. 100% for softmax/linear; more-uniform rules raise publisher welfare, lower user welfare) and no-regret (<a href="papers/122_PropRankingConvergence.html">[122] PropRankingConvergence</a>: same trade-off across linear/root/log activations). Extends SP9's uuid 27 phase-transition mechanism with an exact boundary (activation concavity).</li></ul></div></details>
+<details><summary><span class="en-only">Divergences</span><span class="ko-only">분기 지점</span></summary><div class="card" style="margin-top:0.5rem"><ul><li><strong>Is softmax exposure allocation stable under strategic content dynamics?</strong> <a href="papers/119_StrategicPublishers.html">[119] StrategicPublishers</a> finds softmax empirically converges in ~all instances at moderate $\beta$ (and <em>exceeds</em> PRP's long-term user welfare at $\beta\in\{5,10\}$), while proving no proportional ranking function induces an exact potential game; <a href="papers/122_PropRankingConvergence.html">[122] PropRankingConvergence</a> shows softmax (non-concave activation) breaks the no-regret convergence guarantee with <em>linear</em> regret at $\beta=10$. Likely cause: different dynamics classes (sequential better-response vs. simultaneous no-regret learning) and different $\beta$ regimes — better-response can converge where no-regret cycles. Unresolved: the same group authored both papers and does not adjudicate; practical platforms (softmax-over-scores is the deployed form, per Hron/YouTube) sit exactly on the unguaranteed side.</li><li><strong>Ex-post vs. Bayesian Sybil-proofness give opposite verdicts on lottery-like allocation</strong>: <a href="papers/121_SybilProofMech.html">[121] SybilProofMech</a> Theorem 1 rules out every ex-post Sybil-proof lottery, yet its Theorem 2 exhibits a Bayesian Sybil-proof threshold-lottery with strictly higher interim bidder payoff — the DSIC≡BIC equivalence itself fails under Sybil constraints. Cause: solution-concept strength, not contradiction; the design-relevant consequence (statistical splitting-resistance may be achievable where per-profile resistance is impossible) is unexplored for exposure.</li></ul></div></details>
+<details><summary><span class="en-only">Prior Beliefs and Surprises (full)</span><span class="ko-only">사전 믿음과 놀라움 (전문)</span></summary><div class="card" style="margin-top:0.5rem"><p><strong>What the entry rationale expected to find</strong> (from ranked_sps.json):</p>
+<blockquote>SP9 found strategic gaming of caps/floors/boosts unmodeled in the ecosystem line; this SP checks whether adjacent literatures (strategyproof mechanism design, Sybil-proofness, adversarial attacks on recommenders) already address it. Searcher's preliminary verdict: three disconnected pieces exist but their intersection with frequency-level interventions appears unaddressed.</blockquote>
+<p><strong>Confirmed</strong>:</p>
+<ul><li>The three-piece disconnection verdict is confirmed in full: mechanism-design Sybil-proofness, strategic-publisher/bandit games, and empirical attacks each hold half the machinery and none addresses caps/floors/boosts over an immutable scorer. The gaming gap (uuid 28) is O4-confirmed.</li></ul>
+<p><strong>Surprised</strong>:</p>
+<ul><li>(a) Assumed: the mechanism-design piece would be merely "adjacent." Found: it is <em>sharper than adjacent</em> — <a href="papers/121_SybilProofMech.html">[121] SybilProofMech</a>'s 2024 uniqueness theorem means ex-post Sybil-proofness collapses all symmetric monotone rules to second-price allocation, so the adjacent theory affirmatively predicts an impossibility-shaped answer for per-item floors, not merely an open question. The assumption underestimated how directly the lottery-exclusion result maps onto floor-like allocation.</li><li>(b) Assumed: no constructive incentive-aware exposure mechanism exists anywhere. Found: <a href="papers/123_StrategicBandits.html">[123] StrategicBandits</a> is a genuine constructive piece with SP11's exact incentive model (arm utility = selection count) — the gap is narrower than "nothing exists": what is missing is the intervention layer, churn-robustness, and slates, not incentive-aware exposure allocation per se. </li><li>(c) Assumed: the ranked search covered the candidate literatures. Found a near-miss line only via <a href="papers/123_StrategicBandits.html">[123] StrategicBandits</a>'s related work: replication-proof bandit mechanism design (Esmaeili et al. 2023), which addresses arm self-replication — the closest known formal work to content-splitting against an exposure-allocating learner. Not ingested; flagged as a residual verification seed rather than silently absorbed into the finality claim.</li><li>(d) Assumed: splitting-resistance is all-or-nothing. Found: the Bayesian relaxation (<a href="papers/121_SybilProofMech.html">[121] SybilProofMech</a> Thm 2) breaks DSIC≡BIC under Sybil constraints and re-opens the design space at the statistical level — the right target for exposure floors is plausibly population-level, not per-profile, splitting-proofness.</li></ul>
+<p><strong>KB impact</strong>:</p>
+<ul><li>UUID 28: confirmed and refined — gaming gap upgraded to O4-confirmed with completed-search evidence across three literatures plus the formalized candidate problem statement.</li><li>UUID 21: refined — Fair-Learn's per-arm quota denomination is splitting-attractive; no paper models quota assignment under endogenous unit creation.</li><li>UUID 27: refined — the exposure-rule-determines-equilibrium mechanism gains an exact stability boundary (concave activation ⟺ no-regret convergence) and the PRP no-PNE / linear-uniqueness results.</li></ul></div></details>
+</section>
+<section id="concepts" class="section-anchor"><h2><span class="en-only">Key Concepts</span><span class="ko-only">핵심 개념</span></h2><p><strong>False-name-proofness / Sybil-proofness (cost-unified)</strong></p>
+<ul><li><strong>What it computes</strong>: an axiom on mechanisms with unverifiable identities — for every agent, every split of that agent into multiple reported identities at per-identity cost $c$, and every action tuple, some single-identity strategy weakly dominates the multi-identity strategy. <a href="papers/118_CostOfSybils.html">[118] CostOfSybils</a> unifies the three prior cost regimes (mechanism design: $c=\infty$; Sybil-attack security: finite $c$ for one attacker; false-name-proofness: $c=0$) in one condition; proof at $c=0$ implies all $c$.</li><li><strong>Why it was created</strong>: VCG is strategy-proof under one-identity-per-agent but manipulable by identity splitting; anonymous internet settings void the identity assumption (<a href="papers/126_FalseNameBids.html">[126] FalseNameBids</a>).</li><li><strong>Concrete example</strong>: proportional reward splitting with $R=10$, $c=0.1$, 3 opposing identities: reporting 1 identity yields 2.4, reporting 2 yields 3.8 — single-identity reporting is not dominant. A per-item exposure floor $f$ has the same shape: $k$ split items collect $kf$ guaranteed exposure.</li><li><strong>Role in this SP</strong>: the formal name for content splitting / re-upload gaming; the axiom whose exposure-allocation analogue no paper states. Anchors RQ11.1 and the DIR's first row.</li></ul>
+<p><strong>Pie shrinking with crowding</strong></p>
+<ul><li><strong>What it computes</strong>: a reward schedule $r:\mathbb N \to [0,R]$ decreasing total distributed welfare as more identities are reported; the optimal Sybil-proof schedule is $r(n)=nR/2^{n-1}$, making single-identity self-reporting strictly dominant (<a href="papers/118_CostOfSybils.html">[118] CostOfSybils</a> Prop. 3).</li><li><strong>Why it was created</strong>: naive proportional splitting invites identity inflation; shrinking the pool is the only prior-free construction that removes the incentive.</li><li><strong>Concrete example</strong>: at $n=3$ reported identities the pool shrinks to $\tfrac34 R$; each gets $R/2^{n-1}$ — exponential decay in participants.</li><li><strong>What it is NOT</strong>: not a detection method — it is an allocation-rule redesign that makes splitting unprofitable <em>ex ante</em>, at the proven price of exponential welfare loss.</li><li><strong>Role in this SP</strong>: the only known constructive splitting-resistance; transferred to exposure floors it means the total floor pool must shrink in reported item count — which destroys the per-item guarantee. Quantifies why "just make floors splitting-proof" is not free.</li></ul>
+<p><strong>Strategic regret and arm-utility-as-selection-count</strong></p>
+<ul><li><strong>What it computes</strong>: in a strategic linear contextual bandit, each arm privately holds true context $x^*_{t,i}$, reports a gamed $x_{t,i}$; arm utility is $u_i = \mathbb E[n_T(i)]$ — its expected pull count. Strategic regret is standard regret evaluated at the worst Nash equilibrium the mechanism itself induces: $\max_{\sigma\in \mathrm{NE}(M)} R_T(M,\sigma)$ (<a href="papers/123_StrategicBandits.html">[123] StrategicBandits</a>).</li><li><strong>Why it was created</strong>: corruption-robust bandits assume a bounded adversarial budget — vacuous when arms are self-interested with unbounded manipulation ability; performance must be measured against the equilibrium behavior the algorithm incentivizes.</li><li><strong>Concrete example</strong>: LinUCB has $\tilde O(d\sqrt T)$ regret with truthful arms but $\Omega(T)$ strategic regret — its only NE is every arm reporting the maximal-UCB context every round.</li><li><strong>Role in this SP</strong>: the exact formalization of SP11's incentive model (utility = exposure frequency), and the evaluation criterion any strategy-proofness claim for an intervention layer would need.</li></ul>
+<p><strong>Grim Trigger Mechanism (cumulative promise-vs-delivery audit)</strong></p>
+<ul><li><strong>What it computes</strong>: per arm, compares cumulative <em>promised</em> reward (pessimistic LCB estimates of reported values) against the optimistic UCB of cumulative <em>observed</em> reward; eliminates the arm permanently once promised exceeds observed beyond a Hoeffding width $2\sqrt{n_t(i)\log T}$ (<a href="papers/123_StrategicBandits.html">[123] StrategicBandits</a> GGTM/OptGTM).</li><li><strong>Why it was created</strong>: per-round lie detection is impossible (the learner never sees true contexts), but cumulative over-promising relative to delivered reward is statistically detectable, and the permanent-elimination threat makes over-reporting unprofitable in repeated interaction.</li><li><strong>Concrete example</strong>: OptGTM makes truthfulness an $\tilde O(d\sqrt{KT})$-approximate NE at regret $\tilde O(d\sqrt{KT})$ — optimal up to $\sqrt K$ vs. the non-strategic rate — without ever learning $\theta^*$.</li><li><strong>Role in this SP</strong>: the one transferable <em>positive</em> mechanism: an exposure-boost layer could audit beneficiaries by promise-vs-delivery. Its Achilles heel — threat power requires a fixed arm set, so re-registration (re-upload) defeats it — is precisely the gap's sharpest edge.</li></ul>
+<p><strong>Proportional ranking function (PRF) and the concavity boundary</strong></p>
+<ul><li><strong>What it computes</strong>: exposure share $r_i(x)=g(d(x_i,x^*))/\sum_j g(d(x_j,x^*))$ for a strictly decreasing activation $g$; Theorem 2 of <a href="papers/122_PropRankingConvergence.html">[122] PropRankingConvergence</a> proves $g$ concave $\iff$ induced publisher games are (socially) concave $\iff$ any no-regret publisher dynamics converges (average-iterate) to a Nash equilibrium, unique under strictly bi-convex distance.</li><li><strong>Why it was created</strong>: prior creator-game results were mechanism-specific; this is the first exact characterization of <em>which</em> exposure-allocation rules yield stable strategic content ecosystems.</li><li><strong>Concrete example</strong>: softmax ($g=e^{-\beta t}$, non-concave) empirically produces linear regret at $\beta=10$ under LRL-OFTRL, while linear activation yields sub-linear regret on the same instance; PRP (winner-take-all) admits games with no pure NE at all (<a href="papers/119_StrategicPublishers.html">[119] StrategicPublishers</a> Obs. 1).</li><li><strong>Role in this SP</strong>: the stability precondition for any equilibrium analysis of an intervention layer — a cap/floor/boost changes the effective exposure spread and hence which side of the concavity boundary the ecosystem sits on; no paper computes where a given intervention places it (consistent with KB uuid 27).</li></ul>
+<p><strong>Opportunity-cost incentive constraint (user-side)</strong></p>
+<ul><li><strong>What it computes</strong>: an agent follows a recommendation iff its conditional expected reward beats her outside option: $\mathbb E[X_{I_t,t}\mid I_t, \mathcal E_t]\ge c_t$; <a href="papers/120_IncentiveAwareTwoSided.html">[120] IncentiveAwareTwoSided</a>'s ARP pools exploration into exploit recommendations at the maximal rate keeping this credible, quantifying a platform's <em>credible exposure capacity</em> for untested items via $(\mu_1, c_*)$.</li><li><strong>Why it was created</strong>: Bayesian incentive compatibility assumes agents evaluate all arms; in large marketplaces users see only what is recommended, so a cost-threshold constraint is the realistic model.</li><li><strong>Concrete example</strong>: at $c_*=0.15$ on Criteo, incentive-unaware baselines' regret "skyrockets" (users stop following once empirical means fall below cost) while ARP's plateaus.</li><li><strong>Role in this SP</strong>: the consumer-side dual of the gaming question — even a non-gamed exposure boost fails if users won't follow it; bounds how much boost a platform can credibly deliver.</li></ul></section>
+<section id="rqs" class="section-anchor"><h2><span class="en-only">Research Questions Extracted</span><span class="ko-only">추출된 연구 질문</span></h2><div class="scroll-table-wrap"><table><thead><tr><th>ID</th><th>Question</th><th>Key Papers</th><th>Objective</th></tr></thead><tbody><tr><td>RQ11.1</td><td>What does false-name/Sybil-proofness theory imply for per-item exposure floors under content splitting, and where exactly do the theorems stop transferring?</td><td><a href="papers/126_FalseNameBids.html">[126] FalseNameBids</a>, <a href="papers/121_SybilProofMech.html">[121] SybilProofMech</a>, <a href="papers/118_CostOfSybils.html">[118] CostOfSybils</a></td><td>O4</td></tr><tr><td>RQ11.2</td><td>Does any learning algorithm make exposure-seeking manipulation unprofitable while retaining no-regret, and at what cost?</td><td><a href="papers/123_StrategicBandits.html">[123] StrategicBandits</a></td><td>O4</td></tr><tr><td>RQ11.3</td><td>Which base exposure-allocation rules guarantee that strategic content dynamics converge at all — the precondition for analyzing an intervention layer's equilibrium?</td><td><a href="papers/122_PropRankingConvergence.html">[122] PropRankingConvergence</a>, <a href="papers/119_StrategicPublishers.html">[119] StrategicPublishers</a></td><td>O4</td></tr><tr><td>RQ11.4</td><td>Which levers demonstrably inflate an item's exposure in deployed recommenders, and do existing defenses hold?</td><td><a href="papers/117_AIP.html">[117] AIP</a>, <a href="papers/124_PUDA.html">[124] PUDA</a>, <a href="papers/125_RecSysPoisoningSurvey.html">[125] RecSysPoisoningSurvey</a></td><td>O3, O4</td></tr><tr><td>RQ11.5</td><td>How much credible exposure of untested items can a platform afford before users stop following recommendations (the consumer-side incentive bound on boosts)?</td><td><a href="papers/120_IncentiveAwareTwoSided.html">[120] IncentiveAwareTwoSided</a></td><td>O4</td></tr><tr><td>RQ11.6</td><td>What escape routes from the ex-post Sybil impossibility does mechanism design already offer (Bayesian solution concepts, multi-unit settings, pie shrinking), and which survive removal of payments?</td><td><a href="papers/121_SybilProofMech.html">[121] SybilProofMech</a>, <a href="papers/118_CostOfSybils.html">[118] CostOfSybils</a></td><td>O4</td></tr></tbody></table></div>
+<p>Answers in brief: RQ11.1 — allocation spreading away from the top invites amplification; resistance costs exponential efficiency; payments and one-shot structure are load-bearing, so the exposure analogue is open (that openness is the O4 gap, but the <em>implication structure</em> is answerable and answered). RQ11.2 — yes: OptGTM, truthfulness an $\tilde O(d\sqrt{KT})$-approx NE at near-optimal regret; cost = $\sqrt K$ factor plus destructive permanent elimination; defeated by re-entry. RQ11.3 — concave-activation PRFs (necessary and sufficient); PRP admits no-PNE games; linear PRFs are the unique potential-game family. RQ11.4 — cold-start proxy substitution (images), frequency-anchor imitation + co-occurrence injection (LLM-SRS), interaction-count forging (poisoning); AMR adversarial training and compression defenses fail against AIP; GAN-era attacks evade classic detectors. RQ11.5 — quantified by $(\mu_1, c_*)$: exploration capacity grows with the known-good margin $\mu_1 - c_*$; ARP achieves it with per-agent incentive guarantees. RQ11.6 — Bayesian relaxation and multi-unit unit-demand settings are possibility regions; pie shrinking is constructive but exponentially costly; none is payment-free as stated.</p></section>
+<section id="papers" class="section-anchor"><div class="card" style="margin-top:1.5rem">
+<h3 style="margin-top:0"><span class="en-only">Papers in SP11 (DIR table)</span><span class="ko-only">SP11 논문 목록 (DIR 표)</span></h3><div class="scroll-table-wrap"><table><thead><tr><th>Ref</th><th>Title</th><th>Track</th><th>Tier</th><th>Key Contribution</th><th>Fit</th><th>Gap</th></tr></thead><tbody><tr><td><a href="papers/117_AIP.html">[117] AIP</a></td><td>Adversarial Item Promotion (WWW 2021)</td><td>A</td><td>P0</td><td>First item-image ranker attack; cold items into top-5 of &gt;20k users; defenses fail</td><td>Games the cold-start proxy channel where boosts operate</td><td>Image modality; doesn't target an intervention layer</td></tr><tr><td><a href="papers/118_CostOfSybils.html">[118] CostOfSybils</a></td><td>Cost of Sybils &amp; false-name-proof mechanisms</td><td>A</td><td>P4</td><td>Unified variable-cost Sybil game; pie shrinking $r(n)=nR/2^{n-1}$ optimal; exponential welfare price</td><td>Content splitting = identity multiplication, formalized</td><td>Assumes transferable reward pool the ranker doesn't control</td></tr><tr><td><a href="papers/119_StrategicPublishers.html">[119] StrategicPublishers</a></td><td>Search for Stability (JAIR 2025)</td><td>A</td><td>P2</td><td>PRP admits no-PNE games; linear ranking = unique potential-game family, closed-form PNE</td><td>Exposure rule alone determines ecosystem stability</td><td>Winner-take-all exposure; no intervention layer; content-move gaming only</td></tr><tr><td><a href="papers/120_IncentiveAwareTwoSided.html">[120] IncentiveAwareTwoSided</a></td><td>Incentive-aware RS in two-sided markets (TORS 2024)</td><td>A</td><td>P2</td><td>ARP/MARP: incentive-compatible exploration + ex-post user fairness, minimax regret</td><td>Consumer-side incentive bound on credible boost capacity</td><td>Arms passive; no creator-side gaming</td></tr><tr><td><a href="papers/121_SybilProofMech.html">[121] SybilProofMech</a></td><td>On Sybil-proof Mechanisms (2024)</td><td>B</td><td>P4</td><td>Ex-post Sybil-proofness forces second-price auction; Bayesian escape exists</td><td>Sharpest impossibility anchor for floor-like (lottery-like) allocation</td><td>Myerson payments load-bearing; one-shot</td></tr><tr><td><a href="papers/122_PropRankingConvergence.html">[122] PropRankingConvergence</a></td><td>No-regret dynamics with PRFs (ICLR 2025)</td><td>B</td><td>P0</td><td>Concave activation ⟺ no-regret convergence to NE (exact characterization)</td><td>Which base rules give a well-posed strategic environment</td><td>Designed allocation, no learned ranker, no intervention layer</td></tr><tr><td><a href="papers/123_StrategicBandits.html">[123] StrategicBandits</a></td><td>Strategic Linear Contextual Bandits (NeurIPS 2024)</td><td>B</td><td>P0</td><td>Arm utility = selection count; OptGTM approx-truthful at $\tilde O(d\sqrt{KT})$; unaware ⇒ $\Omega(T)$</td><td>Exact SP11 incentive model + only incentive-aware mechanism</td><td>Context misreporting not intervention gaming; fixed arm set (re-entry defeats it); single pull</td></tr><tr><td><a href="papers/124_PUDA.html">[124] PUDA</a></td><td>Prompt-Unknown Dual-poisoning Attack (SIGIR 2026)</td><td>B</td><td>P0</td><td>Full black-box LLM-SRS promotion via prompt distillation + frequency anchors ($\mathcal{I}_{easy}$)</td><td>Recommendation frequency operationalized as attack target and signal</td><td>Attack numbers unextracted; no intervention layer targeted</td></tr><tr><td><a href="papers/125_RecSysPoisoningSurvey.html">[125] RecSysPoisoningSurvey</a></td><td>Poisoning attacks &amp; countermeasures survey (CSUR 2024)</td><td>B</td><td>P2</td><td>31 attacks / 43 countermeasures; frequency statistics both attack surface and detection signal</td><td>Interaction-count forging = the inputs adaptive reweighting consumes</td><td>No exposure-distribution quantification; qualitative maps only</td></tr><tr><td><a href="papers/126_FalseNameBids.html">[126] FalseNameBids</a></td><td>False-name bids in combinatorial auctions (GEB 2004)</td><td>C</td><td>P2</td><td>Canonical impossibility: no false-name-proof protocol is always Pareto-efficient</td><td>The original splitting-proofness formalization</td><td>Payments + one-shot discrete goods; closed access (abstract-tier)</td></tr></tbody></table></div>
+</div>
+<details><summary><span class="en-only">Design Implication Registry</span><span class="ko-only">설계 함의 레지스트리</span></summary><div class="card" style="margin-top:0.5rem"><div class="scroll-table-wrap"><table><thead><tr><th>Requirement</th><th>Evidence</th><th>Implication</th><th>Risk</th><th>Mitigation</th></tr></thead><tbody><tr><td>Floors/boosts must not be denominated per mechanism-visible item</td><td><a href="papers/126_FalseNameBids.html">[126] FalseNameBids</a>, <a href="papers/121_SybilProofMech.html">[121] SybilProofMech</a>, <a href="papers/118_CostOfSybils.html">[118] CostOfSybils</a></td><td>Aggregate floor budgets at creator/account level; if unit-level guarantees are unavoidable, scale total floor mass sublinearly in a creator's reported unit count (pie-shrinking form)</td><td>Identity verification is exactly what Sybil settings void; pie shrinking decays the per-unit guarantee exponentially, gutting the fairness target</td><td>Bayesian/statistical splitting-proofness (Pan Thm 2 escape): make splitting unprofitable in expectation at equilibrium rather than per-profile</td></tr><tr><td>Cold-start boost eligibility must be treated as the softest attack surface</td><td><a href="papers/117_AIP.html">[117] AIP</a>, <a href="papers/124_PUDA.html">[124] PUDA</a></td><td>Gate the "new item" predicate with duplicate/near-duplicate detection (re-upload = free boost reset); assume proxy features (images, titles) are adversarial</td><td>AIP shows adversarial training (AMR) and compression defenses fail; PUDA passes semantic+lexical similarity gates by design</td><td>Audit boost beneficiaries post-hoc with cumulative promise-vs-delivery statistics rather than input filtering</td></tr><tr><td>Any allocation layer facing exposure-seeking agents needs incentive-aware design, not corruption-robustness</td><td><a href="papers/123_StrategicBandits.html">[123] StrategicBandits</a></td><td>Wrap interventions with a grim-trigger-style cumulative audit: eliminate/claw back when cumulative promised value exceeds delivered value beyond a confidence width</td><td>Permanent elimination is defeated by item churn / re-registration — the exact re-upload move; budget-bounded robustness is provably vacuous ($\Omega(T)$)</td><td>Identity-linked elimination + entry costs; check the replication-proof bandit line (follow-up seed) before building</td></tr><tr><td>Statistics feeding adaptive reweighting must be treated as forgeable inputs</td><td><a href="papers/125_RecSysPoisoningSurvey.html">[125] RecSysPoisoningSurvey</a>, <a href="papers/124_PUDA.html">[124] PUDA</a></td><td>Run frequency-anomaly detection (RDMA/crowdability-family) on the realized-utility signals that reweighting layers (e.g. HMT-style) consume</td><td>GAN-era unnoticeable attacks evade exactly these classic detectors; arms race dynamics</td><td>Provable-robustness certification (PORE) coverage check; cross-signal consistency (co-occurrence vs. rating vs. dwell)</td></tr><tr><td>The base allocation rule must sit on the stable side of the concavity boundary before an intervention layer is added</td><td><a href="papers/122_PropRankingConvergence.html">[122] PropRankingConvergence</a>, <a href="papers/119_StrategicPublishers.html">[119] StrategicPublishers</a></td><td>Prefer concave-activation proportional allocation (convergence of any no-regret creator dynamics guaranteed); measure where a cap/floor moves the effective exposure spread</td><td>Softmax-over-scores — the deployed form — is on the unguaranteed side; smoothing buys stability at measured user-welfare cost</td><td>Use the welfare/stability trade-off maps (slope $a$, activation family) to price the stability margin</td></tr></tbody></table></div></div></details>
+</section>
+<section id="open" class="section-anchor"><div class="card">
+<h3 style="margin-top:0"><span class="en-only">Open Questions After SP11</span><span class="ko-only">SP11 이후 미해결 질문</span></h3><ul><li><strong>The payment-free splitting-proofness problem</strong> (the SP's central gap, now with completed-search evidence): does a payment-free, repeated, divisible exposure-floor mechanism exist that is splitting-proof, provides a nontrivial per-creator floor, and loses at most polynomial welfare? Missing link in ≥3 papers: <a href="papers/121_SybilProofMech.html">[121] SybilProofMech</a> ("no-payment analogue of the characterization"), <a href="papers/126_FalseNameBids.html">[126] FalseNameBids</a> (payment structure load-bearing; divisible repeated goods unaddressed), <a href="papers/118_CostOfSybils.html">[118] CostOfSybils</a> (whether pie shrinking has an analog when the mechanism controls no transferable budget). What would resolve it: either an impossibility theorem for per-unit floors without transfers, or a construction exploiting repeated interaction + delivery history (the resource one-shot auctions lack).</li><li><strong>Strategy-proofness of the intervention layer itself</strong> (uuid 28, confirmed): no model has creators best-responding to a cap/floor/boost layer over an immutable scorer — <a href="papers/123_StrategicBandits.html">[123] StrategicBandits</a> games the learner's own rule, <a href="papers/119_StrategicPublishers.html">[119] StrategicPublishers</a>/<a href="papers/122_PropRankingConvergence.html">[122] PropRankingConvergence</a> game the base allocation, SP9's Hron audit has no intervention in the loop, Yao (KDD 2024) explicitly flags gaming-the-reweighting as open. What would resolve it: an exposure-game model where the action space includes unit creation/splitting/re-registration and the payoff includes the intervention layer's transfers of guaranteed exposure.</li><li><strong>Incentive-aware exposure allocation under churn, slates, and replicas</strong>: <a href="papers/123_StrategicBandits.html">[123] StrategicBandits</a> flags all three as missing links (grim trigger needs a fixed arm set; single-pull not top-k; Sybil/replica arms open), and <a href="papers/121_SybilProofMech.html">[121] SybilProofMech</a>'s multi-unit possibility result (Prop 3) is non-constructive. What would resolve it: a replication-proof mechanism with slate-level exposure allocation and re-entry-robust threats.</li><li><strong>Exposure-distribution impact of manipulation is unmeasured</strong>: <a href="papers/125_RecSysPoisoningSurvey.html">[125] RecSysPoisoningSurvey</a> concedes no unified quantification (HR@k only; the lone ER@k metric unexamined), and <a href="papers/124_PUDA.html">[124] PUDA</a> measures promotion, not distributional distortion. What would resolve it: re-evaluating canonical promotion attacks on exposure-Gini / position-weighted exposure-share metrics — directly connecting the attack literature to this survey's denomination (and to the count-vs-position gap, uuid 22).</li></ul>
+</div>
+<details><summary><span class="en-only">Cross-SP Dependencies</span><span class="ko-only">SP 간 의존성</span></summary><div class="card" style="margin-top:0.5rem"><ul><li><strong>Feeds into</strong>: the survey conclusion's O4 gap inventory — uuid 28 graduates to O4-confirmed with per-question completed-search evidence spanning mechanism design, strategic learning, and adversarial attacks; the candidate problem statement (splitting-proof payment-free floors) is stated precisely enough to seed a research project.</li><li><strong>Depends on</strong>: SP9 — the gaming gap (uuid 28) and exposure=payoff finding (uuid 8) this SP verifies; SP6 — Fair-Learn's count floor (uuid 21), whose per-arm quota denomination is exactly the splitting-attractive shape; SP7/SP8 — the delivery-layer and InvR floors that instantiate the vulnerable predicate ("under-exposed item").</li><li><strong>Shared methods with</strong>: SP9 — the publishers'-game/exposure-game formalism (<a href="papers/119_StrategicPublishers.html">[119] StrategicPublishers</a> and <a href="papers/122_PropRankingConvergence.html">[122] PropRankingConvergence</a> extend the Ben-Porat/Hron line; PPA-Game's proportional allocation is the PRF family's platform-realistic member); SP6 — bandit machinery (<a href="papers/123_StrategicBandits.html">[123] StrategicBandits</a> is a strategic-arms sibling of SP6's fairness bandits; <a href="papers/120_IncentiveAwareTwoSided.html">[120] IncentiveAwareTwoSided</a> is incentivized exploration, the user-side mirror of SP6's cold-start exploration).</li></ul></div></details>
+</section>
+<div class="page-nav"><a href="sp10_llm-exposure-feedback-loops.html">&larr; <span class="en-only">SP10</span><span class="ko-only">SP10</span></a><a href="index.html"><span class="en-only">&uarr; Survey Hub</span><span class="ko-only">&uarr; 조사 허브</span></a><a href="conclusion.html"><span class="en-only">Conclusion</span><span class="ko-only">결론</span> &rarr;</a></div>
+    </div>
+  </div>
+<nav class="bd-sidebar-secondary"><div class="mini-toc-label"><span class="en-only">On this page</span><span class="ko-only">이 페이지</span></div><ul class="mini-toc"><li><a href="#intro"><span class="en-only">Introduction</span><span class="ko-only">개요</span></a></li><li><a href="#rationale"><span class="en-only">Entry Assumption</span><span class="ko-only">사전 가정</span></a></li><li><a href="#establishes"><span class="en-only">What SP11 Establishes</span><span class="ko-only">확립한 것</span></a></li><li><a href="#concepts"><span class="en-only">Key Concepts</span><span class="ko-only">핵심 개념</span></a></li><li><a href="#rqs"><span class="en-only">Research Questions</span><span class="ko-only">연구 질문</span></a></li><li><a href="#papers"><span class="en-only">Papers</span><span class="ko-only">논문</span></a></li><li><a href="#open"><span class="en-only">Open Questions</span><span class="ko-only">미해결 질문</span></a></li></ul></nav>
+</div>
+</body>
+</html>

@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>[56] Contextual bandits with concave rewards, and an application  — Exposure-Frequency Control Survey</title>
+
+<style>
+:root {
+  --bg: #0d1117; --card: #161b22; --border: #30363d;
+  --text: #e6edf3; --muted: #7d8590; --accent: #58a6ff;
+  --teal: #39d0c7; --green: #3fb950; --yellow: #d29922;
+  --red: #f85149; --purple: #bc8cff; --orange: #e3b341;
+  --sidebar-w: 262px; --toc-w: 210px; --hdr-h: 48px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+body { font-family: -apple-system, sans-serif; background: var(--bg);
+       color: var(--text); line-height: 1.6; }
+.bd-root { display: flex; height: 100vh; overflow: hidden; }
+.bd-sidebar-primary {
+  width: var(--sidebar-w); min-width: var(--sidebar-w);
+  overflow-y: auto; background: var(--card);
+  border-right: 1px solid var(--border);
+  padding: 0.75rem 0; flex-shrink: 0;
+}
+.bd-sidebar-primary::-webkit-scrollbar { width: 4px; }
+.bd-sidebar-primary::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+.bd-main { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-width: 0; }
+.article-header-bar {
+  height: var(--hdr-h); background: var(--card);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; padding: 0 1.5rem;
+  gap: 1rem; flex-shrink: 0;
+}
+.header-brand { color: var(--teal); font-weight: bold; font-size: 0.95em;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 1; }
+.header-brand a { color: inherit; text-decoration: none; }
+.breadcrumb { color: var(--muted); font-size: 0.82em; display: flex;
+  align-items: center; gap: 0.3rem; flex-shrink: 0; }
+.breadcrumb a { color: var(--accent); text-decoration: none; }
+.breadcrumb span { color: var(--border); }
+.bd-article { flex: 1; overflow-y: auto; padding: 2rem 2.5rem; }
+.bd-article::-webkit-scrollbar { width: 6px; }
+.bd-article::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+.bd-sidebar-secondary {
+  width: var(--toc-w); min-width: var(--toc-w);
+  overflow-y: auto; border-left: 1px solid var(--border);
+  padding: 1rem 0.75rem; flex-shrink: 0;
+}
+.bd-sidebar-secondary::-webkit-scrollbar { width: 4px; }
+.bd-sidebar-secondary::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+.sidebar-logo { padding: 0.5rem 1rem 0.75rem;
+  border-bottom: 1px solid var(--border); margin-bottom: 0.5rem; }
+.sidebar-logo a { color: var(--teal); font-weight: bold; font-size: 0.95em;
+  text-decoration: none; display: block; }
+.sidebar-section { color: var(--muted); font-size: 0.72em; font-weight: bold;
+  text-transform: uppercase; letter-spacing: 0.07em;
+  padding: 0.7rem 1rem 0.25rem; }
+.sidebar-nav-link { display: block; padding: 0.28rem 1rem 0.28rem 1.25rem;
+  color: var(--muted); font-size: 0.875em; text-decoration: none; }
+.sidebar-nav-link:hover { color: var(--text); background: rgba(255,255,255,0.03); }
+.sidebar-nav-link.active { color: var(--teal);
+  border-left: 2px solid var(--teal);
+  padding-left: calc(1.25rem - 2px); background: rgba(57,208,199,0.05); }
+.mini-toc-label { color: var(--muted); font-size: 0.72em; font-weight: bold;
+  text-transform: uppercase; letter-spacing: 0.07em; padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border); margin-bottom: 0.5rem; }
+.mini-toc { list-style: none; }
+.mini-toc li a { display: block; padding: 0.22rem 0;
+  color: var(--muted); font-size: 0.83em; text-decoration: none;
+  border-left: 2px solid transparent; padding-left: 0.5rem; }
+.mini-toc li a:hover { color: var(--text); }
+.mini-toc li a.toc-active { color: var(--teal); border-left-color: var(--teal); }
+.section-anchor { scroll-margin-top: calc(var(--hdr-h) + 8px); }
+h1 { color: var(--teal); font-size: 1.7em; margin-bottom: 0.5rem; line-height:1.3; }
+h2 { color: var(--teal); font-size: 1.25em; margin: 1.5rem 0 0.6rem; }
+h3 { color: var(--teal); font-size: 1.05em; margin: 1.2rem 0 0.4rem; }
+h4 { color: var(--teal); font-size: 0.95em; margin: 1rem 0 0.3rem; }
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+p { margin-bottom: 0.8rem; }
+ul, ol { margin: 0 0 0.8rem 1.4rem; }
+li { margin-bottom: 0.3rem; }
+code { background: rgba(255,255,255,0.06); border-radius: 3px; padding: 1px 4px; font-size: 0.9em; }
+blockquote { border-left: 3px solid var(--border); color: var(--muted);
+  padding: 0.2rem 0.8rem; margin-bottom: 0.8rem; }
+.card { background: var(--card); border: 1px solid var(--border);
+        border-radius: 8px; padding: 1.2rem; margin-bottom: 1rem; }
+table { width: 100%; border-collapse: collapse; font-size: 0.9em; margin-bottom: 0.8rem; }
+th { background: var(--card); color: var(--teal); padding: 8px;
+     border: 1px solid var(--border); text-align: left; }
+td { padding: 8px; border: 1px solid var(--border); vertical-align: top; }
+tr:nth-child(even) td { background: rgba(0,0,0,0.2); }
+.stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+             gap: 1rem; margin-bottom: 1.5rem; }
+.stat-box { background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+            padding: 1rem; text-align: center; }
+.stat-num { font-size: 2rem; font-weight: bold; color: var(--teal); }
+.stat-label { color: var(--muted); font-size: 0.85em; margin-top: 0.2rem; }
+.sp-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+           gap: 1rem; margin: 1rem 0; }
+.sp-card { background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+           padding: 1.2rem; cursor: pointer; transition: border-color 0.15s; height:100%; }
+.sp-card:hover { border-color: var(--teal); }
+.sp-card h3 { margin: 0 0 0.5rem; color: var(--teal); font-size: 1em; }
+.sp-card p { margin: 0; color: var(--muted); font-size: 0.88em; }
+.sp-badge { display: inline-block; background: rgba(57,208,199,0.1); color: var(--teal);
+            border-radius: 4px; padding: 2px 8px; font-size: 0.8em; margin-bottom: 0.5rem; }
+.paper-meta { color: var(--muted); font-size: 0.9em; margin-bottom: 1.5rem; }
+.paper-meta a { color: var(--accent); }
+.section-label { color: var(--teal); font-weight: bold; font-size: 0.85em;
+                 text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.4rem; }
+.pill { display: inline-block; border-radius: 4px; padding: 0.15rem 0.6rem;
+        font-size: 0.8em; font-weight: bold; margin-right: 0.4rem; }
+.pill-p0 { background: rgba(63,185,80,0.2); color: var(--green); }
+.pill-p1 { background: rgba(57,208,199,0.15); color: var(--teal); }
+.pill-p2 { background: rgba(210,153,34,0.2); color: var(--yellow); }
+.pill-p3 { background: rgba(188,140,255,0.2); color: var(--purple); }
+.pill-p4 { background: rgba(125,133,144,0.2); color: var(--muted); }
+.delta-row { margin: 0.4rem 0; padding: 0.4rem 0.8rem;
+             border-left: 3px solid var(--border); border-radius: 0 4px 4px 0; }
+.chain { position: relative; padding-left: 2rem; }
+.chain::before { content: ''; position: absolute; left: 0.95rem; top: 0;
+                 bottom: 0; width: 2px; background: var(--border); }
+.chain-node { position: relative; margin-bottom: 2rem; }
+.chain-node::before { content: ''; position: absolute; left: -1.55rem;
+                      top: 1.1rem; width: 12px; height: 12px;
+                      border-radius: 50%; background: var(--teal); }
+.chain-num { display: inline-block; width: 28px; height: 28px; background: var(--teal);
+             color: #000; border-radius: 50%; text-align: center; line-height: 28px;
+             font-weight: bold; font-size: 0.85em; margin-right: 0.6rem; flex-shrink: 0; }
+.chain-q { font-weight: bold; color: var(--text); margin: 0.4rem 0 0.3rem; font-size: 1em; }
+.chain-papers { color: var(--muted); font-size: 0.85em; margin-bottom: 0.6rem; }
+.chain-start { background: var(--card); border: 1px solid var(--teal);
+               border-radius: 8px; padding: 1rem; margin-bottom: 2rem; }
+.chain-start h3 { margin: 0 0 0.5rem; color: var(--teal); }
+.chain-converge { background: var(--card); border: 1px solid var(--green);
+                  border-radius: 8px; padding: 1rem; margin-top: 1rem; }
+.chain-converge h3 { margin: 0 0 0.5rem; color: var(--green); }
+.chain-label { display: inline-block; border-radius: 4px; padding: 0.15rem 0.6rem;
+               font-size: 0.8em; font-weight: bold; margin-right: 0.4rem; }
+.chain-status { border-radius: 0 4px 4px 0; padding: 0.5rem 0.8rem;
+                margin: 0.35rem 0; font-size: 0.88em; }
+.chain-status ul { margin: 0.3rem 0 0 1.2rem; padding: 0; }
+.chain-status li { margin-bottom: 0.25rem; }
+.chain-status.solved  { background: rgba(63,185,80,0.07);  border-left: 3px solid var(--green); }
+.chain-status.remains { background: rgba(210,153,34,0.07); border-left: 3px solid var(--yellow); }
+.chain-status.added   { background: rgba(248,81,73,0.07);  border-left: 3px solid var(--red); }
+.chain-status.pivoted { background: rgba(188,140,255,0.1); border-left: 3px solid var(--purple); }
+.chain-label.solved   { background: rgba(63,185,80,0.2);  color: var(--green); }
+.chain-label.remains  { background: rgba(210,153,34,0.2); color: var(--yellow); }
+.chain-label.added    { background: rgba(248,81,73,0.2);  color: var(--red); }
+.chain-label.pivoted  { background: rgba(188,140,255,0.2); color: var(--purple); }
+.chain-status.expected { background: rgba(88,166,255,0.07);  border-left: 3px solid var(--accent); }
+.chain-label.expected  { background: rgba(88,166,255,0.2);   color: var(--accent); }
+.chain-status.revised  { background: rgba(57,208,199,0.07);  border-left: 3px solid var(--teal); }
+.chain-label.revised   { background: rgba(57,208,199,0.2);   color: var(--teal); }
+.concept-box { border-left: 4px solid var(--teal); background: #0d1f1f;
+               border-radius: 4px; padding: 1.2rem; margin-bottom: 1.2rem; }
+.concept-name { font-weight: bold; color: var(--teal); font-size: 1.05em; margin-bottom: 0.5rem; }
+.hypothesis { border-left: 4px solid var(--teal); background: #0d1f1f;
+              border-radius: 4px; padding: 1rem; margin: 1rem 0; }
+.recommendation { border-left: 4px solid var(--purple); background: #1a0f2e;
+                  border-radius: 4px; padding: 1rem; margin: 1rem 0; }
+.rq-row { background: rgba(88,166,255,0.05); border-left: 3px solid var(--accent);
+          padding: 0.4rem 0.8rem; margin-bottom: 0.5rem; border-radius: 0 4px 4px 0; }
+.scroll-table-wrap { max-height: 420px; overflow-y: auto; border: 1px solid var(--border);
+                     border-radius: 4px; }
+.scroll-table-wrap table { margin-bottom: 0; }
+.scroll-table-wrap thead th { position: sticky; top: 0; background: #161b22; z-index: 1; }
+.page-nav { display: flex; justify-content: space-between; margin-top: 2rem;
+            padding-top: 1rem; border-top: 1px solid var(--border); gap: 1rem; }
+.page-nav a { color: var(--accent); font-size: 0.9em; }
+html.ko-active .en-only { display: none !important; }
+html.ko-active .ko-only { display: block !important; }
+.ko-only { display: none; }
+span.ko-only, .sidebar-logo a span.ko-only { display: none; }
+html.ko-active span.ko-only { display: inline !important; }
+.lang-btn { background: transparent; color: var(--muted); border: 1px solid var(--border);
+            border-radius: 4px; padding: 3px 9px; font-size: 0.8em; cursor: pointer; }
+.lang-btn.active { border-color: var(--teal); color: var(--teal); }
+details { margin-bottom: 0.8rem; }
+details summary { color: var(--muted); cursor: pointer; }
+@media (max-width: 1024px) { .bd-sidebar-secondary { display: none; } }
+@media (max-width: 768px) {
+  .bd-sidebar-primary { display: none; }
+  .bd-root { flex-direction: column; height: auto; overflow: visible; }
+  .bd-main { overflow: visible; }
+  .bd-article { overflow: visible; padding: 1rem; }
+  .stat-grid { grid-template-columns: repeat(2, 1fr); }
+  .sp-grid { grid-template-columns: 1fr; }
+}
+</style>
+
+<script>
+MathJax = { tex: { inlineMath: [['$','$']], displayMath: [['$$','$$']] },
+            options: { skipHtmlTags: ['script','noscript','style','textarea','pre','code'] } };
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<script>
+function toggleLanguage() {
+  const html = document.documentElement;
+  const isKo = html.classList.toggle('ko-active');
+  document.querySelectorAll('.lang-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.lang === (isKo ? 'ko' : 'en'));
+  });
+  localStorage.setItem('survey-lang', isKo ? 'ko' : 'en');
+}
+document.addEventListener('DOMContentLoaded', function() {
+  const saved = localStorage.getItem('survey-lang');
+  if (saved === 'ko') {
+    document.documentElement.classList.add('ko-active');
+    document.querySelectorAll('.lang-btn').forEach(b =>
+      b.classList.toggle('active', b.dataset.lang === 'ko'));
+  } else {
+    document.querySelectorAll('[data-lang="en"]').forEach(b => b.classList.add('active'));
+  }
+  const article = document.querySelector('.bd-article');
+  const sections = Array.from(document.querySelectorAll('.section-anchor[id]'));
+  const sideLinks = Array.from(document.querySelectorAll('.bd-sidebar-primary .sidebar-nav-link'));
+  const tocLinks = Array.from(document.querySelectorAll('.bd-sidebar-secondary .mini-toc a'));
+  if (!article || !sections.length) return;
+  function current() {
+    let id = sections[0].id;
+    const scrollTop = article.scrollTop + 60;
+    sections.forEach(function(s) { if (s.offsetTop <= scrollTop) id = s.id; });
+    return id;
+  }
+  function update() {
+    const id = current();
+    sideLinks.forEach(function(a) {
+      a.classList.toggle('active', a.getAttribute('href') === '#' + id);
+    });
+    tocLinks.forEach(function(a) {
+      a.classList.toggle('toc-active', a.getAttribute('href') === '#' + id);
+    });
+  }
+  article.addEventListener('scroll', update, { passive: true });
+  update();
+});
+</script>
+
+</head>
+<body>
+<div class="bd-root">
+
+<nav class="bd-sidebar-primary">
+  <div class="sidebar-logo">
+    <a href="../index.html">&#x2B21; <span class="en-only">Exposure-Frequency Control Survey</span><span class="ko-only">Exposure-빈도 제어 문헌 조사</span></a>
+  </div>
+  <div class="sidebar-section"><span class="en-only">Overview</span><span class="ko-only">개요</span></div>
+  <a href="../index.html#overview" class="sidebar-nav-link"><span class="en-only">Survey Hub</span><span class="ko-only">조사 허브</span></a>
+  <a href="../index.html#answers" class="sidebar-nav-link"><span class="en-only">Key Answers</span><span class="ko-only">핵심 답변</span></a>
+  <div class="sidebar-section"><span class="en-only">Sub-Problems</span><span class="ko-only">세부 문제</span></div>
+<a href="../sp1_fairness-of-exposure-fixed-scores.html" class="sidebar-nav-link">SP1: <span class="en-only">Exposure fairness</span><span class="ko-only">Exposure 공정성</span></a>
+<a href="../sp2_2024-2026-frontier-llm-era.html" class="sidebar-nav-link">SP2: <span class="en-only">2024–26 frontier / LLM</span><span class="ko-only">2024–26 최전선 / LLM</span></a>
+<a href="../sp3_postproc-rerank-blackbox.html" class="sidebar-nav-link">SP3: <span class="en-only">Post-proc re-ranking</span><span class="ko-only">Post-proc re-ranking</span></a>
+<a href="../sp4_stochastic-ranking-policies.html" class="sidebar-nav-link">SP4: <span class="en-only">Stochastic policies</span><span class="ko-only">확률적 정책</span></a>
+<a href="../sp5_amortized-equity-attention.html" class="sidebar-nav-link">SP5: <span class="en-only">Amortized fairness</span><span class="ko-only">Amortized 공정성</span></a>
+<a href="../sp6_bandit-exposure-allocation.html" class="sidebar-nav-link active">SP6: <span class="en-only">Bandit allocation</span><span class="ko-only">Bandit 배분</span></a>
+<a href="../sp7_capping-pacing-feeds-ads.html" class="sidebar-nav-link">SP7: <span class="en-only">Capping &amp; pacing</span><span class="ko-only">Capping·pacing</span></a>
+<a href="../sp8_popularity-debias-calibration.html" class="sidebar-nav-link">SP8: <span class="en-only">Debiasing &amp; calibration</span><span class="ko-only">Debiasing·calibration</span></a>
+<a href="../sp9_ecosystems-creator-incentives.html" class="sidebar-nav-link">SP9: <span class="en-only">Ecosystems &amp; creators</span><span class="ko-only">생태계·creator</span></a>
+<a href="../sp10_llm-exposure-feedback-loops.html" class="sidebar-nav-link">SP10: <span class="en-only">LLM feedback loops</span><span class="ko-only">LLM feedback loop</span></a>
+<a href="../sp11_strategyproof-exposure.html" class="sidebar-nav-link">SP11: <span class="en-only">Strategy-proofness</span><span class="ko-only">Strategy-proofness</span></a>
+
+  <div class="sidebar-section"><span class="en-only">Synthesis</span><span class="ko-only">종합</span></div>
+  <a href="../conclusion.html" class="sidebar-nav-link"><span class="en-only">Conclusion</span><span class="ko-only">결론</span></a>
+  <a href="../thinking-process.html" class="sidebar-nav-link"><span class="en-only">Thinking Process</span><span class="ko-only">추론 과정</span></a>
+</nav>
+  <div class="bd-main">
+<div class="article-header-bar"><div class="header-brand"><a href="../index.html"><span class="en-only">Exposure-Frequency Control Survey</span><span class="ko-only">Exposure-빈도 제어 문헌 조사</span></a></div><nav class="breadcrumb"><a href="../index.html"><span class="en-only">Survey</span><span class="ko-only">조사</span></a><span>&rsaquo;</span><a href="../sp6_bandit-exposure-allocation.html">SP6</a><span>&rsaquo;</span><span>[56] Contextual bandits with concave rewards,</span></nav><button class="lang-btn" data-lang="en" onclick="toggleLanguage()">EN</button><button class="lang-btn" data-lang="ko" onclick="toggleLanguage()">KO</button></div>
+    <div class="bd-article">
+<section id="header" class="section-anchor"><div class="paper-meta">
+<h1 style="margin-bottom:0.3rem">Contextual bandits with concave rewards, and an application to fair ranking</h1>
+<p style="margin:0.3rem 0;color:var(--muted)">Do et al. · ICLR 2023 · 2023 · 5 citations</p>
+<p style="margin:0.3rem 0"><a href="https://arxiv.org/abs/2210.09957" target="_blank">arXiv:2210.09957</a> · <a href="https://arxiv.org/pdf/2210.09957.pdf" target="_blank">PDF</a> · SP: <a href="../sp6_bandit-exposure-allocation.html">SP6</a></p>
+<p><span class="pill pill-p0">P0</span><span class="pill" style="background:rgba(255,255,255,0.05);color:var(--muted)">Track A</span></p>
+</div>
+<div class="card ko-only" style="border-color:var(--teal)"><div class="section-label">한 줄 요약</div><p style="margin:0">오목 보상 contextual bandit으로 공정 ranking을 다루며, 조사 전체에서 유일하게 position 가중 exposure 단위의 regret 상한을 제공한다(목표 측에 한함).</p></div>
+</section>
+<section id="problem" class="section-anchor">
+<div class="card"><div class="section-label"><span class="en-only">Problem</span><span class="ko-only">해결하려는 문제</span></div><p>Multi-objective contextual bandits where the trade-off is a known concave function $f$ of the vector of average rewards had no algorithm with vanishing regret in the general (unrestricted-policy) setting: policies are mappings from a continuous context space to action distributions, so the direct policy-space optimization used in non-contextual BCR (Agrawal &amp; Devanur 2014) or tabular RL (Cheung 2019) is inapplicable, and the only prior contextual result (Agrawal et al. 2016) requires a finite policy set. In particular, for fairness of exposure in contextual ranking bandits, only heuristics without regret guarantees existed.</p></div>
+</section>
+<section id="solution" class="section-anchor">
+<div class="card"><div class="section-label"><span class="en-only">Solution / Contribution</span><span class="ko-only">해결책 / 기여</span></div><p>A reduction: run Frank-Wolfe in the space of feasible expected rewards $\mathcal{S}$ (unknown, but never explicitly needed). At each step, the FW gradient $g_t = \nabla f(\hat{s}_{t-1})$ defines a scalar-reward contextual bandit with reward $\tilde{r}_t = \langle g_t | r_t\rangle$; any scalar contextual bandit algorithm with sublinear scalar regret $R^{scal}_T$ yields CBCR regret</p>
+<p>$$R_T = f^* - f(\hat{s}_T) \le \frac{R^{scal}_T + LD_\mathcal{K}\sqrt{2T\ln(1/\delta)} + \tilde{C}\ln(eT)}{T}$$</p>
+<p>(Theorem 2, smooth $f$; Theorem 3 extends to nonsmooth $f$ via Moreau-Yosida smoothing with time-decreasing factor $\beta_0/\sqrt{t+1}$). Instantiations: FW-LinUCB (linear rewards), FW-SquareCB (general rewards via online regression oracles — the first FW-based bandit approach not tied to optimism), and FW-LinUCBRank for fair ranking, whose per-step cost is dominated by a top-$\bar{k}$ sort of UCB scores plus an adaptive $\nabla f$ bonus that boosts under-exposed items.</p></div>
+<div class="card"><div class="section-label"><span class="en-only">Key Results</span><span class="ko-only">주요 결과</span></div><ul><li>Theorem 2: $R_T \le (R^{scal}_T + LD_\mathcal{K}\sqrt{2T\ln(1/\delta)} + \tilde{C}\ln(eT))/T$ — any sublinear scalar-regret bandit gives vanishing CBCR regret; near minimax-optimal since worst-case contextual bandit regret is $\Omega(\sqrt{T})$.</li><li>FW-LinUCBRank (fair ranking, Theorem 5): $R_T \le O(d\bar{k}\ln(T/\delta)/\sqrt{T})$ w.h.p. — the first regret guarantee for contextual combinatorial bandits with fairness of exposure.</li><li>Last.fm music recommendation ($m=50$ items, $\bar{k}=10$ slots): FW-LinUCBRank reaches the best objective values vs. LinUCBRank, Unbiased-LinUCBRank, and FairLearn; Unbiased-LinUCBRank degrades after ~$10^4$ rounds because it does not converge to an optimal utility/fairness trade-off.</li><li>At convergence ($5\times10^6$ rounds): FW-LinUCBRank achieves higher user utility than FairLearn at all inequality levels, including near-zero unfairness at little utility cost.</li><li>Multi-armed CBCR (synthetic, Mehrotra et al. environments): FW-SquareCB comparable to MOLinCB, converging in ~100 rounds — with theoretical guarantees MOLinCB lacks.</li></ul></div>
+<details><summary><span class="en-only">5Cs Analysis</span><span class="ko-only">5Cs 분석</span></summary><div class="card" style="margin-top:0.5rem"><p><strong>Category</strong>: new method (theoretical reduction + algorithms with regret guarantees). <strong>Context</strong>: extends BCR (Agrawal &amp; Devanur 2014) and FW-bandit analyses (Berthet &amp; Perchet 2017) to contexts; builds on LinUCB (Abbasi-Yadkori et al. 2011), SquareCB (Foster &amp; Rakhlin 2020), position-based ranking bandits (Lagrée et al. 2016; Li et al. 2016); fairness objectives from Do et al. 2021, Morik et al. 2020. <strong>Correctness</strong>: <code>[SKIM]</code> — proofs are in appendices C–J; regret bounds stated with explicit high-probability confidence terms; experiments repeated over 100 (synthetic) / 10 (Last.fm) seeds. <strong>Contributions</strong>: (1) first vanishing-regret algorithm for CBCR without policy-space restriction, via the FW-to-scalar-bandit reduction; (2) reduction works with any exploration principle, not just UCB; (3) first regret-guaranteed algorithm for contextual combinatorial bandits with fairness of exposure (FW-LinUCBRank), computationally efficient (top-k sort) and working without knowing context-dependent position weights $b(x_t)$. <strong>Clarity</strong>: main-paper algorithm boxes (Alg. 1) plus appendix pseudocode; reproducible in principle — experiments "fully implemented in Python 3.9" but no public code link visible in the skimmed pages <code>[SKIM - check for code release]</code>.</p></div></details>
+<details><summary><span class="en-only">Contribution vs Claim</span><span class="ko-only">기여 대 주장</span></summary><div class="card" style="margin-top:0.5rem"><p><code>[SKIM - verify in deep read]</code> Headline claims (first algorithm for unrestricted-policy CBCR; first fairness-of-exposure guarantee for contextual ranking bandits) are theorem-backed in the skimmed pages. Points to verify deeply: (a) the empirical evaluation uses one real dataset (Last.fm, top-50/2.5k items) plus synthetic environments — generality of the empirical fairness claims beyond music recommendation is asserted rather than shown; (b) the observation model requires observing per-item exposure indicators $e_{t,i}$, an assumption whose realism is argued (single-post feeds) but not tested.</p></div></details>
+</section>
+<section id="results" class="section-anchor">
+<details><summary><span class="en-only">Concepts Introduced</span><span class="ko-only">도입된 개념</span></summary><div class="card" style="margin-top:0.5rem"><p><strong>Contextual Bandits with Concave Rewards (CBCR)</strong></p>
+<ul><li><strong>What it computes</strong>: at each step t, observe context $x_t \sim P$, choose action $a_t \in \mathcal{A}$, receive a noisy D-dimensional reward vector $r_t$ with $\mathbb{E}[r_t|x_t,a_t]=\mu(x_t)a_t$; the goal is to minimize $R_T = f^* - f(\hat{s}_T)$ where $\hat{s}_T = \frac{1}{T}\sum_t r_t$ and $f$ is a known concave trade-off function over the D cumulative rewards.</li><li><strong>Why it was created</strong>: prior Bandits-with-Concave-Rewards (BCR, Agrawal &amp; Devanur 2014) has no contexts, so it cannot model per-user personalization; the only prior contextual work (Agrawal et al. 2016) is restricted to a finite policy set.</li><li><strong>Concrete example</strong>: fair ranking with $m$ items gives $D = m+1$ objectives — each item's cumulative exposure plus user utility — combined as $f(z) = z_{m+1} - \beta\frac{1}{2m}\sum_{i,j}|z_i - z_j|$ (utility minus Gini-style exposure inequality).</li><li><strong>How it is used in this paper</strong>: it is the paper's problem definition; everything else is an algorithm/reduction for it.</li></ul>
+<p><strong>Frank-Wolfe reduction to scalar-reward bandits</strong></p>
+<ul><li><strong>What it computes</strong>: reparameterizes CBCR as concave maximization over the convex set $\mathcal{S}$ of feasible expected rewards, then shows (Lemma 1) that the Frank-Wolfe linear subproblem $\max_{s\in\mathcal{S}}\langle\nabla f(\hat{s}_{t-1})|s\rangle$ equals in conditional expectation the per-step action problem $\max_{a}\langle\nabla f(\hat{s}_{t-1})|\mu(x_t)a\rangle$. This defines a scalar-reward bandit with extended context $\tilde{x}_t=(\nabla f(\hat{s}_{t-1}), x_t)$ and scalar reward $\tilde{r}_t=\langle\nabla f(\hat{s}_{t-1})|r_t\rangle$; Theorem 2 bounds $R_T \le (R^{scal}_T + LD_\mathcal{K}\sqrt{2T\ln(1/\delta)} + \tilde{C}\ln(eT))/T$.</li><li><strong>Why it was created</strong>: direct optimization in policy space is intractable when policies map a continuous context space to action distributions; the reduction bypasses policy space entirely.</li><li><strong>Concrete example</strong>: plugging in LinUCB gives FW-LinUCB with $R^{scal}_T = O(d\sqrt{T})$, hence $R_T = O(1/\sqrt{T})$.</li><li><strong>How it is used in this paper</strong>: the central theoretical tool; instantiated as FW-LinUCB, FW-SquareCB, and FW-LinUCBRank.</li></ul>
+<p><strong>Fairness of exposure (amortized, in the position-based model)</strong> <code>[SKIM - the position-based observation model details are in Sec. 4; verify feedback assumptions in deep read]</code></p>
+<ul><li><strong>What it computes</strong>: each item i's reward-component is its exposure probability $\sum_k a_{i,k} b_k(x)$ under ranking $a$ with position weights $b(x)$; fairness objectives penalize inequality of these exposures accumulated over time.</li><li><strong>Why it was created</strong>: prior fair-exposure bandit work either ignored rankings, ignored contexts, or (Mansoury et al. 2021; Jeunen &amp; Goethals 2021) was heuristic without guarantees.</li><li><strong>Concrete example</strong>: DCG-style weights $b_k = 1/\log_2(1+k)$ for the top $\bar{k}=10$ slots, 0 below.</li><li><strong>How it is used in this paper</strong>: defines the combinatorial CBCR instance solved by FW-LinUCBRank (Algorithm 1).</li></ul></div></details>
+<details><summary><span class="en-only">Implementation Feasibility</span><span class="ko-only">구현 가능성</span></summary><div class="card" style="margin-top:0.5rem"><ul><li><strong>Needs</strong>: any scalar contextual bandit (LinUCB / SquareCB / ε-greedy) plus a running average $\hat{s}_t$ and gradient of the chosen $f$; per-step cost of FW-LinUCBRank is dominated by a top-$\bar{k}$ sort — computationally light. Ridge regression with $\lambda\ge D_\mathcal{X}^2\bar{k}$. For nonsmooth $f$ (Gini), gradients of the Moreau envelope via Do &amp; Usunier (2022).</li><li><strong>Code</strong>: not linked in the skimmed pages <code>[SKIM - check appendix/OpenReview for a repository]</code>; experiments in Python 3.9 with the Implicit library on public Last.fm data.</li><li><strong>Modifications</strong>: for an exposure-frequency-proxy study, exposure indicators would have to be simulated or position-inferred; the fairness objective $f$ would need to be replaced or elicited for the target trade-off.</li><li><strong>Unknowns</strong>: <code>missing link: robustness when position weights b(x) are misspecified or exposure feedback e_{t,i} is unobserved</code>; <code>missing link: behavior under exposure→preference feedback loops (explicitly out of scope)</code>.</li></ul></div></details>
+<details><summary><span class="en-only">Follow-up Papers</span><span class="ko-only">관련 후속 논문</span></summary><div class="card" style="margin-top:0.5rem"><ul><li>Usunier, Do &amp; Dohmatob, "Fast online ranking with fairness of exposure" (FAccT 2022) — same group's amortized-exposure FW machinery in the full-information setting; direct precursor.</li><li>Jeunen &amp; Goethals, "Top-k contextual bandits with equity of exposure" (RecSys 2021) — the heuristic contextual-ranking-fairness baseline this paper supersedes with guarantees.</li><li>Mansoury et al., "Unbiased cascade bandits: mitigating exposure bias in online learning to rank" (2021) — exposure-bias mitigation module used here as the Unbiased-LinUCBRank baseline; directly relevant to SP6's exposure-as-proxy framing.</li><li>Zhu &amp; Mineiro (ICML 2022) / Zhu et al. (ICML 2022) — SquareCB extensions to large/continuous action spaces the authors note plug into their reduction.</li></ul></div></details>
+</section>
+<section id="delta" class="section-anchor">
+<div class="card"><div class="section-label"><span class="en-only">Condition Delta — transfer to our setting</span><span class="ko-only">조건 차이 — 우리 설정으로의 전이</span></div><p><strong>Paper's setting</strong>: inputs = per-round user/item feature contexts (linear reward model $v_i(x)=\theta^\top x_i$), position-based exposure model with binary exposure ($e_{t,i}$) and click ($c_{t,i}$) feedback; outputs = a ranking (permutation matrix) per round; conditions = known concave trade-off $f$ chosen by the designer, stochastic i.i.d. contexts, online interaction over $T$ up to $5\times10^6$ rounds. <strong>Our setting</strong> (SP6 — exposure frequency as a ranking proxy): analyzing how accumulated exposure frequency acts as (or distorts) a relevance/ranking signal, and how exposure should be allocated when the ranking system itself controls what gets observed. <strong>Differences</strong>:</p>
+<ul><li>The paper <em>controls</em> amortized exposure directly as reward components with a fairness objective — it treats exposure as an allocation target, whereas SP6 treats exposure frequency as a measurement proxy: <code>reference only</code> (conceptual anchor for principled exposure allocation, not a drop-in method).</li><li>Requires explicit per-item exposure observation $e_{t,i}$: in typical logged-ranking settings exposure is inferred from position, not observed: <code>missing link</code>.</li><li>Requires a designer-specified concave $f$ (trade-off parameter $\beta$); our setting has no canonical $f$: <code>missing link</code> (the paper itself flags preference elicitation for $f$ as open).</li><li>Linear reward assumption for item values: <code>resolved: FW-SquareCB variant handles general reward functions via any online regression oracle</code>.</li><li>i.i.d. stochastic contexts, no feedback loops between exposure and future user behavior — the paper explicitly defers feedback-loop effects (citing Jiang et al. 2019): <code>missing link</code> for SP6, where exposure→popularity feedback is central.</li></ul></div>
+<div class="card"><div class="section-label"><span class="en-only">Root-cause vs. Symptom</span><span class="ko-only">근본 원인 대 증상</span></div><p><code>Direct</code> — the paper identifies the exact structural obstacle (policy space over a continuous context set is not amenable to optimization) and removes it by reparameterizing into reward space, with a proved reduction theorem; the fair-ranking guarantee follows from the same mechanism rather than from patching a fairness metric onto an existing ranker.</p></div>
+</section>
+<div class="page-nav"><a href="55_FairExposureBandits.html">&larr; [55] FairExposureBandits</a><a href="../sp6_bandit-exposure-allocation.html">&uarr; SP6</a><a href="57_BlackwellFair.html">[57] BlackwellFair &rarr;</a></div>
+    </div>
+  </div>
+<nav class="bd-sidebar-secondary"><div class="mini-toc-label"><span class="en-only">On this page</span><span class="ko-only">이 페이지</span></div><ul class="mini-toc"><li><a href="#header"><span class="en-only">Paper info</span><span class="ko-only">논문 정보</span></a></li><li><a href="#problem"><span class="en-only">Problem</span><span class="ko-only">문제</span></a></li><li><a href="#solution"><span class="en-only">Solution &amp; Results</span><span class="ko-only">해결책 · 결과</span></a></li><li><a href="#results"><span class="en-only">Concepts &amp; Follow-ups</span><span class="ko-only">개념 · 후속</span></a></li><li><a href="#delta"><span class="en-only">Condition Delta</span><span class="ko-only">조건 차이</span></a></li></ul></nav>
+</div>
+</body>
+</html>

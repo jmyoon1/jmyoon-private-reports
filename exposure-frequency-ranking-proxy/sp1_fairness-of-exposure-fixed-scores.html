@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SP1: Fairness of Exposure in Rankings under Fixed Scores — Exposure-Frequency Control Survey</title>
+
+<style>
+:root {
+  --bg: #0d1117; --card: #161b22; --border: #30363d;
+  --text: #e6edf3; --muted: #7d8590; --accent: #58a6ff;
+  --teal: #39d0c7; --green: #3fb950; --yellow: #d29922;
+  --red: #f85149; --purple: #bc8cff; --orange: #e3b341;
+  --sidebar-w: 262px; --toc-w: 210px; --hdr-h: 48px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+body { font-family: -apple-system, sans-serif; background: var(--bg);
+       color: var(--text); line-height: 1.6; }
+.bd-root { display: flex; height: 100vh; overflow: hidden; }
+.bd-sidebar-primary {
+  width: var(--sidebar-w); min-width: var(--sidebar-w);
+  overflow-y: auto; background: var(--card);
+  border-right: 1px solid var(--border);
+  padding: 0.75rem 0; flex-shrink: 0;
+}
+.bd-sidebar-primary::-webkit-scrollbar { width: 4px; }
+.bd-sidebar-primary::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+.bd-main { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-width: 0; }
+.article-header-bar {
+  height: var(--hdr-h); background: var(--card);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; padding: 0 1.5rem;
+  gap: 1rem; flex-shrink: 0;
+}
+.header-brand { color: var(--teal); font-weight: bold; font-size: 0.95em;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 1; }
+.header-brand a { color: inherit; text-decoration: none; }
+.breadcrumb { color: var(--muted); font-size: 0.82em; display: flex;
+  align-items: center; gap: 0.3rem; flex-shrink: 0; }
+.breadcrumb a { color: var(--accent); text-decoration: none; }
+.breadcrumb span { color: var(--border); }
+.bd-article { flex: 1; overflow-y: auto; padding: 2rem 2.5rem; }
+.bd-article::-webkit-scrollbar { width: 6px; }
+.bd-article::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+.bd-sidebar-secondary {
+  width: var(--toc-w); min-width: var(--toc-w);
+  overflow-y: auto; border-left: 1px solid var(--border);
+  padding: 1rem 0.75rem; flex-shrink: 0;
+}
+.bd-sidebar-secondary::-webkit-scrollbar { width: 4px; }
+.bd-sidebar-secondary::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+.sidebar-logo { padding: 0.5rem 1rem 0.75rem;
+  border-bottom: 1px solid var(--border); margin-bottom: 0.5rem; }
+.sidebar-logo a { color: var(--teal); font-weight: bold; font-size: 0.95em;
+  text-decoration: none; display: block; }
+.sidebar-section { color: var(--muted); font-size: 0.72em; font-weight: bold;
+  text-transform: uppercase; letter-spacing: 0.07em;
+  padding: 0.7rem 1rem 0.25rem; }
+.sidebar-nav-link { display: block; padding: 0.28rem 1rem 0.28rem 1.25rem;
+  color: var(--muted); font-size: 0.875em; text-decoration: none; }
+.sidebar-nav-link:hover { color: var(--text); background: rgba(255,255,255,0.03); }
+.sidebar-nav-link.active { color: var(--teal);
+  border-left: 2px solid var(--teal);
+  padding-left: calc(1.25rem - 2px); background: rgba(57,208,199,0.05); }
+.mini-toc-label { color: var(--muted); font-size: 0.72em; font-weight: bold;
+  text-transform: uppercase; letter-spacing: 0.07em; padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border); margin-bottom: 0.5rem; }
+.mini-toc { list-style: none; }
+.mini-toc li a { display: block; padding: 0.22rem 0;
+  color: var(--muted); font-size: 0.83em; text-decoration: none;
+  border-left: 2px solid transparent; padding-left: 0.5rem; }
+.mini-toc li a:hover { color: var(--text); }
+.mini-toc li a.toc-active { color: var(--teal); border-left-color: var(--teal); }
+.section-anchor { scroll-margin-top: calc(var(--hdr-h) + 8px); }
+h1 { color: var(--teal); font-size: 1.7em; margin-bottom: 0.5rem; line-height:1.3; }
+h2 { color: var(--teal); font-size: 1.25em; margin: 1.5rem 0 0.6rem; }
+h3 { color: var(--teal); font-size: 1.05em; margin: 1.2rem 0 0.4rem; }
+h4 { color: var(--teal); font-size: 0.95em; margin: 1rem 0 0.3rem; }
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+p { margin-bottom: 0.8rem; }
+ul, ol { margin: 0 0 0.8rem 1.4rem; }
+li { margin-bottom: 0.3rem; }
+code { background: rgba(255,255,255,0.06); border-radius: 3px; padding: 1px 4px; font-size: 0.9em; }
+blockquote { border-left: 3px solid var(--border); color: var(--muted);
+  padding: 0.2rem 0.8rem; margin-bottom: 0.8rem; }
+.card { background: var(--card); border: 1px solid var(--border);
+        border-radius: 8px; padding: 1.2rem; margin-bottom: 1rem; }
+table { width: 100%; border-collapse: collapse; font-size: 0.9em; margin-bottom: 0.8rem; }
+th { background: var(--card); color: var(--teal); padding: 8px;
+     border: 1px solid var(--border); text-align: left; }
+td { padding: 8px; border: 1px solid var(--border); vertical-align: top; }
+tr:nth-child(even) td { background: rgba(0,0,0,0.2); }
+.stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+             gap: 1rem; margin-bottom: 1.5rem; }
+.stat-box { background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+            padding: 1rem; text-align: center; }
+.stat-num { font-size: 2rem; font-weight: bold; color: var(--teal); }
+.stat-label { color: var(--muted); font-size: 0.85em; margin-top: 0.2rem; }
+.sp-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+           gap: 1rem; margin: 1rem 0; }
+.sp-card { background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+           padding: 1.2rem; cursor: pointer; transition: border-color 0.15s; height:100%; }
+.sp-card:hover { border-color: var(--teal); }
+.sp-card h3 { margin: 0 0 0.5rem; color: var(--teal); font-size: 1em; }
+.sp-card p { margin: 0; color: var(--muted); font-size: 0.88em; }
+.sp-badge { display: inline-block; background: rgba(57,208,199,0.1); color: var(--teal);
+            border-radius: 4px; padding: 2px 8px; font-size: 0.8em; margin-bottom: 0.5rem; }
+.paper-meta { color: var(--muted); font-size: 0.9em; margin-bottom: 1.5rem; }
+.paper-meta a { color: var(--accent); }
+.section-label { color: var(--teal); font-weight: bold; font-size: 0.85em;
+                 text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.4rem; }
+.pill { display: inline-block; border-radius: 4px; padding: 0.15rem 0.6rem;
+        font-size: 0.8em; font-weight: bold; margin-right: 0.4rem; }
+.pill-p0 { background: rgba(63,185,80,0.2); color: var(--green); }
+.pill-p1 { background: rgba(57,208,199,0.15); color: var(--teal); }
+.pill-p2 { background: rgba(210,153,34,0.2); color: var(--yellow); }
+.pill-p3 { background: rgba(188,140,255,0.2); color: var(--purple); }
+.pill-p4 { background: rgba(125,133,144,0.2); color: var(--muted); }
+.delta-row { margin: 0.4rem 0; padding: 0.4rem 0.8rem;
+             border-left: 3px solid var(--border); border-radius: 0 4px 4px 0; }
+.chain { position: relative; padding-left: 2rem; }
+.chain::before { content: ''; position: absolute; left: 0.95rem; top: 0;
+                 bottom: 0; width: 2px; background: var(--border); }
+.chain-node { position: relative; margin-bottom: 2rem; }
+.chain-node::before { content: ''; position: absolute; left: -1.55rem;
+                      top: 1.1rem; width: 12px; height: 12px;
+                      border-radius: 50%; background: var(--teal); }
+.chain-num { display: inline-block; width: 28px; height: 28px; background: var(--teal);
+             color: #000; border-radius: 50%; text-align: center; line-height: 28px;
+             font-weight: bold; font-size: 0.85em; margin-right: 0.6rem; flex-shrink: 0; }
+.chain-q { font-weight: bold; color: var(--text); margin: 0.4rem 0 0.3rem; font-size: 1em; }
+.chain-papers { color: var(--muted); font-size: 0.85em; margin-bottom: 0.6rem; }
+.chain-start { background: var(--card); border: 1px solid var(--teal);
+               border-radius: 8px; padding: 1rem; margin-bottom: 2rem; }
+.chain-start h3 { margin: 0 0 0.5rem; color: var(--teal); }
+.chain-converge { background: var(--card); border: 1px solid var(--green);
+                  border-radius: 8px; padding: 1rem; margin-top: 1rem; }
+.chain-converge h3 { margin: 0 0 0.5rem; color: var(--green); }
+.chain-label { display: inline-block; border-radius: 4px; padding: 0.15rem 0.6rem;
+               font-size: 0.8em; font-weight: bold; margin-right: 0.4rem; }
+.chain-status { border-radius: 0 4px 4px 0; padding: 0.5rem 0.8rem;
+                margin: 0.35rem 0; font-size: 0.88em; }
+.chain-status ul { margin: 0.3rem 0 0 1.2rem; padding: 0; }
+.chain-status li { margin-bottom: 0.25rem; }
+.chain-status.solved  { background: rgba(63,185,80,0.07);  border-left: 3px solid var(--green); }
+.chain-status.remains { background: rgba(210,153,34,0.07); border-left: 3px solid var(--yellow); }
+.chain-status.added   { background: rgba(248,81,73,0.07);  border-left: 3px solid var(--red); }
+.chain-status.pivoted { background: rgba(188,140,255,0.1); border-left: 3px solid var(--purple); }
+.chain-label.solved   { background: rgba(63,185,80,0.2);  color: var(--green); }
+.chain-label.remains  { background: rgba(210,153,34,0.2); color: var(--yellow); }
+.chain-label.added    { background: rgba(248,81,73,0.2);  color: var(--red); }
+.chain-label.pivoted  { background: rgba(188,140,255,0.2); color: var(--purple); }
+.chain-status.expected { background: rgba(88,166,255,0.07);  border-left: 3px solid var(--accent); }
+.chain-label.expected  { background: rgba(88,166,255,0.2);   color: var(--accent); }
+.chain-status.revised  { background: rgba(57,208,199,0.07);  border-left: 3px solid var(--teal); }
+.chain-label.revised   { background: rgba(57,208,199,0.2);   color: var(--teal); }
+.concept-box { border-left: 4px solid var(--teal); background: #0d1f1f;
+               border-radius: 4px; padding: 1.2rem; margin-bottom: 1.2rem; }
+.concept-name { font-weight: bold; color: var(--teal); font-size: 1.05em; margin-bottom: 0.5rem; }
+.hypothesis { border-left: 4px solid var(--teal); background: #0d1f1f;
+              border-radius: 4px; padding: 1rem; margin: 1rem 0; }
+.recommendation { border-left: 4px solid var(--purple); background: #1a0f2e;
+                  border-radius: 4px; padding: 1rem; margin: 1rem 0; }
+.rq-row { background: rgba(88,166,255,0.05); border-left: 3px solid var(--accent);
+          padding: 0.4rem 0.8rem; margin-bottom: 0.5rem; border-radius: 0 4px 4px 0; }
+.scroll-table-wrap { max-height: 420px; overflow-y: auto; border: 1px solid var(--border);
+                     border-radius: 4px; }
+.scroll-table-wrap table { margin-bottom: 0; }
+.scroll-table-wrap thead th { position: sticky; top: 0; background: #161b22; z-index: 1; }
+.page-nav { display: flex; justify-content: space-between; margin-top: 2rem;
+            padding-top: 1rem; border-top: 1px solid var(--border); gap: 1rem; }
+.page-nav a { color: var(--accent); font-size: 0.9em; }
+html.ko-active .en-only { display: none !important; }
+html.ko-active .ko-only { display: block !important; }
+.ko-only { display: none; }
+span.ko-only, .sidebar-logo a span.ko-only { display: none; }
+html.ko-active span.ko-only { display: inline !important; }
+.lang-btn { background: transparent; color: var(--muted); border: 1px solid var(--border);
+            border-radius: 4px; padding: 3px 9px; font-size: 0.8em; cursor: pointer; }
+.lang-btn.active { border-color: var(--teal); color: var(--teal); }
+details { margin-bottom: 0.8rem; }
+details summary { color: var(--muted); cursor: pointer; }
+@media (max-width: 1024px) { .bd-sidebar-secondary { display: none; } }
+@media (max-width: 768px) {
+  .bd-sidebar-primary { display: none; }
+  .bd-root { flex-direction: column; height: auto; overflow: visible; }
+  .bd-main { overflow: visible; }
+  .bd-article { overflow: visible; padding: 1rem; }
+  .stat-grid { grid-template-columns: repeat(2, 1fr); }
+  .sp-grid { grid-template-columns: 1fr; }
+}
+</style>
+
+<script>
+MathJax = { tex: { inlineMath: [['$','$']], displayMath: [['$$','$$']] },
+            options: { skipHtmlTags: ['script','noscript','style','textarea','pre','code'] } };
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<script>
+function toggleLanguage() {
+  const html = document.documentElement;
+  const isKo = html.classList.toggle('ko-active');
+  document.querySelectorAll('.lang-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.lang === (isKo ? 'ko' : 'en'));
+  });
+  localStorage.setItem('survey-lang', isKo ? 'ko' : 'en');
+}
+document.addEventListener('DOMContentLoaded', function() {
+  const saved = localStorage.getItem('survey-lang');
+  if (saved === 'ko') {
+    document.documentElement.classList.add('ko-active');
+    document.querySelectorAll('.lang-btn').forEach(b =>
+      b.classList.toggle('active', b.dataset.lang === 'ko'));
+  } else {
+    document.querySelectorAll('[data-lang="en"]').forEach(b => b.classList.add('active'));
+  }
+  const article = document.querySelector('.bd-article');
+  const sections = Array.from(document.querySelectorAll('.section-anchor[id]'));
+  const sideLinks = Array.from(document.querySelectorAll('.bd-sidebar-primary .sidebar-nav-link'));
+  const tocLinks = Array.from(document.querySelectorAll('.bd-sidebar-secondary .mini-toc a'));
+  if (!article || !sections.length) return;
+  function current() {
+    let id = sections[0].id;
+    const scrollTop = article.scrollTop + 60;
+    sections.forEach(function(s) { if (s.offsetTop <= scrollTop) id = s.id; });
+    return id;
+  }
+  function update() {
+    const id = current();
+    sideLinks.forEach(function(a) {
+      a.classList.toggle('active', a.getAttribute('href') === '#' + id);
+    });
+    tocLinks.forEach(function(a) {
+      a.classList.toggle('toc-active', a.getAttribute('href') === '#' + id);
+    });
+  }
+  article.addEventListener('scroll', update, { passive: true });
+  update();
+});
+</script>
+
+</head>
+<body>
+<div class="bd-root">
+
+<nav class="bd-sidebar-primary">
+  <div class="sidebar-logo">
+    <a href="index.html">&#x2B21; <span class="en-only">Exposure-Frequency Control Survey</span><span class="ko-only">Exposure-빈도 제어 문헌 조사</span></a>
+  </div>
+  <div class="sidebar-section"><span class="en-only">Overview</span><span class="ko-only">개요</span></div>
+  <a href="index.html#overview" class="sidebar-nav-link"><span class="en-only">Survey Hub</span><span class="ko-only">조사 허브</span></a>
+  <a href="index.html#answers" class="sidebar-nav-link"><span class="en-only">Key Answers</span><span class="ko-only">핵심 답변</span></a>
+  <div class="sidebar-section"><span class="en-only">Sub-Problems</span><span class="ko-only">세부 문제</span></div>
+<a href="sp1_fairness-of-exposure-fixed-scores.html" class="sidebar-nav-link active">SP1: <span class="en-only">Exposure fairness</span><span class="ko-only">Exposure 공정성</span></a>
+<a href="sp2_2024-2026-frontier-llm-era.html" class="sidebar-nav-link">SP2: <span class="en-only">2024–26 frontier / LLM</span><span class="ko-only">2024–26 최전선 / LLM</span></a>
+<a href="sp3_postproc-rerank-blackbox.html" class="sidebar-nav-link">SP3: <span class="en-only">Post-proc re-ranking</span><span class="ko-only">Post-proc re-ranking</span></a>
+<a href="sp4_stochastic-ranking-policies.html" class="sidebar-nav-link">SP4: <span class="en-only">Stochastic policies</span><span class="ko-only">확률적 정책</span></a>
+<a href="sp5_amortized-equity-attention.html" class="sidebar-nav-link">SP5: <span class="en-only">Amortized fairness</span><span class="ko-only">Amortized 공정성</span></a>
+<a href="sp6_bandit-exposure-allocation.html" class="sidebar-nav-link">SP6: <span class="en-only">Bandit allocation</span><span class="ko-only">Bandit 배분</span></a>
+<a href="sp7_capping-pacing-feeds-ads.html" class="sidebar-nav-link">SP7: <span class="en-only">Capping &amp; pacing</span><span class="ko-only">Capping·pacing</span></a>
+<a href="sp8_popularity-debias-calibration.html" class="sidebar-nav-link">SP8: <span class="en-only">Debiasing &amp; calibration</span><span class="ko-only">Debiasing·calibration</span></a>
+<a href="sp9_ecosystems-creator-incentives.html" class="sidebar-nav-link">SP9: <span class="en-only">Ecosystems &amp; creators</span><span class="ko-only">생태계·creator</span></a>
+<a href="sp10_llm-exposure-feedback-loops.html" class="sidebar-nav-link">SP10: <span class="en-only">LLM feedback loops</span><span class="ko-only">LLM feedback loop</span></a>
+<a href="sp11_strategyproof-exposure.html" class="sidebar-nav-link">SP11: <span class="en-only">Strategy-proofness</span><span class="ko-only">Strategy-proofness</span></a>
+
+  <div class="sidebar-section"><span class="en-only">Synthesis</span><span class="ko-only">종합</span></div>
+  <a href="conclusion.html" class="sidebar-nav-link"><span class="en-only">Conclusion</span><span class="ko-only">결론</span></a>
+  <a href="thinking-process.html" class="sidebar-nav-link"><span class="en-only">Thinking Process</span><span class="ko-only">추론 과정</span></a>
+</nav>
+  <div class="bd-main">
+<div class="article-header-bar"><div class="header-brand"><a href="index.html"><span class="en-only">Exposure-Frequency Control Survey</span><span class="ko-only">Exposure-빈도 제어 문헌 조사</span></a></div><nav class="breadcrumb"><a href="index.html"><span class="en-only">Survey</span><span class="ko-only">조사</span></a><span>&rsaquo;</span><span>SP1: <span class="en-only">Exposure fairness</span><span class="ko-only">Exposure 공정성</span></span></nav><button class="lang-btn" data-lang="en" onclick="toggleLanguage()">EN</button><button class="lang-btn" data-lang="ko" onclick="toggleLanguage()">KO</button></div>
+    <div class="bd-article">
+<section id="intro" class="section-anchor">
+<div class="lang en-only"><h1>SP1: Fairness of Exposure in Rankings under Fixed Scores</h1><p style="color:var(--muted)">15 papers · targets O1, O2 · 2018-2026</p><p>How the literature allocates exposure via ranking distributions when relevance scores are fixed — the taxonomy backbone for O1 and the first access-level labels for O2's feasibility map under the black-box / immutable-scores / frequency-only constraint.</p></div><div class="lang ko-only"><h1>SP1: 고정 score 하의 exposure 공정성</h1><p style="color:var(--muted)">15편 논문 · O1, O2 목표 대상 · 2018-2026</p><p>relevance score가 고정되어 있을 때 exposure를 ranking 분포로 배분하는 문헌 — O1 taxonomy의 골격과, black-box·score 불변·빈도 전용 제약에 대한 O2 접근 수준 라벨의 출발점이다.</p></div>
+</section>
+<section id="rationale" class="section-anchor"><div class="card" style="border-color:var(--accent)">
+<div class="lang en-only"><h2 style="margin-top:0">Entry Assumption vs. What Was Found</h2><p><strong>Expected</strong> (original rationale — no revisions): The densest, most directly on-point field: given fixed relevance/scores, allocate exposure via ranking distributions to satisfy exposure constraints. Expected to contain the seed papers (Singh &amp; Joachims 2018, FairRec) and their entire successor line, giving the taxonomy backbone for O1 and the access-level labels for O2.</p><p><strong>Found:</strong> A single shared mechanism answers the SP question: utility and exposure are both linear in the marginal rank-probability matrix, so exposure control reduces to convex optimization, realized as a distribution over rankings served across repeated impressions — literally an impression-frequency schedule. 9 of 15 papers are score-read-only.</p><p><strong>Assessment:</strong> Surprised — the field was expected to contain literal show/don't-show methods, but almost every method presumes per-instance slate-reordering rights; only FairRec operates on raw inclusion counts, and its EF1/MMS guarantees provably do not transfer to position-weighted exposure. The 2026 SOTA (HEA) even moves away from black-box feasibility.</p></div><div class="lang ko-only"><h2 style="margin-top:0">사전 가정과 실제 발견</h2><p><strong>기대</strong> (최초 rationale — 수정 없음): 가장 밀도 높고 직접적인 분야로서, 고정 score 하에서 ranking 분포를 통해 exposure 제약을 만족시키는 seed 논문들(Singh &amp; Joachims 2018, FairRec)과 그 후속 계보 전체를 담고 있어 O1 taxonomy의 골격과 O2 접근 수준 라벨을 제공할 것으로 기대하였다.</p><p><strong>발견</strong>: 효용과 exposure가 모두 주변 순위 확률 행렬에 선형이므로 exposure 제어가 볼록 최적화로 환원되고, 그 해는 반복 impression에 걸쳐 서빙되는 ranking 분포 — 곧 impression-frequency 스케줄 — 로 실현된다. 15편 중 9편이 score-read-only였다.</p><p><strong>평가</strong>: 예상과 다름 — 문자 그대로의 show/don't-show 방법이 있을 것으로 기대했으나, 대부분의 방법이 인스턴스별 slate 재배열 권한을 전제한다. 순수 포함 횟수로 동작하는 것은 FairRec뿐이며, 그 보장은 position 가중 exposure로 이전되지 않는다. 2026년 SOTA(HEA)는 오히려 black-box 실행 가능성에서 멀어진다.</p></div>
+</div></section>
+<section id="establishes" class="section-anchor"><div class="card" style="border-color:var(--teal)">
+<div class="lang en-only"><h2 style="margin-top:0">What SP1 Establishes</h2><p>The SP question — given fixed scores, how is exposure allocated to satisfy exposure constraints — is answered fully and by a single shared mechanism: <strong>because both user utility and item exposure are linear in the marginal rank-probability matrix, the combinatorial problem of choosing rankings collapses to convex optimization over that matrix, and the optimized marginals are realized as a distribution over concrete rankings executed across repeated impressions</strong> (<a href="papers/01_FoE.html">[01] FoE</a>: LP over doubly stochastic matrices + Birkhoff–von Neumann sampling; <a href="papers/05_IncompleteExposure.html">[05] IncompleteExposure</a>: the top-$k$ generalization; <a href="papers/10_ParetoRepeatedRankings.html">[10] ParetoRepeatedRankings</a>: the same geometry in exposure space at $O(n^2\log n)$ instead of $O(n^5)$). A stochastic ranking policy <strong>is</strong> an impression-frequency schedule — each item's expected exposure equals its frequency of appearing at each position across servings — so this entire line operates through exactly the knob the user has (<a href="papers/05_IncompleteExposure.html">[05] IncompleteExposure</a> states this equivalence explicitly).</p>
+<p>For the black-box lens: nearly every method here is <strong>score-read-only</strong> — it consumes the scorer's outputs as an immutable merit vector and never transforms them, which fits the user's constraint (scores must be used, cannot be modified). The genuinely <strong>score-free</strong> alternative (score-agnostic randomization) exists but is demonstrably dominated: score-aware Plackett–Luce randomization beats score-agnostic rank-transposition at every disparity level (<a href="papers/15_ExpectedExposure.html">[15] ExpectedExposure</a>). What the SP1 literature does <strong>not</strong> answer: (a) how policy probabilities map onto discrete impression caps/boosts in a production serving stack, and (b) whether any guarantee survives when the black-box scores are themselves miscalibrated — <a href="papers/14_FairPGRank.html">[14] FairPGRank</a> shows post-processing on biased estimated relevances can make exposure <em>less</em> fair, and no SP1 paper bounds this sensitivity.</p></div><div class="lang ko-only"><h2 style="margin-top:0">SP1이 확립한 것</h2><p>SP1은 다음을 확립한다. 효용과 exposure가 모두 주변 순위 확률 행렬에 선형이라는 사실 때문에, 고정 score 하의 exposure 제어는 그 행렬 위의 볼록 최적화로 붕괴하며(FoE의 LP+BvN, IncompleteExposure의 top-k 일반화, expohedron의 O(n² log n) 기하), 최적화된 주변 확률은 반복 impression에 걸친 구체적 ranking들의 분포로 실현된다. 확률적 ranking 정책은 곧 impression-frequency 스케줄이다. 거의 모든 방법이 score-read-only이므로 사용자의 score 불변 제약과 부합하지만, (a) 정책 확률을 production의 이산적 impression 예산으로 사상하는 문제와 (b) black-box score 자체가 miscalibrated일 때 보장이 유지되는가는 SP1 문헌이 답하지 못한다.</p></div>
+</div>
+<details><summary><span class="en-only">Dominant Approach</span><span class="ko-only">지배적 접근</span></summary><div class="card" style="margin-top:0.5rem"><p>The dominant family is <strong>score-read-only post-processing over a fixed merit vector</strong>, in two realizations that are formally the same intervention at different timescales. (1) <em>Within-query stochastic policies</em>: solve a convex program over marginal rank probabilities under linear exposure constraints, then serve a distribution over rankings (<a href="papers/01_FoE.html">[01] FoE</a>, <a href="papers/05_IncompleteExposure.html">[05] IncompleteExposure</a>, <a href="papers/10_ParetoRepeatedRankings.html">[10] ParetoRepeatedRankings</a>, <a href="papers/15_ExpectedExposure.html">[15] ExpectedExposure</a>). (2) <em>Cross-query amortization</em>: keep a per-item or per-provider cumulative exposure ledger and re-rank each arriving request to repay exposure deficits, via ILP (<a href="papers/11_EquityOfAttention.html">[11] EquityOfAttention</a>), online dual/pacing variables (<a href="papers/04_PMMF.html">[04] PMMF</a>, <a href="papers/08_RegretAware.html">[08] RegretAware</a>), velocity re-scoring with a per-user utility floor (<a href="papers/09_FairSort.html">[09] FairSort</a>), or greedy round-robin allocation of inclusion slots (<a href="papers/13_FairRec.html">[13] FairRec</a>). The family became dominant because it is model-agnostic — any scorer's outputs plug in as the merit vector — and because the linear structure gives optimality proofs, feasibility bounds, and $O(T^{1/2})$ online regret guarantees (<a href="papers/04_PMMF.html">[04] PMMF</a>) that in-processing methods cannot match without retraining.</p>
+<p>Its key limitation is <strong>what it trusts and what it assumes it can touch</strong>. Every method trusts the fixed scores as ground-truth merit; <a href="papers/14_FairPGRank.html">[14] FairPGRank</a> demonstrates on a controlled synthetic that when scores carry representation bias, post-processing on those scores becomes <em>less</em> fair as the fairness weight increases — the one in-processing paper in this SP exists precisely because of that failure mode, and it costs full retraining. Every method also assumes a known position-bias curve; <a href="papers/05_IncompleteExposure.html">[05] IncompleteExposure</a> shows that when inter-item dependencies (e.g. visual outliers) break the position-only exposure model, policy fairness can no longer even be verified. And almost every method assumes the right to <em>reorder entire slates per instance</em> — a stronger lever than pure impression-frequency control. Only <a href="papers/13_FairRec.html">[13] FairRec</a> operates on raw inclusion counts (show/don't-show, uniform attention), and it explicitly concedes its guarantees do not transfer to position-weighted exposure.</p>
+<p>For the survey objectives this means: O1's taxonomy backbone is complete from SP1 (constraint-based stochastic policies; amortized ledger controllers; allocation-theoretic guarantees; in-processing policy learning as the retraining contrast class). For O2, the feasible subset under the user's constraint is the score-read-only, frequency-level column — with one sharp caveat: if the user cannot even reorder slates and can only cap/boost impressions, the <em>literal</em> match shrinks to FairRec-style inclusion allocation plus the interpretation of stochastic policies as frequency schedules, and the mapping from policy weights to discrete impression budgets is nowhere worked out in this SP.</p></div></details>
+<details><summary><span class="en-only">Convergences</span><span class="ko-only">수렴 지점</span></summary><div class="card" style="margin-top:0.5rem"><ul><li><strong>A single ranking cannot satisfy exposure constraints; a distribution over rankings (equivalently, an exposure-frequency schedule) can.</strong> Reached independently via the LP/BvN construction (<a href="papers/01_FoE.html">[01] FoE</a>), the impossibility argument that motivates amortization (<a href="papers/11_EquityOfAttention.html">[11] EquityOfAttention</a>), and the equal-expected-exposure principle that no deterministic ranker meets (<a href="papers/15_ExpectedExposure.html">[15] ExpectedExposure</a>). Mechanism: position bias is fixed per slate, so redistribution requires varying slates across impressions.</li><li><strong>Merit-proportional exposure is the shared normative target.</strong> <a href="papers/01_FoE.html">[01] FoE</a> (disparate treatment ratio), <a href="papers/11_EquityOfAttention.html">[11] EquityOfAttention</a> (attention ∝ relevance), <a href="papers/14_FairPGRank.html">[14] FairPGRank</a> (exposure-to-merit ratios), <a href="papers/15_ExpectedExposure.html">[15] ExpectedExposure</a> (target exposure from relevance grades), and <a href="papers/12_RecFairnessSurvey.html">[12] RecFairnessSurvey</a> (calibrated fairness as one of two dominant concepts) all normalize exposure by merit rather than demanding parity.</li><li><strong>The utility cost of exposure control is governed by the flatness of the relevance distribution.</strong> Near-free when ties are abundant (real Airbnb data: amortization at zero NDCG loss allowed, <a href="papers/11_EquityOfAttention.html">[11] EquityOfAttention</a>; DCG cost −0.4% in <a href="papers/01_FoE.html">[01] FoE</a>); collapses when relevance decays steeply (exponential-relevance synthetic makes any quality constraint $\theta\ge0.5$ infeasible, <a href="papers/11_EquityOfAttention.html">[11] EquityOfAttention</a>; parity cost unbounded, <a href="papers/01_FoE.html">[01] FoE</a> §5).</li><li><strong>Cumulative-ledger dual/pacing control is the scalable online realization.</strong> <a href="papers/04_PMMF.html">[04] PMMF</a> and <a href="papers/08_RegretAware.html">[08] RegretAware</a> independently use per-provider dual variables updated from exposure deficits — functionally an impression-pacing controller — with inference cost tied to provider count, not catalog size (17–40ms flat to 200k items, <a href="papers/04_PMMF.html">[04] PMMF</a>).</li></ul></div></details>
+<details><summary><span class="en-only">Divergences</span><span class="ko-only">분기 지점</span></summary><div class="card" style="margin-top:0.5rem"><ul><li><strong>Equality vs. one-sided exposure-to-merit constraints.</strong> <a href="papers/01_FoE.html">[01] FoE</a> and <a href="papers/11_EquityOfAttention.html">[11] EquityOfAttention</a> enforce equality-form proportionality; <a href="papers/14_FairPGRank.html">[14] FairPGRank</a> proves the equality form infeasible whenever low-merit items must still occupy slots (overabundant exposure) and replaces it with one-sided constraints that only cap above-merit exposure. Likely cause: the equality papers optimize per-query where infeasibility is masked by expectation-level satisfaction; the learning paper must handle every training query. Adjudicated in favor of one-sided forms for general settings, but the field largely still uses equality metrics.</li><li><strong>What "exposure" is: inclusion counts vs. position-discounted attention.</strong> <a href="papers/13_FairRec.html">[13] FairRec</a> defines exposure as uniform-attention list membership (its EF1/MMS guarantees hold on counts only); <a href="papers/09_FairSort.html">[09] FairSort</a>, <a href="papers/11_EquityOfAttention.html">[11] EquityOfAttention</a>, <a href="papers/04_PMMF.html">[04] PMMF</a>-adjacent work use log-discounted position weights. <a href="papers/13_FairRec.html">[13] FairRec</a> itself concedes its guarantees do not transfer under position weighting. Unresolved — and directly load-bearing for O2, since pure frequency control governs counts, not positions.</li><li><strong>Are aggregate exposure metrics sufficient?</strong> <a href="papers/06_HEA.html">[06] HEA</a> shows the standard baselines (FairRec, CPFair, FairDual, Multi-FR) improve inter-group exposure shares while <em>raising</em> within-group Gini ("pseudo-fairness"), and <a href="papers/02_JME.html">[02] JME</a> constructs six systems with identical II-F that differ arbitrarily on group-level metrics. Both contradict the implicit sufficiency claim of single-scalar evaluation in the earlier line. Cause: aggregate KL/variance objectives are blind to distribution <em>within</em> groups.</li><li><strong>Is post-processing on estimated scores safe?</strong> The whole re-ranking line treats it as adequate; <a href="papers/14_FairPGRank.html">[14] FairPGRank</a> demonstrates the opposite when the score representation is group-corrupted (its post-processing baseline gets less fair as its fairness weight rises). Cause: post-processing can only reallocate exposure among items <em>as scored</em>; it cannot see which scores are biased. No SP1 paper adjudicates this on real data.</li></ul></div></details>
+<details><summary><span class="en-only">Prior Beliefs and Surprises (full)</span><span class="ko-only">사전 믿음과 놀라움 (전문)</span></summary><div class="card" style="margin-top:0.5rem"><p><strong>What the entry rationale expected to find</strong>:</p>
+<blockquote>"The densest, most directly on-point field: given fixed relevance/scores, allocate exposure via ranking distributions to satisfy exposure constraints. Contains the seed papers and their entire successor line, giving the taxonomy backbone for O1 and the access-level labels for O2."</blockquote>
+<p><strong>Confirmed</strong>:</p>
+<ul><li>The taxonomy backbone is fully buildable from SP1 alone: constraint-based stochastic policies, amortized ledger controllers, allocation-theoretic guarantees, and the in-processing contrast class are all present with their succession structure (FairRec → P-MMF → BankFair+/FairSort/HEA baseline chains visible in the citation graph).</li><li>Access-level labeling worked: 9 of 15 papers are cleanly score-read-only, confirming the field's post-processing center of gravity.</li></ul>
+<p><strong>Surprised</strong>:</p>
+<ul><li>(a) Assumed: the field would contain literal impression-frequency (show/don't-show) methods. Found instead: almost every method presumes full per-instance slate-reordering rights; only <a href="papers/13_FairRec.html">[13] FairRec</a> operates on raw inclusion counts, and it disclaims position-weighted guarantees. Why wrong: the fairness literature formalized exposure via position bias from the start (<a href="papers/01_FoE.html">[01] FoE</a>), which makes position assignment — not impression frequency — the natural decision variable.</li><li>(b) Assumed: the newest work would move <em>toward</em> the black-box constraint. Found instead: the 2026 SOTA in this line (<a href="papers/06_HEA.html">[06] HEA</a>) requires internal embedding access and modifies scores — it moves <em>away</em> from black-box feasibility, while the retraining-free-under-black-box direction apparently lives in SP2's frontier papers instead. Why wrong: "post-hoc" in this literature means "after training", not "without internal access".</li><li>(c) Unexpected bonus: <a href="papers/15_ExpectedExposure.html">[15] ExpectedExposure</a> provides a quantified answer to "how much does score-free intervention cost" (PL dominates RT at every disparity level) — an O2 datum the rationale did not anticipate finding inside SP1.</li></ul>
+<p><strong>KB impact</strong>: No prior KB claims affected (knowledge_base.json did not exist at synthesis time; new claims logged in rqs_1.json for seeding).</p></div></details>
+</section>
+<section id="concepts" class="section-anchor"><h2><span class="en-only">Key Concepts</span><span class="ko-only">핵심 개념</span></h2><p><strong>Exposure (position-bias-weighted attention)</strong></p>
+<ul><li><strong>What it computes</strong>: a ranking (or ranking distribution) + a position-bias vector $v_j$ (e.g. $1/\log_2(1+j)$) → weighted sum over positions → the expected attention item $i$ receives, $\text{Exposure}(d_i|P) = \sum_j P_{i,j} v_j$.</li><li><strong>Why it was created</strong>: prior ranking-fairness work constrained <em>counts</em> of items in list prefixes; the scarce resource a ranking allocates is attention, which decays steeply with position, so a 0.03 relevance gap can produce a 0.32 exposure gap (<a href="papers/01_FoE.html">[01] FoE</a> Fig. 1).</li><li><strong>Concrete example</strong>: an item at rank 1 earns $1/\log_2 2 = 1.0$ exposure; the same item at rank 3 earns $1/\log_2 4 = 0.5$ (<a href="papers/09_FairSort.html">[09] FairSort</a>).</li><li><strong>Role in this SP</strong>: the quantity every method allocates and every constraint is written over; the formal bridge between "rank position" and "impression frequency" for the survey's proxy framing.</li></ul>
+<p><strong>Stochastic ranking policy realized by BvN decomposition</strong></p>
+<ul><li><strong>What it computes</strong>: a doubly stochastic marginal matrix $P$ ($P_{i,j}$ = probability item $i$ sits at rank $j$), obtained by solving $\max_P u^\top P v$ under linear exposure constraints, then decomposed as $P = \sum_i \theta_i P_i$ into ≤ $(N-1)^2+1$ permutation matrices; ranking $P_i$ is served with frequency $\theta_i$.</li><li><strong>Why it was created</strong>: searching permutations under constraints is exponential; utility and exposure depend only on marginals, so an LP with $N^2$ variables suffices, and BvN converts the solution into servable rankings (<a href="papers/01_FoE.html">[01] FoE</a>).</li><li><strong>Concrete example</strong>: <a href="papers/01_FoE.html">[01] FoE</a>'s demographic-parity-fair job-seeker ranking decomposes into 2 permutations served at frequency 0.5 each — literally an impression-frequency schedule over two slates.</li><li><strong>Role in this SP</strong>: the canonical mechanism (<a href="papers/01_FoE.html">[01] FoE</a>, <a href="papers/05_IncompleteExposure.html">[05] IncompleteExposure</a>, <a href="papers/10_ParetoRepeatedRankings.html">[10] ParetoRepeatedRankings</a>, <a href="papers/15_ExpectedExposure.html">[15] ExpectedExposure</a>); its non-uniqueness is itself an intervention surface — FELIX re-samples the decomposition to avoid problematic rankings at zero fairness/utility cost.</li></ul>
+<p><strong>Amortized (equity-of-attention) fairness</strong></p>
+<ul><li><strong>What it computes</strong>: over a sequence of rankings, requires cumulative attention proportional to cumulative relevance, $\sum_l a_i^l / \sum_l r_i^l$ equal across items; unfairness = $\sum_i |A_i - R_i|$ over cumulated distributions.</li><li><strong>Why it was created</strong>: no single ranking can equalize attention/relevance ratios — position bias forces large attention gaps for tiny relevance gaps — so fairness must accumulate over time by rotating who occupies top slots (<a href="papers/11_EquityOfAttention.html">[11] EquityOfAttention</a>).</li><li><strong>Concrete example</strong>: 100 equally relevant items under a winner-take-all attention model return to exactly zero unfairness every 100 servings as each takes the top slot once.</li><li><strong>Role in this SP</strong>: the second realization of exposure-frequency control (rotate rankings over time, per-instance decisions driven by a cumulative exposure ledger); adopted by <a href="papers/04_PMMF.html">[04] PMMF</a>, <a href="papers/08_RegretAware.html">[08] RegretAware</a>, <a href="papers/09_FairSort.html">[09] FairSort</a> as running exposure/deficit ledgers.</li></ul>
+<p><strong>Merit-proportional (calibrated) target exposure</strong></p>
+<ul><li><strong>What it computes</strong>: a target exposure vector where each item's exposure share is proportional to its merit share (merit = relevance or a function of it); deviation measured by squared error (<a href="papers/15_ExpectedExposure.html">[15] ExpectedExposure</a>'s $\|\epsilon-\epsilon^*\|^2$), ratios (<a href="papers/01_FoE.html">[01] FoE</a>'s DTR), or KL/L1 divergences (<a href="papers/12_RecFairnessSurvey.html">[12] RecFairnessSurvey</a>).</li><li><strong>Why it was created</strong>: uniform parity ignores relevance entirely and has unbounded utility cost (<a href="papers/01_FoE.html">[01] FoE</a> §5); tying exposure to merit makes the constraint compatible with ranking quality.</li><li><strong>Concrete example</strong>: under RBP with $\gamma=0.5$ and 2 equally relevant documents, target exposure is 0.75 each, versus 1.0/0.5 under any static ranking (<a href="papers/15_ExpectedExposure.html">[15] ExpectedExposure</a>).</li><li><strong>Role in this SP</strong>: the shared normative target across <a href="papers/01_FoE.html">[01] FoE</a>, <a href="papers/11_EquityOfAttention.html">[11] EquityOfAttention</a>, <a href="papers/14_FairPGRank.html">[14] FairPGRank</a>, <a href="papers/15_ExpectedExposure.html">[15] ExpectedExposure</a>; <a href="papers/14_FairPGRank.html">[14] FairPGRank</a> proves the <em>equality</em> form infeasible in general and replaces it with one-sided constraints.</li></ul>
+<p><strong>Expohedron</strong></p>
+<ul><li><strong>What it computes</strong>: the convex polytope in $\mathbb{R}^n$ whose vertices are the exposure vectors attainable by single rankings under a position-based model; interior points are expected exposures of ranking distributions, decomposable via Carathéodory in $O(n^2\log n)$.</li><li><strong>Why it was created</strong>: BvN decomposition of the $n\times n$ Birkhoff-polytope representation costs $O(n^5)$; working directly in $n$-dimensional exposure space removes that bottleneck (<a href="papers/10_ParetoRepeatedRankings.html">[10] ParetoRepeatedRankings</a>, after Kletti et al. 2022).</li><li><strong>Concrete example</strong>: MSLR decomposition time drops from 29.56s (BvN) to 0.54s (Carathéodory) (<a href="papers/10_ParetoRepeatedRankings.html">[10] ParetoRepeatedRankings</a> Table 2).</li><li><strong>Role in this SP</strong>: the scaling path for the stochastic-policy mechanism; also yields the exact utility–fairness Pareto front rather than one point per hyperparameter.</li></ul></section>
+<section id="rqs" class="section-anchor"><h2><span class="en-only">Research Questions Extracted</span><span class="ko-only">추출된 연구 질문</span></h2><div class="scroll-table-wrap"><table><thead><tr><th>ID</th><th>Question</th><th>Key Papers</th><th>Objective</th></tr></thead><tbody><tr><td>RQ1.1</td><td>What is the shared mechanism by which exposure is controlled under fixed scores, and why does it reduce to convex optimization?</td><td><a href="papers/01_FoE.html">[01] FoE</a>, <a href="papers/05_IncompleteExposure.html">[05] IncompleteExposure</a>, <a href="papers/10_ParetoRepeatedRankings.html">[10] ParetoRepeatedRankings</a>, <a href="papers/15_ExpectedExposure.html">[15] ExpectedExposure</a></td><td>O1</td></tr><tr><td>RQ1.2</td><td>Which exposure-control techniques operate at score-read-only access with no retraining, and what guarantees do they retain?</td><td><a href="papers/01_FoE.html">[01] FoE</a>, <a href="papers/04_PMMF.html">[04] PMMF</a>, <a href="papers/05_IncompleteExposure.html">[05] IncompleteExposure</a>, <a href="papers/08_RegretAware.html">[08] RegretAware</a>, <a href="papers/09_FairSort.html">[09] FairSort</a>, <a href="papers/10_ParetoRepeatedRankings.html">[10] ParetoRepeatedRankings</a>, <a href="papers/11_EquityOfAttention.html">[11] EquityOfAttention</a>, <a href="papers/13_FairRec.html">[13] FairRec</a></td><td>O2</td></tr><tr><td>RQ1.3</td><td>Which technique comes closest to pure impression-frequency (show/don't-show) control, and at what cost in guarantee strength?</td><td><a href="papers/13_FairRec.html">[13] FairRec</a>, <a href="papers/08_RegretAware.html">[08] RegretAware</a></td><td>O2</td></tr><tr><td>RQ1.4</td><td>What determines the utility cost of exposure constraints, and when is it near-zero vs. unbounded?</td><td><a href="papers/01_FoE.html">[01] FoE</a>, <a href="papers/11_EquityOfAttention.html">[11] EquityOfAttention</a>, <a href="papers/15_ExpectedExposure.html">[15] ExpectedExposure</a></td><td>O1</td></tr><tr><td>RQ1.5</td><td>Which exposure targets are feasible under fixed scores, and where are the proven infeasibility boundaries?</td><td><a href="papers/01_FoE.html">[01] FoE</a>, <a href="papers/14_FairPGRank.html">[14] FairPGRank</a>, <a href="papers/13_FairRec.html">[13] FairRec</a></td><td>O1</td></tr><tr><td>RQ1.6</td><td>What do the 2024–2026 papers in this line add over the classical (2018–2023) state of the art?</td><td><a href="papers/03_ItemSideLLM.html">[03] ItemSideLLM</a>, <a href="papers/06_HEA.html">[06] HEA</a>, <a href="papers/07_LinkedInAudit.html">[07] LinkedInAudit</a>, <a href="papers/08_RegretAware.html">[08] RegretAware</a>, <a href="papers/09_FairSort.html">[09] FairSort</a></td><td>O3</td></tr><tr><td>RQ1.7</td><td>How can a per-user utility floor be guaranteed while redistributing exposure, and which mechanisms provide it?</td><td><a href="papers/09_FairSort.html">[09] FairSort</a>, <a href="papers/08_RegretAware.html">[08] RegretAware</a>, <a href="papers/13_FairRec.html">[13] FairRec</a>, <a href="papers/11_EquityOfAttention.html">[11] EquityOfAttention</a></td><td>O2</td></tr></tbody></table></div></section>
+<section id="papers" class="section-anchor"><div class="card" style="margin-top:1.5rem">
+<h3 style="margin-top:0"><span class="en-only">Papers in SP1 (DIR table)</span><span class="ko-only">SP1 논문 목록 (DIR 표)</span></h3><div class="scroll-table-wrap"><table><thead><tr><th>Ref</th><th>Title</th><th>Track</th><th>Tier</th><th>Key Contribution</th><th>Access (O2)</th><th>Intervention</th><th>Fit</th><th>Gap</th></tr></thead><tbody><tr><td><a href="papers/01_FoE.html">[01] FoE</a></td><td>Fairness of Exposure in Rankings</td><td>A</td><td>P0</td><td>LP over doubly stochastic matrices + BvN sampling; exposure as the fairness object</td><td>score-read-only</td><td>frequency-level (stochastic policy)</td><td>origin of the mechanism; scores consumed as-is</td><td>expectation-only guarantee; $O(N^2)$ LP scaling; known relevance assumed</td></tr><tr><td><a href="papers/02_JME.html">[02] JME</a></td><td>Joint Multisided Exposure Fairness</td><td>A</td><td>P2</td><td>six-metric user×item group exposure family + disparity/relevance decomposition</td><td>metrics: read-only; mitigation: retraining</td><td>in-processing training</td><td>metric language for systemic exposure skew</td><td>mitigation needs model training; MovieLens only</td></tr><tr><td><a href="papers/03_ItemSideLLM.html">[03] ItemSideLLM</a></td><td>Item-side Fairness of LLM Recommenders</td><td>A</td><td>P0</td><td>GU/MGU/DGU exposure-vs-history metrics; two-source bias decomposition (data + pre-training priors)</td><td>RW: retraining; RR: score-modifying</td><td>per-instance re-ranking</td><td>2024 LLM-era extension; exposure-vs-base-rate metrics port to any ranker</td><td>semantic-prior bias unquantified; rerank rescales grounding scores (violates immutability)</td></tr><tr><td><a href="papers/04_PMMF.html">[04] PMMF</a></td><td>P-MMF: Provider Max-min Fairness</td><td>A</td><td>P0</td><td>online dual-space exposure allocation, $O(T^{1/2})$ regret, catalog-size-insensitive</td><td>score-read-only</td><td>per-instance re-ranking driven by exposure ledger</td><td>dual price ≈ impression-pacing controller; fits black-box scores</td><td>raw slot counts (no position weight in objective); trusts $s_{u,i}$ as utility</td></tr><tr><td><a href="papers/05_IncompleteExposure.html">[05] IncompleteExposure</a></td><td>FELIX / top-$k$ BvN</td><td>A</td><td>P0</td><td>top-$k$ BvN theorem ($O(k^3n^2)$); decomposition re-sampling to avoid unverifiable rankings</td><td>score-read-only</td><td>frequency-level (stochastic policy)</td><td>states policy = impression-frequency schedule explicitly</td><td>policy→discrete impression budget mapping open; exposure verification unresolved</td></tr><tr><td><a href="papers/06_HEA.html">[06] HEA</a></td><td>Hierarchical Exposure Alignment</td><td>B</td><td>P4</td><td>pseudo-fairness result (aggregate KL masks within-group skew); retraining-free adapter</td><td>score-modifying (needs internal embeddings)</td><td>per-instance (additive score patch)</td><td>2026 SOTA marker; pseudo-fairness evidence</td><td>infeasible under black-box (embedding access + score modification)</td></tr><tr><td><a href="papers/07_LinkedInAudit.html">[07] LinkedInAudit</a></td><td>External Fairness Audit of LinkedIn Talent Search</td><td>B</td><td>P4</td><td>black-box repeated-query exposure measurement protocol; temporal retention disparity</td><td>score-free</td><td>none (measurement)</td><td>the measurement instrument for exposure under black-box access</td><td>audit only — no intervention; noisy demographic inference</td></tr><tr><td><a href="papers/08_RegretAware.html">[08] RegretAware</a></td><td>BankFair+</td><td>B</td><td>P4</td><td>Talmud-rule per-interval exposure budgeting + concave regret satisfaction for per-user floors</td><td>score-read-only</td><td>per-instance re-ranking + interval exposure budgets</td><td>interval-level exposure budgeting is a frequency-control primitive</td><td>"guarantees" are soft fuzzy goals; unpublished preprint; no regret bound</td></tr><tr><td><a href="papers/09_FairSort.html">[09] FairSort</a></td><td>FairSort</td><td>B</td><td>P4</td><td>velocity re-ranking with proven NDCG-monotone $\lambda$ + binary-search utility floor</td><td>score-read-only</td><td>per-instance re-ranking with exposure ledger</td><td>per-user minimum-utility guarantee mechanism</td><td>provider-fairness side has no proven bound</td></tr><tr><td><a href="papers/10_ParetoRepeatedRankings.html">[10] ParetoRepeatedRankings</a></td><td>Pareto-optimal Utility-Fairness in Repeated Rankings</td><td>B</td><td>P4</td><td>exact Pareto front on the Expohedron; Carathéodory replaces BvN ($O(n^2\log n)$)</td><td>score-read-only</td><td>frequency-level (stochastic policy)</td><td>scaling path + full trade-off curve for decision-makers</td><td>$n\le100$ solver limit; group-level only; preprint-grade</td></tr><tr><td><a href="papers/11_EquityOfAttention.html">[11] EquityOfAttention</a></td><td>Equity of Attention</td><td>C</td><td>P0</td><td>amortized individual fairness; online ILP repaying attention deficits under NDCG floor</td><td>score-read-only</td><td>per-instance re-ranking, amortized (frequency over time)</td><td>the amortization seed; cumulative exposure ledger construct</td><td>ILP scaling (~100-candidate filter); relevance = worthiness assumed</td></tr><tr><td><a href="papers/12_RecFairnessSurvey.html">[12] RecFairnessSurvey</a></td><td>Survey on Fairness of Recommender Systems</td><td>C</td><td>P1</td><td>unified taxonomy: consistent/calibrated, single/amortized, treatment/impact axes</td><td>n/a</td><td>n/a</td><td>classification axes reused for O1's taxonomy</td><td>flags but does not solve merit-contamination and exposure-variance gaps</td></tr><tr><td><a href="papers/13_FairRec.html">[13] FairRec</a></td><td>FairRec</td><td>C</td><td>P0</td><td>fair-division mapping; EF1 + MMS guarantees on inclusion counts, $O(mnk)$</td><td>score-read-only</td><td>frequency-level (inclusion counts, show/don't-show)</td><td>the purest frequency-only method in SP1</td><td>uniform attention; guarantees don't transfer to position-weighted exposure; one-shot offline</td></tr><tr><td><a href="papers/14_FairPGRank.html">[14] FairPGRank</a></td><td>Fair-PG-Rank</td><td>C</td><td>P2</td><td>in-processing policy learning; one-sided exposure-to-merit constraints; post-processing failure demo</td><td>retraining</td><td>in-processing (learned stochastic policy)</td><td>the contrast class + the score-trust risk evidence for O2</td><td>requires training access — infeasible in user's setting</td></tr><tr><td><a href="papers/15_ExpectedExposure.html">[15] ExpectedExposure</a></td><td>Expected Exposure</td><td>C</td><td>P2</td><td>EE-D/EE-R metric; equal-expected-exposure principle; PL beats score-agnostic randomization</td><td>eval: read-only; RT randomization: score-free</td><td>frequency-level (stochastic policy)</td><td>canonical exposure formalism; quantifies score-free penalty</td><td>needs relevance judgments for targets; browsing-model sensitivity unstudied</td></tr></tbody></table></div>
+</div>
+<details><summary><span class="en-only">Design Implication Registry</span><span class="ko-only">설계 함의 레지스트리</span></summary><div class="card" style="margin-top:0.5rem"><div class="scroll-table-wrap"><table><thead><tr><th>Requirement</th><th>Evidence</th><th>Implication</th><th>Risk</th><th>Mitigation</th></tr></thead><tbody><tr><td>Control the induced ranking without touching scores</td><td><a href="papers/01_FoE.html">[01] FoE</a>, <a href="papers/05_IncompleteExposure.html">[05] IncompleteExposure</a>, <a href="papers/10_ParetoRepeatedRankings.html">[10] ParetoRepeatedRankings</a></td><td>Treat black-box scores as the merit vector $u$; optimize marginal rank probabilities under exposure constraints; serve the BvN/Carathéodory decomposition as an impression-frequency schedule</td><td>Constraints hold only in expectation — individual servings can be arbitrarily unfair</td><td>Amortized ledger tracking realized (not expected) exposure per item (<a href="papers/11_EquityOfAttention.html">[11] EquityOfAttention</a>); monitor with a repeated-query audit protocol (<a href="papers/07_LinkedInAudit.html">[07] LinkedInAudit</a>)</td></tr><tr><td>Pure show/don't-show control (no slate reordering rights)</td><td><a href="papers/13_FairRec.html">[13] FairRec</a>, <a href="papers/08_RegretAware.html">[08] RegretAware</a></td><td>Use inclusion-count allocation (FairRec's greedy round-robin, EF1 + MMS floors) or interval-level exposure budgets (Talmud rule) as the frequency-only primitives</td><td>Uniform-attention assumption: count guarantees say nothing about position-weighted attention actually received</td><td>Pair with an estimated position-bias curve to translate count floors into attention floors; accept weaker guarantees</td></tr><tr><td>Scale to production catalog sizes</td><td><a href="papers/10_ParetoRepeatedRankings.html">[10] ParetoRepeatedRankings</a>, <a href="papers/05_IncompleteExposure.html">[05] IncompleteExposure</a>, <a href="papers/04_PMMF.html">[04] PMMF</a></td><td>Replace square BvN with Carathéodory in exposure space or top-$k$ BvN; use dual-space online allocation (dimension = provider count, not catalog)</td><td>Expohedron solvers numerically unstable beyond ~100 items/query; item-level dual blows dimension to $</td><td>I</td><td>$</td><td>Aggregate to provider/group level for the dual; per-query top-$k$ truncation</td></tr><tr><td>Bound per-user utility loss while redistributing exposure</td><td><a href="papers/09_FairSort.html">[09] FairSort</a>, <a href="papers/08_RegretAware.html">[08] RegretAware</a>, <a href="papers/13_FairRec.html">[13] FairRec</a></td><td>Enforce an explicit per-user floor: binary search on the fairness weight using NDCG-monotonicity, or concave (regret-based) satisfaction so losses spread evenly</td><td>Utility floor and exposure target can conflict — hard per-user constraints are frequently infeasible</td><td>Adaptive per-user $\lambda$ (<a href="papers/09_FairSort.html">[09] FairSort</a>); soft fuzzy goals accepting graceful degradation (<a href="papers/08_RegretAware.html">[08] RegretAware</a>)</td></tr><tr><td>Survive miscalibrated black-box scores</td><td><a href="papers/14_FairPGRank.html">[14] FairPGRank</a>, <a href="papers/12_RecFairnessSurvey.html">[12] RecFairnessSurvey</a></td><td>Assume exposure allocation inherits any score bias; prefer one-sided exposure-to-merit constraints (cap above-merit exposure only), which are feasible and counteract rich-get-richer without trusting exact score values</td><td>Post-processing on group-corrupted scores can become <em>less</em> fair as the fairness weight rises (<a href="papers/14_FairPGRank.html">[14] FairPGRank</a> synthetic)</td><td>External audit of exposure outcomes by group (<a href="papers/07_LinkedInAudit.html">[07] LinkedInAudit</a> protocol); sensitivity analysis over score perturbations — no SP1 method provides this natively</td></tr><tr><td>Valid exposure accounting under an unvalidated user model</td><td><a href="papers/15_ExpectedExposure.html">[15] ExpectedExposure</a>, <a href="papers/05_IncompleteExposure.html">[05] IncompleteExposure</a>, <a href="papers/06_HEA.html">[06] HEA</a></td><td>Choose the browsing model deliberately (RBP/DCG curve is a modeling decision, not a fact); where the position-only model is suspect, re-sample the policy decomposition to avoid unverifiable rankings (FELIX)</td><td>Every guarantee in this SP is conditional on the position-bias curve; none is validated against real attention data</td><td>Estimate position bias empirically (intervention harvesting, cited in <a href="papers/01_FoE.html">[01] FoE</a>/<a href="papers/14_FairPGRank.html">[14] FairPGRank</a>); FELIX-style avoidance for known failure predicates</td></tr></tbody></table></div></div></details>
+</section>
+<section id="open" class="section-anchor"><div class="card">
+<h3 style="margin-top:0"><span class="en-only">Open Questions After SP1</span><span class="ko-only">SP1 이후 미해결 질문</span></h3><ul><li><strong>Policy-to-impression-budget discretization</strong>: no paper maps stochastic-policy weights $\theta_i$ (or marginal exposure targets) onto the discrete impression caps/boosts a production serving stack actually implements. Flagged as a missing link in <a href="papers/05_IncompleteExposure.html">[05] IncompleteExposure</a> ("how policy probabilities map onto discrete impression-frequency budgets") and implicit in <a href="papers/01_FoE.html">[01] FoE</a>'s unaddressed LP scalability; the ads/pacing literature (SP7) uses that vocabulary but is citation-disconnected from this cluster. What would resolve it: a construction (with rounding-error bounds) from a fair marginal matrix to per-item impression budgets under a traffic forecast.</li><li><strong>Guarantee sensitivity to score error</strong>: every score-read-only method trusts $s_{u,i}$ as ground-truth merit; <a href="papers/04_PMMF.html">[04] PMMF</a>, <a href="papers/09_FairSort.html">[09] FairSort</a>, <a href="papers/11_EquityOfAttention.html">[11] EquityOfAttention</a>, <a href="papers/13_FairRec.html">[13] FairRec</a> each list miscalibrated/exposure-contaminated scores as an explicit unknown, and <a href="papers/14_FairPGRank.html">[14] FairPGRank</a> shows the failure mode exists. No paper bounds how far exposure-fairness guarantees degrade as a function of score bias. What would resolve it: a perturbation analysis of the LP/dual solutions under bounded score error, or empirical stress tests with controlled score corruption.</li><li><strong>Per-realization (not expectation-level) exposure guarantees under frequency-only control</strong>: <a href="papers/01_FoE.html">[01] FoE</a> and <a href="papers/05_IncompleteExposure.html">[05] IncompleteExposure</a> both guarantee fairness only in expectation over the policy; low-traffic items/queries never accumulate enough servings for the expectation to bind (<a href="papers/05_IncompleteExposure.html">[05] IncompleteExposure</a> states this applies only to head queries). What would resolve it: concentration bounds or deterministic rotation schedules with worst-case per-window exposure floors.</li><li><strong>Certifying realized exposure without a validated user model</strong>: <a href="papers/05_IncompleteExposure.html">[05] IncompleteExposure</a> (inter-item dependencies break position-only estimation), <a href="papers/15_ExpectedExposure.html">[15] ExpectedExposure</a> (browsing-model misspecification unstudied), and <a href="papers/06_HEA.html">[06] HEA</a> (log-decay curve never validated against attention data) all hit the same wall — the controlled quantity (model-based exposure) and the actual quantity (user attention) are linked only by assumption. What would resolve it: joint estimation of position bias and exposure allocation from the same logged impressions, or eye-tracking/intervention validation of the exposure model under frequency interventions.</li><li><strong>Exposure variance across lists</strong>: <a href="papers/12_RecFairnessSurvey.html">[12] RecFairnessSurvey</a> flags that all amortized-exposure work constrains the <em>average</em> exposure and none constrains its variance across lists/windows; no SP1 paper addresses it.</li></ul>
+</div>
+<details><summary><span class="en-only">Cross-SP Dependencies</span><span class="ko-only">SP 간 의존성</span></summary><div class="card" style="margin-top:0.5rem"><ul><li><strong>Feeds into</strong>: SP3 — the access-level template (score-free / read-only / score-modifying / retraining) with SP1's re-rankers as calibration anchors; SP3 must additionally distinguish "may reorder slates per instance" from "may only adjust frequency", which SP1 shows is the binding distinction for O2.</li><li><strong>Feeds into</strong>: SP7 — the dual-variable exposure-targeting loops of <a href="papers/04_PMMF.html">[04] PMMF</a>/<a href="papers/08_RegretAware.html">[08] RegretAware</a> are functionally impression-pacing controllers; SP7's synthesis should test whether ads-pacing math is formally the same algorithm under "budget/delivery" vocabulary (the bridge-gap candidate for O4).</li><li><strong>Shared methods with</strong>: SP4 — the BvN/Expohedron/PL realization machinery (<a href="papers/01_FoE.html">[01] FoE</a>, <a href="papers/05_IncompleteExposure.html">[05] IncompleteExposure</a>, <a href="papers/10_ParetoRepeatedRankings.html">[10] ParetoRepeatedRankings</a>, <a href="papers/15_ExpectedExposure.html">[15] ExpectedExposure</a>) is SP4's core subject; SP4 should focus on the realization axis and not re-catalogue these papers.</li><li><strong>Shared methods with</strong>: SP5 — <a href="papers/11_EquityOfAttention.html">[11] EquityOfAttention</a> is the amortization seed; SP5 should extract which successors amortize via frequency-only decisions vs. per-instance re-ranking.</li><li><strong>Depends on</strong>: nothing prior (first SP synthesized).</li></ul></div></details>
+</section>
+<div class="page-nav"><a href="index.html">&larr; <span class="en-only">Survey Hub</span><span class="ko-only">조사 허브</span></a><a href="index.html"><span class="en-only">&uarr; Survey Hub</span><span class="ko-only">&uarr; 조사 허브</span></a><a href="sp2_2024-2026-frontier-llm-era.html"><span class="en-only">SP2</span><span class="ko-only">SP2</span> &rarr;</a></div>
+    </div>
+  </div>
+<nav class="bd-sidebar-secondary"><div class="mini-toc-label"><span class="en-only">On this page</span><span class="ko-only">이 페이지</span></div><ul class="mini-toc"><li><a href="#intro"><span class="en-only">Introduction</span><span class="ko-only">개요</span></a></li><li><a href="#rationale"><span class="en-only">Entry Assumption</span><span class="ko-only">사전 가정</span></a></li><li><a href="#establishes"><span class="en-only">What SP1 Establishes</span><span class="ko-only">확립한 것</span></a></li><li><a href="#concepts"><span class="en-only">Key Concepts</span><span class="ko-only">핵심 개념</span></a></li><li><a href="#rqs"><span class="en-only">Research Questions</span><span class="ko-only">연구 질문</span></a></li><li><a href="#papers"><span class="en-only">Papers</span><span class="ko-only">논문</span></a></li><li><a href="#open"><span class="en-only">Open Questions</span><span class="ko-only">미해결 질문</span></a></li></ul></nav>
+</div>
+</body>
+</html>

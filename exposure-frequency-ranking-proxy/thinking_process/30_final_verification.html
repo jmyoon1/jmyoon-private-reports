@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8"><title>30_final_verification</title><style>
+:root{--bg:#0d1117;--card:#161b22;--border:#30363d;--text:#e6edf3;
+      --muted:#8b949e;--accent:#58a6ff;--green:#3fb950;--amber:#d29922;
+      --teal:#39d0c7;--purple:#bc8cff;}
+body{background:var(--bg);color:var(--text);font-family:-apple-system,sans-serif;margin:0;padding:1rem;}
+.cell{border:1px solid var(--border);border-radius:8px;overflow:hidden;}
+.cell-header{background:var(--card);padding:.6rem 1rem;display:flex;align-items:center;gap:.75rem;border-bottom:1px solid var(--border);}
+.badge{font-size:.72rem;font-weight:700;padding:.2rem .55rem;border-radius:4px;}
+.b-verify{background:rgba(57,208,199,.15);color:var(--teal);}
+.cell-title{font-size:.9rem;font-weight:600;}
+.cell-ts{margin-left:auto;font-size:.72rem;color:var(--muted);}
+.cell-body{padding:1rem;display:flex;flex-direction:column;gap:.7rem;}
+.field{padding:.55rem .8rem;border-radius:6px;}
+.f-found{background:rgba(63,185,80,.07);border-left:3px solid var(--green);}
+.f-surprise{background:rgba(210,153,34,.07);border-left:3px solid var(--amber);}
+.f-revised{background:rgba(57,208,199,.07);border-left:3px solid var(--teal);}
+.f-neutral{background:rgba(139,148,158,.07);border-left:3px solid var(--muted);}
+.f-label{font-size:.71rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);margin-bottom:.28rem;}
+.f-content{font-size:.88rem;line-height:1.55;margin:0;}
+</style></head>
+<body>
+<div class="cell" id="cell-final-verification">
+  <div class="cell-header">
+    <span class="badge b-verify">Phase V — FINAL Verification</span>
+    <span class="cell-title">Iteration 11 — CONVERGED</span>
+    <span class="cell-ts">2026-07-16 KST</span>
+  </div>
+  <div class="cell-body">
+    <div class="field f-found"><div class="f-label">Coverage</div><p class="f-content">
+      100% of P1 objectives covered (3/3) + O4 [P2] also covered · SPs run: 11 (9 ranked + 2 spawned) · 126 papers · 78 RQs.
+      O1 ✓ all five named families taxonomized by mechanism/objective/evaluation; canonical checklist in-corpus with successor lines.
+      O2 ✓ every technique access-labeled; strict frequency-only subset explicitly identified with guarantees (FairRec, TEC, TaxRank/ElasticRank, FairSync, Fair-Learn floors, HFC ceilings, HMT, Shapley mediator).
+      O3 ✓ every classical line has named 2024–2026 advances + two newly emerged lines (LLM-era re-ranking; LLM-era feedback loops); 2025–2026 publications throughout.
+      O4 ✓ seven open problems, each with per-question completed-search evidence.
+    </p></div>
+    <div class="field f-neutral"><div class="f-label">Convergence</div><p class="f-content">
+      YES — CONVERGE. Broad-sweep conditions met (SP2, SP7, SP9 complete + both spawned SPs). next_sp: null. Proceeding to Phase 4 (conclusion) and Phase 5 (report).
+    </p></div>
+    <div class="field f-surprise"><div class="f-label">The seven O4 gaps (completed-search evidence on record)</div><p class="f-content">
+      (1) No Bayes-optimal exposure-fair post-processor over elicited scores. (2) Count→position-weighted transfer gap (final after 5 literatures). (3) Degenerate regime: exposure-only control over fixed noisy exogenous scores. (4) Strategy-proofness of exposure interventions absent (1 named residual documented inside the gap statement). (5) Generation-vs-reweighting loop transfer unproven. (6) Pacing↔fairness dual reduction confirmed at algorithm identity but unwritten in any paper. (7) Position-weighted concentration theorem for open-loop realization missing.
+    </p></div>
+    <div class="field f-revised"><div class="f-label">Objectives refined ✎</div><p class="f-content">Objectives unchanged in the final iteration; all solved-when criteria discharged as originally stated (O2's evidence standard was sharpened en route by the slate-reordering axis and the score-trust dichotomy, recorded as synthesis conventions).</p></div>
+  </div>
+</div>
+</body>
+</html>

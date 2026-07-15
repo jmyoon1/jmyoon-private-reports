@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8"><title>26_sp8_verification</title><style>
+:root{--bg:#0d1117;--card:#161b22;--border:#30363d;--text:#e6edf3;
+      --muted:#8b949e;--accent:#58a6ff;--green:#3fb950;--amber:#d29922;
+      --teal:#39d0c7;--purple:#bc8cff;}
+body{background:var(--bg);color:var(--text);font-family:-apple-system,sans-serif;margin:0;padding:1rem;}
+.cell{border:1px solid var(--border);border-radius:8px;overflow:hidden;}
+.cell-header{background:var(--card);padding:.6rem 1rem;display:flex;align-items:center;gap:.75rem;border-bottom:1px solid var(--border);}
+.badge{font-size:.72rem;font-weight:700;padding:.2rem .55rem;border-radius:4px;}
+.b-verify{background:rgba(57,208,199,.15);color:var(--teal);}
+.cell-title{font-size:.9rem;font-weight:600;}
+.cell-ts{margin-left:auto;font-size:.72rem;color:var(--muted);}
+.cell-body{padding:1rem;display:flex;flex-direction:column;gap:.7rem;}
+.field{padding:.55rem .8rem;border-radius:6px;}
+.f-found{background:rgba(63,185,80,.07);border-left:3px solid var(--green);}
+.f-surprise{background:rgba(210,153,34,.07);border-left:3px solid var(--amber);}
+.f-revised{background:rgba(57,208,199,.07);border-left:3px solid var(--teal);}
+.f-neutral{background:rgba(139,148,158,.07);border-left:3px solid var(--muted);}
+.f-label{font-size:.71rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);margin-bottom:.28rem;}
+.f-content{font-size:.88rem;line-height:1.55;margin:0;}
+</style></head>
+<body>
+<div class="cell" id="cell-sp8-verification">
+  <div class="cell-header">
+    <span class="badge b-verify">Phase V — Verification (orchestrator-recorded; forced decision)</span>
+    <span class="cell-title">Iteration 8 — after SP8</span>
+    <span class="cell-ts">2026-07-16 KST</span>
+  </div>
+  <div class="cell-body">
+    <div class="field f-found"><div class="f-label">Coverage</div><p class="f-content">
+      0% of P1 objectives fully covered (0/3) · SPs run: 8/12.
+      O1: near-complete — all five named families + the controlled-objective axis (fairness, diversity, calibration, popularity debiasing) now populated; only SP9's ecosystem entries remain.
+      O2: near-complete — SP8's debiasing column labeled (retraining vs trusted-score re-ranking; post-hoc subset small as assumed); one family (SP9 ecosystem mechanisms) unlabeled.
+      O3: pending SP9 (ecosystem line explicitly O3-targeted).
+      O4: two O4-FINAL gaps (count→position transfer; degenerate regime), one algorithm-identity result awaiting SP9's citation bridge check, dynamic immutability refined with formal skeleton + closed-loop evidence.
+    </p></div>
+    <div class="field f-neutral"><div class="f-label">Convergence</div><p class="f-content">
+      No — FORCED CONTINUE → SP9: broad-sweep mode requires SP9 regardless of coverage, and SP9 is the last ranked SP. The full verifier agent was not spawned for this forced decision (cost control); the decisive verification — including the LLM-feedback-loop spawn-trigger evaluation — runs after SP9.
+    </p></div>
+    <div class="field f-surprise"><div class="f-label">New SPs discovered</div><p class="f-content">None this iteration. DECISIVE NEXT: LLM-era feedback loops — SP8 missed; if SP9 also misses, spawn the new SP per the trigger.</p></div>
+    <div class="field f-revised"><div class="f-label">Objectives refined ✎</div><p class="f-content">Unchanged after SP8.</p></div>
+  </div>
+</div>
+</body>
+</html>

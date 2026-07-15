@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8"><title>19_sp5_synthesis</title><style>
+:root{--bg:#0d1117;--card:#161b22;--border:#30363d;--text:#e6edf3;
+      --muted:#8b949e;--accent:#58a6ff;--green:#3fb950;--amber:#d29922;
+      --teal:#39d0c7;--purple:#bc8cff;}
+body{background:var(--bg);color:var(--text);font-family:-apple-system,sans-serif;margin:0;padding:1rem;}
+.cell{border:1px solid var(--border);border-radius:8px;overflow:hidden;}
+.cell-header{background:var(--card);padding:.6rem 1rem;display:flex;align-items:center;gap:.75rem;border-bottom:1px solid var(--border);}
+.badge{font-size:.72rem;font-weight:700;padding:.2rem .55rem;border-radius:4px;}
+.b-synth{background:rgba(188,140,255,.15);color:var(--purple);}
+.cell-title{font-size:.9rem;font-weight:600;}
+.cell-ts{margin-left:auto;font-size:.72rem;color:var(--muted);}
+.cell-body{padding:1rem;display:flex;flex-direction:column;gap:.7rem;}
+.field{padding:.55rem .8rem;border-radius:6px;}
+.f-expected{background:rgba(88,166,255,.07);border-left:3px solid var(--accent);}
+.f-found{background:rgba(63,185,80,.07);border-left:3px solid var(--green);}
+.f-surprise{background:rgba(210,153,34,.07);border-left:3px solid var(--amber);}
+.f-revised{background:rgba(57,208,199,.07);border-left:3px solid var(--teal);}
+.f-neutral{background:rgba(139,148,158,.07);border-left:3px solid var(--muted);}
+.f-label{font-size:.71rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);margin-bottom:.28rem;}
+.f-content{font-size:.88rem;line-height:1.55;margin:0;}
+</style></head>
+<body>
+<div class="cell" id="cell-sp5-synthesis">
+  <div class="cell-header">
+    <span class="badge b-synth">Phase 3 ✓ Synthesis</span>
+    <span class="cell-title">SP5: Amortized fairness and equity of attention over time</span>
+    <span class="cell-ts">2026-07-16 KST</span>
+  </div>
+  <div class="cell-body">
+    <div class="field f-expected"><div class="f-label">Prior belief ◈</div><p class="f-content">
+      The temporal form of exposure-frequency control, carrying four inherited adjudication lenses: inclusion- vs position-ledger, exposure- vs utility-ledger, finite-T realized-exposure bounds, and the controller-adequacy divergence from SP4.
+    </p></div>
+    <div class="field f-found"><div class="f-label">Dominant approach found</div><p class="f-content">
+      Cumulative-ledger control in two families: ledger-boosted sorting (FairCo, OFFR — per-item score-plus-boost then sort) and planners/slot-constructors (FARA, VerFair, per-request LP — see full list composition). "Scoring Is Not Enough" (2026) splits them formally: the sorting family inherits the proven Pareto ceiling (including its amortized/across-query extension); planners escape it — and planners are exactly the empirical winners. Controller unification: FairCo ⊂ Stationary Controller (Lagrangian multiplier = tracking error) — reactive amortized fairness IS dual-variable pacing, the third leg of the pacing≡dual-targeting bridge.
+    </p></div>
+    <div class="field f-surprise"><div class="f-label">Surprise / Confirmation</div><p class="f-content">
+      (a) Controller-adequacy divergence ADJUDICATED as regime-dependence, not contradiction: the two SP4 evaluations answered different questions (target convergence vs trajectory Pareto-efficiency); FairCo does reach the LP unfairness floor on MSLR but at cNDCG@1 85.5 vs FARA's 129.0; relevance steepness is the confirmed moderator; constant-gain controllers stall against accumulated debt. (b) SP4's concentration gap is answered BY CONSTRUCTION, not concentration: four finite-T realized-exposure bounds exist (FairCo O(1/τ); FARA deterministic; VerFair &lt; one position weight; OFFR anytime O(1/√t)) — closed-loop methods pick each ranking from the realized ledger, so the gap localizes to open-loop realization only. (c) Strict frequency-only subset +1: FairSync (count-based inclusion floors at distributed retrieval, dual price, billion-scale, &lt;0.25 ms).
+    </p></div>
+    <div class="field f-neutral"><div class="f-label">KB delta</div><p class="f-content">
+      3 claims added, 4 refined (uuids 15 adjudicated, 3, 6, 8). Total 20. 7 RQs. Count→position-weighted transfer gap survives its third SP — O4-ready pending SP7.
+    </p></div>
+    <div class="field f-revised"><div class="f-label">SP revisions ✎</div><p class="f-content">
+      4 SPs revised: SP6 (ledger-state regret under non-stationary arrivals + estimated relevance; position-weighted denominations), SP7 (ads convergence guarantees as transferable finite-T exposure bounds; slot-aware delivery; MPC pacing ↔ Predictive controller), SP8 (ScoringNotEnough ceiling inheritance; ledger→clicks→relevance loop), SP9 (exposure=payoff assumption vs the divergence evidence).
+    </p></div>
+  </div>
+</div>
+</body>
+</html>

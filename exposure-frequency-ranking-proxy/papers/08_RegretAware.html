@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>[08] Regret-aware Re-ranking for Guaranteeing Two-sided Fairness  — Exposure-Frequency Control Survey</title>
+
+<style>
+:root {
+  --bg: #0d1117; --card: #161b22; --border: #30363d;
+  --text: #e6edf3; --muted: #7d8590; --accent: #58a6ff;
+  --teal: #39d0c7; --green: #3fb950; --yellow: #d29922;
+  --red: #f85149; --purple: #bc8cff; --orange: #e3b341;
+  --sidebar-w: 262px; --toc-w: 210px; --hdr-h: 48px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+body { font-family: -apple-system, sans-serif; background: var(--bg);
+       color: var(--text); line-height: 1.6; }
+.bd-root { display: flex; height: 100vh; overflow: hidden; }
+.bd-sidebar-primary {
+  width: var(--sidebar-w); min-width: var(--sidebar-w);
+  overflow-y: auto; background: var(--card);
+  border-right: 1px solid var(--border);
+  padding: 0.75rem 0; flex-shrink: 0;
+}
+.bd-sidebar-primary::-webkit-scrollbar { width: 4px; }
+.bd-sidebar-primary::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+.bd-main { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-width: 0; }
+.article-header-bar {
+  height: var(--hdr-h); background: var(--card);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; padding: 0 1.5rem;
+  gap: 1rem; flex-shrink: 0;
+}
+.header-brand { color: var(--teal); font-weight: bold; font-size: 0.95em;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 1; }
+.header-brand a { color: inherit; text-decoration: none; }
+.breadcrumb { color: var(--muted); font-size: 0.82em; display: flex;
+  align-items: center; gap: 0.3rem; flex-shrink: 0; }
+.breadcrumb a { color: var(--accent); text-decoration: none; }
+.breadcrumb span { color: var(--border); }
+.bd-article { flex: 1; overflow-y: auto; padding: 2rem 2.5rem; }
+.bd-article::-webkit-scrollbar { width: 6px; }
+.bd-article::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+.bd-sidebar-secondary {
+  width: var(--toc-w); min-width: var(--toc-w);
+  overflow-y: auto; border-left: 1px solid var(--border);
+  padding: 1rem 0.75rem; flex-shrink: 0;
+}
+.bd-sidebar-secondary::-webkit-scrollbar { width: 4px; }
+.bd-sidebar-secondary::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+.sidebar-logo { padding: 0.5rem 1rem 0.75rem;
+  border-bottom: 1px solid var(--border); margin-bottom: 0.5rem; }
+.sidebar-logo a { color: var(--teal); font-weight: bold; font-size: 0.95em;
+  text-decoration: none; display: block; }
+.sidebar-section { color: var(--muted); font-size: 0.72em; font-weight: bold;
+  text-transform: uppercase; letter-spacing: 0.07em;
+  padding: 0.7rem 1rem 0.25rem; }
+.sidebar-nav-link { display: block; padding: 0.28rem 1rem 0.28rem 1.25rem;
+  color: var(--muted); font-size: 0.875em; text-decoration: none; }
+.sidebar-nav-link:hover { color: var(--text); background: rgba(255,255,255,0.03); }
+.sidebar-nav-link.active { color: var(--teal);
+  border-left: 2px solid var(--teal);
+  padding-left: calc(1.25rem - 2px); background: rgba(57,208,199,0.05); }
+.mini-toc-label { color: var(--muted); font-size: 0.72em; font-weight: bold;
+  text-transform: uppercase; letter-spacing: 0.07em; padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border); margin-bottom: 0.5rem; }
+.mini-toc { list-style: none; }
+.mini-toc li a { display: block; padding: 0.22rem 0;
+  color: var(--muted); font-size: 0.83em; text-decoration: none;
+  border-left: 2px solid transparent; padding-left: 0.5rem; }
+.mini-toc li a:hover { color: var(--text); }
+.mini-toc li a.toc-active { color: var(--teal); border-left-color: var(--teal); }
+.section-anchor { scroll-margin-top: calc(var(--hdr-h) + 8px); }
+h1 { color: var(--teal); font-size: 1.7em; margin-bottom: 0.5rem; line-height:1.3; }
+h2 { color: var(--teal); font-size: 1.25em; margin: 1.5rem 0 0.6rem; }
+h3 { color: var(--teal); font-size: 1.05em; margin: 1.2rem 0 0.4rem; }
+h4 { color: var(--teal); font-size: 0.95em; margin: 1rem 0 0.3rem; }
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+p { margin-bottom: 0.8rem; }
+ul, ol { margin: 0 0 0.8rem 1.4rem; }
+li { margin-bottom: 0.3rem; }
+code { background: rgba(255,255,255,0.06); border-radius: 3px; padding: 1px 4px; font-size: 0.9em; }
+blockquote { border-left: 3px solid var(--border); color: var(--muted);
+  padding: 0.2rem 0.8rem; margin-bottom: 0.8rem; }
+.card { background: var(--card); border: 1px solid var(--border);
+        border-radius: 8px; padding: 1.2rem; margin-bottom: 1rem; }
+table { width: 100%; border-collapse: collapse; font-size: 0.9em; margin-bottom: 0.8rem; }
+th { background: var(--card); color: var(--teal); padding: 8px;
+     border: 1px solid var(--border); text-align: left; }
+td { padding: 8px; border: 1px solid var(--border); vertical-align: top; }
+tr:nth-child(even) td { background: rgba(0,0,0,0.2); }
+.stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+             gap: 1rem; margin-bottom: 1.5rem; }
+.stat-box { background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+            padding: 1rem; text-align: center; }
+.stat-num { font-size: 2rem; font-weight: bold; color: var(--teal); }
+.stat-label { color: var(--muted); font-size: 0.85em; margin-top: 0.2rem; }
+.sp-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+           gap: 1rem; margin: 1rem 0; }
+.sp-card { background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+           padding: 1.2rem; cursor: pointer; transition: border-color 0.15s; height:100%; }
+.sp-card:hover { border-color: var(--teal); }
+.sp-card h3 { margin: 0 0 0.5rem; color: var(--teal); font-size: 1em; }
+.sp-card p { margin: 0; color: var(--muted); font-size: 0.88em; }
+.sp-badge { display: inline-block; background: rgba(57,208,199,0.1); color: var(--teal);
+            border-radius: 4px; padding: 2px 8px; font-size: 0.8em; margin-bottom: 0.5rem; }
+.paper-meta { color: var(--muted); font-size: 0.9em; margin-bottom: 1.5rem; }
+.paper-meta a { color: var(--accent); }
+.section-label { color: var(--teal); font-weight: bold; font-size: 0.85em;
+                 text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.4rem; }
+.pill { display: inline-block; border-radius: 4px; padding: 0.15rem 0.6rem;
+        font-size: 0.8em; font-weight: bold; margin-right: 0.4rem; }
+.pill-p0 { background: rgba(63,185,80,0.2); color: var(--green); }
+.pill-p1 { background: rgba(57,208,199,0.15); color: var(--teal); }
+.pill-p2 { background: rgba(210,153,34,0.2); color: var(--yellow); }
+.pill-p3 { background: rgba(188,140,255,0.2); color: var(--purple); }
+.pill-p4 { background: rgba(125,133,144,0.2); color: var(--muted); }
+.delta-row { margin: 0.4rem 0; padding: 0.4rem 0.8rem;
+             border-left: 3px solid var(--border); border-radius: 0 4px 4px 0; }
+.chain { position: relative; padding-left: 2rem; }
+.chain::before { content: ''; position: absolute; left: 0.95rem; top: 0;
+                 bottom: 0; width: 2px; background: var(--border); }
+.chain-node { position: relative; margin-bottom: 2rem; }
+.chain-node::before { content: ''; position: absolute; left: -1.55rem;
+                      top: 1.1rem; width: 12px; height: 12px;
+                      border-radius: 50%; background: var(--teal); }
+.chain-num { display: inline-block; width: 28px; height: 28px; background: var(--teal);
+             color: #000; border-radius: 50%; text-align: center; line-height: 28px;
+             font-weight: bold; font-size: 0.85em; margin-right: 0.6rem; flex-shrink: 0; }
+.chain-q { font-weight: bold; color: var(--text); margin: 0.4rem 0 0.3rem; font-size: 1em; }
+.chain-papers { color: var(--muted); font-size: 0.85em; margin-bottom: 0.6rem; }
+.chain-start { background: var(--card); border: 1px solid var(--teal);
+               border-radius: 8px; padding: 1rem; margin-bottom: 2rem; }
+.chain-start h3 { margin: 0 0 0.5rem; color: var(--teal); }
+.chain-converge { background: var(--card); border: 1px solid var(--green);
+                  border-radius: 8px; padding: 1rem; margin-top: 1rem; }
+.chain-converge h3 { margin: 0 0 0.5rem; color: var(--green); }
+.chain-label { display: inline-block; border-radius: 4px; padding: 0.15rem 0.6rem;
+               font-size: 0.8em; font-weight: bold; margin-right: 0.4rem; }
+.chain-status { border-radius: 0 4px 4px 0; padding: 0.5rem 0.8rem;
+                margin: 0.35rem 0; font-size: 0.88em; }
+.chain-status ul { margin: 0.3rem 0 0 1.2rem; padding: 0; }
+.chain-status li { margin-bottom: 0.25rem; }
+.chain-status.solved  { background: rgba(63,185,80,0.07);  border-left: 3px solid var(--green); }
+.chain-status.remains { background: rgba(210,153,34,0.07); border-left: 3px solid var(--yellow); }
+.chain-status.added   { background: rgba(248,81,73,0.07);  border-left: 3px solid var(--red); }
+.chain-status.pivoted { background: rgba(188,140,255,0.1); border-left: 3px solid var(--purple); }
+.chain-label.solved   { background: rgba(63,185,80,0.2);  color: var(--green); }
+.chain-label.remains  { background: rgba(210,153,34,0.2); color: var(--yellow); }
+.chain-label.added    { background: rgba(248,81,73,0.2);  color: var(--red); }
+.chain-label.pivoted  { background: rgba(188,140,255,0.2); color: var(--purple); }
+.chain-status.expected { background: rgba(88,166,255,0.07);  border-left: 3px solid var(--accent); }
+.chain-label.expected  { background: rgba(88,166,255,0.2);   color: var(--accent); }
+.chain-status.revised  { background: rgba(57,208,199,0.07);  border-left: 3px solid var(--teal); }
+.chain-label.revised   { background: rgba(57,208,199,0.2);   color: var(--teal); }
+.concept-box { border-left: 4px solid var(--teal); background: #0d1f1f;
+               border-radius: 4px; padding: 1.2rem; margin-bottom: 1.2rem; }
+.concept-name { font-weight: bold; color: var(--teal); font-size: 1.05em; margin-bottom: 0.5rem; }
+.hypothesis { border-left: 4px solid var(--teal); background: #0d1f1f;
+              border-radius: 4px; padding: 1rem; margin: 1rem 0; }
+.recommendation { border-left: 4px solid var(--purple); background: #1a0f2e;
+                  border-radius: 4px; padding: 1rem; margin: 1rem 0; }
+.rq-row { background: rgba(88,166,255,0.05); border-left: 3px solid var(--accent);
+          padding: 0.4rem 0.8rem; margin-bottom: 0.5rem; border-radius: 0 4px 4px 0; }
+.scroll-table-wrap { max-height: 420px; overflow-y: auto; border: 1px solid var(--border);
+                     border-radius: 4px; }
+.scroll-table-wrap table { margin-bottom: 0; }
+.scroll-table-wrap thead th { position: sticky; top: 0; background: #161b22; z-index: 1; }
+.page-nav { display: flex; justify-content: space-between; margin-top: 2rem;
+            padding-top: 1rem; border-top: 1px solid var(--border); gap: 1rem; }
+.page-nav a { color: var(--accent); font-size: 0.9em; }
+html.ko-active .en-only { display: none !important; }
+html.ko-active .ko-only { display: block !important; }
+.ko-only { display: none; }
+span.ko-only, .sidebar-logo a span.ko-only { display: none; }
+html.ko-active span.ko-only { display: inline !important; }
+.lang-btn { background: transparent; color: var(--muted); border: 1px solid var(--border);
+            border-radius: 4px; padding: 3px 9px; font-size: 0.8em; cursor: pointer; }
+.lang-btn.active { border-color: var(--teal); color: var(--teal); }
+details { margin-bottom: 0.8rem; }
+details summary { color: var(--muted); cursor: pointer; }
+@media (max-width: 1024px) { .bd-sidebar-secondary { display: none; } }
+@media (max-width: 768px) {
+  .bd-sidebar-primary { display: none; }
+  .bd-root { flex-direction: column; height: auto; overflow: visible; }
+  .bd-main { overflow: visible; }
+  .bd-article { overflow: visible; padding: 1rem; }
+  .stat-grid { grid-template-columns: repeat(2, 1fr); }
+  .sp-grid { grid-template-columns: 1fr; }
+}
+</style>
+
+<script>
+MathJax = { tex: { inlineMath: [['$','$']], displayMath: [['$$','$$']] },
+            options: { skipHtmlTags: ['script','noscript','style','textarea','pre','code'] } };
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<script>
+function toggleLanguage() {
+  const html = document.documentElement;
+  const isKo = html.classList.toggle('ko-active');
+  document.querySelectorAll('.lang-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.lang === (isKo ? 'ko' : 'en'));
+  });
+  localStorage.setItem('survey-lang', isKo ? 'ko' : 'en');
+}
+document.addEventListener('DOMContentLoaded', function() {
+  const saved = localStorage.getItem('survey-lang');
+  if (saved === 'ko') {
+    document.documentElement.classList.add('ko-active');
+    document.querySelectorAll('.lang-btn').forEach(b =>
+      b.classList.toggle('active', b.dataset.lang === 'ko'));
+  } else {
+    document.querySelectorAll('[data-lang="en"]').forEach(b => b.classList.add('active'));
+  }
+  const article = document.querySelector('.bd-article');
+  const sections = Array.from(document.querySelectorAll('.section-anchor[id]'));
+  const sideLinks = Array.from(document.querySelectorAll('.bd-sidebar-primary .sidebar-nav-link'));
+  const tocLinks = Array.from(document.querySelectorAll('.bd-sidebar-secondary .mini-toc a'));
+  if (!article || !sections.length) return;
+  function current() {
+    let id = sections[0].id;
+    const scrollTop = article.scrollTop + 60;
+    sections.forEach(function(s) { if (s.offsetTop <= scrollTop) id = s.id; });
+    return id;
+  }
+  function update() {
+    const id = current();
+    sideLinks.forEach(function(a) {
+      a.classList.toggle('active', a.getAttribute('href') === '#' + id);
+    });
+    tocLinks.forEach(function(a) {
+      a.classList.toggle('toc-active', a.getAttribute('href') === '#' + id);
+    });
+  }
+  article.addEventListener('scroll', update, { passive: true });
+  update();
+});
+</script>
+
+</head>
+<body>
+<div class="bd-root">
+
+<nav class="bd-sidebar-primary">
+  <div class="sidebar-logo">
+    <a href="../index.html">&#x2B21; <span class="en-only">Exposure-Frequency Control Survey</span><span class="ko-only">Exposure-빈도 제어 문헌 조사</span></a>
+  </div>
+  <div class="sidebar-section"><span class="en-only">Overview</span><span class="ko-only">개요</span></div>
+  <a href="../index.html#overview" class="sidebar-nav-link"><span class="en-only">Survey Hub</span><span class="ko-only">조사 허브</span></a>
+  <a href="../index.html#answers" class="sidebar-nav-link"><span class="en-only">Key Answers</span><span class="ko-only">핵심 답변</span></a>
+  <div class="sidebar-section"><span class="en-only">Sub-Problems</span><span class="ko-only">세부 문제</span></div>
+<a href="../sp1_fairness-of-exposure-fixed-scores.html" class="sidebar-nav-link active">SP1: <span class="en-only">Exposure fairness</span><span class="ko-only">Exposure 공정성</span></a>
+<a href="../sp2_2024-2026-frontier-llm-era.html" class="sidebar-nav-link">SP2: <span class="en-only">2024–26 frontier / LLM</span><span class="ko-only">2024–26 최전선 / LLM</span></a>
+<a href="../sp3_postproc-rerank-blackbox.html" class="sidebar-nav-link">SP3: <span class="en-only">Post-proc re-ranking</span><span class="ko-only">Post-proc re-ranking</span></a>
+<a href="../sp4_stochastic-ranking-policies.html" class="sidebar-nav-link">SP4: <span class="en-only">Stochastic policies</span><span class="ko-only">확률적 정책</span></a>
+<a href="../sp5_amortized-equity-attention.html" class="sidebar-nav-link">SP5: <span class="en-only">Amortized fairness</span><span class="ko-only">Amortized 공정성</span></a>
+<a href="../sp6_bandit-exposure-allocation.html" class="sidebar-nav-link">SP6: <span class="en-only">Bandit allocation</span><span class="ko-only">Bandit 배분</span></a>
+<a href="../sp7_capping-pacing-feeds-ads.html" class="sidebar-nav-link">SP7: <span class="en-only">Capping &amp; pacing</span><span class="ko-only">Capping·pacing</span></a>
+<a href="../sp8_popularity-debias-calibration.html" class="sidebar-nav-link">SP8: <span class="en-only">Debiasing &amp; calibration</span><span class="ko-only">Debiasing·calibration</span></a>
+<a href="../sp9_ecosystems-creator-incentives.html" class="sidebar-nav-link">SP9: <span class="en-only">Ecosystems &amp; creators</span><span class="ko-only">생태계·creator</span></a>
+<a href="../sp10_llm-exposure-feedback-loops.html" class="sidebar-nav-link">SP10: <span class="en-only">LLM feedback loops</span><span class="ko-only">LLM feedback loop</span></a>
+<a href="../sp11_strategyproof-exposure.html" class="sidebar-nav-link">SP11: <span class="en-only">Strategy-proofness</span><span class="ko-only">Strategy-proofness</span></a>
+
+  <div class="sidebar-section"><span class="en-only">Synthesis</span><span class="ko-only">종합</span></div>
+  <a href="../conclusion.html" class="sidebar-nav-link"><span class="en-only">Conclusion</span><span class="ko-only">결론</span></a>
+  <a href="../thinking-process.html" class="sidebar-nav-link"><span class="en-only">Thinking Process</span><span class="ko-only">추론 과정</span></a>
+</nav>
+  <div class="bd-main">
+<div class="article-header-bar"><div class="header-brand"><a href="../index.html"><span class="en-only">Exposure-Frequency Control Survey</span><span class="ko-only">Exposure-빈도 제어 문헌 조사</span></a></div><nav class="breadcrumb"><a href="../index.html"><span class="en-only">Survey</span><span class="ko-only">조사</span></a><span>&rsaquo;</span><a href="../sp1_fairness-of-exposure-fixed-scores.html">SP1</a><span>&rsaquo;</span><span>[08] Regret-aware Re-ranking for Guaranteeing</span></nav><button class="lang-btn" data-lang="en" onclick="toggleLanguage()">EN</button><button class="lang-btn" data-lang="ko" onclick="toggleLanguage()">KO</button></div>
+    <div class="bd-article">
+<section id="header" class="section-anchor"><div class="paper-meta">
+<h1 style="margin-bottom:0.3rem">Regret-aware Re-ranking for Guaranteeing Two-sided Fairness and Accuracy in Recommender Systems</h1>
+<p style="margin:0.3rem 0;color:var(--muted)">Ye et al. · arXiv · 2025</p>
+<p style="margin:0.3rem 0"><a href="https://arxiv.org/abs/2504.14550" target="_blank">arXiv:2504.14550</a> · <a href="https://arxiv.org/pdf/2504.14550.pdf" target="_blank">PDF</a> · SP: <a href="../sp1_fairness-of-exposure-fixed-scores.html">SP1</a></p>
+<p><span class="pill pill-p4">P4</span><span class="pill" style="background:rgba(255,255,255,0.05);color:var(--muted)">Track B</span></p>
+</div>
+<div class="card ko-only" style="border-color:var(--teal)"><div class="section-label">한 줄 요약</div><p style="margin:0">구간별 exposure 예산을 Talmud 규칙으로 배분하고 사용자별 효용 하한을 regret 기반 오목 만족으로 보장하려는 양측 공정 re-ranking(BankFair+)을 제안한다.</p></div>
+</section>
+<section id="problem" class="section-anchor">
+<div class="card"><div class="section-label"><span class="en-only">Problem</span><span class="ko-only">해결하려는 문제</span></div><p>Provider-fair re-ranking methods that guarantee minimum provider exposure while maximizing <em>average</em> user accuracy (including the authors' own BankFair, CIKM 2024) concentrate the accuracy loss on a subset of users: on KuaiRand-1K, even on the best day, ~41% of users receive accuracy below the platform's minimum-accuracy threshold while the average sits above it. This individual unfairness worsens monotonically as the provider-fairness degree is raised (Fig. 1c), and no prior method jointly controls all three of {average accuracy, individual (per-user) accuracy fairness, provider exposure fairness}.</p></div>
+</section>
+<section id="solution" class="section-anchor">
+<div class="card"><div class="section-label"><span class="en-only">Solution / Contribution</span><span class="ko-only">해결책 / 기여</span></div><p>BankFair+ = BankFair's Module 1 (bankruptcy/Talmud-rule allocation of per-interval minimum provider exposure under fluctuating traffic, unchanged) + a new Module 2 with two steps:</p>
+<ol><li><strong>Regret-aware satisfaction (Step 1)</strong>: replace linear user utility with $Z(\pi_u) = q_{\pi_u} + 1 - \exp(-\delta(q_{\pi_u} - q^*_{\pi_u}))$, making per-user accuracy loss convexly expensive so the optimizer equalizes accuracy across users.</li><li><strong>Fuzzy-programming re-ranking (Step 2)</strong>: express per-user satisfaction and provider unfairness as fuzzy goals with membership functions, reduce to $\max_X \frac{1-\lambda}{|U|}\sum_u Z'(\pi_u) + \lambda G'(\boldsymbol{e})$ subject to assignment constraints, then solve online via the Lagrangian dual and dual mirror descent on per-provider dual variables $\boldsymbol{\mu}_t$ (Algorithm 1): each arriving user's slate is $\arg\max_X \{\frac{1-\lambda}{|U|} Z'(\pi_{u_t}) - \boldsymbol{\mu}_t^\top A^\top X_t \boldsymbol{p}\}$, and $\boldsymbol{\mu}$ is updated from the gap between target and realized provider exposure.</li></ol>
+<p>Decision variable $X_{u,i,k} \in \{0,1\}$ places item $i$ at position $k$; exposure uses position bias $p(k) = 1/\log_2(k+1)$. Scores $s_{u,i}$ from the base ranker are consumed as-is — the base model is never modified.</p></div>
+<div class="card"><div class="section-label"><span class="en-only">Key Results</span><span class="ko-only">주요 결과</span></div><ul><li>KuaiRand-1K, NDCG@10 at matched provider fairness (Gini@10 &lt; 0.1): BankFair+ NDCG is ≥ 0.2 higher than the best baseline (P-MMF); at ESP@10 = 80%, +0.18 NDCG over the best baseline.</li><li>Individual fairness at matched provider fairness (Gini = 0.1, ESP = 0.7): BankFair+ keeps MMR@K &gt; 0.7 while no baseline exceeds 0.5.</li><li>Case study (best-accuracy config with ESP@10 ≥ 75%): MMR 0.741 (BankFair+) vs. 0.493 (BankFair), 0.5247 (Welf), 0.065 (CPFair).</li><li>Accuracy variance across users stays below 0.002 at all provider-fairness levels, which baselines reach only when provider fairness is poor (Gini &gt; 0.2, ESP &lt; 0.6).</li><li>Regret coefficient $\delta$↑ → MMR→1 and NDCG→max, but provider fairness degrades (ESP↓, Gini↑) — the three-way trade-off is explicit, tunable via $(\delta, \lambda, g_0)$.</li></ul></div>
+<details><summary><span class="en-only">5Cs Analysis</span><span class="ko-only">5Cs 분석</span></summary><div class="card" style="margin-top:0.5rem"><p><strong>Category</strong>: new method (re-ranking algorithm; journal extension of the authors' CIKM 2024 BankFair paper) <strong>Context</strong>: extends BankFair [Ye et al., CIKM 2024]; competes with two-sided re-rankers TFROM, CPFair, FairRec, PCT and provider-fair re-rankers P-MMF, Welf, FairSync. Imports regret theory (Loomes &amp; Sugden 1982) and fuzzy programming (Zimmermann 1978) into re-ranking. <strong>Correctness</strong>: Pareto-frontier comparisons on two industrial datasets; no error bars / significance tests reported; Fig. 3 has a broken figure reference ("Figure ??") and the paper contains numerous typos, suggesting a not-fully-polished preprint. <code>[SKIM - appendix proofs not independently checked]</code> <strong>Contributions</strong>: (1) documents the individual-fairness/provider-fairness trade-off in minimum-exposure re-ranking; (2) a concave regret-based satisfaction function that equalizes per-user accuracy; (3) a fuzzy-programming online dual algorithm that avoids per-user hard constraints. <strong>Clarity</strong>: method reproducible in outline from the paper (Algorithm 1 is explicit); some notation is sloppy (mixed-up symbols, e.g. $\lambda$ vs $\mu$ in the dual, "Equation (31)" referenced before defined).</p></div></details>
+<details><summary><span class="en-only">Contribution vs Claim</span><span class="ko-only">기여 대 주장</span></summary><div class="card" style="margin-top:0.5rem"><ul><li><strong>Stated claims</strong>: BankFair+ "guarantees" individual fairness, user accuracy, and provider fairness simultaneously; outperforms all baselines on all three axes.</li><li><strong>Demonstrated</strong>: Pareto dominance over 7 baselines on 2 datasets (KuaiRand-1K: 933 users; Huawei-Video: 19,355 users) across K ∈ {5,10,20} and two base rankers (LightGCN, NeuMF).</li><li><strong>Gap</strong>: "guarantee" is soft — fuzzy goals provide no hard per-user accuracy bound (the paper explicitly abandons hard constraints as infeasible), and no theoretical guarantee (e.g., regret bound for the online dual algorithm) is proven for individual fairness; the evidence is empirical Pareto frontiers only. Venue status is also unconfirmed (TOIS-format preprint with placeholder DOI; only the predecessor BankFair is published, at CIKM 2024). <code>[SKIM - verify in deep read whether appendix contains any online-regret analysis]</code></li></ul></div></details>
+</section>
+<section id="results" class="section-anchor">
+<details><summary><span class="en-only">Concepts Introduced</span><span class="ko-only">도입된 개념</span></summary><div class="card" style="margin-top:0.5rem"><p><strong>BankFair / sequential bankruptcy exposure allocation</strong></p>
+<ul><li><strong>What it computes</strong>: given a total minimum-exposure requirement $\boldsymbol{m}_p$ per provider and fluctuating per-interval user traffic, it allocates a per-interval minimum exposure $\boldsymbol{M}_{p,n}$ using the Talmud rule of the bankruptcy problem (Eq. 10): remaining requirement $\hat{\boldsymbol{m}}_p(n)$ is split across future intervals proportionally-with-caps against a predicted demand vector.</li><li><strong>Why it was created</strong>: fixed per-interval exposure constraints sacrifice user accuracy during low-traffic periods; borrowing "surplus fairness" from high-traffic intervals offsets deficits in low-traffic ones.</li><li><strong>Concrete example</strong>: if $\hat{\boldsymbol{m}}_p(n) \le \mathbf{1}^\top \boldsymbol{D}_p(n)/2$, each interval gets $\min\{D_{p,i}(n)/2, \theta\}$ where $\theta$ balances the total to $\hat{\boldsymbol{m}}_p(n)$.</li><li><strong>How it is used in this paper</strong>: Module 1 of BankFair+, carried over unchanged from the authors' prior CIKM 2024 paper (BankFair). This paper's novelty is entirely in Module 2.</li></ul>
+<p><strong>Regret-rejoice satisfaction function (regret theory applied to re-ranking)</strong></p>
+<ul><li><strong>What it computes</strong>: user perceived satisfaction $Z(\pi_u) = q_{\pi_u} + 1 - \exp(-\delta(q_{\pi_u} - q^*_{\pi_u}))$ — the ranking quality $q_{\pi_u}$ (DCG) plus a concave penalty comparing the delivered list against the accuracy-maximal list $\pi^*_u$ (Eq. 13). $\delta &gt; 0$ is the regret-avoidance coefficient.</li><li><strong>Why it was created</strong>: prior re-ranking methods assume satisfaction is linear in accuracy (expected-utility view), so the optimizer happily concentrates the accuracy loss from fairness constraints on a few users. A concave (non-linear) satisfaction makes low-accuracy users disproportionately costly, forcing the loss to be spread evenly.</li><li><strong>Concrete example</strong>: with $\delta$ large, dropping one user from NDCG 0.9→0.5 costs far more objective value than dropping four users 0.9→0.8; Fig. 8 shows MMR (min/max accuracy ratio) rising toward 1 as $\delta$ increases from 0 to 20.</li><li><strong>How it is used in this paper</strong>: Step 1 of Module 2 — replaces the linear utility inside the re-ranking objective.</li></ul>
+<p><strong>Fuzzy-programming re-ranking formulation</strong></p>
+<ul><li><strong>What it computes</strong>: replaces hard per-user accuracy constraints ($q_{\pi_u} \ge \phi\ \forall u$) with fuzzy goals $Z(q_{\pi_u}) \gtrsim Z(q^*_{\pi_u})$ and $G(\boldsymbol{e}) \lesssim G(\boldsymbol{e}^*)$, converted via membership functions (normalized satisfaction for users; a sigmoid on exposure variance for providers) into a single weighted objective $\max \frac{1-\lambda}{|U|}\sum_u Z'(\pi_u) + \lambda G'(\boldsymbol{e})$ (Theorem 1, Eq. 21–22).</li><li><strong>Why it was created</strong>: one hard accuracy constraint per user makes the LP huge and frequently infeasible (constraints conflict with the provider-exposure constraint); fuzzy goals degrade gracefully instead of failing.</li><li><strong>Concrete example</strong>: fairness membership $G'(\boldsymbol{e}) = 1 - 1/(1+\exp(-k(\mathrm{Var}(\boldsymbol{e}) - g_0/2)))$ — a smooth 1→0 transition around the "unacceptable unfairness" level $g_0$.</li><li><strong>How it is used in this paper</strong>: Step 2 of Module 2; solved online per arriving user via Lagrangian dual + dual mirror descent (Theorem 2, Algorithm 1) <code>[SKIM - proofs of Theorems 1–2 in appendix not verified line-by-line]</code>.</li></ul>
+<p><strong>ESP@K / MMR@K metrics</strong></p>
+<ul><li><strong>What it computes</strong>: ESP = fraction of providers whose (position-decayed) cumulative exposure meets their minimum guarantee; MMR = min-over-users NDCG divided by max-over-users NDCG (individual-fairness measure).</li><li><strong>Why it was created</strong>: ESP measures minimum-exposure-guarantee satisfaction directly; MMR exposes the accuracy disparity that average NDCG hides.</li><li><strong>Concrete example</strong>: in the case study (KuaiRand-1K, ESP@10 ≥ 75%), MMR is 0.741 for BankFair+ vs. 0.493 (BankFair) and 0.065 (CPFair).</li><li><strong>How it is used in this paper</strong>: primary evaluation axes alongside NDCG@K and Gini@K.</li></ul></div></details>
+<details><summary><span class="en-only">Implementation Feasibility</span><span class="ko-only">구현 가능성</span></summary><div class="card" style="margin-top:0.5rem"><ul><li><strong>Needs</strong>: base ranker scores (any model — tested with LightGCN, NeuMF), item→provider mapping, per-provider exposure targets, traffic history for Module 1's demand prediction; an assignment solver per arriving user + dual mirror descent (lightweight).</li><li><strong>Code</strong>: not available (no repository link found in the paper).</li><li><strong>Modifications</strong>: for a pure impression-frequency setting, keep the dual exposure-targeting loop (lines 20–23 of Algorithm 1) but restrict the action space from full slate permutation to include/exclude (cap/boost) decisions; hyperparameters $(\delta, \lambda, g_0, k, \beta)$ need retuning per platform.</li><li><strong>Unknowns</strong>: missing link: per-user solve latency at industrial QPS; missing link: sensitivity of Module 1 to traffic-prediction error; missing link: whether the fuzzy relaxation ever violates the provider minimum exposure badly in adversarial traffic.</li></ul></div></details>
+<details><summary><span class="en-only">Follow-up Papers</span><span class="ko-only">관련 후속 논문</span></summary><div class="card" style="margin-top:0.5rem"><ul><li>Ye et al., "Guaranteeing Accuracy and Fairness under Fluctuating User Traffic: A Bankruptcy-Inspired Re-ranking Approach" (CIKM 2024) — the predecessor (BankFair); Module 1 here is identical, and it is the published venue anchor for this line.</li><li>Xu et al., "P-MMF: Provider Max-min Fairness Re-ranking in Recommender System" (WWW 2023) — the strongest baseline; same online-dual exposure-allocation machinery under a max-min objective.</li><li>Xu et al., "FairSync: Ensuring Amortized Group Exposure in Distributed Recommendation Retrieval" (WWW 2024) — same "arbitrarily specified minimum exposure" setting, at the retrieval stage; relevant for extending exposure control beyond re-ranking.</li><li>Patro et al., "FairRec" (WWW 2020) and Wu et al., "TFROM" (SIGIR 2021) — canonical two-sided fairness baselines this paper measures against; core SP1 references for exposure-guarantee re-ranking.</li></ul></div></details>
+</section>
+<section id="delta" class="section-anchor">
+<div class="card"><div class="section-label"><span class="en-only">Condition Delta — transfer to our setting</span><span class="ko-only">조건 차이 — 우리 설정으로의 전이</span></div><p><strong>Paper's setting</strong>: inputs = frozen preference scores $s_{u,i}$ from a base ranker + item-provider mapping + per-provider minimum exposure requirements; outputs = per-user top-K slates (position assignment $X_{u,i,k}$); conditions = online sequentially-arriving users, fluctuating traffic, exposure measured with position bias $p(k)=1/\log_2(k+1)$, provider-side fairness = minimum exposure guarantee, user-side = per-user accuracy equalization. <strong>Our setting</strong> (SP1): a black-box recommender whose scores cannot be transformed; the only lever is exposure frequency (impression capping/boosting) used as a proxy for controlling the induced ranking. <strong>Differences</strong>:</p>
+<ul><li>Score immutability: BankFair+ never modifies $s_{u,i}$; it only re-permutes slates → <strong>resolved</strong>: fits the black-box constraint exactly (re-ranking as exposure allocation over positions).</li><li>Intervention type: paper controls exposure via full slate re-ranking (position assignment), our framing is impression-frequency adjustment → <strong>resolved (partially)</strong>: position-decayed exposure $\sum p(\sigma(i))$ is a frequency-like exposure budget, but the paper assumes it may reorder every slate, a stronger lever than pure frequency capping/boosting.</li><li>Objective: paper targets a specific two-sided fairness triple; SP1 is about exposure control as a general ranking-control proxy → <strong>reference only</strong>: the mechanism (dual-variable exposure targeting per provider, Algorithm 1 lines 20–23) transfers; the specific fairness objectives need not.</li><li>Scale/latency: per-user argmax over an integer assignment each arrival; feasibility at industrial scale asserted (Huawei dataset) but wall-clock cost not reported → <strong>missing link</strong>: runtime/scalability numbers.</li></ul></div>
+<div class="card"><div class="section-label"><span class="en-only">Root-cause vs. Symptom</span><span class="ko-only">근본 원인 대 증상</span></div><p><strong>Mixed</strong> — the paper correctly identifies the mechanism behind individual unfairness (a linear-in-accuracy objective lets the optimizer dump fairness costs on a few users) and fixes that mechanism directly with a concave satisfaction function; however, the promised individual-accuracy <em>guarantee</em> is delivered only as a soft fuzzy goal with empirical Pareto evidence, so the hard-guarantee problem it frames in Eq. (3) is relaxed away rather than solved.</p></div>
+</section>
+<div class="page-nav"><a href="07_LinkedInAudit.html">&larr; [07] LinkedInAudit</a><a href="../sp1_fairness-of-exposure-fixed-scores.html">&uarr; SP1</a><a href="09_FairSort.html">[09] FairSort &rarr;</a></div>
+    </div>
+  </div>
+<nav class="bd-sidebar-secondary"><div class="mini-toc-label"><span class="en-only">On this page</span><span class="ko-only">이 페이지</span></div><ul class="mini-toc"><li><a href="#header"><span class="en-only">Paper info</span><span class="ko-only">논문 정보</span></a></li><li><a href="#problem"><span class="en-only">Problem</span><span class="ko-only">문제</span></a></li><li><a href="#solution"><span class="en-only">Solution &amp; Results</span><span class="ko-only">해결책 · 결과</span></a></li><li><a href="#results"><span class="en-only">Concepts &amp; Follow-ups</span><span class="ko-only">개념 · 후속</span></a></li><li><a href="#delta"><span class="en-only">Condition Delta</span><span class="ko-only">조건 차이</span></a></li></ul></nav>
+</div>
+</body>
+</html>

@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>[97] Modeling Recommender Ecosystems: Research Challenges at the  — Exposure-Frequency Control Survey</title>
+
+<style>
+:root {
+  --bg: #0d1117; --card: #161b22; --border: #30363d;
+  --text: #e6edf3; --muted: #7d8590; --accent: #58a6ff;
+  --teal: #39d0c7; --green: #3fb950; --yellow: #d29922;
+  --red: #f85149; --purple: #bc8cff; --orange: #e3b341;
+  --sidebar-w: 262px; --toc-w: 210px; --hdr-h: 48px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+body { font-family: -apple-system, sans-serif; background: var(--bg);
+       color: var(--text); line-height: 1.6; }
+.bd-root { display: flex; height: 100vh; overflow: hidden; }
+.bd-sidebar-primary {
+  width: var(--sidebar-w); min-width: var(--sidebar-w);
+  overflow-y: auto; background: var(--card);
+  border-right: 1px solid var(--border);
+  padding: 0.75rem 0; flex-shrink: 0;
+}
+.bd-sidebar-primary::-webkit-scrollbar { width: 4px; }
+.bd-sidebar-primary::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+.bd-main { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-width: 0; }
+.article-header-bar {
+  height: var(--hdr-h); background: var(--card);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; padding: 0 1.5rem;
+  gap: 1rem; flex-shrink: 0;
+}
+.header-brand { color: var(--teal); font-weight: bold; font-size: 0.95em;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 1; }
+.header-brand a { color: inherit; text-decoration: none; }
+.breadcrumb { color: var(--muted); font-size: 0.82em; display: flex;
+  align-items: center; gap: 0.3rem; flex-shrink: 0; }
+.breadcrumb a { color: var(--accent); text-decoration: none; }
+.breadcrumb span { color: var(--border); }
+.bd-article { flex: 1; overflow-y: auto; padding: 2rem 2.5rem; }
+.bd-article::-webkit-scrollbar { width: 6px; }
+.bd-article::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+.bd-sidebar-secondary {
+  width: var(--toc-w); min-width: var(--toc-w);
+  overflow-y: auto; border-left: 1px solid var(--border);
+  padding: 1rem 0.75rem; flex-shrink: 0;
+}
+.bd-sidebar-secondary::-webkit-scrollbar { width: 4px; }
+.bd-sidebar-secondary::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+.sidebar-logo { padding: 0.5rem 1rem 0.75rem;
+  border-bottom: 1px solid var(--border); margin-bottom: 0.5rem; }
+.sidebar-logo a { color: var(--teal); font-weight: bold; font-size: 0.95em;
+  text-decoration: none; display: block; }
+.sidebar-section { color: var(--muted); font-size: 0.72em; font-weight: bold;
+  text-transform: uppercase; letter-spacing: 0.07em;
+  padding: 0.7rem 1rem 0.25rem; }
+.sidebar-nav-link { display: block; padding: 0.28rem 1rem 0.28rem 1.25rem;
+  color: var(--muted); font-size: 0.875em; text-decoration: none; }
+.sidebar-nav-link:hover { color: var(--text); background: rgba(255,255,255,0.03); }
+.sidebar-nav-link.active { color: var(--teal);
+  border-left: 2px solid var(--teal);
+  padding-left: calc(1.25rem - 2px); background: rgba(57,208,199,0.05); }
+.mini-toc-label { color: var(--muted); font-size: 0.72em; font-weight: bold;
+  text-transform: uppercase; letter-spacing: 0.07em; padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border); margin-bottom: 0.5rem; }
+.mini-toc { list-style: none; }
+.mini-toc li a { display: block; padding: 0.22rem 0;
+  color: var(--muted); font-size: 0.83em; text-decoration: none;
+  border-left: 2px solid transparent; padding-left: 0.5rem; }
+.mini-toc li a:hover { color: var(--text); }
+.mini-toc li a.toc-active { color: var(--teal); border-left-color: var(--teal); }
+.section-anchor { scroll-margin-top: calc(var(--hdr-h) + 8px); }
+h1 { color: var(--teal); font-size: 1.7em; margin-bottom: 0.5rem; line-height:1.3; }
+h2 { color: var(--teal); font-size: 1.25em; margin: 1.5rem 0 0.6rem; }
+h3 { color: var(--teal); font-size: 1.05em; margin: 1.2rem 0 0.4rem; }
+h4 { color: var(--teal); font-size: 0.95em; margin: 1rem 0 0.3rem; }
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+p { margin-bottom: 0.8rem; }
+ul, ol { margin: 0 0 0.8rem 1.4rem; }
+li { margin-bottom: 0.3rem; }
+code { background: rgba(255,255,255,0.06); border-radius: 3px; padding: 1px 4px; font-size: 0.9em; }
+blockquote { border-left: 3px solid var(--border); color: var(--muted);
+  padding: 0.2rem 0.8rem; margin-bottom: 0.8rem; }
+.card { background: var(--card); border: 1px solid var(--border);
+        border-radius: 8px; padding: 1.2rem; margin-bottom: 1rem; }
+table { width: 100%; border-collapse: collapse; font-size: 0.9em; margin-bottom: 0.8rem; }
+th { background: var(--card); color: var(--teal); padding: 8px;
+     border: 1px solid var(--border); text-align: left; }
+td { padding: 8px; border: 1px solid var(--border); vertical-align: top; }
+tr:nth-child(even) td { background: rgba(0,0,0,0.2); }
+.stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+             gap: 1rem; margin-bottom: 1.5rem; }
+.stat-box { background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+            padding: 1rem; text-align: center; }
+.stat-num { font-size: 2rem; font-weight: bold; color: var(--teal); }
+.stat-label { color: var(--muted); font-size: 0.85em; margin-top: 0.2rem; }
+.sp-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+           gap: 1rem; margin: 1rem 0; }
+.sp-card { background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+           padding: 1.2rem; cursor: pointer; transition: border-color 0.15s; height:100%; }
+.sp-card:hover { border-color: var(--teal); }
+.sp-card h3 { margin: 0 0 0.5rem; color: var(--teal); font-size: 1em; }
+.sp-card p { margin: 0; color: var(--muted); font-size: 0.88em; }
+.sp-badge { display: inline-block; background: rgba(57,208,199,0.1); color: var(--teal);
+            border-radius: 4px; padding: 2px 8px; font-size: 0.8em; margin-bottom: 0.5rem; }
+.paper-meta { color: var(--muted); font-size: 0.9em; margin-bottom: 1.5rem; }
+.paper-meta a { color: var(--accent); }
+.section-label { color: var(--teal); font-weight: bold; font-size: 0.85em;
+                 text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.4rem; }
+.pill { display: inline-block; border-radius: 4px; padding: 0.15rem 0.6rem;
+        font-size: 0.8em; font-weight: bold; margin-right: 0.4rem; }
+.pill-p0 { background: rgba(63,185,80,0.2); color: var(--green); }
+.pill-p1 { background: rgba(57,208,199,0.15); color: var(--teal); }
+.pill-p2 { background: rgba(210,153,34,0.2); color: var(--yellow); }
+.pill-p3 { background: rgba(188,140,255,0.2); color: var(--purple); }
+.pill-p4 { background: rgba(125,133,144,0.2); color: var(--muted); }
+.delta-row { margin: 0.4rem 0; padding: 0.4rem 0.8rem;
+             border-left: 3px solid var(--border); border-radius: 0 4px 4px 0; }
+.chain { position: relative; padding-left: 2rem; }
+.chain::before { content: ''; position: absolute; left: 0.95rem; top: 0;
+                 bottom: 0; width: 2px; background: var(--border); }
+.chain-node { position: relative; margin-bottom: 2rem; }
+.chain-node::before { content: ''; position: absolute; left: -1.55rem;
+                      top: 1.1rem; width: 12px; height: 12px;
+                      border-radius: 50%; background: var(--teal); }
+.chain-num { display: inline-block; width: 28px; height: 28px; background: var(--teal);
+             color: #000; border-radius: 50%; text-align: center; line-height: 28px;
+             font-weight: bold; font-size: 0.85em; margin-right: 0.6rem; flex-shrink: 0; }
+.chain-q { font-weight: bold; color: var(--text); margin: 0.4rem 0 0.3rem; font-size: 1em; }
+.chain-papers { color: var(--muted); font-size: 0.85em; margin-bottom: 0.6rem; }
+.chain-start { background: var(--card); border: 1px solid var(--teal);
+               border-radius: 8px; padding: 1rem; margin-bottom: 2rem; }
+.chain-start h3 { margin: 0 0 0.5rem; color: var(--teal); }
+.chain-converge { background: var(--card); border: 1px solid var(--green);
+                  border-radius: 8px; padding: 1rem; margin-top: 1rem; }
+.chain-converge h3 { margin: 0 0 0.5rem; color: var(--green); }
+.chain-label { display: inline-block; border-radius: 4px; padding: 0.15rem 0.6rem;
+               font-size: 0.8em; font-weight: bold; margin-right: 0.4rem; }
+.chain-status { border-radius: 0 4px 4px 0; padding: 0.5rem 0.8rem;
+                margin: 0.35rem 0; font-size: 0.88em; }
+.chain-status ul { margin: 0.3rem 0 0 1.2rem; padding: 0; }
+.chain-status li { margin-bottom: 0.25rem; }
+.chain-status.solved  { background: rgba(63,185,80,0.07);  border-left: 3px solid var(--green); }
+.chain-status.remains { background: rgba(210,153,34,0.07); border-left: 3px solid var(--yellow); }
+.chain-status.added   { background: rgba(248,81,73,0.07);  border-left: 3px solid var(--red); }
+.chain-status.pivoted { background: rgba(188,140,255,0.1); border-left: 3px solid var(--purple); }
+.chain-label.solved   { background: rgba(63,185,80,0.2);  color: var(--green); }
+.chain-label.remains  { background: rgba(210,153,34,0.2); color: var(--yellow); }
+.chain-label.added    { background: rgba(248,81,73,0.2);  color: var(--red); }
+.chain-label.pivoted  { background: rgba(188,140,255,0.2); color: var(--purple); }
+.chain-status.expected { background: rgba(88,166,255,0.07);  border-left: 3px solid var(--accent); }
+.chain-label.expected  { background: rgba(88,166,255,0.2);   color: var(--accent); }
+.chain-status.revised  { background: rgba(57,208,199,0.07);  border-left: 3px solid var(--teal); }
+.chain-label.revised   { background: rgba(57,208,199,0.2);   color: var(--teal); }
+.concept-box { border-left: 4px solid var(--teal); background: #0d1f1f;
+               border-radius: 4px; padding: 1.2rem; margin-bottom: 1.2rem; }
+.concept-name { font-weight: bold; color: var(--teal); font-size: 1.05em; margin-bottom: 0.5rem; }
+.hypothesis { border-left: 4px solid var(--teal); background: #0d1f1f;
+              border-radius: 4px; padding: 1rem; margin: 1rem 0; }
+.recommendation { border-left: 4px solid var(--purple); background: #1a0f2e;
+                  border-radius: 4px; padding: 1rem; margin: 1rem 0; }
+.rq-row { background: rgba(88,166,255,0.05); border-left: 3px solid var(--accent);
+          padding: 0.4rem 0.8rem; margin-bottom: 0.5rem; border-radius: 0 4px 4px 0; }
+.scroll-table-wrap { max-height: 420px; overflow-y: auto; border: 1px solid var(--border);
+                     border-radius: 4px; }
+.scroll-table-wrap table { margin-bottom: 0; }
+.scroll-table-wrap thead th { position: sticky; top: 0; background: #161b22; z-index: 1; }
+.page-nav { display: flex; justify-content: space-between; margin-top: 2rem;
+            padding-top: 1rem; border-top: 1px solid var(--border); gap: 1rem; }
+.page-nav a { color: var(--accent); font-size: 0.9em; }
+html.ko-active .en-only { display: none !important; }
+html.ko-active .ko-only { display: block !important; }
+.ko-only { display: none; }
+span.ko-only, .sidebar-logo a span.ko-only { display: none; }
+html.ko-active span.ko-only { display: inline !important; }
+.lang-btn { background: transparent; color: var(--muted); border: 1px solid var(--border);
+            border-radius: 4px; padding: 3px 9px; font-size: 0.8em; cursor: pointer; }
+.lang-btn.active { border-color: var(--teal); color: var(--teal); }
+details { margin-bottom: 0.8rem; }
+details summary { color: var(--muted); cursor: pointer; }
+@media (max-width: 1024px) { .bd-sidebar-secondary { display: none; } }
+@media (max-width: 768px) {
+  .bd-sidebar-primary { display: none; }
+  .bd-root { flex-direction: column; height: auto; overflow: visible; }
+  .bd-main { overflow: visible; }
+  .bd-article { overflow: visible; padding: 1rem; }
+  .stat-grid { grid-template-columns: repeat(2, 1fr); }
+  .sp-grid { grid-template-columns: 1fr; }
+}
+</style>
+
+<script>
+MathJax = { tex: { inlineMath: [['$','$']], displayMath: [['$$','$$']] },
+            options: { skipHtmlTags: ['script','noscript','style','textarea','pre','code'] } };
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<script>
+function toggleLanguage() {
+  const html = document.documentElement;
+  const isKo = html.classList.toggle('ko-active');
+  document.querySelectorAll('.lang-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.lang === (isKo ? 'ko' : 'en'));
+  });
+  localStorage.setItem('survey-lang', isKo ? 'ko' : 'en');
+}
+document.addEventListener('DOMContentLoaded', function() {
+  const saved = localStorage.getItem('survey-lang');
+  if (saved === 'ko') {
+    document.documentElement.classList.add('ko-active');
+    document.querySelectorAll('.lang-btn').forEach(b =>
+      b.classList.toggle('active', b.dataset.lang === 'ko'));
+  } else {
+    document.querySelectorAll('[data-lang="en"]').forEach(b => b.classList.add('active'));
+  }
+  const article = document.querySelector('.bd-article');
+  const sections = Array.from(document.querySelectorAll('.section-anchor[id]'));
+  const sideLinks = Array.from(document.querySelectorAll('.bd-sidebar-primary .sidebar-nav-link'));
+  const tocLinks = Array.from(document.querySelectorAll('.bd-sidebar-secondary .mini-toc a'));
+  if (!article || !sections.length) return;
+  function current() {
+    let id = sections[0].id;
+    const scrollTop = article.scrollTop + 60;
+    sections.forEach(function(s) { if (s.offsetTop <= scrollTop) id = s.id; });
+    return id;
+  }
+  function update() {
+    const id = current();
+    sideLinks.forEach(function(a) {
+      a.classList.toggle('active', a.getAttribute('href') === '#' + id);
+    });
+    tocLinks.forEach(function(a) {
+      a.classList.toggle('toc-active', a.getAttribute('href') === '#' + id);
+    });
+  }
+  article.addEventListener('scroll', update, { passive: true });
+  update();
+});
+</script>
+
+</head>
+<body>
+<div class="bd-root">
+
+<nav class="bd-sidebar-primary">
+  <div class="sidebar-logo">
+    <a href="../index.html">&#x2B21; <span class="en-only">Exposure-Frequency Control Survey</span><span class="ko-only">Exposure-빈도 제어 문헌 조사</span></a>
+  </div>
+  <div class="sidebar-section"><span class="en-only">Overview</span><span class="ko-only">개요</span></div>
+  <a href="../index.html#overview" class="sidebar-nav-link"><span class="en-only">Survey Hub</span><span class="ko-only">조사 허브</span></a>
+  <a href="../index.html#answers" class="sidebar-nav-link"><span class="en-only">Key Answers</span><span class="ko-only">핵심 답변</span></a>
+  <div class="sidebar-section"><span class="en-only">Sub-Problems</span><span class="ko-only">세부 문제</span></div>
+<a href="../sp1_fairness-of-exposure-fixed-scores.html" class="sidebar-nav-link">SP1: <span class="en-only">Exposure fairness</span><span class="ko-only">Exposure 공정성</span></a>
+<a href="../sp2_2024-2026-frontier-llm-era.html" class="sidebar-nav-link">SP2: <span class="en-only">2024–26 frontier / LLM</span><span class="ko-only">2024–26 최전선 / LLM</span></a>
+<a href="../sp3_postproc-rerank-blackbox.html" class="sidebar-nav-link">SP3: <span class="en-only">Post-proc re-ranking</span><span class="ko-only">Post-proc re-ranking</span></a>
+<a href="../sp4_stochastic-ranking-policies.html" class="sidebar-nav-link">SP4: <span class="en-only">Stochastic policies</span><span class="ko-only">확률적 정책</span></a>
+<a href="../sp5_amortized-equity-attention.html" class="sidebar-nav-link">SP5: <span class="en-only">Amortized fairness</span><span class="ko-only">Amortized 공정성</span></a>
+<a href="../sp6_bandit-exposure-allocation.html" class="sidebar-nav-link">SP6: <span class="en-only">Bandit allocation</span><span class="ko-only">Bandit 배분</span></a>
+<a href="../sp7_capping-pacing-feeds-ads.html" class="sidebar-nav-link">SP7: <span class="en-only">Capping &amp; pacing</span><span class="ko-only">Capping·pacing</span></a>
+<a href="../sp8_popularity-debias-calibration.html" class="sidebar-nav-link">SP8: <span class="en-only">Debiasing &amp; calibration</span><span class="ko-only">Debiasing·calibration</span></a>
+<a href="../sp9_ecosystems-creator-incentives.html" class="sidebar-nav-link active">SP9: <span class="en-only">Ecosystems &amp; creators</span><span class="ko-only">생태계·creator</span></a>
+<a href="../sp10_llm-exposure-feedback-loops.html" class="sidebar-nav-link">SP10: <span class="en-only">LLM feedback loops</span><span class="ko-only">LLM feedback loop</span></a>
+<a href="../sp11_strategyproof-exposure.html" class="sidebar-nav-link">SP11: <span class="en-only">Strategy-proofness</span><span class="ko-only">Strategy-proofness</span></a>
+
+  <div class="sidebar-section"><span class="en-only">Synthesis</span><span class="ko-only">종합</span></div>
+  <a href="../conclusion.html" class="sidebar-nav-link"><span class="en-only">Conclusion</span><span class="ko-only">결론</span></a>
+  <a href="../thinking-process.html" class="sidebar-nav-link"><span class="en-only">Thinking Process</span><span class="ko-only">추론 과정</span></a>
+</nav>
+  <div class="bd-main">
+<div class="article-header-bar"><div class="header-brand"><a href="../index.html"><span class="en-only">Exposure-Frequency Control Survey</span><span class="ko-only">Exposure-빈도 제어 문헌 조사</span></a></div><nav class="breadcrumb"><a href="../index.html"><span class="en-only">Survey</span><span class="ko-only">조사</span></a><span>&rsaquo;</span><a href="../sp9_ecosystems-creator-incentives.html">SP9</a><span>&rsaquo;</span><span>[97] Modeling Recommender Ecosystems: Researc</span></nav><button class="lang-btn" data-lang="en" onclick="toggleLanguage()">EN</button><button class="lang-btn" data-lang="ko" onclick="toggleLanguage()">KO</button></div>
+    <div class="bd-article">
+<section id="header" class="section-anchor"><div class="paper-meta">
+<h1 style="margin-bottom:0.3rem">Modeling Recommender Ecosystems: Research Challenges at the Intersection of Mechanism Design, Reinforcement Learning and Generative Models</h1>
+<p style="margin:0.3rem 0;color:var(--muted)">Boutilier et al. · arXiv · 2023 · 12 citations</p>
+<p style="margin:0.3rem 0"><a href="https://arxiv.org/abs/2309.06375" target="_blank">arXiv:2309.06375</a> · <a href="https://arxiv.org/pdf/2309.06375.pdf" target="_blank">PDF</a> · SP: <a href="../sp9_ecosystems-creator-incentives.html">SP9</a></p>
+<p><span class="pill pill-p2">P2</span><span class="pill" style="background:rgba(255,255,255,0.05);color:var(--muted)">Track A</span></p>
+</div>
+<div class="card ko-only" style="border-color:var(--teal)"><div class="section-label">한 줄 요약</div><p style="margin:0">recommender 생태계 모델링의 연구 과제를 mechanism design, RL, 생성 모델의 교차점에서 정리한 position paper.</p></div>
+</section>
+<section id="problem" class="section-anchor">
+<div class="card"><div class="section-label"><span class="en-only">Problem</span><span class="ko-only">해결하려는 문제</span></div><p>The dominant paradigm in both RS research and deployed systems is local, myopic optimization: each recommendation maximizes immediate predicted affinity for one user, independent of its effect on other users or on the content-supply side. This ignores that RS policies shape creator participation decisions (entry, content choice, abandonment), which feed back into the utility the RS can generate for users in the long run. The paper's Fig. 1 example shows a myopic policy reaching an equilibrium that leaves a user subpopulation permanently worse off than a non-myopic, ecosystem-aware matching would. Additionally, the paper explicitly flags that practical RSs "rarely take steps to assess true user, creator or vendor utility, instead relying on proxy measurements (e.g., return engagement)" and that "user engagement may serve as, at best, an indirect proxy for creator utility."</p></div>
+</section>
+<section id="solution" class="section-anchor">
+<div class="card"><div class="section-label"><span class="en-only">Solution / Contribution</span><span class="ko-only">해결책 / 기여</span></div><p>No method is proposed — this is a position / research-challenges paper. The core claim: maximizing long-term ecosystem value strictly requires explicitly modeling incentives, behaviors, and strategic interactions of all actors, and the right conceptual toolkit is a "nonstandard" mechanism design combining:</p>
+<ol><li><strong>RL / dynamic mechanism design</strong> for long-horizon, sequential optimization (Section 9);</li><li><strong>Social choice functions</strong> for explicit cross-actor utility tradeoffs (Sections 10–11);</li><li><strong>Information-sharing / steering mechanisms</strong> to break RS–creator information asymmetry (Section 7);</li><li><strong>Behavioral economics</strong> for boundedly-rational user/creator models — direct preference revelation is declared "completely impractical" in RS settings due to cognitive biases and corpus scale (Section 5);</li><li><strong>Generative models / LLMs</strong> to make elicited preferences and creator guidance interpretable and actionable (Sections 5.3, 7).</li></ol>
+<p>Classical mechanism design must be bent in specific ways: no monetary transfers, indirect/incremental preference revelation instead of direct revelation, learned rather than known dynamics, and boundedly rational agents.</p></div>
+<div class="card"><div class="section-label"><span class="en-only">Key Results</span><span class="ko-only">주요 결과</span></div><ul><li>No quantitative results — position paper. Headline "results" are structural arguments:</li><li>The Fig. 1 example: myopic matching → creator P2 exits (3 &lt; 4-user threshold) → permanent welfare loss for 3/8 users; an ecosystem-aware matching sacrificing one near-indifferent user's affinity keeps P2 alive and maximizes utilitarian user welfare.</li><li>Direct preference revelation (the classical mechanism-design workhorse, via the revelation principle) is argued infeasible in RSs: cognitive biases, corpus scale, combinatorial consumption-stream outcomes, elicitation costs.</li><li>Fairness-of-exposure work is reinterpreted as implicitly treating user impressions as creator utility "without explicitly labeling this as creator utility" — a proxy-for-utility observation directly relevant to SP9.</li><li>Engagement is named an indirect, potentially poor proxy for both user and creator utility; creator utility may be non-linear (sigmoidal, saturating, risk-profiled) in cumulative engagement.</li></ul></div>
+<details><summary><span class="en-only">5Cs Analysis</span><span class="ko-only">5Cs 분석</span></summary><div class="card" style="margin-top:0.5rem"><p><strong>Category</strong>: position / research-agenda paper (with a stylized formal model). <strong>Context</strong>: builds on Mladenov et al. 2020 (constrained matching for creator retention), Ben-Porat &amp; Tennenholtz 2018 (strategic content providers), fairness-of-exposure line (Singh &amp; Joachims 2018), multistakeholder RS survey (Abdollahpouri et al. 2020), and classical mechanism design (Hurwicz; Mas-Colell et al.). Serves as the landscape anchor connecting SP9's classical exposure/incentive literature to the 2023–2026 ecosystem line. <strong>Correctness</strong>: no empirical claims to validate; the Fig. 1 worked example is internally consistent. Arguments rest on cited prior results (e.g., Mladenov et al. for the abandonment dynamics). [SKIM] <strong>Contributions</strong>: (1) a stylized omniscient/omnipotent/benevolent RS model whose assumption-relaxations generate a structured research agenda; (2) a systematic mapping of recosystem elements onto mechanism-design primitives (agents, actions, outcomes, SCF, revelation); (3) explicit identification of where classical mechanism design breaks (no money, no direct revelation, unknown dynamics, bounded rationality). <strong>Clarity</strong>: high as prose; nothing to reproduce (no algorithm or experiments).</p></div></details>
+</section>
+<section id="results" class="section-anchor">
+<details><summary><span class="en-only">Concepts Introduced</span><span class="ko-only">도입된 개념</span></summary><div class="card" style="margin-top:0.5rem"><p><strong>Recosystem (recommender ecosystem)</strong></p>
+<ul><li><strong>What it computes</strong>: a framing, not a computation — the RS plus all actors it couples (users, content creators/providers, vendors, advertisers) and the interactions among them induced by the RS policy.</li><li><strong>Why it was created</strong>: prior RS research optimizes recommendations locally and myopically per user, ignoring that one user's recommendation affects creator viability and hence other users' future utility.</li><li><strong>Concrete example</strong>: Fig. 1 — 2 creators, 8 users; myopic affinity matching gives creator P2 only 3 users, below its 4-user survival threshold, so P2 abandons the platform and its 3 users are permanently stuck with worse content.</li><li><strong>How it is used in this paper</strong>: the organizing object for the entire research agenda (Parts II–IV).</li></ul>
+<p><strong>Omniscient, Omnipotent, Benevolent Recommender (stylized model)</strong></p>
+<ul><li><strong>What it computes</strong>: users and items as points in a shared latent embedding space; affinity = dot product; the omniscient RS matches each user to arg max affinity; the omnipotent RS additionally repositions creators in content space to maximize expected total user utility — equivalent to an uncapacitated k-median facility-location problem over creator configurations $g^* = \arg\max_g \mathbb{E}_U\, u \cdot g_{c^*(u;g)}$.</li><li><strong>Why it was created</strong>: to isolate exactly which unrealistic assumption (perfect knowledge, control over creators, purely utilitarian objective) each research challenge corresponds to relaxing.</li><li><strong>Concrete example</strong>: the k-median reduction above; creator repositioning is non-local because one creator's optimal position depends on all others.</li><li><strong>How it is used in this paper</strong>: each of Sections 5–11 relaxes one assumption of this model to generate research challenges.</li></ul>
+<p><strong>Social choice function (SCF) as the RS objective</strong></p>
+<ul><li><strong>What it computes</strong>: maps the vector of all agents' utility functions plus an outcome to a social utility score; the mechanism (= RS policy) should implement $a^*_u = \arg\max_a \mathbb{E}_O\, C(u,o)$.</li><li><strong>Why it was created</strong> (in this context): standard RS objectives (engagement) leave cross-actor tradeoffs implicit; an explicit SCF forces the designer to articulate how user utility trades against creator utility and against societal values (filter bubbles, polarization).</li><li><strong>Concrete example</strong>: utilitarian vs. maxmin vs. fairness/regret-constrained SCFs (Section 10); in Fig. 1, the "user utilitarian" equilibrium sacrifices a small utility loss for one red user to keep P2 alive for three blue users.</li><li><strong>How it is used in this paper</strong>: Part IV; also flagged as "the elephant in the room" — choosing the SCF hits Arrow/Gibbard–Satterthwaite impossibility results.</li></ul>
+<p><strong>Information asymmetry (RS vs. creators)</strong></p>
+<ul><li><strong>What it computes</strong>: the gap between the RS's population-wide model of latent user demand over content space and any single creator's view (each creator sees only its own small audience).</li><li><strong>Why it was created</strong>: identified as a key source of economic inefficiency — a creator with low engagement cannot distinguish "no demand" from "low quality" from "crowded competitive niche," so it cannot respond appropriately.</li><li><strong>Concrete example</strong>: the three-cause diagnosis of low engagement (no demand / unattractive quality / many similar competitors) — the RS can distinguish these; the creator cannot.</li><li><strong>How it is used in this paper</strong>: Section 7 proposes information-sharing / creator-steering mechanisms ("nudging" creators toward under-served content regions) as a research direction, subject to privacy and joint-coordination constraints.</li></ul>
+<p><strong>Mechanism design without money</strong> — standard concept relied on heavily: content RSs cannot use monetary transfers to incentivize truthful revelation, placing them in the harder no-money regime (Schummer &amp; Vohra 2007; Procaccia &amp; Tennenholtz 2009). [SKIM - standard econ concept, no new definition given]</p>
+<p><strong>Creator abandonment threshold model</strong> — behavioral model where a creator leaves the platform if per-period engagement falls below a threshold (borrowed from Mladenov et al. 2020); the minimal creator-dynamics assumption driving the motivating example.</p></div></details>
+<details><summary><span class="en-only">Implementation Feasibility</span><span class="ko-only">구현 가능성</span></summary><div class="card" style="margin-top:0.5rem"><ul><li><strong>Needs</strong>: nothing to run — no algorithm, no code, no data.</li><li><strong>Code</strong>: not available (not applicable).</li><li><strong>Modifications</strong>: to use in the survey, extract (a) the engagement-as-proxy critique (Sections 6.1, 10), (b) the fairness-of-exposure-as-implicit-creator-utility reframing, and (c) the citation graph it anchors (Mladenov 2020, Ben-Porat &amp; Tennenholtz 2018, Hron 2022, Jagadeesan 2022, Zhan 2021, Prasad 2023).</li><li><strong>Unknowns</strong>: missing link — whether any of the proposed mechanisms (creator steering, no-money dynamic mechanisms for RSs) have since been instantiated; the 2023–2026 successor papers in Track B should answer this.</li></ul></div></details>
+<details><summary><span class="en-only">Follow-up Papers</span><span class="ko-only">관련 후속 논문</span></summary><div class="card" style="margin-top:0.5rem"><ul><li>Mladenov et al., "Optimizing Long-term Social Welfare in Recommender Systems: A Constrained Matching Approach" (ICML 2020) — the concrete algorithmic instantiation of this paper's motivating example.</li><li>Ben-Porat &amp; Tennenholtz, "A Game-Theoretic Approach to Recommendation Systems with Strategic Content Providers" (NeurIPS 2018) — the strategic-provider equilibrium analysis this agenda builds on.</li><li>Jagadeesan, Garg &amp; Steinhardt, "Supply-Side Equilibria in Recommender Systems" (2022) — creator-side equilibrium under engagement-based ranking, directly on SP9's proxy question.</li><li>Hron et al., "Modeling Content Creator Incentives on Algorithm-curated Platforms" (2022) — creator incentives under exposure allocation.</li><li>Prasad, Mladenov &amp; Boutilier, "Content Prompting: Modeling Content Provider Dynamics to Improve User Welfare" (CONSEQUENCES @ RecSys 2023) — first instantiation of the creator-steering / information-sharing direction proposed in Section 7.</li><li>Singh &amp; Joachims, "Fairness of Exposure in Rankings" (KDD 2018) — the exposure-allocation baseline this paper reinterprets as implicit creator utility.</li></ul></div></details>
+</section>
+<section id="delta" class="section-anchor">
+<div class="card"><div class="section-label"><span class="en-only">Condition Delta — transfer to our setting</span><span class="ko-only">조건 차이 — 우리 설정으로의 전이</span></div><p><strong>Paper's setting</strong>: hypothetical large-scale content platform (users, creators, advertisers); no dataset, no supervision, no implementation — a conceptual framework over latent-embedding RSs (covers matrix factorization and two-tower models). <strong>Our setting</strong> (SP9 / survey): exposure frequency as a ranking proxy — whether observed exposure/engagement distributions can stand in for value or quality in ranking, and what breaks when they do. <strong>Differences</strong>:</p>
+<ul><li>Paper treats exposure/engagement-as-proxy as one motivating deficiency inside a much broader agenda; our survey makes the proxy question the central object: reference only.</li><li>Paper offers no operational method or measurements to import; it supplies the conceptual vocabulary (SCF, information asymmetry, creator utility ≠ engagement): resolved — use as landscape anchor and terminology source, per its P2/Track A role.</li><li>Paper's actors include advertisers and vendors; SP9 scope is presumably user–creator exposure dynamics: reference only.</li><li>Claims about creator abandonment dynamics rest on Mladenov et al. 2020, which carries the actual model/algorithm: missing link — the quantitative backing lives in the cited paper, not here.</li></ul></div>
+<div class="card"><div class="section-label"><span class="en-only">Root-cause vs. Symptom</span><span class="ko-only">근본 원인 대 증상</span></div><p><code>Direct</code> — the paper explicitly diagnoses the root cause (myopic per-user optimization on engagement proxies ignores actor incentives and cross-actor coupling) and proposes attacking it at the structural level (explicit utility modeling + SCF + mechanism design), rather than patching observable symptoms like popularity bias with re-ranking; note however it only <em>articulates</em> the direct attack — no component is solved or demonstrated here.</p></div>
+</section>
+<div class="page-nav"><a href="96_LongTermWelfareMatching.html">&larr; [96] LongTermWelfareMatching</a><a href="../sp9_ecosystems-creator-incentives.html">&uarr; SP9</a><a href="98_PerformativeRec.html">[98] PerformativeRec &rarr;</a></div>
+    </div>
+  </div>
+<nav class="bd-sidebar-secondary"><div class="mini-toc-label"><span class="en-only">On this page</span><span class="ko-only">이 페이지</span></div><ul class="mini-toc"><li><a href="#header"><span class="en-only">Paper info</span><span class="ko-only">논문 정보</span></a></li><li><a href="#problem"><span class="en-only">Problem</span><span class="ko-only">문제</span></a></li><li><a href="#solution"><span class="en-only">Solution &amp; Results</span><span class="ko-only">해결책 · 결과</span></a></li><li><a href="#results"><span class="en-only">Concepts &amp; Follow-ups</span><span class="ko-only">개념 · 후속</span></a></li><li><a href="#delta"><span class="en-only">Condition Delta</span><span class="ko-only">조건 차이</span></a></li></ul></nav>
+</div>
+</body>
+</html>

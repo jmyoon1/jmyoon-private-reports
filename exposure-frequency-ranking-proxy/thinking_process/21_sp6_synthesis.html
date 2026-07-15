@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8"><title>21_sp6_synthesis</title><style>
+:root{--bg:#0d1117;--card:#161b22;--border:#30363d;--text:#e6edf3;
+      --muted:#8b949e;--accent:#58a6ff;--green:#3fb950;--amber:#d29922;
+      --teal:#39d0c7;--purple:#bc8cff;}
+body{background:var(--bg);color:var(--text);font-family:-apple-system,sans-serif;margin:0;padding:1rem;}
+.cell{border:1px solid var(--border);border-radius:8px;overflow:hidden;}
+.cell-header{background:var(--card);padding:.6rem 1rem;display:flex;align-items:center;gap:.75rem;border-bottom:1px solid var(--border);}
+.badge{font-size:.72rem;font-weight:700;padding:.2rem .55rem;border-radius:4px;}
+.b-synth{background:rgba(188,140,255,.15);color:var(--purple);}
+.cell-title{font-size:.9rem;font-weight:600;}
+.cell-ts{margin-left:auto;font-size:.72rem;color:var(--muted);}
+.cell-body{padding:1rem;display:flex;flex-direction:column;gap:.7rem;}
+.field{padding:.55rem .8rem;border-radius:6px;}
+.f-expected{background:rgba(88,166,255,.07);border-left:3px solid var(--accent);}
+.f-found{background:rgba(63,185,80,.07);border-left:3px solid var(--green);}
+.f-surprise{background:rgba(210,153,34,.07);border-left:3px solid var(--amber);}
+.f-revised{background:rgba(57,208,199,.07);border-left:3px solid var(--teal);}
+.f-neutral{background:rgba(139,148,158,.07);border-left:3px solid var(--muted);}
+.f-label{font-size:.71rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);margin-bottom:.28rem;}
+.f-content{font-size:.88rem;line-height:1.55;margin:0;}
+</style></head>
+<body>
+<div class="cell" id="cell-sp6-synthesis">
+  <div class="cell-header">
+    <span class="badge b-synth">Phase 3 ✓ Synthesis</span>
+    <span class="cell-title">SP6: Bandit and online learning for exposure allocation</span>
+    <span class="cell-ts">2026-07-16 KST</span>
+  </div>
+  <div class="cell-body">
+    <div class="field f-expected"><div class="f-label">Prior belief ◈</div><p class="f-content">
+      Score-free candidates with regret guarantees; five inherited lenses incl. respect-vs-replace-scores, position-weighted denominations, and whether regret bounds close SP4's open-loop concentration gap.
+    </p></div>
+    <div class="field f-found"><div class="f-label">Dominant approach found</div><p class="f-content">
+      The respect/replace split is structural. The merit-proportional FairX line (Wang &amp; Joachims and successors) REPLACES the scorer — merit is a function of the bandit's own estimated means — and under trusted immutable scores its learning problem degenerates to a closed-form target plus SP4 realization. The genuine score-free column is the quota-floor family: Fair-Learn gives the strongest realized-exposure guarantee in the entire survey (deterministic, anytime, learner-independent count floor at O(1)/round); EARS and the YouTube Shorts satisfaction filter are score-read-only layers.
+    </p></div>
+    <div class="field f-surprise"><div class="f-label">Surprise / Confirmation</div><p class="f-content">
+      (a) Exactly one position-weighted regret bound exists in the whole bandit line (ConcaveRewards, objective-side only) — the count→position gap survives its 4th SP; SP7 is the final check. (b) Bandit bounds do NOT close SP4's open-loop concentration gap: realized-count guarantees are again closed-loop ledger mechanisms (uuid 18 confirmed in a 4th literature). (c) Non-stationary arrivals + estimated relevance are handled at most one at a time, never with slates. (d) Production cold-start over-exposure confirmed (YouTube Shorts), with an inversion: FEWER, better-matched impressions won — confirming exposure→utility heterogeneity (uuid 8). (e) Exploration noise does not debias exposure (CascadingExposure) — debiasing claims resting on exploration alone are suspect.
+    </p></div>
+    <div class="field f-neutral"><div class="f-label">KB delta</div><p class="f-content">
+      3 claims added (score-free anytime floor capability; count-denomination gap; degenerate-regime gap — O4-ready pending SP7/SP8), 6 refined (uuids 3, 6, 8, 12, 18, 19). Total 23. 7 RQs; 4 seeds handed to SP7/SP8 incl. the final count→position check and pacing-duals ≟ drift-plus-penalty virtual queues.
+    </p></div>
+    <div class="field f-revised"><div class="f-label">SP revisions ✎</div><p class="f-content">
+      3 SPs revised: SP7 (final count→position check; uuid 6 formal test vs virtual queues; guaranteed-delivery as the ads analogue of anytime floors), SP8 (intermediate score-trust regime; exploration≠debiasing caveat), SP9 (is creator welfare ever denominated in exposure units?).
+    </p></div>
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8"><title>24_sp7_verification</title><style>
+:root{--bg:#0d1117;--card:#161b22;--border:#30363d;--text:#e6edf3;
+      --muted:#8b949e;--accent:#58a6ff;--green:#3fb950;--amber:#d29922;
+      --teal:#39d0c7;--purple:#bc8cff;}
+body{background:var(--bg);color:var(--text);font-family:-apple-system,sans-serif;margin:0;padding:1rem;}
+.cell{border:1px solid var(--border);border-radius:8px;overflow:hidden;}
+.cell-header{background:var(--card);padding:.6rem 1rem;display:flex;align-items:center;gap:.75rem;border-bottom:1px solid var(--border);}
+.badge{font-size:.72rem;font-weight:700;padding:.2rem .55rem;border-radius:4px;}
+.b-verify{background:rgba(57,208,199,.15);color:var(--teal);}
+.cell-title{font-size:.9rem;font-weight:600;}
+.cell-ts{margin-left:auto;font-size:.72rem;color:var(--muted);}
+.cell-body{padding:1rem;display:flex;flex-direction:column;gap:.7rem;}
+.field{padding:.55rem .8rem;border-radius:6px;}
+.f-found{background:rgba(63,185,80,.07);border-left:3px solid var(--green);}
+.f-surprise{background:rgba(210,153,34,.07);border-left:3px solid var(--amber);}
+.f-revised{background:rgba(57,208,199,.07);border-left:3px solid var(--teal);}
+.f-neutral{background:rgba(139,148,158,.07);border-left:3px solid var(--muted);}
+.f-label{font-size:.71rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);margin-bottom:.28rem;}
+.f-content{font-size:.88rem;line-height:1.55;margin:0;}
+</style></head>
+<body>
+<div class="cell" id="cell-sp7-verification">
+  <div class="cell-header">
+    <span class="badge b-verify">Phase V — Verification</span>
+    <span class="cell-title">Iteration 7 — after SP7</span>
+    <span class="cell-ts">2026-07-16 KST</span>
+  </div>
+  <div class="cell-body">
+    <div class="field f-found"><div class="f-label">Coverage</div><p class="f-content">
+      0% of P1 objectives fully covered (0/3) · SPs run: 7/12.
+      O1: marginal — all five named families in the taxonomy; the controlled-objective axis lacks only SP8's calibration/debiasing column.
+      O2: marginal — feasibility map complete for all seven surveyed mechanism columns; SP8's score-preserving debiasing family is the last unlabeled one.
+      O3: marginal — feed/ads 2023–2026 line delivered (VRS+audit pair, RCPacing, 2 field experiments); SP8/SP9 recency passes pending.
+      O4: 2 items reached final form (count→position gap O4-CONFIRMED after 5th literature; pacing↔fairness reduction confirmed at algorithm identity, write-up pending SP9 citation check); degenerate-regime gap gets its final check in SP8.
+    </p></div>
+    <div class="field f-neutral"><div class="f-label">Convergence</div><p class="f-content">No — continue to SP8 (carries the uuid-23 final check, dynamic-immutability lens, reach-vs-impressions check). Broad-sweep blocks convergence until SP9 completes.</p></div>
+    <div class="field f-surprise"><div class="f-label">New SPs discovered</div><p class="f-content">None. Discretization watch item CLOSED (count units). Dynamic-immutability finding is related evidence for the LLM-feedback-loop watch item (final trigger check after SP8+SP9).</p></div>
+    <div class="field f-revised"><div class="f-label">Objectives refined ✎</div><p class="f-content">Unchanged after SP7.</p></div>
+  </div>
+</div>
+</body>
+</html>

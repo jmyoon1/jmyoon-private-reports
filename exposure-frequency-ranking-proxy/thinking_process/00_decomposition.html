@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Phase 0b — Decomposition</title>
+<style>
+:root{--bg:#0d1117;--card:#161b22;--border:#30363d;--text:#e6edf3;
+      --muted:#8b949e;--accent:#58a6ff;--green:#3fb950;--amber:#d29922;
+      --teal:#39d0c7;--purple:#bc8cff;}
+body{background:var(--bg);color:var(--text);font-family:-apple-system,sans-serif;
+     margin:0;padding:1rem;}
+.cell{border:1px solid var(--border);border-radius:8px;overflow:hidden;}
+.cell-header{background:var(--card);padding:.6rem 1rem;display:flex;
+             align-items:center;gap:.75rem;border-bottom:1px solid var(--border);}
+.badge{font-size:.72rem;font-weight:700;padding:.2rem .55rem;border-radius:4px;}
+.b-decomp {background:rgba(210,153,34,.15);color:var(--amber);}
+.b-search  {background:rgba(88,166,255,.15);color:var(--accent);}
+.b-skim    {background:rgba(63,185,80,.15); color:var(--green);}
+.b-synth   {background:rgba(188,140,255,.15);color:var(--purple);}
+.b-verify  {background:rgba(57,208,199,.15);color:var(--teal);}
+.cell-title{font-size:.9rem;font-weight:600;}
+.cell-ts   {margin-left:auto;font-size:.72rem;color:var(--muted);}
+.cell-body {padding:1rem;display:flex;flex-direction:column;gap:.7rem;}
+.field     {padding:.55rem .8rem;border-radius:6px;}
+.f-expected{background:rgba(88,166,255,.07);border-left:3px solid var(--accent);}
+.f-found   {background:rgba(63,185,80,.07); border-left:3px solid var(--green);}
+.f-surprise{background:rgba(210,153,34,.07);border-left:3px solid var(--amber);}
+.f-revised {background:rgba(57,208,199,.07);border-left:3px solid var(--teal);}
+.f-neutral {background:rgba(139,148,158,.07);border-left:3px solid var(--muted);}
+.f-label   {font-size:.71rem;font-weight:700;letter-spacing:.05em;
+            text-transform:uppercase;color:var(--muted);margin-bottom:.28rem;}
+.f-content {font-size:.88rem;line-height:1.55;margin:0;}
+</style>
+</head>
+<body>
+<div class="cell" id="cell-00-decomposition">
+  <div class="cell-header">
+    <span class="badge b-decomp">Phase 0b — Decomposition</span>
+    <span class="cell-title">Exposure-frequency control as a ranking proxy over a black-box recommender</span>
+    <span class="cell-ts">2026-07-14 KST</span>
+  </div>
+  <div class="cell-body">
+    <div class="field f-expected">
+      <div class="f-label">Objectives → SP mapping</div>
+      <p class="f-content">
+        <b>O1</b> (taxonomy of exposure-frequency interventions) → SP1, SP3, SP4, SP5, SP6, SP7, SP8 —
+        each mechanism family (exposure fairness, post-hoc re-ranking, stochastic policies,
+        amortization, bandits, capping/pacing, popularity debiasing) contributes one branch of the taxonomy.<br>
+        <b>O2</b> (feasibility under score-immutable, exposure-only control) → SP1, SP3, SP4, SP5, SP6, SP8 —
+        every technique gets an access-level label; SP3 (post-processing) and SP6 (score-free bandits) are the
+        feasibility-critical families.<br>
+        <b>O3</b> (2024–2026 state of the art) → SP2 (dedicated recency probe, year-pinned 2024–2026),
+        SP7 (recent feed-level work), SP9 (2023–2026 ecosystem line).<br>
+        <b>O4</b> (open research questions) → SP2, SP6, SP9 — frontier lines, theory-guarantee gaps, and
+        strategic/ecosystem failure modes are the likeliest gap sources.
+      </p>
+    </div>
+    <div class="field f-found">
+      <div class="f-label">SP set (9 sub-problems)</div>
+      <p class="f-content">
+        <b>SP1</b> Fairness of exposure in rankings under fixed scores — densest on-point field; contains all seed papers; taxonomy backbone.<br>
+        <b>SP2</b> 2024–2026 frontier: exposure control &amp; LLM-era re-ranking — dedicated recency probe (O3 is P1; stopping early is a failure condition).<br>
+        <b>SP3</b> Post-processing re-ranking over black-box scorers — the closest relaxation of the score-immutable constraint; papers state access assumptions explicitly.<br>
+        <b>SP4</b> Stochastic ranking policies &amp; randomized exposure allocation — the formal mechanism realizing target exposure over repeated impressions.<br>
+        <b>SP5</b> Amortized fairness / equity of attention over time — temporal form of exposure-frequency control (cumulative impression equalization).<br>
+        <b>SP6</b> Bandit &amp; online learning for exposure allocation — score-free candidates with regret guarantees under exposure constraints.<br>
+        <b>SP7</b> Impression capping, frequency control, pacing in feeds/ads — the literal industrial instantiation of the user's only knob.<br>
+        <b>SP8</b> Popularity debiasing &amp; calibrated exposure vs. relevance — the controlled-objective axis beyond fairness proper.<br>
+        <b>SP9</b> Content ecosystems, creator incentives, platform exposure mechanisms — exposure as the platform's policy lever; likeliest O4 source.
+      </p>
+    </div>
+    <div class="field f-surprise">
+      <div class="f-label">Ranking rationale</div>
+      <p class="f-content">
+        SP1 leads because it directly answers both P1 objectives O1 and O2 and anchors on the seed papers
+        (Singh &amp; Joachims 2018, FairRec, Equity of Attention) — its vocabulary ("exposure", "expected exposure",
+        "provider fairness") is what every later SP's queries and synthesis reuse. SP2 sits at rank 2 rather than
+        last because recency is itself priority-1: probing the 2024–2026 frontier early lets its findings revise
+        the queries of all seven remaining SPs instead of arriving after they have already run. SP3–SP6 then cover
+        the mechanism families in decreasing directness to the user's constraint (read-only re-ranking → stochastic
+        realization → temporal amortization → score-free online allocation). SP7–SP9 close with the industrial and
+        ecosystem views that mostly feed O3/O4 rather than the core taxonomy.
+      </p>
+    </div>
+    <div class="field f-neutral">
+      <div class="f-label">Field assumptions</div>
+      <p class="f-content">
+        Before any papers are read, the ranker assumes: (1) the exposure-fairness line (2018–) is mature and
+        well-cited, so SP1 will over-deliver; (2) an explicit "black-box scorer, exposure-frequency-only" framing
+        matching the user's exact constraint is <i>rare</i> — most papers will assume at least read access to scores,
+        making O2's feasibility map non-trivial and the purely score-free subset small (mainly bandits and
+        capping/pacing); (3) the 2024–2026 frontier is dominated by LLM-ranker fairness audits and ecosystem/
+        incentive papers rather than new classical-style allocation algorithms; (4) industrial frequency-capping
+        literature is thinner in academia than its practical importance suggests, so SP7 may under-deliver.
+        Phase 1 search results will confirm or contradict each of these.
+      </p>
+    </div>
+  </div>
+</div>
+</body>
+</html>

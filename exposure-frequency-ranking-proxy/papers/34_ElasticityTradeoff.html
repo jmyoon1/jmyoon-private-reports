@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>[34] Understanding Accuracy-Fairness Trade-offs in Re-ranking thr — Exposure-Frequency Control Survey</title>
+
+<style>
+:root {
+  --bg: #0d1117; --card: #161b22; --border: #30363d;
+  --text: #e6edf3; --muted: #7d8590; --accent: #58a6ff;
+  --teal: #39d0c7; --green: #3fb950; --yellow: #d29922;
+  --red: #f85149; --purple: #bc8cff; --orange: #e3b341;
+  --sidebar-w: 262px; --toc-w: 210px; --hdr-h: 48px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+body { font-family: -apple-system, sans-serif; background: var(--bg);
+       color: var(--text); line-height: 1.6; }
+.bd-root { display: flex; height: 100vh; overflow: hidden; }
+.bd-sidebar-primary {
+  width: var(--sidebar-w); min-width: var(--sidebar-w);
+  overflow-y: auto; background: var(--card);
+  border-right: 1px solid var(--border);
+  padding: 0.75rem 0; flex-shrink: 0;
+}
+.bd-sidebar-primary::-webkit-scrollbar { width: 4px; }
+.bd-sidebar-primary::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+.bd-main { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-width: 0; }
+.article-header-bar {
+  height: var(--hdr-h); background: var(--card);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; padding: 0 1.5rem;
+  gap: 1rem; flex-shrink: 0;
+}
+.header-brand { color: var(--teal); font-weight: bold; font-size: 0.95em;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 1; }
+.header-brand a { color: inherit; text-decoration: none; }
+.breadcrumb { color: var(--muted); font-size: 0.82em; display: flex;
+  align-items: center; gap: 0.3rem; flex-shrink: 0; }
+.breadcrumb a { color: var(--accent); text-decoration: none; }
+.breadcrumb span { color: var(--border); }
+.bd-article { flex: 1; overflow-y: auto; padding: 2rem 2.5rem; }
+.bd-article::-webkit-scrollbar { width: 6px; }
+.bd-article::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+.bd-sidebar-secondary {
+  width: var(--toc-w); min-width: var(--toc-w);
+  overflow-y: auto; border-left: 1px solid var(--border);
+  padding: 1rem 0.75rem; flex-shrink: 0;
+}
+.bd-sidebar-secondary::-webkit-scrollbar { width: 4px; }
+.bd-sidebar-secondary::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+.sidebar-logo { padding: 0.5rem 1rem 0.75rem;
+  border-bottom: 1px solid var(--border); margin-bottom: 0.5rem; }
+.sidebar-logo a { color: var(--teal); font-weight: bold; font-size: 0.95em;
+  text-decoration: none; display: block; }
+.sidebar-section { color: var(--muted); font-size: 0.72em; font-weight: bold;
+  text-transform: uppercase; letter-spacing: 0.07em;
+  padding: 0.7rem 1rem 0.25rem; }
+.sidebar-nav-link { display: block; padding: 0.28rem 1rem 0.28rem 1.25rem;
+  color: var(--muted); font-size: 0.875em; text-decoration: none; }
+.sidebar-nav-link:hover { color: var(--text); background: rgba(255,255,255,0.03); }
+.sidebar-nav-link.active { color: var(--teal);
+  border-left: 2px solid var(--teal);
+  padding-left: calc(1.25rem - 2px); background: rgba(57,208,199,0.05); }
+.mini-toc-label { color: var(--muted); font-size: 0.72em; font-weight: bold;
+  text-transform: uppercase; letter-spacing: 0.07em; padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border); margin-bottom: 0.5rem; }
+.mini-toc { list-style: none; }
+.mini-toc li a { display: block; padding: 0.22rem 0;
+  color: var(--muted); font-size: 0.83em; text-decoration: none;
+  border-left: 2px solid transparent; padding-left: 0.5rem; }
+.mini-toc li a:hover { color: var(--text); }
+.mini-toc li a.toc-active { color: var(--teal); border-left-color: var(--teal); }
+.section-anchor { scroll-margin-top: calc(var(--hdr-h) + 8px); }
+h1 { color: var(--teal); font-size: 1.7em; margin-bottom: 0.5rem; line-height:1.3; }
+h2 { color: var(--teal); font-size: 1.25em; margin: 1.5rem 0 0.6rem; }
+h3 { color: var(--teal); font-size: 1.05em; margin: 1.2rem 0 0.4rem; }
+h4 { color: var(--teal); font-size: 0.95em; margin: 1rem 0 0.3rem; }
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+p { margin-bottom: 0.8rem; }
+ul, ol { margin: 0 0 0.8rem 1.4rem; }
+li { margin-bottom: 0.3rem; }
+code { background: rgba(255,255,255,0.06); border-radius: 3px; padding: 1px 4px; font-size: 0.9em; }
+blockquote { border-left: 3px solid var(--border); color: var(--muted);
+  padding: 0.2rem 0.8rem; margin-bottom: 0.8rem; }
+.card { background: var(--card); border: 1px solid var(--border);
+        border-radius: 8px; padding: 1.2rem; margin-bottom: 1rem; }
+table { width: 100%; border-collapse: collapse; font-size: 0.9em; margin-bottom: 0.8rem; }
+th { background: var(--card); color: var(--teal); padding: 8px;
+     border: 1px solid var(--border); text-align: left; }
+td { padding: 8px; border: 1px solid var(--border); vertical-align: top; }
+tr:nth-child(even) td { background: rgba(0,0,0,0.2); }
+.stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+             gap: 1rem; margin-bottom: 1.5rem; }
+.stat-box { background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+            padding: 1rem; text-align: center; }
+.stat-num { font-size: 2rem; font-weight: bold; color: var(--teal); }
+.stat-label { color: var(--muted); font-size: 0.85em; margin-top: 0.2rem; }
+.sp-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+           gap: 1rem; margin: 1rem 0; }
+.sp-card { background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+           padding: 1.2rem; cursor: pointer; transition: border-color 0.15s; height:100%; }
+.sp-card:hover { border-color: var(--teal); }
+.sp-card h3 { margin: 0 0 0.5rem; color: var(--teal); font-size: 1em; }
+.sp-card p { margin: 0; color: var(--muted); font-size: 0.88em; }
+.sp-badge { display: inline-block; background: rgba(57,208,199,0.1); color: var(--teal);
+            border-radius: 4px; padding: 2px 8px; font-size: 0.8em; margin-bottom: 0.5rem; }
+.paper-meta { color: var(--muted); font-size: 0.9em; margin-bottom: 1.5rem; }
+.paper-meta a { color: var(--accent); }
+.section-label { color: var(--teal); font-weight: bold; font-size: 0.85em;
+                 text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.4rem; }
+.pill { display: inline-block; border-radius: 4px; padding: 0.15rem 0.6rem;
+        font-size: 0.8em; font-weight: bold; margin-right: 0.4rem; }
+.pill-p0 { background: rgba(63,185,80,0.2); color: var(--green); }
+.pill-p1 { background: rgba(57,208,199,0.15); color: var(--teal); }
+.pill-p2 { background: rgba(210,153,34,0.2); color: var(--yellow); }
+.pill-p3 { background: rgba(188,140,255,0.2); color: var(--purple); }
+.pill-p4 { background: rgba(125,133,144,0.2); color: var(--muted); }
+.delta-row { margin: 0.4rem 0; padding: 0.4rem 0.8rem;
+             border-left: 3px solid var(--border); border-radius: 0 4px 4px 0; }
+.chain { position: relative; padding-left: 2rem; }
+.chain::before { content: ''; position: absolute; left: 0.95rem; top: 0;
+                 bottom: 0; width: 2px; background: var(--border); }
+.chain-node { position: relative; margin-bottom: 2rem; }
+.chain-node::before { content: ''; position: absolute; left: -1.55rem;
+                      top: 1.1rem; width: 12px; height: 12px;
+                      border-radius: 50%; background: var(--teal); }
+.chain-num { display: inline-block; width: 28px; height: 28px; background: var(--teal);
+             color: #000; border-radius: 50%; text-align: center; line-height: 28px;
+             font-weight: bold; font-size: 0.85em; margin-right: 0.6rem; flex-shrink: 0; }
+.chain-q { font-weight: bold; color: var(--text); margin: 0.4rem 0 0.3rem; font-size: 1em; }
+.chain-papers { color: var(--muted); font-size: 0.85em; margin-bottom: 0.6rem; }
+.chain-start { background: var(--card); border: 1px solid var(--teal);
+               border-radius: 8px; padding: 1rem; margin-bottom: 2rem; }
+.chain-start h3 { margin: 0 0 0.5rem; color: var(--teal); }
+.chain-converge { background: var(--card); border: 1px solid var(--green);
+                  border-radius: 8px; padding: 1rem; margin-top: 1rem; }
+.chain-converge h3 { margin: 0 0 0.5rem; color: var(--green); }
+.chain-label { display: inline-block; border-radius: 4px; padding: 0.15rem 0.6rem;
+               font-size: 0.8em; font-weight: bold; margin-right: 0.4rem; }
+.chain-status { border-radius: 0 4px 4px 0; padding: 0.5rem 0.8rem;
+                margin: 0.35rem 0; font-size: 0.88em; }
+.chain-status ul { margin: 0.3rem 0 0 1.2rem; padding: 0; }
+.chain-status li { margin-bottom: 0.25rem; }
+.chain-status.solved  { background: rgba(63,185,80,0.07);  border-left: 3px solid var(--green); }
+.chain-status.remains { background: rgba(210,153,34,0.07); border-left: 3px solid var(--yellow); }
+.chain-status.added   { background: rgba(248,81,73,0.07);  border-left: 3px solid var(--red); }
+.chain-status.pivoted { background: rgba(188,140,255,0.1); border-left: 3px solid var(--purple); }
+.chain-label.solved   { background: rgba(63,185,80,0.2);  color: var(--green); }
+.chain-label.remains  { background: rgba(210,153,34,0.2); color: var(--yellow); }
+.chain-label.added    { background: rgba(248,81,73,0.2);  color: var(--red); }
+.chain-label.pivoted  { background: rgba(188,140,255,0.2); color: var(--purple); }
+.chain-status.expected { background: rgba(88,166,255,0.07);  border-left: 3px solid var(--accent); }
+.chain-label.expected  { background: rgba(88,166,255,0.2);   color: var(--accent); }
+.chain-status.revised  { background: rgba(57,208,199,0.07);  border-left: 3px solid var(--teal); }
+.chain-label.revised   { background: rgba(57,208,199,0.2);   color: var(--teal); }
+.concept-box { border-left: 4px solid var(--teal); background: #0d1f1f;
+               border-radius: 4px; padding: 1.2rem; margin-bottom: 1.2rem; }
+.concept-name { font-weight: bold; color: var(--teal); font-size: 1.05em; margin-bottom: 0.5rem; }
+.hypothesis { border-left: 4px solid var(--teal); background: #0d1f1f;
+              border-radius: 4px; padding: 1rem; margin: 1rem 0; }
+.recommendation { border-left: 4px solid var(--purple); background: #1a0f2e;
+                  border-radius: 4px; padding: 1rem; margin: 1rem 0; }
+.rq-row { background: rgba(88,166,255,0.05); border-left: 3px solid var(--accent);
+          padding: 0.4rem 0.8rem; margin-bottom: 0.5rem; border-radius: 0 4px 4px 0; }
+.scroll-table-wrap { max-height: 420px; overflow-y: auto; border: 1px solid var(--border);
+                     border-radius: 4px; }
+.scroll-table-wrap table { margin-bottom: 0; }
+.scroll-table-wrap thead th { position: sticky; top: 0; background: #161b22; z-index: 1; }
+.page-nav { display: flex; justify-content: space-between; margin-top: 2rem;
+            padding-top: 1rem; border-top: 1px solid var(--border); gap: 1rem; }
+.page-nav a { color: var(--accent); font-size: 0.9em; }
+html.ko-active .en-only { display: none !important; }
+html.ko-active .ko-only { display: block !important; }
+.ko-only { display: none; }
+span.ko-only, .sidebar-logo a span.ko-only { display: none; }
+html.ko-active span.ko-only { display: inline !important; }
+.lang-btn { background: transparent; color: var(--muted); border: 1px solid var(--border);
+            border-radius: 4px; padding: 3px 9px; font-size: 0.8em; cursor: pointer; }
+.lang-btn.active { border-color: var(--teal); color: var(--teal); }
+details { margin-bottom: 0.8rem; }
+details summary { color: var(--muted); cursor: pointer; }
+@media (max-width: 1024px) { .bd-sidebar-secondary { display: none; } }
+@media (max-width: 768px) {
+  .bd-sidebar-primary { display: none; }
+  .bd-root { flex-direction: column; height: auto; overflow: visible; }
+  .bd-main { overflow: visible; }
+  .bd-article { overflow: visible; padding: 1rem; }
+  .stat-grid { grid-template-columns: repeat(2, 1fr); }
+  .sp-grid { grid-template-columns: 1fr; }
+}
+</style>
+
+<script>
+MathJax = { tex: { inlineMath: [['$','$']], displayMath: [['$$','$$']] },
+            options: { skipHtmlTags: ['script','noscript','style','textarea','pre','code'] } };
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<script>
+function toggleLanguage() {
+  const html = document.documentElement;
+  const isKo = html.classList.toggle('ko-active');
+  document.querySelectorAll('.lang-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.lang === (isKo ? 'ko' : 'en'));
+  });
+  localStorage.setItem('survey-lang', isKo ? 'ko' : 'en');
+}
+document.addEventListener('DOMContentLoaded', function() {
+  const saved = localStorage.getItem('survey-lang');
+  if (saved === 'ko') {
+    document.documentElement.classList.add('ko-active');
+    document.querySelectorAll('.lang-btn').forEach(b =>
+      b.classList.toggle('active', b.dataset.lang === 'ko'));
+  } else {
+    document.querySelectorAll('[data-lang="en"]').forEach(b => b.classList.add('active'));
+  }
+  const article = document.querySelector('.bd-article');
+  const sections = Array.from(document.querySelectorAll('.section-anchor[id]'));
+  const sideLinks = Array.from(document.querySelectorAll('.bd-sidebar-primary .sidebar-nav-link'));
+  const tocLinks = Array.from(document.querySelectorAll('.bd-sidebar-secondary .mini-toc a'));
+  if (!article || !sections.length) return;
+  function current() {
+    let id = sections[0].id;
+    const scrollTop = article.scrollTop + 60;
+    sections.forEach(function(s) { if (s.offsetTop <= scrollTop) id = s.id; });
+    return id;
+  }
+  function update() {
+    const id = current();
+    sideLinks.forEach(function(a) {
+      a.classList.toggle('active', a.getAttribute('href') === '#' + id);
+    });
+    tocLinks.forEach(function(a) {
+      a.classList.toggle('toc-active', a.getAttribute('href') === '#' + id);
+    });
+  }
+  article.addEventListener('scroll', update, { passive: true });
+  update();
+});
+</script>
+
+</head>
+<body>
+<div class="bd-root">
+
+<nav class="bd-sidebar-primary">
+  <div class="sidebar-logo">
+    <a href="../index.html">&#x2B21; <span class="en-only">Exposure-Frequency Control Survey</span><span class="ko-only">Exposure-빈도 제어 문헌 조사</span></a>
+  </div>
+  <div class="sidebar-section"><span class="en-only">Overview</span><span class="ko-only">개요</span></div>
+  <a href="../index.html#overview" class="sidebar-nav-link"><span class="en-only">Survey Hub</span><span class="ko-only">조사 허브</span></a>
+  <a href="../index.html#answers" class="sidebar-nav-link"><span class="en-only">Key Answers</span><span class="ko-only">핵심 답변</span></a>
+  <div class="sidebar-section"><span class="en-only">Sub-Problems</span><span class="ko-only">세부 문제</span></div>
+<a href="../sp1_fairness-of-exposure-fixed-scores.html" class="sidebar-nav-link">SP1: <span class="en-only">Exposure fairness</span><span class="ko-only">Exposure 공정성</span></a>
+<a href="../sp2_2024-2026-frontier-llm-era.html" class="sidebar-nav-link">SP2: <span class="en-only">2024–26 frontier / LLM</span><span class="ko-only">2024–26 최전선 / LLM</span></a>
+<a href="../sp3_postproc-rerank-blackbox.html" class="sidebar-nav-link active">SP3: <span class="en-only">Post-proc re-ranking</span><span class="ko-only">Post-proc re-ranking</span></a>
+<a href="../sp4_stochastic-ranking-policies.html" class="sidebar-nav-link">SP4: <span class="en-only">Stochastic policies</span><span class="ko-only">확률적 정책</span></a>
+<a href="../sp5_amortized-equity-attention.html" class="sidebar-nav-link">SP5: <span class="en-only">Amortized fairness</span><span class="ko-only">Amortized 공정성</span></a>
+<a href="../sp6_bandit-exposure-allocation.html" class="sidebar-nav-link">SP6: <span class="en-only">Bandit allocation</span><span class="ko-only">Bandit 배분</span></a>
+<a href="../sp7_capping-pacing-feeds-ads.html" class="sidebar-nav-link">SP7: <span class="en-only">Capping &amp; pacing</span><span class="ko-only">Capping·pacing</span></a>
+<a href="../sp8_popularity-debias-calibration.html" class="sidebar-nav-link">SP8: <span class="en-only">Debiasing &amp; calibration</span><span class="ko-only">Debiasing·calibration</span></a>
+<a href="../sp9_ecosystems-creator-incentives.html" class="sidebar-nav-link">SP9: <span class="en-only">Ecosystems &amp; creators</span><span class="ko-only">생태계·creator</span></a>
+<a href="../sp10_llm-exposure-feedback-loops.html" class="sidebar-nav-link">SP10: <span class="en-only">LLM feedback loops</span><span class="ko-only">LLM feedback loop</span></a>
+<a href="../sp11_strategyproof-exposure.html" class="sidebar-nav-link">SP11: <span class="en-only">Strategy-proofness</span><span class="ko-only">Strategy-proofness</span></a>
+
+  <div class="sidebar-section"><span class="en-only">Synthesis</span><span class="ko-only">종합</span></div>
+  <a href="../conclusion.html" class="sidebar-nav-link"><span class="en-only">Conclusion</span><span class="ko-only">결론</span></a>
+  <a href="../thinking-process.html" class="sidebar-nav-link"><span class="en-only">Thinking Process</span><span class="ko-only">추론 과정</span></a>
+</nav>
+  <div class="bd-main">
+<div class="article-header-bar"><div class="header-brand"><a href="../index.html"><span class="en-only">Exposure-Frequency Control Survey</span><span class="ko-only">Exposure-빈도 제어 문헌 조사</span></a></div><nav class="breadcrumb"><a href="../index.html"><span class="en-only">Survey</span><span class="ko-only">조사</span></a><span>&rsaquo;</span><a href="../sp3_postproc-rerank-blackbox.html">SP3</a><span>&rsaquo;</span><span>[34] Understanding Accuracy-Fairness Trade-of</span></nav><button class="lang-btn" data-lang="en" onclick="toggleLanguage()">EN</button><button class="lang-btn" data-lang="ko" onclick="toggleLanguage()">KO</button></div>
+    <div class="bd-article">
+<section id="header" class="section-anchor"><div class="paper-meta">
+<h1 style="margin-bottom:0.3rem">Understanding Accuracy-Fairness Trade-offs in Re-ranking through Elasticity in Economics</h1>
+<p style="margin:0.3rem 0;color:var(--muted)">Chen Xu et al. · SIGIR 2025 · 2025 · 11 citations</p>
+<p style="margin:0.3rem 0"><a href="https://arxiv.org/abs/2504.14991" target="_blank">arXiv:2504.14991</a> · <a href="https://arxiv.org/pdf/2504.14991.pdf" target="_blank">PDF</a> · SP: <a href="../sp3_postproc-rerank-blackbox.html">SP3</a> · <a href="../sp5_amortized-equity-attention.html">SP5</a></p>
+<p><span class="pill pill-p0">P0</span><span class="pill" style="background:rgba(255,255,255,0.05);color:var(--muted)">Track B</span></p>
+</div>
+<div class="card ko-only" style="border-color:var(--teal)"><div class="section-label">한 줄 요약</div><p style="margin:0">re-ranking의 정확도-공정성 trade-off를 경제학의 탄력성(elasticity)으로 설명하는 ElasticRank(SIGIR 2025). relevance 분포의 가파름이 개입 비용을 지배한다는 전이 비율 정리를 제공한다.</p></div>
+</section>
+<section id="problem" class="section-anchor">
+<div class="card"><div class="section-label"><span class="en-only">Problem</span><span class="ko-only">해결하려는 문제</span></div><p>Prior fair re-ranking work established empirically that improving item-group fairness costs ranking accuracy, but provided no account of the mechanism: (a) <em>why</em> the trade-off magnitude differs across datasets and metrics, and (b) evaluations rely on a single fairness metric (proportional fairness, Gini, MMF, or $\alpha$-fairness in different papers), which — the paper shows — implicitly fixes one elasticity assumption, so cross-algorithm comparisons are incomplete and metric-dependent.</p></div>
+</section>
+<section id="solution" class="section-anchor">
+<div class="card"><div class="section-label"><span class="en-only">Solution / Contribution</span><span class="ko-only">해결책 / 기여</span></div><p>Frame item-fairness constraints as a commodity tax on suppliers (item groups) that partially transfers to consumers (users) as accuracy loss, with the transfer rate governed by elasticity:</p>
+<ol><li><strong>Theorem 1 (unification)</strong>: all standard fairness metrics are instances of $f(v;t) = \mathrm{sign}(1-t)(\sum_g \bar{v}_g^{1-t})^{1/t}$, indexed by tax base $t$.</li><li><strong>Theorem 2 (elasticity)</strong>: metric choice $t$ sets inter-group elasticity $E_{r,p} = (\bar{v}_r/\bar{v}_p)^{-|t|}$ and a rich/poor threshold $\theta$.</li><li><strong>Theorem 3 (trade-off mechanism)</strong>: the linear accuracy+$\lambda\,f(v)$ objective is equivalent to maximizing $f(v;|t|)^{|t|} \cdot a(w)^{1-|t|}$, and the fairness→accuracy transfer ratio is $\gamma = 1 - 1/(1+k(E_{r,p}))$ — the trade-off is governed entirely by group elasticities.</li><li><strong>EF-Curve/EF</strong>: evaluate fairness across all $t$ (all elasticities) instead of one metric.</li><li><strong>ElasticRank</strong>: greedy per-user re-ranking that adds a closed-form curved-space distance $d(g(i),a)$ to each item's score, prioritizing exposure subsidies for high-elasticity (rich-relative) groups, at sorting-level complexity.</li></ol></div>
+<div class="card"><div class="section-label"><span class="en-only">Key Results</span><span class="ko-only">주요 결과</span></div><ul><li>Steam, K=10, NDCG held ≈99%: ElasticRank EF@10 = −0.8283 vs best baseline P-MMF −0.9228; Loss@10 = 0.0112 vs CPFair 0.0174 (lower is better).</li><li>Yelp, K=20: ElasticRank EF@20 = −0.3046 vs P-MMF/min-regularizer ≈ −0.335.</li><li>Pareto frontiers (Steam, K=10/20): ElasticRank dominates Welf, CPFair, P-MMF, min-regularizer — better EF at equal NDCG and vice versa.</li><li>Inference speed: 0.27 s (ElasticRank) vs 3.67 s (Welf, ~14×) vs 33.92 s (P-MMF, ~126×) over all users on Steam.</li><li>EF-Curve diagnosis: P-MMF supports poor groups well but fails to restrict rich groups; CPFair the reverse — visible only because the evaluation spans all $t$.</li></ul></div>
+<details><summary><span class="en-only">5Cs Analysis</span><span class="ko-only">5Cs 분석</span></summary><div class="card" style="margin-top:0.5rem"><p><strong>Category</strong>: theoretical analysis + new evaluation framework + new method. <strong>Context</strong>: builds directly on TaxRank (Xu et al., SIGIR 2024 — fair re-ranking as taxation) and the same group's P-MMF (WWW 2023) and FairSync (WWW 2024); baselines FairRec, FairRec+, Welf, CPFair, min-regularizer. Related to any survey papers covering exposure allocation in re-ranking. <strong>Correctness</strong>: three theorems with appendix proofs; experiments report t-test significance ($p&lt;0.05$); trade-off comparisons control NDCG to ~99% of the no-fairness baseline, a sensible protocol. [SKIM — proofs not verified line-by-line; note the fairness axioms (scale-invariance, distributability) are assumed, and the EF metric depends on the arbitrary integration bound $M=50$.] <strong>Contributions</strong>: (1) elasticity-based mechanism explanation of the accuracy-fairness trade-off; (2) EF-Curve/EF multi-elasticity evaluation framework; (3) ElasticRank, an efficient closed-form fair re-ranker. <strong>Clarity</strong>: Algorithm 1 is fully specified and simple; reproducible, and code is public.</p></div></details>
+<details><summary><span class="en-only">Contribution vs Claim</span><span class="ko-only">기여 대 주장</span></summary><div class="card" style="margin-top:0.5rem"><ul><li><strong>Stated claims</strong>: the trade-off is "governed by" elasticity; EF-Curve enables comprehensive evaluation; ElasticRank surpasses SOTA in effectiveness and efficiency.</li><li><strong>Demonstrated</strong>: Theorem 3 derives the transfer ratio for the <em>linear</em> trade-off objective under the axiomatized metric family; ElasticRank wins on EF/Loss at matched NDCG on three datasets with one base ranker (MF).</li><li><strong>Gap</strong>: (a) evaluating on EF — the metric the paper itself introduces and ElasticRank explicitly optimizes — favors the proposed method by construction; baselines were designed for other metrics. (b) Analysis assumes ranking scores are calibrated CTRs and utility is additive over lists; robustness to miscalibrated scores is untested. (c) Only one base ranking model (MF); generality across rankers is claimed but not shown. [SKIM — verify in deep read whether appendix/repo covers more rankers.]</li></ul></div></details>
+</section>
+<section id="results" class="section-anchor">
+<details><summary><span class="en-only">Concepts Introduced</span><span class="ko-only">도입된 개념</span></summary><div class="card" style="margin-top:0.5rem"><p><strong>Utility elasticity between item groups ($E_{r,p}$)</strong></p>
+<ul><li><strong>What it computes</strong>: two item-group utilities $v_r$ (rich), $v_p$ (poor) → partial derivative $E_{r,p} = \partial v_r / \partial v_p$ → a scalar measuring how much group $r$'s utility changes when group $p$'s utility is nudged. Under the general fairness metric with tax base $t$, it takes the closed form $E_{r,p} = (\bar{v}_r / \bar{v}_p)^{-|t|}$ (Theorem 2).</li><li><strong>Why it was created</strong>: prior fair re-ranking work observed the accuracy-fairness trade-off empirically but had no quantity governing <em>how much</em> accuracy is lost per unit of fairness gained; elasticity (borrowed from commodity-tax transfer theory) is that quantity.</li><li><strong>Concrete example</strong>: with Jain's index ($t=-1$), a poor group at utility 1 vs a rich group at utility 3 gives $E_{r,p}=3$: adding a poor-group item to the list is weighted 3× more than a rich-group item.</li><li><strong>How it is used in this paper</strong>: it drives both contributions — the EF-Curve evaluates algorithms across elasticity levels, and ElasticRank taxes high-elasticity groups more to minimize accuracy loss.</li></ul>
+<p><strong>General form of fairness metrics with tax base $t$</strong></p>
+<ul><li><strong>What it computes</strong>: normalized group-utility vector $\bar{v}$ → $f(v;t) = \mathrm{sign}(1-t)\,(\sum_g \bar{v}_g^{1-t})^{1/t}$ → a single scalar fairness value. Theorem 1 shows this is the <em>unique</em> form satisfying continuity, scale-invariance, group-count independence, and distributability; specific $t$ values recover known metrics (min-max at $t\to-\infty$, Jain's index at $t=-1$, entropy fairness at $t\to 0$, proportional fairness at $t=1$, $\alpha$-fairness, max-min at $t\to+\infty$).</li><li><strong>Why it was created</strong>: prior works each optimize/evaluate one fairness metric (MMF, Gini, $\alpha$-fairness, ...) with no understanding of how these metrics relate; the parametric family makes them all points on one axis.</li><li><strong>Concrete example</strong>: $\lim_{t\to 0} f(v;t) = e^{H(\bar{v})}$ where $H$ is the entropy of the normalized utility vector.</li><li><strong>How it is used in this paper</strong>: the $t$-axis of the EF-Curve; the tax base $t$ is also a hyperparameter of ElasticRank (tuned in $[1,2]$).</li></ul>
+<p><strong>EF-Curve and EF metric</strong></p>
+<ul><li><strong>What it computes</strong>: an algorithm's re-ranked lists → evaluate $f(v;t)$ for every tax base $t \in [1-M, 1+M]$ → a curve of fairness value vs $t$; the normalized area under it, $\mathrm{EF} = \int_{1-M}^{1+M} f(v;t)/Z \, dt$ with $Z = 2M|G|$, is a single aggregate fairness score.</li><li><strong>Why it was created</strong>: single-metric evaluation assesses tax transfer under only one elasticity assumption, so algorithm comparisons are incomplete (e.g., P-MMF looks best on poor-group support but worst on rich-group restriction).</li><li><strong>Concrete example</strong>: $M=50$ in experiments; EF@10 on Steam: ElasticRank −0.8283 vs P-MMF −0.9228 (higher is better).</li><li><strong>How it is used in this paper</strong>: the headline evaluation metric in all experiments (Table 2, Figures 4–5).</li></ul>
+<p><strong>ElasticRank</strong></p>
+<ul><li><strong>What it computes</strong>: per-user candidate list with CTR scores $s_{u,i}$ + running group utilities $v_g$ → re-rank by $s_{u,i} + d(g(i), a)$, where $d(g(i),a) \approx (1-t)\,v_{g(i)}^{-t}(v_a^{1-t} - v_{g(i)}^{1-t})$ is a curve (geodesic-style) distance from item $i$'s group to an anchor group $a$ (the group at the $\eta\%$ utility quantile) → fair re-ranked top-$K$ list.</li><li><strong>Why it was created</strong>: existing fairness interventions optimize one specific metric and involve costly optimization (Frank-Wolfe, mirror descent); ElasticRank instead computes the fairness score in closed form from elasticity, keeping complexity at standard-sort level.</li><li><strong>Concrete example</strong>: on Steam, inference is roughly 10× faster than Welf and 100× faster than P-MMF (0.27 s vs 3.67 s vs 33.92 s across all users).</li><li><strong>How it is used in this paper</strong>: the proposed method evaluated against seven baselines on three datasets.</li></ul>
+<p><strong>Transfer ratio $\gamma$ (fairness-tax-to-accuracy-loss)</strong></p>
+<ul><li><strong>What it computes</strong>: gradient of the combined objective → $\gamma = 1 - 1/(1 + k(E_{r,p}))$, where $k$ aggregates elasticities over group pairs (Theorem 3) → fraction of the fairness "tax" that shows up as user-side accuracy loss.</li><li><strong>Why it was created</strong>: to prove that the accuracy-fairness trade-off <em>is</em> governed by group elasticity, formalizing the tax-transfer analogy.</li><li><strong>Concrete example</strong>: when $E_{r,p}$ is large (poor items act like luxuries), the transfer ratio rises — fairness gains cost more accuracy.</li><li><strong>How it is used in this paper</strong>: the theoretical core (Section 5.1) that motivates taxing high-elasticity groups.</li></ul></div></details>
+<details><summary><span class="en-only">Implementation Feasibility</span><span class="ko-only">구현 가능성</span></summary><div class="card" style="margin-top:0.5rem"><ul><li><strong>Needs</strong>: per-user candidate lists with ranking scores, item→group mapping, Python 3.9; complexity is standard-sort level, no optimization solver needed. Datasets: Steam, Amazon-Digital-Music, Yelp (all public).</li><li><strong>Code</strong>: available at https://github.com/XuChen0427/ElasticRank.</li><li><strong>Modifications</strong>: to use in an exposure-frequency-proxy study, replace the score-mass utility $v_g$ with an exposure-count or position-weighted-exposure utility; the closed-form distance (Eq. 10) carries over unchanged. Hyperparameters to tune: tax base $t \in [1,2]$, anchor ratio $\eta\% \in [50, 95]$, integral bound $M$.</li><li><strong>Unknowns</strong>: missing link: sensitivity of the EF metric to the integration bound $M$; missing link: behavior when ranking scores are uncalibrated (elasticity computed on wrong utilities); missing link: whether the greedy per-user sequential utility update (Algorithm 1, fixed arrival order) matters under shuffled or adversarial user order.</li></ul></div></details>
+<details><summary><span class="en-only">Follow-up Papers</span><span class="ko-only">관련 후속 논문</span></summary><div class="card" style="margin-top:0.5rem"><ul><li>A Taxation Perspective for Fair Re-ranking (Xu et al., SIGIR 2024, "TaxRank") — the direct predecessor: introduced the taxation framing and $\alpha$-fairness optimization that this paper generalizes via elasticity; also a baseline here.</li><li>P-MMF: Provider Max-min Fairness Re-ranking in Recommender System (Xu et al., WWW 2023) — strongest trade-off baseline; the EF-Curve exposes its one-sidedness (supports poor groups, fails to restrict rich groups).</li><li>FairRec: Two-sided Fairness for Personalized Recommendations (Patro et al., WWW 2020) — canonical exposure-guarantee baseline shown here to break down at group-level trade-offs.</li><li>Guaranteeing Accuracy and Fairness under Fluctuating User Traffic (Ye et al., CIKM 2024) — bankruptcy-inspired re-ranking; source of the "≤1% accuracy loss is acceptable" evaluation protocol used here.</li><li>FairDiverse toolkit (Xu et al., 2025, arXiv:2502.11883) — same group's toolkit likely containing these implementations.</li></ul></div></details>
+</section>
+<section id="delta" class="section-anchor">
+<div class="card"><div class="section-label"><span class="en-only">Condition Delta — transfer to our setting</span><span class="ko-only">조건 차이 — 우리 설정으로의 전이</span></div><p><strong>Paper's setting</strong>: inputs = per-user candidate ranked lists of size $K$ with CTR-style scores from an MF ranker, items partitioned into disjoint groups (publisher/category); output = fair re-ranked top-$K$ per user; conditions = offline post-processing, group-level item fairness, three e-commerce/recommendation datasets, utility = accumulated ranking scores (score-mass, i.e., a graded exposure/utility proxy). <strong>Our setting (survey: exposure frequency as a ranking proxy)</strong>: concerned with how item exposure (frequency of appearing in top-$K$) is used as a proxy for utility/relevance in ranking systems, and how fairness interventions reallocate exposure across items/groups. <strong>Differences</strong>:</p>
+<ul><li>Utility defined as summed CTR scores rather than raw exposure counts/position-weighted exposure: reference only — the elasticity machinery applies to any additive group utility, so an exposure-frequency utility slots in directly (the paper's own narrative speaks of "reducing exposure" of rich groups).</li><li>Group-level fairness (disjoint item groups) vs possibly item-level exposure concerns in our setting: missing link — the paper shows item-level methods (FairRec, TaxRank) do poorly at group-level trade-offs, but does not analyze item-level elasticity.</li><li>Static offline re-ranking vs dynamic/online exposure accumulation: missing link — the paper's own discussion concedes the setup is "simpler, static" compared to the economic analogue; utilities accumulate greedily over a fixed user arrival order.</li><li>CTR scores treated as ground-truth click probabilities (proxy assumption unexamined): missing link — directly relevant to the survey's proxy question; elasticity is computed on proxy utilities, so proxy error propagates into the tax allocation.</li></ul></div>
+<div class="card"><div class="section-label"><span class="en-only">Root-cause vs. Symptom</span><span class="ko-only">근본 원인 대 증상</span></div><p><code>Direct</code> — the paper targets the <em>mechanism</em> of the accuracy-fairness trade-off itself, deriving (with proofs) that metric choice fixes inter-group elasticity and that elasticity determines the fairness-to-accuracy transfer ratio, rather than proposing yet another heuristic that shifts the trade-off curve without explaining it; the ElasticRank algorithm then follows from the analysis rather than preceding it.</p></div>
+</section>
+<div class="page-nav"><a href="33_OnlinePostProc.html">&larr; [33] OnlinePostProc</a><a href="../sp3_postproc-rerank-blackbox.html">&uarr; SP3</a><a href="35_DualSideOnline.html">[35] DualSideOnline &rarr;</a></div>
+    </div>
+  </div>
+<nav class="bd-sidebar-secondary"><div class="mini-toc-label"><span class="en-only">On this page</span><span class="ko-only">이 페이지</span></div><ul class="mini-toc"><li><a href="#header"><span class="en-only">Paper info</span><span class="ko-only">논문 정보</span></a></li><li><a href="#problem"><span class="en-only">Problem</span><span class="ko-only">문제</span></a></li><li><a href="#solution"><span class="en-only">Solution &amp; Results</span><span class="ko-only">해결책 · 결과</span></a></li><li><a href="#results"><span class="en-only">Concepts &amp; Follow-ups</span><span class="ko-only">개념 · 후속</span></a></li><li><a href="#delta"><span class="en-only">Condition Delta</span><span class="ko-only">조건 차이</span></a></li></ul></nav>
+</div>
+</body>
+</html>

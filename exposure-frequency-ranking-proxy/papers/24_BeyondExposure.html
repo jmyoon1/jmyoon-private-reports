@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>[24] Beyond Exposure: Optimizing Ranking Fairness with Non-linear — Exposure-Frequency Control Survey</title>
+
+<style>
+:root {
+  --bg: #0d1117; --card: #161b22; --border: #30363d;
+  --text: #e6edf3; --muted: #7d8590; --accent: #58a6ff;
+  --teal: #39d0c7; --green: #3fb950; --yellow: #d29922;
+  --red: #f85149; --purple: #bc8cff; --orange: #e3b341;
+  --sidebar-w: 262px; --toc-w: 210px; --hdr-h: 48px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+body { font-family: -apple-system, sans-serif; background: var(--bg);
+       color: var(--text); line-height: 1.6; }
+.bd-root { display: flex; height: 100vh; overflow: hidden; }
+.bd-sidebar-primary {
+  width: var(--sidebar-w); min-width: var(--sidebar-w);
+  overflow-y: auto; background: var(--card);
+  border-right: 1px solid var(--border);
+  padding: 0.75rem 0; flex-shrink: 0;
+}
+.bd-sidebar-primary::-webkit-scrollbar { width: 4px; }
+.bd-sidebar-primary::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+.bd-main { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-width: 0; }
+.article-header-bar {
+  height: var(--hdr-h); background: var(--card);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; padding: 0 1.5rem;
+  gap: 1rem; flex-shrink: 0;
+}
+.header-brand { color: var(--teal); font-weight: bold; font-size: 0.95em;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 1; }
+.header-brand a { color: inherit; text-decoration: none; }
+.breadcrumb { color: var(--muted); font-size: 0.82em; display: flex;
+  align-items: center; gap: 0.3rem; flex-shrink: 0; }
+.breadcrumb a { color: var(--accent); text-decoration: none; }
+.breadcrumb span { color: var(--border); }
+.bd-article { flex: 1; overflow-y: auto; padding: 2rem 2.5rem; }
+.bd-article::-webkit-scrollbar { width: 6px; }
+.bd-article::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+.bd-sidebar-secondary {
+  width: var(--toc-w); min-width: var(--toc-w);
+  overflow-y: auto; border-left: 1px solid var(--border);
+  padding: 1rem 0.75rem; flex-shrink: 0;
+}
+.bd-sidebar-secondary::-webkit-scrollbar { width: 4px; }
+.bd-sidebar-secondary::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+.sidebar-logo { padding: 0.5rem 1rem 0.75rem;
+  border-bottom: 1px solid var(--border); margin-bottom: 0.5rem; }
+.sidebar-logo a { color: var(--teal); font-weight: bold; font-size: 0.95em;
+  text-decoration: none; display: block; }
+.sidebar-section { color: var(--muted); font-size: 0.72em; font-weight: bold;
+  text-transform: uppercase; letter-spacing: 0.07em;
+  padding: 0.7rem 1rem 0.25rem; }
+.sidebar-nav-link { display: block; padding: 0.28rem 1rem 0.28rem 1.25rem;
+  color: var(--muted); font-size: 0.875em; text-decoration: none; }
+.sidebar-nav-link:hover { color: var(--text); background: rgba(255,255,255,0.03); }
+.sidebar-nav-link.active { color: var(--teal);
+  border-left: 2px solid var(--teal);
+  padding-left: calc(1.25rem - 2px); background: rgba(57,208,199,0.05); }
+.mini-toc-label { color: var(--muted); font-size: 0.72em; font-weight: bold;
+  text-transform: uppercase; letter-spacing: 0.07em; padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border); margin-bottom: 0.5rem; }
+.mini-toc { list-style: none; }
+.mini-toc li a { display: block; padding: 0.22rem 0;
+  color: var(--muted); font-size: 0.83em; text-decoration: none;
+  border-left: 2px solid transparent; padding-left: 0.5rem; }
+.mini-toc li a:hover { color: var(--text); }
+.mini-toc li a.toc-active { color: var(--teal); border-left-color: var(--teal); }
+.section-anchor { scroll-margin-top: calc(var(--hdr-h) + 8px); }
+h1 { color: var(--teal); font-size: 1.7em; margin-bottom: 0.5rem; line-height:1.3; }
+h2 { color: var(--teal); font-size: 1.25em; margin: 1.5rem 0 0.6rem; }
+h3 { color: var(--teal); font-size: 1.05em; margin: 1.2rem 0 0.4rem; }
+h4 { color: var(--teal); font-size: 0.95em; margin: 1rem 0 0.3rem; }
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+p { margin-bottom: 0.8rem; }
+ul, ol { margin: 0 0 0.8rem 1.4rem; }
+li { margin-bottom: 0.3rem; }
+code { background: rgba(255,255,255,0.06); border-radius: 3px; padding: 1px 4px; font-size: 0.9em; }
+blockquote { border-left: 3px solid var(--border); color: var(--muted);
+  padding: 0.2rem 0.8rem; margin-bottom: 0.8rem; }
+.card { background: var(--card); border: 1px solid var(--border);
+        border-radius: 8px; padding: 1.2rem; margin-bottom: 1rem; }
+table { width: 100%; border-collapse: collapse; font-size: 0.9em; margin-bottom: 0.8rem; }
+th { background: var(--card); color: var(--teal); padding: 8px;
+     border: 1px solid var(--border); text-align: left; }
+td { padding: 8px; border: 1px solid var(--border); vertical-align: top; }
+tr:nth-child(even) td { background: rgba(0,0,0,0.2); }
+.stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+             gap: 1rem; margin-bottom: 1.5rem; }
+.stat-box { background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+            padding: 1rem; text-align: center; }
+.stat-num { font-size: 2rem; font-weight: bold; color: var(--teal); }
+.stat-label { color: var(--muted); font-size: 0.85em; margin-top: 0.2rem; }
+.sp-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+           gap: 1rem; margin: 1rem 0; }
+.sp-card { background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+           padding: 1.2rem; cursor: pointer; transition: border-color 0.15s; height:100%; }
+.sp-card:hover { border-color: var(--teal); }
+.sp-card h3 { margin: 0 0 0.5rem; color: var(--teal); font-size: 1em; }
+.sp-card p { margin: 0; color: var(--muted); font-size: 0.88em; }
+.sp-badge { display: inline-block; background: rgba(57,208,199,0.1); color: var(--teal);
+            border-radius: 4px; padding: 2px 8px; font-size: 0.8em; margin-bottom: 0.5rem; }
+.paper-meta { color: var(--muted); font-size: 0.9em; margin-bottom: 1.5rem; }
+.paper-meta a { color: var(--accent); }
+.section-label { color: var(--teal); font-weight: bold; font-size: 0.85em;
+                 text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.4rem; }
+.pill { display: inline-block; border-radius: 4px; padding: 0.15rem 0.6rem;
+        font-size: 0.8em; font-weight: bold; margin-right: 0.4rem; }
+.pill-p0 { background: rgba(63,185,80,0.2); color: var(--green); }
+.pill-p1 { background: rgba(57,208,199,0.15); color: var(--teal); }
+.pill-p2 { background: rgba(210,153,34,0.2); color: var(--yellow); }
+.pill-p3 { background: rgba(188,140,255,0.2); color: var(--purple); }
+.pill-p4 { background: rgba(125,133,144,0.2); color: var(--muted); }
+.delta-row { margin: 0.4rem 0; padding: 0.4rem 0.8rem;
+             border-left: 3px solid var(--border); border-radius: 0 4px 4px 0; }
+.chain { position: relative; padding-left: 2rem; }
+.chain::before { content: ''; position: absolute; left: 0.95rem; top: 0;
+                 bottom: 0; width: 2px; background: var(--border); }
+.chain-node { position: relative; margin-bottom: 2rem; }
+.chain-node::before { content: ''; position: absolute; left: -1.55rem;
+                      top: 1.1rem; width: 12px; height: 12px;
+                      border-radius: 50%; background: var(--teal); }
+.chain-num { display: inline-block; width: 28px; height: 28px; background: var(--teal);
+             color: #000; border-radius: 50%; text-align: center; line-height: 28px;
+             font-weight: bold; font-size: 0.85em; margin-right: 0.6rem; flex-shrink: 0; }
+.chain-q { font-weight: bold; color: var(--text); margin: 0.4rem 0 0.3rem; font-size: 1em; }
+.chain-papers { color: var(--muted); font-size: 0.85em; margin-bottom: 0.6rem; }
+.chain-start { background: var(--card); border: 1px solid var(--teal);
+               border-radius: 8px; padding: 1rem; margin-bottom: 2rem; }
+.chain-start h3 { margin: 0 0 0.5rem; color: var(--teal); }
+.chain-converge { background: var(--card); border: 1px solid var(--green);
+                  border-radius: 8px; padding: 1rem; margin-top: 1rem; }
+.chain-converge h3 { margin: 0 0 0.5rem; color: var(--green); }
+.chain-label { display: inline-block; border-radius: 4px; padding: 0.15rem 0.6rem;
+               font-size: 0.8em; font-weight: bold; margin-right: 0.4rem; }
+.chain-status { border-radius: 0 4px 4px 0; padding: 0.5rem 0.8rem;
+                margin: 0.35rem 0; font-size: 0.88em; }
+.chain-status ul { margin: 0.3rem 0 0 1.2rem; padding: 0; }
+.chain-status li { margin-bottom: 0.25rem; }
+.chain-status.solved  { background: rgba(63,185,80,0.07);  border-left: 3px solid var(--green); }
+.chain-status.remains { background: rgba(210,153,34,0.07); border-left: 3px solid var(--yellow); }
+.chain-status.added   { background: rgba(248,81,73,0.07);  border-left: 3px solid var(--red); }
+.chain-status.pivoted { background: rgba(188,140,255,0.1); border-left: 3px solid var(--purple); }
+.chain-label.solved   { background: rgba(63,185,80,0.2);  color: var(--green); }
+.chain-label.remains  { background: rgba(210,153,34,0.2); color: var(--yellow); }
+.chain-label.added    { background: rgba(248,81,73,0.2);  color: var(--red); }
+.chain-label.pivoted  { background: rgba(188,140,255,0.2); color: var(--purple); }
+.chain-status.expected { background: rgba(88,166,255,0.07);  border-left: 3px solid var(--accent); }
+.chain-label.expected  { background: rgba(88,166,255,0.2);   color: var(--accent); }
+.chain-status.revised  { background: rgba(57,208,199,0.07);  border-left: 3px solid var(--teal); }
+.chain-label.revised   { background: rgba(57,208,199,0.2);   color: var(--teal); }
+.concept-box { border-left: 4px solid var(--teal); background: #0d1f1f;
+               border-radius: 4px; padding: 1.2rem; margin-bottom: 1.2rem; }
+.concept-name { font-weight: bold; color: var(--teal); font-size: 1.05em; margin-bottom: 0.5rem; }
+.hypothesis { border-left: 4px solid var(--teal); background: #0d1f1f;
+              border-radius: 4px; padding: 1rem; margin: 1rem 0; }
+.recommendation { border-left: 4px solid var(--purple); background: #1a0f2e;
+                  border-radius: 4px; padding: 1rem; margin: 1rem 0; }
+.rq-row { background: rgba(88,166,255,0.05); border-left: 3px solid var(--accent);
+          padding: 0.4rem 0.8rem; margin-bottom: 0.5rem; border-radius: 0 4px 4px 0; }
+.scroll-table-wrap { max-height: 420px; overflow-y: auto; border: 1px solid var(--border);
+                     border-radius: 4px; }
+.scroll-table-wrap table { margin-bottom: 0; }
+.scroll-table-wrap thead th { position: sticky; top: 0; background: #161b22; z-index: 1; }
+.page-nav { display: flex; justify-content: space-between; margin-top: 2rem;
+            padding-top: 1rem; border-top: 1px solid var(--border); gap: 1rem; }
+.page-nav a { color: var(--accent); font-size: 0.9em; }
+html.ko-active .en-only { display: none !important; }
+html.ko-active .ko-only { display: block !important; }
+.ko-only { display: none; }
+span.ko-only, .sidebar-logo a span.ko-only { display: none; }
+html.ko-active span.ko-only { display: inline !important; }
+.lang-btn { background: transparent; color: var(--muted); border: 1px solid var(--border);
+            border-radius: 4px; padding: 3px 9px; font-size: 0.8em; cursor: pointer; }
+.lang-btn.active { border-color: var(--teal); color: var(--teal); }
+details { margin-bottom: 0.8rem; }
+details summary { color: var(--muted); cursor: pointer; }
+@media (max-width: 1024px) { .bd-sidebar-secondary { display: none; } }
+@media (max-width: 768px) {
+  .bd-sidebar-primary { display: none; }
+  .bd-root { flex-direction: column; height: auto; overflow: visible; }
+  .bd-main { overflow: visible; }
+  .bd-article { overflow: visible; padding: 1rem; }
+  .stat-grid { grid-template-columns: repeat(2, 1fr); }
+  .sp-grid { grid-template-columns: 1fr; }
+}
+</style>
+
+<script>
+MathJax = { tex: { inlineMath: [['$','$']], displayMath: [['$$','$$']] },
+            options: { skipHtmlTags: ['script','noscript','style','textarea','pre','code'] } };
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<script>
+function toggleLanguage() {
+  const html = document.documentElement;
+  const isKo = html.classList.toggle('ko-active');
+  document.querySelectorAll('.lang-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.lang === (isKo ? 'ko' : 'en'));
+  });
+  localStorage.setItem('survey-lang', isKo ? 'ko' : 'en');
+}
+document.addEventListener('DOMContentLoaded', function() {
+  const saved = localStorage.getItem('survey-lang');
+  if (saved === 'ko') {
+    document.documentElement.classList.add('ko-active');
+    document.querySelectorAll('.lang-btn').forEach(b =>
+      b.classList.toggle('active', b.dataset.lang === 'ko'));
+  } else {
+    document.querySelectorAll('[data-lang="en"]').forEach(b => b.classList.add('active'));
+  }
+  const article = document.querySelector('.bd-article');
+  const sections = Array.from(document.querySelectorAll('.section-anchor[id]'));
+  const sideLinks = Array.from(document.querySelectorAll('.bd-sidebar-primary .sidebar-nav-link'));
+  const tocLinks = Array.from(document.querySelectorAll('.bd-sidebar-secondary .mini-toc a'));
+  if (!article || !sections.length) return;
+  function current() {
+    let id = sections[0].id;
+    const scrollTop = article.scrollTop + 60;
+    sections.forEach(function(s) { if (s.offsetTop <= scrollTop) id = s.id; });
+    return id;
+  }
+  function update() {
+    const id = current();
+    sideLinks.forEach(function(a) {
+      a.classList.toggle('active', a.getAttribute('href') === '#' + id);
+    });
+    tocLinks.forEach(function(a) {
+      a.classList.toggle('toc-active', a.getAttribute('href') === '#' + id);
+    });
+  }
+  article.addEventListener('scroll', update, { passive: true });
+  update();
+});
+</script>
+
+</head>
+<body>
+<div class="bd-root">
+
+<nav class="bd-sidebar-primary">
+  <div class="sidebar-logo">
+    <a href="../index.html">&#x2B21; <span class="en-only">Exposure-Frequency Control Survey</span><span class="ko-only">Exposure-빈도 제어 문헌 조사</span></a>
+  </div>
+  <div class="sidebar-section"><span class="en-only">Overview</span><span class="ko-only">개요</span></div>
+  <a href="../index.html#overview" class="sidebar-nav-link"><span class="en-only">Survey Hub</span><span class="ko-only">조사 허브</span></a>
+  <a href="../index.html#answers" class="sidebar-nav-link"><span class="en-only">Key Answers</span><span class="ko-only">핵심 답변</span></a>
+  <div class="sidebar-section"><span class="en-only">Sub-Problems</span><span class="ko-only">세부 문제</span></div>
+<a href="../sp1_fairness-of-exposure-fixed-scores.html" class="sidebar-nav-link">SP1: <span class="en-only">Exposure fairness</span><span class="ko-only">Exposure 공정성</span></a>
+<a href="../sp2_2024-2026-frontier-llm-era.html" class="sidebar-nav-link active">SP2: <span class="en-only">2024–26 frontier / LLM</span><span class="ko-only">2024–26 최전선 / LLM</span></a>
+<a href="../sp3_postproc-rerank-blackbox.html" class="sidebar-nav-link">SP3: <span class="en-only">Post-proc re-ranking</span><span class="ko-only">Post-proc re-ranking</span></a>
+<a href="../sp4_stochastic-ranking-policies.html" class="sidebar-nav-link">SP4: <span class="en-only">Stochastic policies</span><span class="ko-only">확률적 정책</span></a>
+<a href="../sp5_amortized-equity-attention.html" class="sidebar-nav-link">SP5: <span class="en-only">Amortized fairness</span><span class="ko-only">Amortized 공정성</span></a>
+<a href="../sp6_bandit-exposure-allocation.html" class="sidebar-nav-link">SP6: <span class="en-only">Bandit allocation</span><span class="ko-only">Bandit 배분</span></a>
+<a href="../sp7_capping-pacing-feeds-ads.html" class="sidebar-nav-link">SP7: <span class="en-only">Capping &amp; pacing</span><span class="ko-only">Capping·pacing</span></a>
+<a href="../sp8_popularity-debias-calibration.html" class="sidebar-nav-link">SP8: <span class="en-only">Debiasing &amp; calibration</span><span class="ko-only">Debiasing·calibration</span></a>
+<a href="../sp9_ecosystems-creator-incentives.html" class="sidebar-nav-link">SP9: <span class="en-only">Ecosystems &amp; creators</span><span class="ko-only">생태계·creator</span></a>
+<a href="../sp10_llm-exposure-feedback-loops.html" class="sidebar-nav-link">SP10: <span class="en-only">LLM feedback loops</span><span class="ko-only">LLM feedback loop</span></a>
+<a href="../sp11_strategyproof-exposure.html" class="sidebar-nav-link">SP11: <span class="en-only">Strategy-proofness</span><span class="ko-only">Strategy-proofness</span></a>
+
+  <div class="sidebar-section"><span class="en-only">Synthesis</span><span class="ko-only">종합</span></div>
+  <a href="../conclusion.html" class="sidebar-nav-link"><span class="en-only">Conclusion</span><span class="ko-only">결론</span></a>
+  <a href="../thinking-process.html" class="sidebar-nav-link"><span class="en-only">Thinking Process</span><span class="ko-only">추론 과정</span></a>
+</nav>
+  <div class="bd-main">
+<div class="article-header-bar"><div class="header-brand"><a href="../index.html"><span class="en-only">Exposure-Frequency Control Survey</span><span class="ko-only">Exposure-빈도 제어 문헌 조사</span></a></div><nav class="breadcrumb"><a href="../index.html"><span class="en-only">Survey</span><span class="ko-only">조사</span></a><span>&rsaquo;</span><a href="../sp2_2024-2026-frontier-llm-era.html">SP2</a><span>&rsaquo;</span><span>[24] Beyond Exposure: Optimizing Ranking Fair</span></nav><button class="lang-btn" data-lang="en" onclick="toggleLanguage()">EN</button><button class="lang-btn" data-lang="ko" onclick="toggleLanguage()">KO</button></div>
+    <div class="bd-article">
+<section id="header" class="section-anchor"><div class="paper-meta">
+<h1 style="margin-bottom:0.3rem">Beyond Exposure: Optimizing Ranking Fairness with Non-linear Time-Income Functions</h1>
+<p style="margin:0.3rem 0;color:var(--muted)">Xuancheng Li et al. · arXiv · 2026</p>
+<p style="margin:0.3rem 0"><a href="https://arxiv.org/abs/2602.03345" target="_blank">arXiv:2602.03345</a> · <a href="https://arxiv.org/pdf/2602.03345.pdf" target="_blank">PDF</a> · SP: <a href="../sp2_2024-2026-frontier-llm-era.html">SP2</a> · <a href="../sp4_stochastic-ranking-policies.html">SP4</a> · <a href="../sp5_amortized-equity-attention.html">SP5</a></p>
+<p><span class="pill pill-p4">P4</span><span class="pill" style="background:rgba(255,255,255,0.05);color:var(--muted)">Track B</span></p>
+</div>
+<div class="card ko-only" style="border-color:var(--teal)"><div class="section-label">한 줄 요약</div><p style="margin:0">exposure가 provider 효용의 손실 있는 proxy라는 관점에서, 비선형 시간-소득 함수로 ranking 공정성 목표를 재정의한다. exposure→효용 변환의 이질성이라는 세 번째 부하 가정을 드러낸 2026년 논문.</p></div>
+</section>
+<section id="problem" class="section-anchor">
+<div class="card"><div class="section-label"><span class="en-only">Problem</span><span class="ko-only">해결하려는 문제</span></div><p>Exposure fairness (Biega et al. 2018; Singh &amp; Joachims 2018) allocates position-induced attention proportional to merit, under the proxy assumption that provider utility is directly represented by (or proportional to) exposure. When the exposure-to-income conversion is context-dependent — e.g., time-varying value of a news impression or peak-vs-off-peak restaurant exposure — a ranking that satisfies exposure fairness can still produce unequal realized provider income. Existing exposure-fair methods, even when their fairness signals are re-derived on income, do not model the dynamic coupling between the current ranking decision, the exposure it assigns, and the context-dependent unit income at that timestep.</p></div>
+</section>
+<section id="solution" class="section-anchor">
+<div class="card"><div class="section-label"><span class="en-only">Solution / Contribution</span><span class="ko-only">해결책 / 기여</span></div><p>Formalize <strong>Amortized Income Fairness</strong>: cumulative income $I(d,n) = \sum_i \Delta E(d,i)\,\mu(d,q,\xi_i)$ must be proportional to relevance, measured by the pairwise quadratic violation metric (Eq. 13, computable with three scalar sums, Eq. 14). Optimize the combined objective $\text{Obj} = \text{Eff} + \gamma\,\text{fair}_{\text{inc}}$ via one-step marginal gains: the effectiveness term is linear in exposure (first-order exact), and the income-fairness term is quadratic in income (second-order Taylor exact). The DIDRF greedy policy scores each candidate per rank with the prefix-aware fairness gain</p>
+<p>$$G^{\text{fair}}_j(d) = \delta_j(d)\big[g(d,n) + \sigma R(d) B_{j-1}\big] - \tfrac{\sigma}{2}\big(A - R(d)^2\big)\delta_j(d)^2,$$</p>
+<p>scaled by the bounded, hyperparameter-free state calibration $\omega_j$, and selects the argmax per position. [SKIM — appendix derivations (Eqs. 43–49) present but not line-verified.]</p></div>
+<div class="card"><div class="section-label"><span class="en-only">Key Results</span><span class="ko-only">주요 결과</span></div><ul><li>Offline MQ2008/Criteo-Ads: DIDRF income unfairness 1.21 vs best baseline MCFair 1.34 (-10%), with best fairness-aware cNDCG@5 176.57 (FARA 173.22).</li><li>Offline MSLR-WEB30K/YOOCHOOSE-Ecom: unfairness 1.01×10⁻³ vs FairK 1.07 (-6%), cNDCG@5 177.74 vs FARA 150.78 (+18%).</li><li>Online settings: DIDRF best on both fairness and fairness-aware effectiveness (e.g., MQ2008 unfairness 1.50 vs MCFair 1.69; cNDCG@5 176.73), all †significant at p&lt;0.05.</li><li>Degenerate case (homogeneous unit income = exposure fairness): DIDRF still best (MQ2008 offline unfairness 11.55 vs MCFair 11.86) — income formulation subsumes the exposure case.</li><li>Runtime near FairK/MCFair ($O(k_c m)$), ~3–7× faster than MMF and ~2–4× faster than FARA.</li></ul></div>
+<details><summary><span class="en-only">5Cs Analysis</span><span class="ko-only">5Cs 분석</span></summary><div class="card" style="margin-top:0.5rem"><p><strong>Category</strong>: new method (plus a new fairness objective/metric). <strong>Context</strong>: builds directly on exposure fairness (Biega et al. 2018 equity of attention; Singh &amp; Joachims 2018 fairness of exposure) and the marginal/feedback fair-ranking line (FairCo/Morik et al. 2020, MMF/Yang &amp; Ai 2021, MCFair, FARA), and on TaxRank (Xu et al. 2024). Same research group (Yang, Ai) as MMF/MCFair/FARA. Related survey papers in this survey: exposure-fairness foundations and TaxRank if ingested. <strong>Correctness</strong>: 5 seeds with std, two-sided paired t-tests ($p&lt;0.05$) against strongest baseline; but income environments are semi-synthetic with <em>no semantic correspondence</em> between LTR documents and real campaigns/products (hash assignment) — internal validity fine, external validity limited. [SKIM — full result grid across all 8 setting combinations claimed but only representative settings shown.] <strong>Contributions</strong>: (1) Income Fairness definition + metric exposing exposure as an intermediate proxy; (2) DIDRF: exact second-order marginal optimization with prefix awareness and bounded state calibration, $O(k_c m)$ time; (3) log-calibrated semi-synthetic income environments (Criteo-Ads, YOOCHOOSE-Ecom) for testing whether exposure-fair methods stay fair under context-dependent conversion. <strong>Clarity</strong>: method reproducible from the description — full algorithm box, all equations, complexity analysis; anonymous code link provided.</p></div></details>
+<details><summary><span class="en-only">Contribution vs Claim</span><span class="ko-only">기여 대 주장</span></summary><div class="card" style="margin-top:0.5rem"><ul><li><strong>Stated claims</strong>: exposure is only an intermediate allocation signal; income fairness is the more realistic provider-side objective; DIDRF improves income fairness while keeping competitive effectiveness.</li><li><strong>Demonstrated</strong>: on 2 LTR datasets × 2 log-calibrated <em>semi-synthetic</em> income environments × offline/online, DIDRF dominates income-adapted baselines with significance tests; ablations support each component (second-order term, $\omega_j$, optimism bonus).</li><li><strong>Gap</strong>: the core premise (real provider income diverges materially from exposure) is motivated by examples and citations, not measured on real systems; $\mu$ is assumed available and error-free — no experiment on estimated/noisy income signals; document-to-income-trajectory assignment is a random hash, so income heterogeneity is decoupled from item semantics. [SKIM — verify in deep read whether appendix addresses μ-noise sensitivity.]</li></ul></div></details>
+</section>
+<section id="results" class="section-anchor">
+<details><summary><span class="en-only">Concepts Introduced</span><span class="ko-only">도입된 개념</span></summary><div class="card" style="margin-top:0.5rem"><p><strong>Income Fairness (and Amortized Income Fairness)</strong></p>
+<ul><li><strong>What it computes</strong>: for each item pair $(d_x, d_y)$ in a query's candidate set, the squared violation of income–relevance proportionality $\left(I(d_x,n)R(d_y) - I(d_y,n)R(d_x)\right)^2$, averaged over pairs (Eq. 13) — a direct analog of merit-proportional exposure fairness but with cumulative <em>income</em> $I(d,n)$ in place of cumulative exposure $E(d,n)$.</li><li><strong>Why it was created</strong>: exposure fairness assumes provider utility is proportional to exposure; the paper argues this proxy assumption fails when the exposure-to-income conversion varies by context (time, location, market), so equal exposure can yield unequal realized provider utility.</li><li><strong>Concrete example</strong>: a breaking-news article shown at position 1 early earns much more income per unit exposure than the same exposure delivered a day later; a restaurant exposed off-peak converts less than exposed at peak hours.</li><li><strong>How it is used in this paper</strong>: as the fairness objective and evaluation metric replacing exposure unfairness; all baselines are re-derived under it for comparison.</li></ul>
+<p><strong>Unit-income function $\mu(d, q, \xi_i)$</strong></p>
+<ul><li><strong>What it computes</strong>: expected income per unit exposure for item $d$ under query $q$ and context $\xi_i$ (instantiated as time); item income at timestep $i$ is $v^i_d = \Delta E(d,i)\,\mu(d,q,\xi_i)$ — position-driven exposure times context-dependent conversion.</li><li><strong>Why it was created</strong>: to cleanly separate what the ranker controls (exposure via position) from what it does not (context-dependent conversion), making the exposure-proxy failure explicit and optimizable.</li><li><strong>Concrete example</strong>: in the Criteo-Ads environment, $\mu$ is a log-calibrated trajectory over 62 twelve-hour bins built from attributed advertising-conversion value; each LTR query-document pair is hash-assigned to one of 675 campaign trajectories.</li><li><strong>How it is used in this paper</strong>: assumed <em>given</em> (external signal) in all derivations; simulated semi-synthetically from Criteo and YOOCHOOSE logs in experiments.</li></ul>
+<p><strong>DIDRF (Dynamic-Income-Derivative-aware Ranking Fairness)</strong></p>
+<ul><li><strong>What it computes</strong>: a greedy per-position ranking score $\text{score}_j(d) = p_j R^+(d) + \gamma\,\omega_j\,G^{\text{fair}}_j(d)$, where $G^{\text{fair}}_j(d)$ is an <em>exact</em> second-order Taylor expansion of the quadratic income-unfairness metric (first-order income-deficit signal $g(d,n)$, prefix-interaction term $\sigma R(d)B_{j-1}$, and a self-curvature correction), and $\omega_j \in [1/2, 3/2)$ is a bounded state-calibration factor comparing residual unfairness to local curvature.</li><li><strong>Why it was created</strong>: naively swapping income for exposure in existing fair-ranking methods ignores the dynamic coupling between ranking decisions, exposure, and time-varying unit income; the quadratic structure of the unfairness metric makes the second-order expansion exact and cheap ($O(k_c m)$ time via scalar sums instead of $O(m^2)$ pairs).</li><li><strong>Concrete example</strong>: at rank $j$, placing item $d$ contributes income increment $\delta_j(d) = \mu(d,q,\xi_n)p_j$; the calibration $\omega_j = \tfrac12 + \sqrt{\mathcal U_{j-1}}/(\sqrt{\mathcal U_{j-1}}+\sqrt{\Lambda_j}+\epsilon)$ strengthens the correction when residual unfairness is large.</li><li><strong>How it is used in this paper</strong>: the proposed method, instantiated offline (oracle relevance) and online (shrinkage-estimated relevance plus a UCB-style variance-normalized optimism bonus $R^+$).</li></ul></div></details>
+<details><summary><span class="en-only">Implementation Feasibility</span><span class="ko-only">구현 가능성</span></summary><div class="card" style="margin-top:0.5rem"><ul><li><strong>Needs</strong>: standard LTR benchmarks (MSLR-WEB30K, MQ2008); Criteo Attribution and YOOCHOOSE logs for income calibration; light compute (simulator runtimes are seconds per run; 10k iterations × 5 seeds).</li><li><strong>Code</strong>: available at https://anonymous.4open.science/r/DIDRF (anonymous review repo — persistence uncertain).</li><li><strong>Modifications</strong>: for a real exposure-proxy audit, replace the hash-assigned $\mu$ trajectories with item-linked income estimates; extend context $\xi$ beyond time.</li><li><strong>Unknowns</strong>: missing link: sensitivity of DIDRF to noise/bias in estimated $\mu$; missing link: whether the claimed full 8-setting result grid (footnote 7) holds uniformly.</li></ul></div></details>
+<details><summary><span class="en-only">Follow-up Papers</span><span class="ko-only">관련 후속 논문</span></summary><div class="card" style="margin-top:0.5rem"><ul><li>FARA: Future-aware Ranking Algorithm for Fairness Optimization (Yang et al., 2023) — strongest planning-based baseline; same Taylor-objective lineage this paper extends.</li><li>Marginal-Certainty-aware Fair Ranking (MCFair, Yang et al., WSDM 2023) — closest marginal-optimization predecessor; DIDRF's gap claim (coarser granularity, no income coupling) is stated against it.</li><li>A Taxation Perspective for Fair Re-ranking (TaxRank, Xu et al., SIGIR 2024) — the welfare-economics alternative adapted here as TaxRank-Income; relevant to SP objectives on reformulating the allocation target.</li><li>Fair ranking: a critical review (Patro et al., FAccT 2022) — the cited source for exposure being an unreliable provider-utility proxy; foundational for this survey's framing.</li></ul></div></details>
+</section>
+<section id="delta" class="section-anchor">
+<div class="card"><div class="section-label"><span class="en-only">Condition Delta — transfer to our setting</span><span class="ko-only">조건 차이 — 우리 설정으로의 전이</span></div><p><strong>Paper's setting</strong>: inputs = LTR candidate sets (MSLR-WEB30K, MQ2008) with 5-level relevance + an externally supplied time-varying unit-income signal $\mu$ calibrated from ad/e-commerce logs; outputs = top-$k_c{=}5$ ranked lists over 10,000 iterations; conditions = known position-bias curve, fixed-query amortized fairness, semi-synthetic income, offline (oracle relevance) and online (click-estimated relevance). <strong>Our setting</strong>: interrogating exposure <em>frequency</em> as a proxy in ranking systems (SP2/SP4/SP5) — whether cumulative exposure is a valid stand-in for the outcome that actually matters (provider utility / downstream income), and what breaks when the proxy is optimized directly. <strong>Differences</strong>:</p>
+<ul><li>Paper treats exposure→income conversion as the proxy failure and <em>replaces</em> the objective; our question is about exposure frequency as a measurement/optimization proxy more broadly: resolved — the paper is direct evidence that exposure-proportional allocation does not guarantee utility-proportional outcomes when conversion is non-linear/context-dependent.</li><li>$\mu$ assumed known/externally estimated; any real audit of the exposure proxy needs income estimation from logs: missing link.</li><li>Income heterogeneity is hash-assigned to documents (no semantic coupling); real proxy-gap magnitude on production data is not established: missing link.</li><li>Fixed-query, single-slate amortized dynamic ranking with known examination probabilities; broader recommendation/retrieval settings: reference only.</li></ul></div>
+<div class="card"><div class="section-label"><span class="en-only">Root-cause vs. Symptom</span><span class="ko-only">근본 원인 대 증상</span></div><p><code>Mixed</code> — the paper attacks the root cause of the exposure-proxy problem at the objective level (fairness redefined on realized income, with the exposure/conversion decomposition made explicit and the optimization derived exactly from the metric's quadratic structure), but it assumes the unit-income signal is externally given and validates only on semi-synthetically simulated income, leaving the hard part of the proxy failure — knowing the conversion function — outside the method.</p></div>
+</section>
+<div class="page-nav"><a href="23_CRAB.html">&larr; [23] CRAB</a><a href="../sp2_2024-2026-frontier-llm-era.html">&uarr; SP2</a><a href="25_EquityVsEquality.html">[25] EquityVsEquality &rarr;</a></div>
+    </div>
+  </div>
+<nav class="bd-sidebar-secondary"><div class="mini-toc-label"><span class="en-only">On this page</span><span class="ko-only">이 페이지</span></div><ul class="mini-toc"><li><a href="#header"><span class="en-only">Paper info</span><span class="ko-only">논문 정보</span></a></li><li><a href="#problem"><span class="en-only">Problem</span><span class="ko-only">문제</span></a></li><li><a href="#solution"><span class="en-only">Solution &amp; Results</span><span class="ko-only">해결책 · 결과</span></a></li><li><a href="#results"><span class="en-only">Concepts &amp; Follow-ups</span><span class="ko-only">개념 · 후속</span></a></li><li><a href="#delta"><span class="en-only">Condition Delta</span><span class="ko-only">조건 차이</span></a></li></ul></nav>
+</div>
+</body>
+</html>

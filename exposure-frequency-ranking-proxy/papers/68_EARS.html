@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>[68] Top-K Contextual Bandits with Equity of Exposure — Exposure-Frequency Control Survey</title>
+
+<style>
+:root {
+  --bg: #0d1117; --card: #161b22; --border: #30363d;
+  --text: #e6edf3; --muted: #7d8590; --accent: #58a6ff;
+  --teal: #39d0c7; --green: #3fb950; --yellow: #d29922;
+  --red: #f85149; --purple: #bc8cff; --orange: #e3b341;
+  --sidebar-w: 262px; --toc-w: 210px; --hdr-h: 48px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+body { font-family: -apple-system, sans-serif; background: var(--bg);
+       color: var(--text); line-height: 1.6; }
+.bd-root { display: flex; height: 100vh; overflow: hidden; }
+.bd-sidebar-primary {
+  width: var(--sidebar-w); min-width: var(--sidebar-w);
+  overflow-y: auto; background: var(--card);
+  border-right: 1px solid var(--border);
+  padding: 0.75rem 0; flex-shrink: 0;
+}
+.bd-sidebar-primary::-webkit-scrollbar { width: 4px; }
+.bd-sidebar-primary::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+.bd-main { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-width: 0; }
+.article-header-bar {
+  height: var(--hdr-h); background: var(--card);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; padding: 0 1.5rem;
+  gap: 1rem; flex-shrink: 0;
+}
+.header-brand { color: var(--teal); font-weight: bold; font-size: 0.95em;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 1; }
+.header-brand a { color: inherit; text-decoration: none; }
+.breadcrumb { color: var(--muted); font-size: 0.82em; display: flex;
+  align-items: center; gap: 0.3rem; flex-shrink: 0; }
+.breadcrumb a { color: var(--accent); text-decoration: none; }
+.breadcrumb span { color: var(--border); }
+.bd-article { flex: 1; overflow-y: auto; padding: 2rem 2.5rem; }
+.bd-article::-webkit-scrollbar { width: 6px; }
+.bd-article::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+.bd-sidebar-secondary {
+  width: var(--toc-w); min-width: var(--toc-w);
+  overflow-y: auto; border-left: 1px solid var(--border);
+  padding: 1rem 0.75rem; flex-shrink: 0;
+}
+.bd-sidebar-secondary::-webkit-scrollbar { width: 4px; }
+.bd-sidebar-secondary::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+.sidebar-logo { padding: 0.5rem 1rem 0.75rem;
+  border-bottom: 1px solid var(--border); margin-bottom: 0.5rem; }
+.sidebar-logo a { color: var(--teal); font-weight: bold; font-size: 0.95em;
+  text-decoration: none; display: block; }
+.sidebar-section { color: var(--muted); font-size: 0.72em; font-weight: bold;
+  text-transform: uppercase; letter-spacing: 0.07em;
+  padding: 0.7rem 1rem 0.25rem; }
+.sidebar-nav-link { display: block; padding: 0.28rem 1rem 0.28rem 1.25rem;
+  color: var(--muted); font-size: 0.875em; text-decoration: none; }
+.sidebar-nav-link:hover { color: var(--text); background: rgba(255,255,255,0.03); }
+.sidebar-nav-link.active { color: var(--teal);
+  border-left: 2px solid var(--teal);
+  padding-left: calc(1.25rem - 2px); background: rgba(57,208,199,0.05); }
+.mini-toc-label { color: var(--muted); font-size: 0.72em; font-weight: bold;
+  text-transform: uppercase; letter-spacing: 0.07em; padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border); margin-bottom: 0.5rem; }
+.mini-toc { list-style: none; }
+.mini-toc li a { display: block; padding: 0.22rem 0;
+  color: var(--muted); font-size: 0.83em; text-decoration: none;
+  border-left: 2px solid transparent; padding-left: 0.5rem; }
+.mini-toc li a:hover { color: var(--text); }
+.mini-toc li a.toc-active { color: var(--teal); border-left-color: var(--teal); }
+.section-anchor { scroll-margin-top: calc(var(--hdr-h) + 8px); }
+h1 { color: var(--teal); font-size: 1.7em; margin-bottom: 0.5rem; line-height:1.3; }
+h2 { color: var(--teal); font-size: 1.25em; margin: 1.5rem 0 0.6rem; }
+h3 { color: var(--teal); font-size: 1.05em; margin: 1.2rem 0 0.4rem; }
+h4 { color: var(--teal); font-size: 0.95em; margin: 1rem 0 0.3rem; }
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+p { margin-bottom: 0.8rem; }
+ul, ol { margin: 0 0 0.8rem 1.4rem; }
+li { margin-bottom: 0.3rem; }
+code { background: rgba(255,255,255,0.06); border-radius: 3px; padding: 1px 4px; font-size: 0.9em; }
+blockquote { border-left: 3px solid var(--border); color: var(--muted);
+  padding: 0.2rem 0.8rem; margin-bottom: 0.8rem; }
+.card { background: var(--card); border: 1px solid var(--border);
+        border-radius: 8px; padding: 1.2rem; margin-bottom: 1rem; }
+table { width: 100%; border-collapse: collapse; font-size: 0.9em; margin-bottom: 0.8rem; }
+th { background: var(--card); color: var(--teal); padding: 8px;
+     border: 1px solid var(--border); text-align: left; }
+td { padding: 8px; border: 1px solid var(--border); vertical-align: top; }
+tr:nth-child(even) td { background: rgba(0,0,0,0.2); }
+.stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+             gap: 1rem; margin-bottom: 1.5rem; }
+.stat-box { background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+            padding: 1rem; text-align: center; }
+.stat-num { font-size: 2rem; font-weight: bold; color: var(--teal); }
+.stat-label { color: var(--muted); font-size: 0.85em; margin-top: 0.2rem; }
+.sp-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+           gap: 1rem; margin: 1rem 0; }
+.sp-card { background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+           padding: 1.2rem; cursor: pointer; transition: border-color 0.15s; height:100%; }
+.sp-card:hover { border-color: var(--teal); }
+.sp-card h3 { margin: 0 0 0.5rem; color: var(--teal); font-size: 1em; }
+.sp-card p { margin: 0; color: var(--muted); font-size: 0.88em; }
+.sp-badge { display: inline-block; background: rgba(57,208,199,0.1); color: var(--teal);
+            border-radius: 4px; padding: 2px 8px; font-size: 0.8em; margin-bottom: 0.5rem; }
+.paper-meta { color: var(--muted); font-size: 0.9em; margin-bottom: 1.5rem; }
+.paper-meta a { color: var(--accent); }
+.section-label { color: var(--teal); font-weight: bold; font-size: 0.85em;
+                 text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.4rem; }
+.pill { display: inline-block; border-radius: 4px; padding: 0.15rem 0.6rem;
+        font-size: 0.8em; font-weight: bold; margin-right: 0.4rem; }
+.pill-p0 { background: rgba(63,185,80,0.2); color: var(--green); }
+.pill-p1 { background: rgba(57,208,199,0.15); color: var(--teal); }
+.pill-p2 { background: rgba(210,153,34,0.2); color: var(--yellow); }
+.pill-p3 { background: rgba(188,140,255,0.2); color: var(--purple); }
+.pill-p4 { background: rgba(125,133,144,0.2); color: var(--muted); }
+.delta-row { margin: 0.4rem 0; padding: 0.4rem 0.8rem;
+             border-left: 3px solid var(--border); border-radius: 0 4px 4px 0; }
+.chain { position: relative; padding-left: 2rem; }
+.chain::before { content: ''; position: absolute; left: 0.95rem; top: 0;
+                 bottom: 0; width: 2px; background: var(--border); }
+.chain-node { position: relative; margin-bottom: 2rem; }
+.chain-node::before { content: ''; position: absolute; left: -1.55rem;
+                      top: 1.1rem; width: 12px; height: 12px;
+                      border-radius: 50%; background: var(--teal); }
+.chain-num { display: inline-block; width: 28px; height: 28px; background: var(--teal);
+             color: #000; border-radius: 50%; text-align: center; line-height: 28px;
+             font-weight: bold; font-size: 0.85em; margin-right: 0.6rem; flex-shrink: 0; }
+.chain-q { font-weight: bold; color: var(--text); margin: 0.4rem 0 0.3rem; font-size: 1em; }
+.chain-papers { color: var(--muted); font-size: 0.85em; margin-bottom: 0.6rem; }
+.chain-start { background: var(--card); border: 1px solid var(--teal);
+               border-radius: 8px; padding: 1rem; margin-bottom: 2rem; }
+.chain-start h3 { margin: 0 0 0.5rem; color: var(--teal); }
+.chain-converge { background: var(--card); border: 1px solid var(--green);
+                  border-radius: 8px; padding: 1rem; margin-top: 1rem; }
+.chain-converge h3 { margin: 0 0 0.5rem; color: var(--green); }
+.chain-label { display: inline-block; border-radius: 4px; padding: 0.15rem 0.6rem;
+               font-size: 0.8em; font-weight: bold; margin-right: 0.4rem; }
+.chain-status { border-radius: 0 4px 4px 0; padding: 0.5rem 0.8rem;
+                margin: 0.35rem 0; font-size: 0.88em; }
+.chain-status ul { margin: 0.3rem 0 0 1.2rem; padding: 0; }
+.chain-status li { margin-bottom: 0.25rem; }
+.chain-status.solved  { background: rgba(63,185,80,0.07);  border-left: 3px solid var(--green); }
+.chain-status.remains { background: rgba(210,153,34,0.07); border-left: 3px solid var(--yellow); }
+.chain-status.added   { background: rgba(248,81,73,0.07);  border-left: 3px solid var(--red); }
+.chain-status.pivoted { background: rgba(188,140,255,0.1); border-left: 3px solid var(--purple); }
+.chain-label.solved   { background: rgba(63,185,80,0.2);  color: var(--green); }
+.chain-label.remains  { background: rgba(210,153,34,0.2); color: var(--yellow); }
+.chain-label.added    { background: rgba(248,81,73,0.2);  color: var(--red); }
+.chain-label.pivoted  { background: rgba(188,140,255,0.2); color: var(--purple); }
+.chain-status.expected { background: rgba(88,166,255,0.07);  border-left: 3px solid var(--accent); }
+.chain-label.expected  { background: rgba(88,166,255,0.2);   color: var(--accent); }
+.chain-status.revised  { background: rgba(57,208,199,0.07);  border-left: 3px solid var(--teal); }
+.chain-label.revised   { background: rgba(57,208,199,0.2);   color: var(--teal); }
+.concept-box { border-left: 4px solid var(--teal); background: #0d1f1f;
+               border-radius: 4px; padding: 1.2rem; margin-bottom: 1.2rem; }
+.concept-name { font-weight: bold; color: var(--teal); font-size: 1.05em; margin-bottom: 0.5rem; }
+.hypothesis { border-left: 4px solid var(--teal); background: #0d1f1f;
+              border-radius: 4px; padding: 1rem; margin: 1rem 0; }
+.recommendation { border-left: 4px solid var(--purple); background: #1a0f2e;
+                  border-radius: 4px; padding: 1rem; margin: 1rem 0; }
+.rq-row { background: rgba(88,166,255,0.05); border-left: 3px solid var(--accent);
+          padding: 0.4rem 0.8rem; margin-bottom: 0.5rem; border-radius: 0 4px 4px 0; }
+.scroll-table-wrap { max-height: 420px; overflow-y: auto; border: 1px solid var(--border);
+                     border-radius: 4px; }
+.scroll-table-wrap table { margin-bottom: 0; }
+.scroll-table-wrap thead th { position: sticky; top: 0; background: #161b22; z-index: 1; }
+.page-nav { display: flex; justify-content: space-between; margin-top: 2rem;
+            padding-top: 1rem; border-top: 1px solid var(--border); gap: 1rem; }
+.page-nav a { color: var(--accent); font-size: 0.9em; }
+html.ko-active .en-only { display: none !important; }
+html.ko-active .ko-only { display: block !important; }
+.ko-only { display: none; }
+span.ko-only, .sidebar-logo a span.ko-only { display: none; }
+html.ko-active span.ko-only { display: inline !important; }
+.lang-btn { background: transparent; color: var(--muted); border: 1px solid var(--border);
+            border-radius: 4px; padding: 3px 9px; font-size: 0.8em; cursor: pointer; }
+.lang-btn.active { border-color: var(--teal); color: var(--teal); }
+details { margin-bottom: 0.8rem; }
+details summary { color: var(--muted); cursor: pointer; }
+@media (max-width: 1024px) { .bd-sidebar-secondary { display: none; } }
+@media (max-width: 768px) {
+  .bd-sidebar-primary { display: none; }
+  .bd-root { flex-direction: column; height: auto; overflow: visible; }
+  .bd-main { overflow: visible; }
+  .bd-article { overflow: visible; padding: 1rem; }
+  .stat-grid { grid-template-columns: repeat(2, 1fr); }
+  .sp-grid { grid-template-columns: 1fr; }
+}
+</style>
+
+<script>
+MathJax = { tex: { inlineMath: [['$','$']], displayMath: [['$$','$$']] },
+            options: { skipHtmlTags: ['script','noscript','style','textarea','pre','code'] } };
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<script>
+function toggleLanguage() {
+  const html = document.documentElement;
+  const isKo = html.classList.toggle('ko-active');
+  document.querySelectorAll('.lang-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.lang === (isKo ? 'ko' : 'en'));
+  });
+  localStorage.setItem('survey-lang', isKo ? 'ko' : 'en');
+}
+document.addEventListener('DOMContentLoaded', function() {
+  const saved = localStorage.getItem('survey-lang');
+  if (saved === 'ko') {
+    document.documentElement.classList.add('ko-active');
+    document.querySelectorAll('.lang-btn').forEach(b =>
+      b.classList.toggle('active', b.dataset.lang === 'ko'));
+  } else {
+    document.querySelectorAll('[data-lang="en"]').forEach(b => b.classList.add('active'));
+  }
+  const article = document.querySelector('.bd-article');
+  const sections = Array.from(document.querySelectorAll('.section-anchor[id]'));
+  const sideLinks = Array.from(document.querySelectorAll('.bd-sidebar-primary .sidebar-nav-link'));
+  const tocLinks = Array.from(document.querySelectorAll('.bd-sidebar-secondary .mini-toc a'));
+  if (!article || !sections.length) return;
+  function current() {
+    let id = sections[0].id;
+    const scrollTop = article.scrollTop + 60;
+    sections.forEach(function(s) { if (s.offsetTop <= scrollTop) id = s.id; });
+    return id;
+  }
+  function update() {
+    const id = current();
+    sideLinks.forEach(function(a) {
+      a.classList.toggle('active', a.getAttribute('href') === '#' + id);
+    });
+    tocLinks.forEach(function(a) {
+      a.classList.toggle('toc-active', a.getAttribute('href') === '#' + id);
+    });
+  }
+  article.addEventListener('scroll', update, { passive: true });
+  update();
+});
+</script>
+
+</head>
+<body>
+<div class="bd-root">
+
+<nav class="bd-sidebar-primary">
+  <div class="sidebar-logo">
+    <a href="../index.html">&#x2B21; <span class="en-only">Exposure-Frequency Control Survey</span><span class="ko-only">Exposure-빈도 제어 문헌 조사</span></a>
+  </div>
+  <div class="sidebar-section"><span class="en-only">Overview</span><span class="ko-only">개요</span></div>
+  <a href="../index.html#overview" class="sidebar-nav-link"><span class="en-only">Survey Hub</span><span class="ko-only">조사 허브</span></a>
+  <a href="../index.html#answers" class="sidebar-nav-link"><span class="en-only">Key Answers</span><span class="ko-only">핵심 답변</span></a>
+  <div class="sidebar-section"><span class="en-only">Sub-Problems</span><span class="ko-only">세부 문제</span></div>
+<a href="../sp1_fairness-of-exposure-fixed-scores.html" class="sidebar-nav-link">SP1: <span class="en-only">Exposure fairness</span><span class="ko-only">Exposure 공정성</span></a>
+<a href="../sp2_2024-2026-frontier-llm-era.html" class="sidebar-nav-link">SP2: <span class="en-only">2024–26 frontier / LLM</span><span class="ko-only">2024–26 최전선 / LLM</span></a>
+<a href="../sp3_postproc-rerank-blackbox.html" class="sidebar-nav-link">SP3: <span class="en-only">Post-proc re-ranking</span><span class="ko-only">Post-proc re-ranking</span></a>
+<a href="../sp4_stochastic-ranking-policies.html" class="sidebar-nav-link">SP4: <span class="en-only">Stochastic policies</span><span class="ko-only">확률적 정책</span></a>
+<a href="../sp5_amortized-equity-attention.html" class="sidebar-nav-link">SP5: <span class="en-only">Amortized fairness</span><span class="ko-only">Amortized 공정성</span></a>
+<a href="../sp6_bandit-exposure-allocation.html" class="sidebar-nav-link active">SP6: <span class="en-only">Bandit allocation</span><span class="ko-only">Bandit 배분</span></a>
+<a href="../sp7_capping-pacing-feeds-ads.html" class="sidebar-nav-link">SP7: <span class="en-only">Capping &amp; pacing</span><span class="ko-only">Capping·pacing</span></a>
+<a href="../sp8_popularity-debias-calibration.html" class="sidebar-nav-link">SP8: <span class="en-only">Debiasing &amp; calibration</span><span class="ko-only">Debiasing·calibration</span></a>
+<a href="../sp9_ecosystems-creator-incentives.html" class="sidebar-nav-link">SP9: <span class="en-only">Ecosystems &amp; creators</span><span class="ko-only">생태계·creator</span></a>
+<a href="../sp10_llm-exposure-feedback-loops.html" class="sidebar-nav-link">SP10: <span class="en-only">LLM feedback loops</span><span class="ko-only">LLM feedback loop</span></a>
+<a href="../sp11_strategyproof-exposure.html" class="sidebar-nav-link">SP11: <span class="en-only">Strategy-proofness</span><span class="ko-only">Strategy-proofness</span></a>
+
+  <div class="sidebar-section"><span class="en-only">Synthesis</span><span class="ko-only">종합</span></div>
+  <a href="../conclusion.html" class="sidebar-nav-link"><span class="en-only">Conclusion</span><span class="ko-only">결론</span></a>
+  <a href="../thinking-process.html" class="sidebar-nav-link"><span class="en-only">Thinking Process</span><span class="ko-only">추론 과정</span></a>
+</nav>
+  <div class="bd-main">
+<div class="article-header-bar"><div class="header-brand"><a href="../index.html"><span class="en-only">Exposure-Frequency Control Survey</span><span class="ko-only">Exposure-빈도 제어 문헌 조사</span></a></div><nav class="breadcrumb"><a href="../index.html"><span class="en-only">Survey</span><span class="ko-only">조사</span></a><span>&rsaquo;</span><a href="../sp6_bandit-exposure-allocation.html">SP6</a><span>&rsaquo;</span><span>[68] Top-K Contextual Bandits with Equity of </span></nav><button class="lang-btn" data-lang="en" onclick="toggleLanguage()">EN</button><button class="lang-btn" data-lang="ko" onclick="toggleLanguage()">KO</button></div>
+    <div class="bd-article">
+<section id="header" class="section-anchor"><div class="paper-meta">
+<h1 style="margin-bottom:0.3rem">Top-K Contextual Bandits with Equity of Exposure</h1>
+<p style="margin:0.3rem 0;color:var(--muted)">Jeunen and Goethals · RecSys 2021 · 2021 · 32 citations</p>
+<p style="margin:0.3rem 0"><a href="https://www.semanticscholar.org/paper/1e154326db56a41d79c3ced650cd9cdf7d5db544" target="_blank">link</a> · SP: <a href="../sp6_bandit-exposure-allocation.html">SP6</a></p>
+<p><span class="pill pill-p4">P4</span><span class="pill" style="background:rgba(255,255,255,0.05);color:var(--muted)">Track C</span></p>
+</div>
+<div class="card ko-only" style="border-color:var(--teal)"><div class="section-label">한 줄 요약</div><p style="margin:0">top-K contextual bandit에 exposure 형평(equity of exposure)을 도입한 RecSys 2021 논문.</p></div>
+</section>
+<section id="problem" class="section-anchor">
+<div class="card"><div class="section-label"><span class="en-only">Problem</span><span class="ko-only">해결하려는 문제</span></div><p>Top-K contextual bandit recommenders select arms greedily by estimated click probability (Probability Ranking Principle). This is deterministic: an arbitrarily small difference in estimated relevance between two items produces a maximal difference in exposure (one item always shown above the other), so clicks — the observed frequency signal — become disproportionate to relevance. In marketplaces this creates unfair provider income; existing fairness-of-exposure work either targets offline LTR with relevance labels (Diaz et al.), single-arm bandits with modified objectives (Wang et al.), or applies one global fairness knob across a user population whose tolerance for randomisation actually varies widely.</p></div>
+</section>
+<section id="solution" class="section-anchor">
+<div class="card"><div class="section-label"><span class="en-only">Solution / Contribution</span><span class="ko-only">해결책 / 기여</span></div><p>EARS keeps the underlying relevance model untouched and changes only arm selection. Formally (Alg. 4):</p>
+<p>pi_e(A|x) = argmin_pi E_{A_K ~ pi} D( P_hat(A|R) ; P_hat(A|C) )  subject to  (1 - E_{pi_e}[C] / E_{pi_g}[C]) &lt;= eps</p>
+<p>where pi_g is the greedy policy from the same model and D is the Hellinger distance over the top-K. The optimiser reduces to: shuffle the top-K' items uniformly, sort the rest, choosing the maximal K' whose expected relative click loss (computed in closed form under the cascade-with-abandonment model, Eq. 9) stays within eps. Because relevance estimates are per-context, K' is personalised per user per impression.</p></div>
+<div class="card"><div class="section-label"><span class="en-only">Key Results</span><span class="ko-only">주요 결과</span></div><ul><li>Deezer simulator (862 playlists, 974,960 users, K=12, gamma=0.9, batch updates every 20,000 users): tuned linear TS (prior variance 2,000 vs. original 1.0) beats all Bendada et al. baselines; regret vs. oracle ~0.013 expected clicks per user.</li><li>EARS with eps = 0.01 <em>simultaneously</em> increases expected reward and decreases Hellinger disparity vs. greedy — randomisation partially corrects position bias and diversifies training data.</li><li>Increasing eps in {0.01, 0.025, 0.05, 0.1} trades reward for fairness gracefully; the reward-disparity trade-off is empirically linear, tracing a Pareto frontier.</li><li>Non-personalised EARS (fixed K' = 6) matches eps = 0.1 in reward but has significantly <em>higher</em> disparity — it is Pareto-dominated by personalised EARS, confirming the per-user trade-off pays off.</li><li>Result is robust to divergence choice (KL, Total Variation give the same phenomenon).</li></ul></div>
+<details><summary><span class="en-only">5Cs Analysis</span><span class="ko-only">5Cs 분석</span></summary><div class="card" style="margin-top:0.5rem"><p><strong>Category</strong>: new method (algorithm; system-oriented, model-agnostic arm-selection layer). <strong>Context</strong>: builds directly on Bendada et al. (RecSys 2020) carousel-bandit simulator and Diaz et al. (CIKM 2020) expected-exposure principle; contrasts with Wang et al. (ICML 2021) fairness-of-exposure bandits and Mehrotra et al. relevance-fairness trade-off work. <strong>Correctness</strong>: simulation-only (Deezer offline simulator, ground-truth relevances from hidden item features); 95% CIs shown; the surprising "eps=0.01 improves both reward and fairness" result is honestly attributed to randomisation mitigating position bias in the P(C)-trained model plus more diverse training data. Assumes the cascade user model is correct. <strong>Contributions</strong>: (1) formalises equity of exposure for top-K contextual bandits as divergence between P(A|R) and P(A|C); (2) EARS — personalised, eps-constrained targeted randomisation, model-agnostic; (3) efficient closed-form expected-click computation under partial shuffling for the cascade model. <strong>Clarity</strong>: reproducible — algorithms given in full, all four algorithm boxes explicit, code released.</p></div></details>
+<details><summary><span class="en-only">Contribution vs Claim</span><span class="ko-only">기여 대 주장</span></summary><div class="card" style="margin-top:0.5rem"><ul><li><strong>Stated claims</strong>: first algorithm for equity of exposure in top-K contextual bandits; model-agnostic; disparity significantly reduced with negligible utility impact; real-time feasible.</li><li><strong>Demonstrated</strong>: all of the above within one simulator (Deezer carousel, cascade user model, K=12, linear per-arm models). Real-time feasibility shown only for K=12 (the closed form is still exponential in K).</li><li><strong>Gap</strong>: "can be implemented on top of any existing bandit system" is argued structurally but tested on a single system/user-model; no online A/B test; provider-side (group) fairness explicitly deferred to future work; scalability to large K unaddressed (O(2^K) term). [SKIM - the appendix-level details beyond p.16 do not exist; paper is fully covered]</li></ul></div></details>
+</section>
+<section id="results" class="section-anchor">
+<details><summary><span class="en-only">Concepts Introduced</span><span class="ko-only">도입된 개념</span></summary><div class="card" style="margin-top:0.5rem"><p><strong>Equity of exposure principle (as instantiated for bandits)</strong></p>
+<ul><li><strong>What it computes</strong>: given per-item relevance probabilities P(R=1|X,A), it requires the controllable click-attribution distribution P(A|C=1) to match the fixed relevance-attribution distribution P(A|R=1); disparity is measured as a statistical divergence D(P(A|R); P(A|C)).</li><li><strong>Why it was created</strong>: Diaz et al. (2020) defined equitable expected exposure for IR with graded relevance labels; treating estimated P(R) as a graded label makes greedy PRP ranking trivially "optimal," which hides that arbitrarily small relevance gaps (&lt; eps) get converted into maximal exposure gaps (e.g. top-1 gets P(E)=1, runner-up gets 0).</li><li><strong>Concrete example</strong>: in the Deezer data, under greedy top-12 ranking the top-2 items receive disproportionately many clicks relative to their relevance, while items 3-12 are systematically under-exposed (Fig. 2b).</li><li><strong>How it is used in this paper</strong>: it is the fairness objective EARS minimises, instantiated with the Hellinger distance over the top-K items only (to avoid long-tail noise dominating the divergence).</li></ul>
+<p><strong>EARS (Exposure-Aware aRm Selection)</strong></p>
+<ul><li><strong>What it computes</strong>: input = per-arm posterior relevance estimates (Thompson-sampled), slot count K, tolerance eps; operation = find the largest shuffle length K' such that uniformly shuffling the top-K' items (while keeping the rest greedily sorted) loses at most eps relative expected clicks vs. the greedy ranking; output = a stochastic top-K list sampled from that constrained policy.</li><li><strong>Why it was created</strong>: prior fairness-in-bandits work either changes the utility model itself (Wang et al. 2021, single-arm setting with fairness-regret bounds) or applies one global fairness knob to all users; EARS is model-agnostic (pure arm selection) and personalises the trade-off per user per context.</li><li><strong>Concrete example</strong>: for a "diverse" user whose 5th-best item has ~90% of the top item's relevance, the full top-12 can be shuffled at negligible click cost; for a "focused" user, shuffling with large K' significantly cuts expected clicks, so EARS picks a small K'.</li><li><strong>How it is used in this paper</strong>: the core contribution — Algorithm 4, evaluated on the Deezer carousel simulator on top of Bayesian logistic regression Thompson Sampling.</li></ul>
+<p><strong>Cascade user model with abandonment (gamma)</strong></p>
+<ul><li><strong>What it computes</strong>: exposure probability of the item at position k as P(E=1|pos=k) = gamma^k * prod_{j&lt;k} (1 - P(R=1|A=sigma_j)) — the user examines position k only if all earlier items were non-relevant and the user has not abandoned (abandonment prob = 1-gamma per position).</li><li><strong>Why it was created</strong>: without the abandonment parameter, expected clicks depend only on the <em>set</em> of top-K items, not their order — so exposure could be gamed by ranking worst-first with zero reward cost, making the relevance-fairness trade-off degenerate.</li><li><strong>Concrete example</strong>: with gamma = 0.9 and K = 12, position 12's exposure is discounted by 0.9^12 = 0.282 regardless of list relevance.</li><li><strong>How it is used in this paper</strong>: defines P(E) and hence P(C) = P(R)P(E) (Eq. 2-4) for both the disparity measure and the expected-click constraint.</li></ul>
+<p><strong>Efficient expected-clicks-under-shuffling computation</strong></p>
+<ul><li><strong>What it computes</strong>: E[C] under uniform shuffling of the top-K' via a powerset decomposition with Beta-function permutation counting (Eq. 8-9), reducing O(K!) permutation enumeration to O(K <em> 2^(K-1) </em> (K-1))-order work — milliseconds for K = 12.</li><li><strong>Why it was created</strong>: EARS must evaluate the eps-constraint for every candidate K' in real time at serving.</li><li><strong>Concrete example</strong>: many permutations are click-equivalent because the exposure of item sigma_i depends only on the <em>set</em> of items ranked above it, giving (i-1)! equivalent orderings per subset.</li><li><strong>How it is used in this paper</strong>: makes Algorithm 4 deployable in the arm-selection loop.</li></ul></div></details>
+<details><summary><span class="en-only">Implementation Feasibility</span><span class="ko-only">구현 가능성</span></summary><div class="card" style="margin-top:0.5rem"><ul><li><strong>Needs</strong>: any bandit producing per-arm relevance estimates; a user model for P(E|position); the Deezer carousel dataset/simulator for reproduction; trivial compute (closed-form Eq. 9 in milliseconds at K=12).</li><li><strong>Code</strong>: available at https://github.com/olivierjeunen/EARS-recsys-2021 (plus the underlying simulator at https://github.com/deezer/carousel_bandits).</li><li><strong>Modifications</strong>: for our proxy-analysis setting, the useful piece is the P(C)=P(R)P(E) decomposition and the P(A|C)-vs-P(A|R) divergence as a <em>diagnostic</em> of frequency-proxy failure; would need re-derivation of Eq. 9 for non-cascade exposure models and larger K.</li><li><strong>Unknowns</strong>: missing link: behaviour at large action spaces / large K (exponential term); missing link: how the personalised eps interacts with user-openness prediction (cited Mehrotra et al. finding is motivational, not implemented — K' is derived from relevance curvature, not from a learned openness model).</li></ul></div></details>
+<details><summary><span class="en-only">Follow-up Papers</span><span class="ko-only">관련 후속 논문</span></summary><div class="card" style="margin-top:0.5rem"><ul><li>Wang, Bai, Sun &amp; Joachims, "Fairness of Exposure in Stochastic Bandits" (ICML 2021) — the theory-side counterpart: merit-proportional exposure with fairness-regret bounds, single-arm; contrast with EARS's constraint-based, top-K, model-agnostic approach.</li><li>Diaz, Mitra, Ekstrand, Biega &amp; Carterette, "Evaluating Stochastic Rankings with Expected Exposure" (CIKM 2020) — source of the equity-of-exposure principle and the EE-D/EE-R/EE-AUC metrics EARS argues against optimising directly.</li><li>Bendada, Salha &amp; Bontempelli, "Carousel Personalization in Music Streaming Apps with Contextual Bandits" (RecSys 2020) — the simulator and baseline stack EARS builds on (and whose TS-vs-logistic-regression ranking it corrects via prior-variance tuning).</li><li>Jeunen &amp; Goethals, "Pessimistic Reward Models for Off-Policy Learning in Recommendation" (RecSys 2021) — same authors' companion on off-policy settings, named as the future-work direction for exposure disparity under off-policy learning.</li></ul></div></details>
+</section>
+<section id="delta" class="section-anchor">
+<div class="card"><div class="section-label"><span class="en-only">Condition Delta — transfer to our setting</span><span class="ko-only">조건 차이 — 우리 설정으로의 전이</span></div><p><strong>Paper's setting</strong>: inputs = user context vectors (97-dim), per-arm Bayesian logistic regression posteriors; outputs = stochastic top-12 carousel; conditions = simulated cascade-with-abandonment feedback, delayed batch updates, single-item relevance ground truth available to the simulator. <strong>Our setting</strong> (SP6, exposure frequency as ranking proxy): we study when observed exposure/interaction frequency is a valid proxy for underlying relevance or quality in ranking systems — i.e., when frequency signals can be trusted or must be corrected. <strong>Differences</strong>:</p>
+<ul><li>Paper gives the <em>generative decomposition</em> P(C) = P(R)·P(E) and shows greedy ranking makes click frequency systematically disproportionate to relevance — directly usable as the mechanism by which exposure frequency fails as a relevance proxy: resolved (Eq. 2 and Fig. 2 quantify the proxy failure).</li><li>Paper's remedy is prospective (change the serving policy via randomisation); our setting may need retrospective correction of already-logged frequency data: missing link — EARS does not provide an estimator to de-bias historical exposure-confounded frequencies (though its randomisation would make future logs cleaner, cf. the eps=0.01 reward gain).</li><li>Cascade user model with abandonment is specific to carousels; other exposure processes (feeds, search) need different P(E) models: reference only — the framework is stated to be user-model-agnostic but only the cascade case is worked out.</li><li>Simulation with known ground-truth relevance vs. real systems where P(R) is never observed: reference only.</li></ul></div>
+<div class="card"><div class="section-label"><span class="en-only">Root-cause vs. Symptom</span><span class="ko-only">근본 원인 대 증상</span></div><p><code>Direct</code> — the paper identifies the root cause of exposure disparity as deterministic greedy selection converting marginal relevance differences into maximal exposure differences, and removes exactly that mechanism (constrained randomisation of the arm-selection step that re-couples P(A|C) to P(A|R)), rather than post-hoc reweighting a fairness metric.</p></div>
+</section>
+<div class="page-nav"><a href="67_FairContextualMAB.html">&larr; [67] FairContextualMAB</a><a href="../sp6_bandit-exposure-allocation.html">&uarr; SP6</a><a href="69_SmoothBudgetDelivery.html">[69] SmoothBudgetDelivery &rarr;</a></div>
+    </div>
+  </div>
+<nav class="bd-sidebar-secondary"><div class="mini-toc-label"><span class="en-only">On this page</span><span class="ko-only">이 페이지</span></div><ul class="mini-toc"><li><a href="#header"><span class="en-only">Paper info</span><span class="ko-only">논문 정보</span></a></li><li><a href="#problem"><span class="en-only">Problem</span><span class="ko-only">문제</span></a></li><li><a href="#solution"><span class="en-only">Solution &amp; Results</span><span class="ko-only">해결책 · 결과</span></a></li><li><a href="#results"><span class="en-only">Concepts &amp; Follow-ups</span><span class="ko-only">개념 · 후속</span></a></li><li><a href="#delta"><span class="en-only">Condition Delta</span><span class="ko-only">조건 차이</span></a></li></ul></nav>
+</div>
+</body>
+</html>

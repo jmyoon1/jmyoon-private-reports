@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>[49] Revisiting Fairness-aware Interactive Recommendation: Item L — Exposure-Frequency Control Survey</title>
+
+<style>
+:root {
+  --bg: #0d1117; --card: #161b22; --border: #30363d;
+  --text: #e6edf3; --muted: #7d8590; --accent: #58a6ff;
+  --teal: #39d0c7; --green: #3fb950; --yellow: #d29922;
+  --red: #f85149; --purple: #bc8cff; --orange: #e3b341;
+  --sidebar-w: 262px; --toc-w: 210px; --hdr-h: 48px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+body { font-family: -apple-system, sans-serif; background: var(--bg);
+       color: var(--text); line-height: 1.6; }
+.bd-root { display: flex; height: 100vh; overflow: hidden; }
+.bd-sidebar-primary {
+  width: var(--sidebar-w); min-width: var(--sidebar-w);
+  overflow-y: auto; background: var(--card);
+  border-right: 1px solid var(--border);
+  padding: 0.75rem 0; flex-shrink: 0;
+}
+.bd-sidebar-primary::-webkit-scrollbar { width: 4px; }
+.bd-sidebar-primary::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+.bd-main { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-width: 0; }
+.article-header-bar {
+  height: var(--hdr-h); background: var(--card);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; padding: 0 1.5rem;
+  gap: 1rem; flex-shrink: 0;
+}
+.header-brand { color: var(--teal); font-weight: bold; font-size: 0.95em;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 1; }
+.header-brand a { color: inherit; text-decoration: none; }
+.breadcrumb { color: var(--muted); font-size: 0.82em; display: flex;
+  align-items: center; gap: 0.3rem; flex-shrink: 0; }
+.breadcrumb a { color: var(--accent); text-decoration: none; }
+.breadcrumb span { color: var(--border); }
+.bd-article { flex: 1; overflow-y: auto; padding: 2rem 2.5rem; }
+.bd-article::-webkit-scrollbar { width: 6px; }
+.bd-article::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+.bd-sidebar-secondary {
+  width: var(--toc-w); min-width: var(--toc-w);
+  overflow-y: auto; border-left: 1px solid var(--border);
+  padding: 1rem 0.75rem; flex-shrink: 0;
+}
+.bd-sidebar-secondary::-webkit-scrollbar { width: 4px; }
+.bd-sidebar-secondary::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+.sidebar-logo { padding: 0.5rem 1rem 0.75rem;
+  border-bottom: 1px solid var(--border); margin-bottom: 0.5rem; }
+.sidebar-logo a { color: var(--teal); font-weight: bold; font-size: 0.95em;
+  text-decoration: none; display: block; }
+.sidebar-section { color: var(--muted); font-size: 0.72em; font-weight: bold;
+  text-transform: uppercase; letter-spacing: 0.07em;
+  padding: 0.7rem 1rem 0.25rem; }
+.sidebar-nav-link { display: block; padding: 0.28rem 1rem 0.28rem 1.25rem;
+  color: var(--muted); font-size: 0.875em; text-decoration: none; }
+.sidebar-nav-link:hover { color: var(--text); background: rgba(255,255,255,0.03); }
+.sidebar-nav-link.active { color: var(--teal);
+  border-left: 2px solid var(--teal);
+  padding-left: calc(1.25rem - 2px); background: rgba(57,208,199,0.05); }
+.mini-toc-label { color: var(--muted); font-size: 0.72em; font-weight: bold;
+  text-transform: uppercase; letter-spacing: 0.07em; padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border); margin-bottom: 0.5rem; }
+.mini-toc { list-style: none; }
+.mini-toc li a { display: block; padding: 0.22rem 0;
+  color: var(--muted); font-size: 0.83em; text-decoration: none;
+  border-left: 2px solid transparent; padding-left: 0.5rem; }
+.mini-toc li a:hover { color: var(--text); }
+.mini-toc li a.toc-active { color: var(--teal); border-left-color: var(--teal); }
+.section-anchor { scroll-margin-top: calc(var(--hdr-h) + 8px); }
+h1 { color: var(--teal); font-size: 1.7em; margin-bottom: 0.5rem; line-height:1.3; }
+h2 { color: var(--teal); font-size: 1.25em; margin: 1.5rem 0 0.6rem; }
+h3 { color: var(--teal); font-size: 1.05em; margin: 1.2rem 0 0.4rem; }
+h4 { color: var(--teal); font-size: 0.95em; margin: 1rem 0 0.3rem; }
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+p { margin-bottom: 0.8rem; }
+ul, ol { margin: 0 0 0.8rem 1.4rem; }
+li { margin-bottom: 0.3rem; }
+code { background: rgba(255,255,255,0.06); border-radius: 3px; padding: 1px 4px; font-size: 0.9em; }
+blockquote { border-left: 3px solid var(--border); color: var(--muted);
+  padding: 0.2rem 0.8rem; margin-bottom: 0.8rem; }
+.card { background: var(--card); border: 1px solid var(--border);
+        border-radius: 8px; padding: 1.2rem; margin-bottom: 1rem; }
+table { width: 100%; border-collapse: collapse; font-size: 0.9em; margin-bottom: 0.8rem; }
+th { background: var(--card); color: var(--teal); padding: 8px;
+     border: 1px solid var(--border); text-align: left; }
+td { padding: 8px; border: 1px solid var(--border); vertical-align: top; }
+tr:nth-child(even) td { background: rgba(0,0,0,0.2); }
+.stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+             gap: 1rem; margin-bottom: 1.5rem; }
+.stat-box { background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+            padding: 1rem; text-align: center; }
+.stat-num { font-size: 2rem; font-weight: bold; color: var(--teal); }
+.stat-label { color: var(--muted); font-size: 0.85em; margin-top: 0.2rem; }
+.sp-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+           gap: 1rem; margin: 1rem 0; }
+.sp-card { background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+           padding: 1.2rem; cursor: pointer; transition: border-color 0.15s; height:100%; }
+.sp-card:hover { border-color: var(--teal); }
+.sp-card h3 { margin: 0 0 0.5rem; color: var(--teal); font-size: 1em; }
+.sp-card p { margin: 0; color: var(--muted); font-size: 0.88em; }
+.sp-badge { display: inline-block; background: rgba(57,208,199,0.1); color: var(--teal);
+            border-radius: 4px; padding: 2px 8px; font-size: 0.8em; margin-bottom: 0.5rem; }
+.paper-meta { color: var(--muted); font-size: 0.9em; margin-bottom: 1.5rem; }
+.paper-meta a { color: var(--accent); }
+.section-label { color: var(--teal); font-weight: bold; font-size: 0.85em;
+                 text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.4rem; }
+.pill { display: inline-block; border-radius: 4px; padding: 0.15rem 0.6rem;
+        font-size: 0.8em; font-weight: bold; margin-right: 0.4rem; }
+.pill-p0 { background: rgba(63,185,80,0.2); color: var(--green); }
+.pill-p1 { background: rgba(57,208,199,0.15); color: var(--teal); }
+.pill-p2 { background: rgba(210,153,34,0.2); color: var(--yellow); }
+.pill-p3 { background: rgba(188,140,255,0.2); color: var(--purple); }
+.pill-p4 { background: rgba(125,133,144,0.2); color: var(--muted); }
+.delta-row { margin: 0.4rem 0; padding: 0.4rem 0.8rem;
+             border-left: 3px solid var(--border); border-radius: 0 4px 4px 0; }
+.chain { position: relative; padding-left: 2rem; }
+.chain::before { content: ''; position: absolute; left: 0.95rem; top: 0;
+                 bottom: 0; width: 2px; background: var(--border); }
+.chain-node { position: relative; margin-bottom: 2rem; }
+.chain-node::before { content: ''; position: absolute; left: -1.55rem;
+                      top: 1.1rem; width: 12px; height: 12px;
+                      border-radius: 50%; background: var(--teal); }
+.chain-num { display: inline-block; width: 28px; height: 28px; background: var(--teal);
+             color: #000; border-radius: 50%; text-align: center; line-height: 28px;
+             font-weight: bold; font-size: 0.85em; margin-right: 0.6rem; flex-shrink: 0; }
+.chain-q { font-weight: bold; color: var(--text); margin: 0.4rem 0 0.3rem; font-size: 1em; }
+.chain-papers { color: var(--muted); font-size: 0.85em; margin-bottom: 0.6rem; }
+.chain-start { background: var(--card); border: 1px solid var(--teal);
+               border-radius: 8px; padding: 1rem; margin-bottom: 2rem; }
+.chain-start h3 { margin: 0 0 0.5rem; color: var(--teal); }
+.chain-converge { background: var(--card); border: 1px solid var(--green);
+                  border-radius: 8px; padding: 1rem; margin-top: 1rem; }
+.chain-converge h3 { margin: 0 0 0.5rem; color: var(--green); }
+.chain-label { display: inline-block; border-radius: 4px; padding: 0.15rem 0.6rem;
+               font-size: 0.8em; font-weight: bold; margin-right: 0.4rem; }
+.chain-status { border-radius: 0 4px 4px 0; padding: 0.5rem 0.8rem;
+                margin: 0.35rem 0; font-size: 0.88em; }
+.chain-status ul { margin: 0.3rem 0 0 1.2rem; padding: 0; }
+.chain-status li { margin-bottom: 0.25rem; }
+.chain-status.solved  { background: rgba(63,185,80,0.07);  border-left: 3px solid var(--green); }
+.chain-status.remains { background: rgba(210,153,34,0.07); border-left: 3px solid var(--yellow); }
+.chain-status.added   { background: rgba(248,81,73,0.07);  border-left: 3px solid var(--red); }
+.chain-status.pivoted { background: rgba(188,140,255,0.1); border-left: 3px solid var(--purple); }
+.chain-label.solved   { background: rgba(63,185,80,0.2);  color: var(--green); }
+.chain-label.remains  { background: rgba(210,153,34,0.2); color: var(--yellow); }
+.chain-label.added    { background: rgba(248,81,73,0.2);  color: var(--red); }
+.chain-label.pivoted  { background: rgba(188,140,255,0.2); color: var(--purple); }
+.chain-status.expected { background: rgba(88,166,255,0.07);  border-left: 3px solid var(--accent); }
+.chain-label.expected  { background: rgba(88,166,255,0.2);   color: var(--accent); }
+.chain-status.revised  { background: rgba(57,208,199,0.07);  border-left: 3px solid var(--teal); }
+.chain-label.revised   { background: rgba(57,208,199,0.2);   color: var(--teal); }
+.concept-box { border-left: 4px solid var(--teal); background: #0d1f1f;
+               border-radius: 4px; padding: 1.2rem; margin-bottom: 1.2rem; }
+.concept-name { font-weight: bold; color: var(--teal); font-size: 1.05em; margin-bottom: 0.5rem; }
+.hypothesis { border-left: 4px solid var(--teal); background: #0d1f1f;
+              border-radius: 4px; padding: 1rem; margin: 1rem 0; }
+.recommendation { border-left: 4px solid var(--purple); background: #1a0f2e;
+                  border-radius: 4px; padding: 1rem; margin: 1rem 0; }
+.rq-row { background: rgba(88,166,255,0.05); border-left: 3px solid var(--accent);
+          padding: 0.4rem 0.8rem; margin-bottom: 0.5rem; border-radius: 0 4px 4px 0; }
+.scroll-table-wrap { max-height: 420px; overflow-y: auto; border: 1px solid var(--border);
+                     border-radius: 4px; }
+.scroll-table-wrap table { margin-bottom: 0; }
+.scroll-table-wrap thead th { position: sticky; top: 0; background: #161b22; z-index: 1; }
+.page-nav { display: flex; justify-content: space-between; margin-top: 2rem;
+            padding-top: 1rem; border-top: 1px solid var(--border); gap: 1rem; }
+.page-nav a { color: var(--accent); font-size: 0.9em; }
+html.ko-active .en-only { display: none !important; }
+html.ko-active .ko-only { display: block !important; }
+.ko-only { display: none; }
+span.ko-only, .sidebar-logo a span.ko-only { display: none; }
+html.ko-active span.ko-only { display: inline !important; }
+.lang-btn { background: transparent; color: var(--muted); border: 1px solid var(--border);
+            border-radius: 4px; padding: 3px 9px; font-size: 0.8em; cursor: pointer; }
+.lang-btn.active { border-color: var(--teal); color: var(--teal); }
+details { margin-bottom: 0.8rem; }
+details summary { color: var(--muted); cursor: pointer; }
+@media (max-width: 1024px) { .bd-sidebar-secondary { display: none; } }
+@media (max-width: 768px) {
+  .bd-sidebar-primary { display: none; }
+  .bd-root { flex-direction: column; height: auto; overflow: visible; }
+  .bd-main { overflow: visible; }
+  .bd-article { overflow: visible; padding: 1rem; }
+  .stat-grid { grid-template-columns: repeat(2, 1fr); }
+  .sp-grid { grid-template-columns: 1fr; }
+}
+</style>
+
+<script>
+MathJax = { tex: { inlineMath: [['$','$']], displayMath: [['$$','$$']] },
+            options: { skipHtmlTags: ['script','noscript','style','textarea','pre','code'] } };
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<script>
+function toggleLanguage() {
+  const html = document.documentElement;
+  const isKo = html.classList.toggle('ko-active');
+  document.querySelectorAll('.lang-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.lang === (isKo ? 'ko' : 'en'));
+  });
+  localStorage.setItem('survey-lang', isKo ? 'ko' : 'en');
+}
+document.addEventListener('DOMContentLoaded', function() {
+  const saved = localStorage.getItem('survey-lang');
+  if (saved === 'ko') {
+    document.documentElement.classList.add('ko-active');
+    document.querySelectorAll('.lang-btn').forEach(b =>
+      b.classList.toggle('active', b.dataset.lang === 'ko'));
+  } else {
+    document.querySelectorAll('[data-lang="en"]').forEach(b => b.classList.add('active'));
+  }
+  const article = document.querySelector('.bd-article');
+  const sections = Array.from(document.querySelectorAll('.section-anchor[id]'));
+  const sideLinks = Array.from(document.querySelectorAll('.bd-sidebar-primary .sidebar-nav-link'));
+  const tocLinks = Array.from(document.querySelectorAll('.bd-sidebar-secondary .mini-toc a'));
+  if (!article || !sections.length) return;
+  function current() {
+    let id = sections[0].id;
+    const scrollTop = article.scrollTop + 60;
+    sections.forEach(function(s) { if (s.offsetTop <= scrollTop) id = s.id; });
+    return id;
+  }
+  function update() {
+    const id = current();
+    sideLinks.forEach(function(a) {
+      a.classList.toggle('active', a.getAttribute('href') === '#' + id);
+    });
+    tocLinks.forEach(function(a) {
+      a.classList.toggle('toc-active', a.getAttribute('href') === '#' + id);
+    });
+  }
+  article.addEventListener('scroll', update, { passive: true });
+  update();
+});
+</script>
+
+</head>
+<body>
+<div class="bd-root">
+
+<nav class="bd-sidebar-primary">
+  <div class="sidebar-logo">
+    <a href="../index.html">&#x2B21; <span class="en-only">Exposure-Frequency Control Survey</span><span class="ko-only">Exposure-빈도 제어 문헌 조사</span></a>
+  </div>
+  <div class="sidebar-section"><span class="en-only">Overview</span><span class="ko-only">개요</span></div>
+  <a href="../index.html#overview" class="sidebar-nav-link"><span class="en-only">Survey Hub</span><span class="ko-only">조사 허브</span></a>
+  <a href="../index.html#answers" class="sidebar-nav-link"><span class="en-only">Key Answers</span><span class="ko-only">핵심 답변</span></a>
+  <div class="sidebar-section"><span class="en-only">Sub-Problems</span><span class="ko-only">세부 문제</span></div>
+<a href="../sp1_fairness-of-exposure-fixed-scores.html" class="sidebar-nav-link">SP1: <span class="en-only">Exposure fairness</span><span class="ko-only">Exposure 공정성</span></a>
+<a href="../sp2_2024-2026-frontier-llm-era.html" class="sidebar-nav-link">SP2: <span class="en-only">2024–26 frontier / LLM</span><span class="ko-only">2024–26 최전선 / LLM</span></a>
+<a href="../sp3_postproc-rerank-blackbox.html" class="sidebar-nav-link">SP3: <span class="en-only">Post-proc re-ranking</span><span class="ko-only">Post-proc re-ranking</span></a>
+<a href="../sp4_stochastic-ranking-policies.html" class="sidebar-nav-link">SP4: <span class="en-only">Stochastic policies</span><span class="ko-only">확률적 정책</span></a>
+<a href="../sp5_amortized-equity-attention.html" class="sidebar-nav-link active">SP5: <span class="en-only">Amortized fairness</span><span class="ko-only">Amortized 공정성</span></a>
+<a href="../sp6_bandit-exposure-allocation.html" class="sidebar-nav-link">SP6: <span class="en-only">Bandit allocation</span><span class="ko-only">Bandit 배분</span></a>
+<a href="../sp7_capping-pacing-feeds-ads.html" class="sidebar-nav-link">SP7: <span class="en-only">Capping &amp; pacing</span><span class="ko-only">Capping·pacing</span></a>
+<a href="../sp8_popularity-debias-calibration.html" class="sidebar-nav-link">SP8: <span class="en-only">Debiasing &amp; calibration</span><span class="ko-only">Debiasing·calibration</span></a>
+<a href="../sp9_ecosystems-creator-incentives.html" class="sidebar-nav-link">SP9: <span class="en-only">Ecosystems &amp; creators</span><span class="ko-only">생태계·creator</span></a>
+<a href="../sp10_llm-exposure-feedback-loops.html" class="sidebar-nav-link">SP10: <span class="en-only">LLM feedback loops</span><span class="ko-only">LLM feedback loop</span></a>
+<a href="../sp11_strategyproof-exposure.html" class="sidebar-nav-link">SP11: <span class="en-only">Strategy-proofness</span><span class="ko-only">Strategy-proofness</span></a>
+
+  <div class="sidebar-section"><span class="en-only">Synthesis</span><span class="ko-only">종합</span></div>
+  <a href="../conclusion.html" class="sidebar-nav-link"><span class="en-only">Conclusion</span><span class="ko-only">결론</span></a>
+  <a href="../thinking-process.html" class="sidebar-nav-link"><span class="en-only">Thinking Process</span><span class="ko-only">추론 과정</span></a>
+</nav>
+  <div class="bd-main">
+<div class="article-header-bar"><div class="header-brand"><a href="../index.html"><span class="en-only">Exposure-Frequency Control Survey</span><span class="ko-only">Exposure-빈도 제어 문헌 조사</span></a></div><nav class="breadcrumb"><a href="../index.html"><span class="en-only">Survey</span><span class="ko-only">조사</span></a><span>&rsaquo;</span><a href="../sp5_amortized-equity-attention.html">SP5</a><span>&rsaquo;</span><span>[49] Revisiting Fairness-aware Interactive Re</span></nav><button class="lang-btn" data-lang="en" onclick="toggleLanguage()">EN</button><button class="lang-btn" data-lang="ko" onclick="toggleLanguage()">KO</button></div>
+    <div class="bd-article">
+<section id="header" class="section-anchor"><div class="paper-meta">
+<h1 style="margin-bottom:0.3rem">Revisiting Fairness-aware Interactive Recommendation: Item Lifecycle as a Control Knob</h1>
+<p style="margin:0.3rem 0;color:var(--muted)">Lu et al. · arXiv · 2025</p>
+<p style="margin:0.3rem 0"><a href="https://arxiv.org/abs/2511.16248" target="_blank">arXiv:2511.16248</a> · <a href="https://arxiv.org/pdf/2511.16248.pdf" target="_blank">PDF</a> · SP: <a href="../sp5_amortized-equity-attention.html">SP5</a></p>
+<p><span class="pill pill-p4">P4</span><span class="pill" style="background:rgba(255,255,255,0.05);color:var(--muted)">Track B</span></p>
+</div>
+<div class="card ko-only" style="border-color:var(--teal)"><div class="section-label">한 줄 요약</div><p style="margin:0">item 생애주기(lifecycle)를 제어 knob으로 삼는 공정성 인지 상호작용 추천을 제안한다.</p></div>
+</section>
+<section id="problem" class="section-anchor">
+<div class="card"><div class="section-label"><span class="en-only">Problem</span><span class="ko-only">해결하려는 문제</span></div><p>Fairness-aware recommendation methods — static (regularization, causal debiasing, re-ranking) and RL-based (FCPO, DNAIR, SAC4IR, HER4IF) — apply uniform exposure constraints across all items regardless of where each item is in its temporal lifecycle. This mismatches exposure allocation with exposure demand: stale content in its decay phase gets over-promoted (wasted exposure) while emerging items miss the critical early window where exposure matters most.</p></div>
+</section>
+<section id="solution" class="section-anchor">
+<div class="card"><div class="section-label"><span class="en-only">Solution / Contribution</span><span class="ko-only">해결책 / 기여</span></div><p>Two-part: (1) an empirical finding that short-video lifecycles follow a compressed three-phase pattern (rapid growth → transient stability → sharp decay), statistically validated with Kruskal–Wallis tests ($p &lt; 0.001$) and Dunn post-hoc comparisons on KuaiRec and KuaiRand; (2) LHRL, a hierarchical PPO framework where PhaseFormer (STL + iTransformer) detects each item's current phase, a high-level agent sets phase- and popularity-conditioned fairness/lifecycle weights, and a low-level agent optimizes immediate engagement under those weights (equations above in Concepts). <code>[SKIM - training details, appendix hyperparameters not read]</code></p></div>
+<div class="card"><div class="section-label"><span class="en-only">Key Results</span><span class="ko-only">주요 결과</span></div><ul><li>KuaiRec: LHRL reaches Len 17.760 and $R_{cum}$ 15.613 vs. strongest baseline HER4IF (16.075 / 13.802) — +10.5% and +13.1% — while also achieving the best fairness AD = 0.009 (HER4IF: 0.010).</li><li>KuaiRand: $R_{cum}$ 12.655 (+13.7% over HER4IF's 11.126) with lowest AD = 0.184 (HER4IF: 0.220).</li><li>Ablation: removing lifecycle rewards (LHRL-w/o L) drops KuaiRec $R_{cum}$ from 15.613 to 13.226; the flat agent with lifecycle rewards (w/o H) collapses after ~10k steps — both components necessary.</li><li>Plug-in generality: SAC4IR+life improves $R_{cum}$ by 8.2% on KuaiRec; FCPO+life by 5.7% on KuaiRand.</li><li>Learned strategy (RQ5): agent increases Mature-stage exposure, prunes Decline-stage items, keeps a stable low exposure floor for Growth-stage items.</li></ul></div>
+<details><summary><span class="en-only">5Cs Analysis</span><span class="ko-only">5Cs 분석</span></summary><div class="card" style="margin-top:0.5rem"><p><strong>Category</strong>: new method (plus an empirical characterization study) <strong>Context</strong>: builds on RL-based fairness-aware interactive recommendation (FCPO, DNAIR, SAC4IR, HER4IF — HER4IF is by an overlapping author group and is the strongest baseline); imports the product-lifecycle concept from marketing science (Levitt 1965). Evaluated in KuaiSim on KuaiRec/KuaiRand. <strong>Correctness</strong>: statistical tests for the lifecycle phases include multiple-comparison correction (Holm–Bonferroni); RL results averaged over 5 seeds with std reported. All evaluation is in a simulator with a pre-trained DeepFM feedback model — no live A/B or held-out real-log evaluation. <code>[SKIM - appendix robustness checks not read]</code> <strong>Contributions</strong>: (1) empirical three-phase lifecycle model for short video, deviating from the classical four-stage PLC; (2) LHRL framework with PhaseFormer + two-level PPO; (3) evidence that lifecycle-aware rewards are a portable plug-in for other RL recommenders. <strong>Clarity</strong>: main equations and architecture are stated; reproducibility depends on appendix hyperparameters and released code (GitHub link given). <code>[SKIM]</code></p></div></details>
+<details><summary><span class="en-only">Contribution vs Claim</span><span class="ko-only">기여 대 주장</span></summary><div class="card" style="margin-top:0.5rem"><ul><li><strong>Stated claims</strong>: lifecycle is a "key but underexplored control knob"; LHRL harmonizes fairness and accuracy; lifecycle rewards are generalizable.</li><li><strong>Demonstrated</strong>: simulator-only gains on two Kuaishou-derived datasets; plug-in gains on three RL baselines (though DNAIR+life on KuaiRand shows essentially no $R_{cum}$ gain, 6.894 vs 6.895).</li><li><strong>Gap</strong>: the "compressed lifecycle" is validated only on two short-video datasets from one platform family (Kuaishou); generality beyond short video is asserted via the lifecycle framing but untested. Simulator feedback (DeepFM-based KuaiSim) may itself encode popularity bias. <code>[SKIM - verify appendix analyses in deep read]</code></li></ul></div></details>
+</section>
+<section id="results" class="section-anchor">
+<details><summary><span class="en-only">Concepts Introduced</span><span class="ko-only">도입된 개념</span></summary><div class="card" style="margin-top:0.5rem"><p><strong>Compressed three-phase item lifecycle (Growth / Mature / Decline)</strong></p>
+<ul><li><strong>What it computes</strong>: per-item play-progress time series (play duration / video duration per day since upload) → differential analysis locating the peak and its subsequent inflection point → assignment of each time point to one of three phases: rapid growth, transient stability, sharp decay.</li><li><strong>Why it was created</strong>: the classical four-stage product lifecycle (introduction, growth, maturity, decline) from marketing does not fit short-video platforms — videos lack an "introduction" stage and decay far faster than they grow.</li><li><strong>Concrete example</strong>: 92.9% of KuaiRec videos (9,524/10,253) and 94.5% of KuaiRand videos (6,400/6,777) reach peak engagement within 7 days of upload; the average initial slope of the Decline phase is ~9.04x that of the Mature phase.</li><li><strong>How it is used in this paper</strong>: the phase label is the control signal — it modulates both the RL reward (lifecycle-aware reward term) and the exposure-scoring formula.</li></ul>
+<p><strong>PhaseFormer</strong></p>
+<ul><li><strong>What it computes</strong>: raw play-progress series $Y_t$ → STL decomposition into trend $T_t$ + seasonal $S_t$ + residual $R_t$ → iTransformer encoding of $(T_t, S_t)$ as tokens → MLP + softmax → probability over {Growth, Mature, Decline}.</li><li><strong>Why it was created</strong>: lifecycle phases must be detected in real time from noisy, non-stationary, weakly periodic engagement signals; recurrent models (LSTM) are more sensitive to local noise. <code>[SKIM - verify robustness claims in deep read]</code></li><li><strong>Concrete example</strong>: at time 2020-07-20, using only history up to that date, it labels one sampled KuaiRec video "Mature" and another "Decline" consistent with their subsequent trajectories (Figure 4, qualitative only).</li><li><strong>How it is used in this paper</strong>: its predicted stage feeds the high-level RL agent as state and gates the lifecycle-aware reward.</li></ul>
+<p><strong>LHRL (Lifecycle-aware Hierarchical RL)</strong></p>
+<ul><li><strong>What it computes</strong>: user state → high-level agent (HRA) samples fairness weights $w_{fair,t} = [w_{pop}, w_{longtail}] \sim \mathcal{N}(\mu_t^h, \sigma^2)$ and predicts lifecycle weights $w_{life,t} = [w_{growth}, w_{mature}, w_{decline}]$ → low-level agent (LRA) scores candidates by $P(I \mid \tilde{s}_t^l) = \phi((g \odot (I_{pop,t} \cdot w_{fair,t}) \odot (1 + I_{life,t} \cdot w_{life,t}))/\tau)$ → sampled recommendation list. Both levels trained with PPO.</li><li><strong>Why it was created</strong>: flat RL agents applying uniform fairness constraints across all items over-promote stale (Decline-phase) content and under-expose emerging (Growth-phase) content; decoupling long-term fairness (high level) from short-term engagement (low level) stabilizes training.</li><li><strong>Concrete example</strong>: high-level reward $r_t^h = r_t^a + \alpha \cdot r_{life,t} + \beta \cdot r_{fair,t}$, where $r_{life,t} = I_{pop,t} \cdot \Lambda \cdot I_{life,t}^T$ with a learnable $2\times3$ coefficient matrix $\Lambda$ over (popular/long-tail) x (growth/mature/decline).</li><li><strong>How it is used in this paper</strong>: the full proposed method; also its lifecycle reward is transplanted as a plug-in into SAC4IR, DNAIR, FCPO (RQ4).</li></ul></div></details>
+<details><summary><span class="en-only">Implementation Feasibility</span><span class="ko-only">구현 가능성</span></summary><div class="card" style="margin-top:0.5rem"><ul><li><strong>Needs</strong>: KuaiRec/KuaiRand datasets (public), KuaiSim simulator, PPO training infrastructure, STL decomposition + iTransformer for PhaseFormer.</li><li><strong>Code</strong>: available at https://github.com/luyunstar/LHRL (linked from paper; not verified live <code>[SKIM]</code>).</li><li><strong>Modifications</strong>: for SP5 use, only the lifecycle-characterization pipeline (play-progress curves, phase-boundary detection via peak + inflection, Kruskal–Wallis/Dunn tests) is needed — separable from the RL agent.</li><li><strong>Unknowns</strong>: missing link: hyperparameter sensitivity of $\alpha, \beta$ is deferred to appendix/future work; missing link: how phase labels behave for items with &lt;2 days of history beyond the "masked self-attention + linear extrapolation" one-liner.</li></ul></div></details>
+<details><summary><span class="en-only">Follow-up Papers</span><span class="ko-only">관련 후속 논문</span></summary><div class="card" style="margin-top:0.5rem"><ul><li>HER4IF — "Hierarchical Reinforcement Learning for Long-term Fairness in Interactive Recommendation" (Xia et al., ICWS 2024) — strongest baseline, same hierarchical-RL lineage and overlapping authors.</li><li>DORL — "Alleviating Matthew Effect of Offline Reinforcement Learning in Interactive Recommendation" (Gao et al., SIGIR 2023) — directly on the exposure feedback loop / Matthew effect relevant to this survey.</li><li>KuaiRec (Gao et al., 2022a) / KuaiRand (Gao et al., 2022b) — the fully-observed and randomized-exposure datasets underpinning the lifecycle analysis; the randomized-exposure design of KuaiRand is directly relevant to disentangling exposure frequency from item quality.</li></ul></div></details>
+</section>
+<section id="delta" class="section-anchor">
+<div class="card"><div class="section-label"><span class="en-only">Condition Delta — transfer to our setting</span><span class="ko-only">조건 차이 — 우리 설정으로의 전이</span></div><p><strong>Paper's setting</strong>: inputs = per-item daily play-progress time series + user interaction states; outputs = ranked/sampled short-video recommendation lists; conditions = interactive RL loop in KuaiSim simulator, sessions ≤ 20 interactions, item lifecycle compressed to ~7-day peak, fairness measured by Absolute Difference of exposure. <strong>Our setting</strong> (SP5 — temporal/lifecycle dynamics of exposure frequency as a ranking-quality proxy): we care about how an item's exposure frequency evolves over its lifecycle and whether frequency-based exposure signals are a valid proxy for ranking quality/item value, rather than about training an RL recommender. <strong>Differences</strong>:</p>
+<ul><li>Simulator-trained RL policy vs. our observational/analysis use of exposure dynamics: reference only — we would borrow the lifecycle characterization, not the agent.</li><li>Play progress as the vitality signal vs. exposure frequency as the signal: missing link — the paper deliberately uses play progress <em>instead of</em> raw exposure counts to avoid length/click bias; whether the three-phase pattern holds for exposure frequency itself needs checking. <code>[SKIM - verify]</code></li><li>Short-video domain (7-day compressed lifecycle) vs. general ranking domains: missing link — phase boundaries and compression are platform-specific.</li><li>Its Hypothesis 1 ("lifecycle stage is predictive and reflective of intrinsic item value") directly supports SP5's premise that temporal exposure position modulates what frequency signals mean: resolved — the paper provides statistical evidence (Table 1 phase separability) usable as supporting citation.</li></ul></div>
+<div class="card"><div class="section-label"><span class="en-only">Root-cause vs. Symptom</span><span class="ko-only">근본 원인 대 증상</span></div><p><code>Mixed</code> — the empirical half addresses a root cause (uniform fairness constraints ignore real temporal heterogeneity in item value, and the paper measures that heterogeneity directly with significance tests), but the algorithmic half handles it via reward shaping with tuned coefficient weights ($\alpha, \beta, \Lambda$) inside a biased simulator loop, patching the exposure-misallocation symptom without resolving the underlying popularity-feedback mechanism.</p></div>
+</section>
+<div class="page-nav"><a href="48_FairSync.html">&larr; [48] FairSync</a><a href="../sp5_amortized-equity-attention.html">&uarr; SP5</a><a href="50_ScoringNotEnough.html">[50] ScoringNotEnough &rarr;</a></div>
+    </div>
+  </div>
+<nav class="bd-sidebar-secondary"><div class="mini-toc-label"><span class="en-only">On this page</span><span class="ko-only">이 페이지</span></div><ul class="mini-toc"><li><a href="#header"><span class="en-only">Paper info</span><span class="ko-only">논문 정보</span></a></li><li><a href="#problem"><span class="en-only">Problem</span><span class="ko-only">문제</span></a></li><li><a href="#solution"><span class="en-only">Solution &amp; Results</span><span class="ko-only">해결책 · 결과</span></a></li><li><a href="#results"><span class="en-only">Concepts &amp; Follow-ups</span><span class="ko-only">개념 · 후속</span></a></li><li><a href="#delta"><span class="en-only">Condition Delta</span><span class="ko-only">조건 차이</span></a></li></ul></nav>
+</div>
+</body>
+</html>

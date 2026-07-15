@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>[02] Joint Multisided Exposure Fairness for Recommendation — Exposure-Frequency Control Survey</title>
+
+<style>
+:root {
+  --bg: #0d1117; --card: #161b22; --border: #30363d;
+  --text: #e6edf3; --muted: #7d8590; --accent: #58a6ff;
+  --teal: #39d0c7; --green: #3fb950; --yellow: #d29922;
+  --red: #f85149; --purple: #bc8cff; --orange: #e3b341;
+  --sidebar-w: 262px; --toc-w: 210px; --hdr-h: 48px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+body { font-family: -apple-system, sans-serif; background: var(--bg);
+       color: var(--text); line-height: 1.6; }
+.bd-root { display: flex; height: 100vh; overflow: hidden; }
+.bd-sidebar-primary {
+  width: var(--sidebar-w); min-width: var(--sidebar-w);
+  overflow-y: auto; background: var(--card);
+  border-right: 1px solid var(--border);
+  padding: 0.75rem 0; flex-shrink: 0;
+}
+.bd-sidebar-primary::-webkit-scrollbar { width: 4px; }
+.bd-sidebar-primary::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+.bd-main { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-width: 0; }
+.article-header-bar {
+  height: var(--hdr-h); background: var(--card);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; padding: 0 1.5rem;
+  gap: 1rem; flex-shrink: 0;
+}
+.header-brand { color: var(--teal); font-weight: bold; font-size: 0.95em;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 1; }
+.header-brand a { color: inherit; text-decoration: none; }
+.breadcrumb { color: var(--muted); font-size: 0.82em; display: flex;
+  align-items: center; gap: 0.3rem; flex-shrink: 0; }
+.breadcrumb a { color: var(--accent); text-decoration: none; }
+.breadcrumb span { color: var(--border); }
+.bd-article { flex: 1; overflow-y: auto; padding: 2rem 2.5rem; }
+.bd-article::-webkit-scrollbar { width: 6px; }
+.bd-article::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+.bd-sidebar-secondary {
+  width: var(--toc-w); min-width: var(--toc-w);
+  overflow-y: auto; border-left: 1px solid var(--border);
+  padding: 1rem 0.75rem; flex-shrink: 0;
+}
+.bd-sidebar-secondary::-webkit-scrollbar { width: 4px; }
+.bd-sidebar-secondary::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+.sidebar-logo { padding: 0.5rem 1rem 0.75rem;
+  border-bottom: 1px solid var(--border); margin-bottom: 0.5rem; }
+.sidebar-logo a { color: var(--teal); font-weight: bold; font-size: 0.95em;
+  text-decoration: none; display: block; }
+.sidebar-section { color: var(--muted); font-size: 0.72em; font-weight: bold;
+  text-transform: uppercase; letter-spacing: 0.07em;
+  padding: 0.7rem 1rem 0.25rem; }
+.sidebar-nav-link { display: block; padding: 0.28rem 1rem 0.28rem 1.25rem;
+  color: var(--muted); font-size: 0.875em; text-decoration: none; }
+.sidebar-nav-link:hover { color: var(--text); background: rgba(255,255,255,0.03); }
+.sidebar-nav-link.active { color: var(--teal);
+  border-left: 2px solid var(--teal);
+  padding-left: calc(1.25rem - 2px); background: rgba(57,208,199,0.05); }
+.mini-toc-label { color: var(--muted); font-size: 0.72em; font-weight: bold;
+  text-transform: uppercase; letter-spacing: 0.07em; padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border); margin-bottom: 0.5rem; }
+.mini-toc { list-style: none; }
+.mini-toc li a { display: block; padding: 0.22rem 0;
+  color: var(--muted); font-size: 0.83em; text-decoration: none;
+  border-left: 2px solid transparent; padding-left: 0.5rem; }
+.mini-toc li a:hover { color: var(--text); }
+.mini-toc li a.toc-active { color: var(--teal); border-left-color: var(--teal); }
+.section-anchor { scroll-margin-top: calc(var(--hdr-h) + 8px); }
+h1 { color: var(--teal); font-size: 1.7em; margin-bottom: 0.5rem; line-height:1.3; }
+h2 { color: var(--teal); font-size: 1.25em; margin: 1.5rem 0 0.6rem; }
+h3 { color: var(--teal); font-size: 1.05em; margin: 1.2rem 0 0.4rem; }
+h4 { color: var(--teal); font-size: 0.95em; margin: 1rem 0 0.3rem; }
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+p { margin-bottom: 0.8rem; }
+ul, ol { margin: 0 0 0.8rem 1.4rem; }
+li { margin-bottom: 0.3rem; }
+code { background: rgba(255,255,255,0.06); border-radius: 3px; padding: 1px 4px; font-size: 0.9em; }
+blockquote { border-left: 3px solid var(--border); color: var(--muted);
+  padding: 0.2rem 0.8rem; margin-bottom: 0.8rem; }
+.card { background: var(--card); border: 1px solid var(--border);
+        border-radius: 8px; padding: 1.2rem; margin-bottom: 1rem; }
+table { width: 100%; border-collapse: collapse; font-size: 0.9em; margin-bottom: 0.8rem; }
+th { background: var(--card); color: var(--teal); padding: 8px;
+     border: 1px solid var(--border); text-align: left; }
+td { padding: 8px; border: 1px solid var(--border); vertical-align: top; }
+tr:nth-child(even) td { background: rgba(0,0,0,0.2); }
+.stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+             gap: 1rem; margin-bottom: 1.5rem; }
+.stat-box { background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+            padding: 1rem; text-align: center; }
+.stat-num { font-size: 2rem; font-weight: bold; color: var(--teal); }
+.stat-label { color: var(--muted); font-size: 0.85em; margin-top: 0.2rem; }
+.sp-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+           gap: 1rem; margin: 1rem 0; }
+.sp-card { background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+           padding: 1.2rem; cursor: pointer; transition: border-color 0.15s; height:100%; }
+.sp-card:hover { border-color: var(--teal); }
+.sp-card h3 { margin: 0 0 0.5rem; color: var(--teal); font-size: 1em; }
+.sp-card p { margin: 0; color: var(--muted); font-size: 0.88em; }
+.sp-badge { display: inline-block; background: rgba(57,208,199,0.1); color: var(--teal);
+            border-radius: 4px; padding: 2px 8px; font-size: 0.8em; margin-bottom: 0.5rem; }
+.paper-meta { color: var(--muted); font-size: 0.9em; margin-bottom: 1.5rem; }
+.paper-meta a { color: var(--accent); }
+.section-label { color: var(--teal); font-weight: bold; font-size: 0.85em;
+                 text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.4rem; }
+.pill { display: inline-block; border-radius: 4px; padding: 0.15rem 0.6rem;
+        font-size: 0.8em; font-weight: bold; margin-right: 0.4rem; }
+.pill-p0 { background: rgba(63,185,80,0.2); color: var(--green); }
+.pill-p1 { background: rgba(57,208,199,0.15); color: var(--teal); }
+.pill-p2 { background: rgba(210,153,34,0.2); color: var(--yellow); }
+.pill-p3 { background: rgba(188,140,255,0.2); color: var(--purple); }
+.pill-p4 { background: rgba(125,133,144,0.2); color: var(--muted); }
+.delta-row { margin: 0.4rem 0; padding: 0.4rem 0.8rem;
+             border-left: 3px solid var(--border); border-radius: 0 4px 4px 0; }
+.chain { position: relative; padding-left: 2rem; }
+.chain::before { content: ''; position: absolute; left: 0.95rem; top: 0;
+                 bottom: 0; width: 2px; background: var(--border); }
+.chain-node { position: relative; margin-bottom: 2rem; }
+.chain-node::before { content: ''; position: absolute; left: -1.55rem;
+                      top: 1.1rem; width: 12px; height: 12px;
+                      border-radius: 50%; background: var(--teal); }
+.chain-num { display: inline-block; width: 28px; height: 28px; background: var(--teal);
+             color: #000; border-radius: 50%; text-align: center; line-height: 28px;
+             font-weight: bold; font-size: 0.85em; margin-right: 0.6rem; flex-shrink: 0; }
+.chain-q { font-weight: bold; color: var(--text); margin: 0.4rem 0 0.3rem; font-size: 1em; }
+.chain-papers { color: var(--muted); font-size: 0.85em; margin-bottom: 0.6rem; }
+.chain-start { background: var(--card); border: 1px solid var(--teal);
+               border-radius: 8px; padding: 1rem; margin-bottom: 2rem; }
+.chain-start h3 { margin: 0 0 0.5rem; color: var(--teal); }
+.chain-converge { background: var(--card); border: 1px solid var(--green);
+                  border-radius: 8px; padding: 1rem; margin-top: 1rem; }
+.chain-converge h3 { margin: 0 0 0.5rem; color: var(--green); }
+.chain-label { display: inline-block; border-radius: 4px; padding: 0.15rem 0.6rem;
+               font-size: 0.8em; font-weight: bold; margin-right: 0.4rem; }
+.chain-status { border-radius: 0 4px 4px 0; padding: 0.5rem 0.8rem;
+                margin: 0.35rem 0; font-size: 0.88em; }
+.chain-status ul { margin: 0.3rem 0 0 1.2rem; padding: 0; }
+.chain-status li { margin-bottom: 0.25rem; }
+.chain-status.solved  { background: rgba(63,185,80,0.07);  border-left: 3px solid var(--green); }
+.chain-status.remains { background: rgba(210,153,34,0.07); border-left: 3px solid var(--yellow); }
+.chain-status.added   { background: rgba(248,81,73,0.07);  border-left: 3px solid var(--red); }
+.chain-status.pivoted { background: rgba(188,140,255,0.1); border-left: 3px solid var(--purple); }
+.chain-label.solved   { background: rgba(63,185,80,0.2);  color: var(--green); }
+.chain-label.remains  { background: rgba(210,153,34,0.2); color: var(--yellow); }
+.chain-label.added    { background: rgba(248,81,73,0.2);  color: var(--red); }
+.chain-label.pivoted  { background: rgba(188,140,255,0.2); color: var(--purple); }
+.chain-status.expected { background: rgba(88,166,255,0.07);  border-left: 3px solid var(--accent); }
+.chain-label.expected  { background: rgba(88,166,255,0.2);   color: var(--accent); }
+.chain-status.revised  { background: rgba(57,208,199,0.07);  border-left: 3px solid var(--teal); }
+.chain-label.revised   { background: rgba(57,208,199,0.2);   color: var(--teal); }
+.concept-box { border-left: 4px solid var(--teal); background: #0d1f1f;
+               border-radius: 4px; padding: 1.2rem; margin-bottom: 1.2rem; }
+.concept-name { font-weight: bold; color: var(--teal); font-size: 1.05em; margin-bottom: 0.5rem; }
+.hypothesis { border-left: 4px solid var(--teal); background: #0d1f1f;
+              border-radius: 4px; padding: 1rem; margin: 1rem 0; }
+.recommendation { border-left: 4px solid var(--purple); background: #1a0f2e;
+                  border-radius: 4px; padding: 1rem; margin: 1rem 0; }
+.rq-row { background: rgba(88,166,255,0.05); border-left: 3px solid var(--accent);
+          padding: 0.4rem 0.8rem; margin-bottom: 0.5rem; border-radius: 0 4px 4px 0; }
+.scroll-table-wrap { max-height: 420px; overflow-y: auto; border: 1px solid var(--border);
+                     border-radius: 4px; }
+.scroll-table-wrap table { margin-bottom: 0; }
+.scroll-table-wrap thead th { position: sticky; top: 0; background: #161b22; z-index: 1; }
+.page-nav { display: flex; justify-content: space-between; margin-top: 2rem;
+            padding-top: 1rem; border-top: 1px solid var(--border); gap: 1rem; }
+.page-nav a { color: var(--accent); font-size: 0.9em; }
+html.ko-active .en-only { display: none !important; }
+html.ko-active .ko-only { display: block !important; }
+.ko-only { display: none; }
+span.ko-only, .sidebar-logo a span.ko-only { display: none; }
+html.ko-active span.ko-only { display: inline !important; }
+.lang-btn { background: transparent; color: var(--muted); border: 1px solid var(--border);
+            border-radius: 4px; padding: 3px 9px; font-size: 0.8em; cursor: pointer; }
+.lang-btn.active { border-color: var(--teal); color: var(--teal); }
+details { margin-bottom: 0.8rem; }
+details summary { color: var(--muted); cursor: pointer; }
+@media (max-width: 1024px) { .bd-sidebar-secondary { display: none; } }
+@media (max-width: 768px) {
+  .bd-sidebar-primary { display: none; }
+  .bd-root { flex-direction: column; height: auto; overflow: visible; }
+  .bd-main { overflow: visible; }
+  .bd-article { overflow: visible; padding: 1rem; }
+  .stat-grid { grid-template-columns: repeat(2, 1fr); }
+  .sp-grid { grid-template-columns: 1fr; }
+}
+</style>
+
+<script>
+MathJax = { tex: { inlineMath: [['$','$']], displayMath: [['$$','$$']] },
+            options: { skipHtmlTags: ['script','noscript','style','textarea','pre','code'] } };
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<script>
+function toggleLanguage() {
+  const html = document.documentElement;
+  const isKo = html.classList.toggle('ko-active');
+  document.querySelectorAll('.lang-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.lang === (isKo ? 'ko' : 'en'));
+  });
+  localStorage.setItem('survey-lang', isKo ? 'ko' : 'en');
+}
+document.addEventListener('DOMContentLoaded', function() {
+  const saved = localStorage.getItem('survey-lang');
+  if (saved === 'ko') {
+    document.documentElement.classList.add('ko-active');
+    document.querySelectorAll('.lang-btn').forEach(b =>
+      b.classList.toggle('active', b.dataset.lang === 'ko'));
+  } else {
+    document.querySelectorAll('[data-lang="en"]').forEach(b => b.classList.add('active'));
+  }
+  const article = document.querySelector('.bd-article');
+  const sections = Array.from(document.querySelectorAll('.section-anchor[id]'));
+  const sideLinks = Array.from(document.querySelectorAll('.bd-sidebar-primary .sidebar-nav-link'));
+  const tocLinks = Array.from(document.querySelectorAll('.bd-sidebar-secondary .mini-toc a'));
+  if (!article || !sections.length) return;
+  function current() {
+    let id = sections[0].id;
+    const scrollTop = article.scrollTop + 60;
+    sections.forEach(function(s) { if (s.offsetTop <= scrollTop) id = s.id; });
+    return id;
+  }
+  function update() {
+    const id = current();
+    sideLinks.forEach(function(a) {
+      a.classList.toggle('active', a.getAttribute('href') === '#' + id);
+    });
+    tocLinks.forEach(function(a) {
+      a.classList.toggle('toc-active', a.getAttribute('href') === '#' + id);
+    });
+  }
+  article.addEventListener('scroll', update, { passive: true });
+  update();
+});
+</script>
+
+</head>
+<body>
+<div class="bd-root">
+
+<nav class="bd-sidebar-primary">
+  <div class="sidebar-logo">
+    <a href="../index.html">&#x2B21; <span class="en-only">Exposure-Frequency Control Survey</span><span class="ko-only">Exposure-빈도 제어 문헌 조사</span></a>
+  </div>
+  <div class="sidebar-section"><span class="en-only">Overview</span><span class="ko-only">개요</span></div>
+  <a href="../index.html#overview" class="sidebar-nav-link"><span class="en-only">Survey Hub</span><span class="ko-only">조사 허브</span></a>
+  <a href="../index.html#answers" class="sidebar-nav-link"><span class="en-only">Key Answers</span><span class="ko-only">핵심 답변</span></a>
+  <div class="sidebar-section"><span class="en-only">Sub-Problems</span><span class="ko-only">세부 문제</span></div>
+<a href="../sp1_fairness-of-exposure-fixed-scores.html" class="sidebar-nav-link active">SP1: <span class="en-only">Exposure fairness</span><span class="ko-only">Exposure 공정성</span></a>
+<a href="../sp2_2024-2026-frontier-llm-era.html" class="sidebar-nav-link">SP2: <span class="en-only">2024–26 frontier / LLM</span><span class="ko-only">2024–26 최전선 / LLM</span></a>
+<a href="../sp3_postproc-rerank-blackbox.html" class="sidebar-nav-link">SP3: <span class="en-only">Post-proc re-ranking</span><span class="ko-only">Post-proc re-ranking</span></a>
+<a href="../sp4_stochastic-ranking-policies.html" class="sidebar-nav-link">SP4: <span class="en-only">Stochastic policies</span><span class="ko-only">확률적 정책</span></a>
+<a href="../sp5_amortized-equity-attention.html" class="sidebar-nav-link">SP5: <span class="en-only">Amortized fairness</span><span class="ko-only">Amortized 공정성</span></a>
+<a href="../sp6_bandit-exposure-allocation.html" class="sidebar-nav-link">SP6: <span class="en-only">Bandit allocation</span><span class="ko-only">Bandit 배분</span></a>
+<a href="../sp7_capping-pacing-feeds-ads.html" class="sidebar-nav-link">SP7: <span class="en-only">Capping &amp; pacing</span><span class="ko-only">Capping·pacing</span></a>
+<a href="../sp8_popularity-debias-calibration.html" class="sidebar-nav-link">SP8: <span class="en-only">Debiasing &amp; calibration</span><span class="ko-only">Debiasing·calibration</span></a>
+<a href="../sp9_ecosystems-creator-incentives.html" class="sidebar-nav-link">SP9: <span class="en-only">Ecosystems &amp; creators</span><span class="ko-only">생태계·creator</span></a>
+<a href="../sp10_llm-exposure-feedback-loops.html" class="sidebar-nav-link">SP10: <span class="en-only">LLM feedback loops</span><span class="ko-only">LLM feedback loop</span></a>
+<a href="../sp11_strategyproof-exposure.html" class="sidebar-nav-link">SP11: <span class="en-only">Strategy-proofness</span><span class="ko-only">Strategy-proofness</span></a>
+
+  <div class="sidebar-section"><span class="en-only">Synthesis</span><span class="ko-only">종합</span></div>
+  <a href="../conclusion.html" class="sidebar-nav-link"><span class="en-only">Conclusion</span><span class="ko-only">결론</span></a>
+  <a href="../thinking-process.html" class="sidebar-nav-link"><span class="en-only">Thinking Process</span><span class="ko-only">추론 과정</span></a>
+</nav>
+  <div class="bd-main">
+<div class="article-header-bar"><div class="header-brand"><a href="../index.html"><span class="en-only">Exposure-Frequency Control Survey</span><span class="ko-only">Exposure-빈도 제어 문헌 조사</span></a></div><nav class="breadcrumb"><a href="../index.html"><span class="en-only">Survey</span><span class="ko-only">조사</span></a><span>&rsaquo;</span><a href="../sp1_fairness-of-exposure-fixed-scores.html">SP1</a><span>&rsaquo;</span><span>[02] Joint Multisided Exposure Fairness for R</span></nav><button class="lang-btn" data-lang="en" onclick="toggleLanguage()">EN</button><button class="lang-btn" data-lang="ko" onclick="toggleLanguage()">KO</button></div>
+    <div class="bd-article">
+<section id="header" class="section-anchor"><div class="paper-meta">
+<h1 style="margin-bottom:0.3rem">Joint Multisided Exposure Fairness for Recommendation</h1>
+<p style="margin:0.3rem 0;color:var(--muted)">Wu et al. · arXiv · 2022 · 80 citations</p>
+<p style="margin:0.3rem 0"><a href="https://arxiv.org/abs/2205.00048" target="_blank">arXiv:2205.00048</a> · <a href="https://arxiv.org/pdf/2205.00048.pdf" target="_blank">PDF</a> · SP: <a href="../sp1_fairness-of-exposure-fixed-scores.html">SP1</a> · <a href="../sp9_ecosystems-creator-incentives.html">SP9</a></p>
+<p><span class="pill pill-p2">P2</span><span class="pill" style="background:rgba(255,255,255,0.05);color:var(--muted)">Track A</span></p>
+</div>
+<div class="card ko-only" style="border-color:var(--teal)"><div class="section-label">한 줄 요약</div><p style="margin:0">개별 item-user 쌍을 넘어 item 집단이 user 집단에 체계적으로 과소/과다 노출되는 문제를 다루는 여섯 가지 다면적 exposure 공정성 지표 체계를 제안한다. 동일한 개별 지표 값에서도 집단 수준 지표가 임의로 달라질 수 있음을 보인다.</p></div>
+</section>
+<section id="problem" class="section-anchor">
+<div class="card"><div class="section-label"><span class="en-only">Problem</span><span class="ko-only">해결하려는 문제</span></div><p>Prior exposure-fairness work (Diaz et al. 2020's expected exposure framework) measures disparities only from individual users to individual items or groups of items — it cannot detect <em>systemic</em> disparities where item groups are under/over-exposed to user groups or to all users (e.g. a job recommender steering women toward low-paying jobs, or under-exposing jobs from minority-owned businesses to everyone). Multisided fairness had been argued for conceptually (Burke 2017; Ekstrand et al. 2021) but had no formal metric formulation.</p></div>
+</section>
+<section id="solution" class="section-anchor">
+<div class="card"><div class="section-label"><span class="en-only">Solution / Contribution</span><span class="ko-only">해결책 / 기여</span></div><p>Extend the expected-exposure framework with group attributes on both the consumer (user) and producer (item) side, yielding six metrics — II-F, IG-F, GI-F, GG-F, AI-F, AG-F — all mean squared deviations $(\mathsf{E}_{ij}-\mathsf{E}^*_{ij})^2$ aggregated at different granularities (individual / group / all, on each side). GG-F generalizes all others via trivial group definitions. Each metric decomposes into disparity + relevance components measured against random exposure $\mathsf{E}^\sim$. The metrics are differentiable, so a recommender (MF base model) can be trained on $\mathcal{L} = \text{II-F} + \alpha\,\text{GG-F}$ via PL sampling + Gumbel + smooth ranks.</p></div>
+<div class="card"><div class="section-label"><span class="en-only">Key Results</span><span class="ko-only">주요 결과</span></div><ul><li>Six systems can have identical II-F (0.0625 in the toy example) while differing arbitrarily on the other five dimensions — II-F alone masks systemic group-level disparity.</li><li>Metric implications: II-fair ⟹ all six fair; IG-fair or GI-fair ⟹ GG-fair; GI-fair ⟹ AI-fair; GG-fair or AI-fair ⟹ AG-fair; no reverse implications.</li><li>Kendall rank correlation between II-F and the other five metrics is low (0.307–0.504 across MovieLens1M model instances), confirming the metrics rank systems differently.</li><li>Optimizing $\text{II-F} + \alpha\,\text{GG-F}$ at $\alpha=1$: statistically significant GG-F drop (p &lt; 0.01) with non-significant II-F increase; NDCG@50 degrades only 0.3703→0.3692 (ML100K) and 0.2741→0.2736 (ML1M).</li><li>Best disparity-relevance trade-off model differs per metric: WRMF wins GI/GG/AI/AG AUC, SLIM wins II (0.6408).</li></ul></div>
+<details><summary><span class="en-only">5Cs Analysis</span><span class="ko-only">5Cs 분석</span></summary><div class="card" style="margin-top:0.5rem"><p><strong>Category</strong>: new method (metric framework + optimization procedure) <strong>Context</strong>: direct extension of Diaz et al. 2020 (expected exposure); conceptual lineage from Burke 2017 and Ekstrand et al. 2021 (multisided fairness); compares against stochastic-ranking fairness line (Singh &amp; Joachims 2018/2019, Biega et al. 2018, Oosterhuis 2021). <strong>Correctness</strong>: metric-implication proofs sketched only ("left as exercise" due to space); optimization results include student's t-tests (p &lt; 0.01) for the GG-F drop vs. II-F/NDCG degradation. Evaluated on MovieLens only. <code>[SKIM - proofs not verified]</code> <strong>Contributions</strong>: (1) formal six-metric JME-fairness family covering user-group × item-group granularities; (2) disparity/relevance decomposition of each metric and their trade-off analysis; (3) demonstration that stochastic ranking policies can be directly optimized toward chosen JME-fairness goals. <strong>Clarity</strong>: equations fully specified; experimental setup (RBP γ=0.8, β range, 100 sampled rankings, MF hyperparameters) reproducible; code released.</p></div></details>
+<details><summary><span class="en-only">Contribution vs Claim</span><span class="ko-only">기여 대 주장</span></summary><div class="card" style="margin-top:0.5rem"><ul><li><strong>Stated claims</strong>: first formal joint multisided exposure-fairness family; metrics capture distinct systemic biases; stochastic policies can be optimized toward them; framework extends to search "without loss of generality."</li><li><strong>Demonstrated</strong>: metric definitions + toy-example separation + correlation analysis on MovieLens (gender/age × genre groups); optimization demo with MF on MovieLens100K/1M for one combination (II-F + GG-F) only.</li><li><strong>Gap</strong>: implication proofs omitted; only demographic-style group attributes on one dataset family (MovieLens); the claimed extension to search/other IR tasks untested; target exposure assumes true relevance labels, which the authors themselves flag as circular under historically biased data. <code>[SKIM - verify in deep read]</code></li></ul></div></details>
+</section>
+<section id="results" class="section-anchor">
+<details><summary><span class="en-only">Concepts Introduced</span><span class="ko-only">도입된 개념</span></summary><div class="card" style="margin-top:0.5rem"><p><strong>Expected exposure matrix E</strong></p>
+<ul><li><strong>What it computes</strong>: stochastic ranking policy $\pi_u$ per user → expectation over sampled rankings of a browsing-model exposure probability → matrix $\mathsf{E} \in \mathbb{R}^{|\mathcal{U}|\times|\mathcal{D}|}$ with $\mathsf{E}_{ij} = p(\epsilon\,|\,\mathcal{D}_j, \pi_{\mathcal{U}_i})$, the probability item $j$ is seen by user $i$.</li><li><strong>Why it was created</strong>: static rank positions do not quantify how much attention items actually receive under randomized policies; Diaz et al. (2020) introduced it, this paper reuses it. (Introduced in prior work — re-defined here because that prior paper is not yet analyzed in this survey.)</li><li><strong>Concrete example</strong>: under the RBP browsing model $p_{RBP}(\epsilon|d,\sigma) = \gamma^{\rho_{d,\sigma}-1}$ with patience $\gamma=0.8$, the item at rank 1 has exposure 1, rank 2 has 0.8, rank 3 has 0.64.</li><li><strong>How it is used in this paper</strong>: the primitive from which all six fairness metrics are computed as deviations from target exposure $\mathsf{E}^*$.</li></ul>
+<p><strong>JME-fairness metric family (II-F, IG-F, GI-F, GG-F, AI-F, AG-F)</strong></p>
+<ul><li><strong>What it computes</strong>: system exposure matrix $\mathsf{E}$, target exposure $\mathsf{E}^*$, plus group partitions on users and/or items → mean squared deviation aggregated at the chosen granularity → one scalar per metric (lower = fairer). E.g. $\text{II-F} = \frac{1}{|\mathcal{D}||\mathcal{U}|}\sum_{j}\sum_{i}(\mathsf{E}_{ij}-\mathsf{E}^*_{ij})^2$; GG-F first averages the deviation within a user group × item group cell, then squares.</li><li><strong>Why it was created</strong>: Diaz et al.'s II-F cannot distinguish whether exposure deviations are spread uniformly or concentrated systemically on specific user/item groups (e.g. women disproportionately shown low-paying jobs).</li><li><strong>Concrete example</strong>: toy 4-user × 4-job system (Fig. 1) — six exposure matrices all with II-F = 0.0625 but differing on the other five metrics (one matrix has all six = 0.0625, another has only II-F nonzero).</li><li><strong>How it is used in this paper</strong>: defined in §4, analyzed for stochasticity trade-offs in §5, used as differentiable training objectives in §6.</li></ul>
+<p>**Disparity–relevance decomposition (<em>-D / </em>-R)**</p>
+<ul><li><strong>What it computes</strong>: each JME metric → algebraic expansion of the squared deviation using $\mathsf{E}^\delta = \mathsf{E}-\mathsf{E}^\sim$ (deviation of system from random exposure) and $\mathsf{E}^\Delta = \mathsf{E}^*-\mathsf{E}^\sim$ → a disparity component (<em>-D) plus a relevance component (</em>-R) plus a system-independent constant.</li><li><strong>Why it was created</strong>: to expose the inherent trade-off — adding ranking stochasticity lowers disparity but also lowers relevance; measuring against <em>random</em> exposure $\mathsf{E}^\sim$ (rather than a flat distribution) makes the decomposition consistent when groups have unequal sizes.</li><li><strong>Concrete example</strong>: AUC of the disparity–relevance curve on MovieLens1M: WRMF is best on GI/GG/AI/AG (e.g. GG AUC 0.3186) but SLIM is best on II (0.6408).</li><li><strong>How it is used in this paper</strong>: §4.3 and §5 (RQ1/RQ2 analysis of stochasticity and cross-metric correlation).</li></ul>
+<p><strong>Plackett-Luce randomization with Gumbel reparameterization + smooth rank</strong> — sampling rankings via softmax-with-temperature $\beta$ over relevance scores; made differentiable by Gumbel noise plus a smooth (sigmoid-sum) rank approximation. Follows Diaz et al. (2020); used here to optimize $\mathcal{L} = \text{II-F} + \alpha \cdot \text{GG-F}$. <code>[SKIM - established techniques, not new here]</code></p></div></details>
+<details><summary><span class="en-only">Implementation Feasibility</span><span class="ko-only">구현 가능성</span></summary><div class="card" style="margin-top:0.5rem"><ul><li><strong>Needs</strong>: user-item interaction data with relevance labels, group attributes on both sides, a base ranker producing relevance scores; light compute (MF, embedding size 64, MovieLens scale).</li><li><strong>Code</strong>: available at https://github.com/haolun-wu/JMEFairness (code + datasets).</li><li><strong>Modifications</strong>: for a proxy-signal study, replace target exposure $\mathsf{E}^*$ with observed exposure logs; swap RBP for the browsing model matching the surface being studied; group attributes optional if only AI-F/II-F granularities used.</li><li><strong>Unknowns</strong>: missing link — sensitivity of the metrics to browsing-model choice (paper uses only RBP, γ=0.8); missing link — behavior when relevance labels are absent or implicit-only.</li></ul></div></details>
+<details><summary><span class="en-only">Follow-up Papers</span><span class="ko-only">관련 후속 논문</span></summary><div class="card" style="margin-top:0.5rem"><ul><li>Diaz et al., "Evaluating stochastic rankings with expected exposure" (CIKM 2020) — the parent framework this paper extends; defines expected exposure, II-F, and the Gumbel optimization approach.</li><li>Oosterhuis, "Computationally Efficient Optimization of Plackett-Luce Ranking Models for Relevance and Fairness" (SIGIR 2021) — more efficient PL optimization applicable to the same objectives.</li><li>Singh &amp; Joachims, "Fairness of Exposure in Rankings" (KDD 2018) — producer-side exposure fairness baseline the JME family generalizes beyond.</li><li>Ekstrand et al., "Fairness and Discrimination in Information Access Systems" (2021) — survey articulating the multisided-fairness motivation this paper formalizes.</li></ul></div></details>
+</section>
+<section id="delta" class="section-anchor">
+<div class="card"><div class="section-label"><span class="en-only">Condition Delta — transfer to our setting</span><span class="ko-only">조건 차이 — 우리 설정으로의 전이</span></div><p><strong>Paper's setting</strong>: inputs = user-item relevance labels + user/item group attributes (MovieLens 100K/1M: gender, age × genre); outputs = stochastic ranking policies + scalar fairness metrics; conditions = explicit browsing model (RBP), known group memberships, offline evaluation, recommendation task. <strong>Our setting</strong> (SP1/SP9 — exposure frequency as a ranking proxy): we care about how <em>exposure frequency</em> functions as a proxy signal for ranking quality/position, potentially without ground-truth relevance or explicit group labels. <strong>Differences</strong>:</p>
+<ul><li>Paper requires a target exposure $\mathsf{E}^*$ built from true relevance labels; our setting may lack ground-truth relevance: missing link</li><li>Paper's exposure is model-derived (RBP over sampled rankings), giving an analytic exposure-frequency ↔ rank-position mapping ($\gamma^{\rho-1}$) directly usable as a proxy formalism: resolved — the RBP/expected-exposure machinery is the formal bridge from rank position to exposure frequency</li><li>Paper assumes known user/item group attributes; our setting may not have group partitions: reference only <code>[SKIM - verify against SP definitions]</code></li><li>Recommendation (users × items) vs. our possibly search/LLM-ranking setting; authors claim users→queries substitution works: reference only</li></ul></div>
+<div class="card"><div class="section-label"><span class="en-only">Root-cause vs. Symptom</span><span class="ko-only">근본 원인 대 증상</span></div><p><code>Mixed</code> — the metric family directly formalizes the previously unmeasurable root phenomenon (systemic group-level exposure disparity), but the mitigation is a symptom-level patch: injecting model-independent stochasticity and linearly weighting objectives trades disparity against relevance rather than removing the source of the disparity, and the target-exposure-from-biased-labels circularity is acknowledged but left unsolved.</p></div>
+</section>
+<div class="page-nav"><a href="01_FoE.html">&larr; [01] FoE</a><a href="../sp1_fairness-of-exposure-fixed-scores.html">&uarr; SP1</a><a href="03_ItemSideLLM.html">[03] ItemSideLLM &rarr;</a></div>
+    </div>
+  </div>
+<nav class="bd-sidebar-secondary"><div class="mini-toc-label"><span class="en-only">On this page</span><span class="ko-only">이 페이지</span></div><ul class="mini-toc"><li><a href="#header"><span class="en-only">Paper info</span><span class="ko-only">논문 정보</span></a></li><li><a href="#problem"><span class="en-only">Problem</span><span class="ko-only">문제</span></a></li><li><a href="#solution"><span class="en-only">Solution &amp; Results</span><span class="ko-only">해결책 · 결과</span></a></li><li><a href="#results"><span class="en-only">Concepts &amp; Follow-ups</span><span class="ko-only">개념 · 후속</span></a></li><li><a href="#delta"><span class="en-only">Condition Delta</span><span class="ko-only">조건 차이</span></a></li></ul></nav>
+</div>
+</body>
+</html>

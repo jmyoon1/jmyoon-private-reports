@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>[123] Strategic Linear Contextual Bandits — Exposure-Frequency Control Survey</title>
+
+<style>
+:root {
+  --bg: #0d1117; --card: #161b22; --border: #30363d;
+  --text: #e6edf3; --muted: #7d8590; --accent: #58a6ff;
+  --teal: #39d0c7; --green: #3fb950; --yellow: #d29922;
+  --red: #f85149; --purple: #bc8cff; --orange: #e3b341;
+  --sidebar-w: 262px; --toc-w: 210px; --hdr-h: 48px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+body { font-family: -apple-system, sans-serif; background: var(--bg);
+       color: var(--text); line-height: 1.6; }
+.bd-root { display: flex; height: 100vh; overflow: hidden; }
+.bd-sidebar-primary {
+  width: var(--sidebar-w); min-width: var(--sidebar-w);
+  overflow-y: auto; background: var(--card);
+  border-right: 1px solid var(--border);
+  padding: 0.75rem 0; flex-shrink: 0;
+}
+.bd-sidebar-primary::-webkit-scrollbar { width: 4px; }
+.bd-sidebar-primary::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+.bd-main { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-width: 0; }
+.article-header-bar {
+  height: var(--hdr-h); background: var(--card);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; padding: 0 1.5rem;
+  gap: 1rem; flex-shrink: 0;
+}
+.header-brand { color: var(--teal); font-weight: bold; font-size: 0.95em;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 1; }
+.header-brand a { color: inherit; text-decoration: none; }
+.breadcrumb { color: var(--muted); font-size: 0.82em; display: flex;
+  align-items: center; gap: 0.3rem; flex-shrink: 0; }
+.breadcrumb a { color: var(--accent); text-decoration: none; }
+.breadcrumb span { color: var(--border); }
+.bd-article { flex: 1; overflow-y: auto; padding: 2rem 2.5rem; }
+.bd-article::-webkit-scrollbar { width: 6px; }
+.bd-article::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+.bd-sidebar-secondary {
+  width: var(--toc-w); min-width: var(--toc-w);
+  overflow-y: auto; border-left: 1px solid var(--border);
+  padding: 1rem 0.75rem; flex-shrink: 0;
+}
+.bd-sidebar-secondary::-webkit-scrollbar { width: 4px; }
+.bd-sidebar-secondary::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+.sidebar-logo { padding: 0.5rem 1rem 0.75rem;
+  border-bottom: 1px solid var(--border); margin-bottom: 0.5rem; }
+.sidebar-logo a { color: var(--teal); font-weight: bold; font-size: 0.95em;
+  text-decoration: none; display: block; }
+.sidebar-section { color: var(--muted); font-size: 0.72em; font-weight: bold;
+  text-transform: uppercase; letter-spacing: 0.07em;
+  padding: 0.7rem 1rem 0.25rem; }
+.sidebar-nav-link { display: block; padding: 0.28rem 1rem 0.28rem 1.25rem;
+  color: var(--muted); font-size: 0.875em; text-decoration: none; }
+.sidebar-nav-link:hover { color: var(--text); background: rgba(255,255,255,0.03); }
+.sidebar-nav-link.active { color: var(--teal);
+  border-left: 2px solid var(--teal);
+  padding-left: calc(1.25rem - 2px); background: rgba(57,208,199,0.05); }
+.mini-toc-label { color: var(--muted); font-size: 0.72em; font-weight: bold;
+  text-transform: uppercase; letter-spacing: 0.07em; padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border); margin-bottom: 0.5rem; }
+.mini-toc { list-style: none; }
+.mini-toc li a { display: block; padding: 0.22rem 0;
+  color: var(--muted); font-size: 0.83em; text-decoration: none;
+  border-left: 2px solid transparent; padding-left: 0.5rem; }
+.mini-toc li a:hover { color: var(--text); }
+.mini-toc li a.toc-active { color: var(--teal); border-left-color: var(--teal); }
+.section-anchor { scroll-margin-top: calc(var(--hdr-h) + 8px); }
+h1 { color: var(--teal); font-size: 1.7em; margin-bottom: 0.5rem; line-height:1.3; }
+h2 { color: var(--teal); font-size: 1.25em; margin: 1.5rem 0 0.6rem; }
+h3 { color: var(--teal); font-size: 1.05em; margin: 1.2rem 0 0.4rem; }
+h4 { color: var(--teal); font-size: 0.95em; margin: 1rem 0 0.3rem; }
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+p { margin-bottom: 0.8rem; }
+ul, ol { margin: 0 0 0.8rem 1.4rem; }
+li { margin-bottom: 0.3rem; }
+code { background: rgba(255,255,255,0.06); border-radius: 3px; padding: 1px 4px; font-size: 0.9em; }
+blockquote { border-left: 3px solid var(--border); color: var(--muted);
+  padding: 0.2rem 0.8rem; margin-bottom: 0.8rem; }
+.card { background: var(--card); border: 1px solid var(--border);
+        border-radius: 8px; padding: 1.2rem; margin-bottom: 1rem; }
+table { width: 100%; border-collapse: collapse; font-size: 0.9em; margin-bottom: 0.8rem; }
+th { background: var(--card); color: var(--teal); padding: 8px;
+     border: 1px solid var(--border); text-align: left; }
+td { padding: 8px; border: 1px solid var(--border); vertical-align: top; }
+tr:nth-child(even) td { background: rgba(0,0,0,0.2); }
+.stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+             gap: 1rem; margin-bottom: 1.5rem; }
+.stat-box { background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+            padding: 1rem; text-align: center; }
+.stat-num { font-size: 2rem; font-weight: bold; color: var(--teal); }
+.stat-label { color: var(--muted); font-size: 0.85em; margin-top: 0.2rem; }
+.sp-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+           gap: 1rem; margin: 1rem 0; }
+.sp-card { background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+           padding: 1.2rem; cursor: pointer; transition: border-color 0.15s; height:100%; }
+.sp-card:hover { border-color: var(--teal); }
+.sp-card h3 { margin: 0 0 0.5rem; color: var(--teal); font-size: 1em; }
+.sp-card p { margin: 0; color: var(--muted); font-size: 0.88em; }
+.sp-badge { display: inline-block; background: rgba(57,208,199,0.1); color: var(--teal);
+            border-radius: 4px; padding: 2px 8px; font-size: 0.8em; margin-bottom: 0.5rem; }
+.paper-meta { color: var(--muted); font-size: 0.9em; margin-bottom: 1.5rem; }
+.paper-meta a { color: var(--accent); }
+.section-label { color: var(--teal); font-weight: bold; font-size: 0.85em;
+                 text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.4rem; }
+.pill { display: inline-block; border-radius: 4px; padding: 0.15rem 0.6rem;
+        font-size: 0.8em; font-weight: bold; margin-right: 0.4rem; }
+.pill-p0 { background: rgba(63,185,80,0.2); color: var(--green); }
+.pill-p1 { background: rgba(57,208,199,0.15); color: var(--teal); }
+.pill-p2 { background: rgba(210,153,34,0.2); color: var(--yellow); }
+.pill-p3 { background: rgba(188,140,255,0.2); color: var(--purple); }
+.pill-p4 { background: rgba(125,133,144,0.2); color: var(--muted); }
+.delta-row { margin: 0.4rem 0; padding: 0.4rem 0.8rem;
+             border-left: 3px solid var(--border); border-radius: 0 4px 4px 0; }
+.chain { position: relative; padding-left: 2rem; }
+.chain::before { content: ''; position: absolute; left: 0.95rem; top: 0;
+                 bottom: 0; width: 2px; background: var(--border); }
+.chain-node { position: relative; margin-bottom: 2rem; }
+.chain-node::before { content: ''; position: absolute; left: -1.55rem;
+                      top: 1.1rem; width: 12px; height: 12px;
+                      border-radius: 50%; background: var(--teal); }
+.chain-num { display: inline-block; width: 28px; height: 28px; background: var(--teal);
+             color: #000; border-radius: 50%; text-align: center; line-height: 28px;
+             font-weight: bold; font-size: 0.85em; margin-right: 0.6rem; flex-shrink: 0; }
+.chain-q { font-weight: bold; color: var(--text); margin: 0.4rem 0 0.3rem; font-size: 1em; }
+.chain-papers { color: var(--muted); font-size: 0.85em; margin-bottom: 0.6rem; }
+.chain-start { background: var(--card); border: 1px solid var(--teal);
+               border-radius: 8px; padding: 1rem; margin-bottom: 2rem; }
+.chain-start h3 { margin: 0 0 0.5rem; color: var(--teal); }
+.chain-converge { background: var(--card); border: 1px solid var(--green);
+                  border-radius: 8px; padding: 1rem; margin-top: 1rem; }
+.chain-converge h3 { margin: 0 0 0.5rem; color: var(--green); }
+.chain-label { display: inline-block; border-radius: 4px; padding: 0.15rem 0.6rem;
+               font-size: 0.8em; font-weight: bold; margin-right: 0.4rem; }
+.chain-status { border-radius: 0 4px 4px 0; padding: 0.5rem 0.8rem;
+                margin: 0.35rem 0; font-size: 0.88em; }
+.chain-status ul { margin: 0.3rem 0 0 1.2rem; padding: 0; }
+.chain-status li { margin-bottom: 0.25rem; }
+.chain-status.solved  { background: rgba(63,185,80,0.07);  border-left: 3px solid var(--green); }
+.chain-status.remains { background: rgba(210,153,34,0.07); border-left: 3px solid var(--yellow); }
+.chain-status.added   { background: rgba(248,81,73,0.07);  border-left: 3px solid var(--red); }
+.chain-status.pivoted { background: rgba(188,140,255,0.1); border-left: 3px solid var(--purple); }
+.chain-label.solved   { background: rgba(63,185,80,0.2);  color: var(--green); }
+.chain-label.remains  { background: rgba(210,153,34,0.2); color: var(--yellow); }
+.chain-label.added    { background: rgba(248,81,73,0.2);  color: var(--red); }
+.chain-label.pivoted  { background: rgba(188,140,255,0.2); color: var(--purple); }
+.chain-status.expected { background: rgba(88,166,255,0.07);  border-left: 3px solid var(--accent); }
+.chain-label.expected  { background: rgba(88,166,255,0.2);   color: var(--accent); }
+.chain-status.revised  { background: rgba(57,208,199,0.07);  border-left: 3px solid var(--teal); }
+.chain-label.revised   { background: rgba(57,208,199,0.2);   color: var(--teal); }
+.concept-box { border-left: 4px solid var(--teal); background: #0d1f1f;
+               border-radius: 4px; padding: 1.2rem; margin-bottom: 1.2rem; }
+.concept-name { font-weight: bold; color: var(--teal); font-size: 1.05em; margin-bottom: 0.5rem; }
+.hypothesis { border-left: 4px solid var(--teal); background: #0d1f1f;
+              border-radius: 4px; padding: 1rem; margin: 1rem 0; }
+.recommendation { border-left: 4px solid var(--purple); background: #1a0f2e;
+                  border-radius: 4px; padding: 1rem; margin: 1rem 0; }
+.rq-row { background: rgba(88,166,255,0.05); border-left: 3px solid var(--accent);
+          padding: 0.4rem 0.8rem; margin-bottom: 0.5rem; border-radius: 0 4px 4px 0; }
+.scroll-table-wrap { max-height: 420px; overflow-y: auto; border: 1px solid var(--border);
+                     border-radius: 4px; }
+.scroll-table-wrap table { margin-bottom: 0; }
+.scroll-table-wrap thead th { position: sticky; top: 0; background: #161b22; z-index: 1; }
+.page-nav { display: flex; justify-content: space-between; margin-top: 2rem;
+            padding-top: 1rem; border-top: 1px solid var(--border); gap: 1rem; }
+.page-nav a { color: var(--accent); font-size: 0.9em; }
+html.ko-active .en-only { display: none !important; }
+html.ko-active .ko-only { display: block !important; }
+.ko-only { display: none; }
+span.ko-only, .sidebar-logo a span.ko-only { display: none; }
+html.ko-active span.ko-only { display: inline !important; }
+.lang-btn { background: transparent; color: var(--muted); border: 1px solid var(--border);
+            border-radius: 4px; padding: 3px 9px; font-size: 0.8em; cursor: pointer; }
+.lang-btn.active { border-color: var(--teal); color: var(--teal); }
+details { margin-bottom: 0.8rem; }
+details summary { color: var(--muted); cursor: pointer; }
+@media (max-width: 1024px) { .bd-sidebar-secondary { display: none; } }
+@media (max-width: 768px) {
+  .bd-sidebar-primary { display: none; }
+  .bd-root { flex-direction: column; height: auto; overflow: visible; }
+  .bd-main { overflow: visible; }
+  .bd-article { overflow: visible; padding: 1rem; }
+  .stat-grid { grid-template-columns: repeat(2, 1fr); }
+  .sp-grid { grid-template-columns: 1fr; }
+}
+</style>
+
+<script>
+MathJax = { tex: { inlineMath: [['$','$']], displayMath: [['$$','$$']] },
+            options: { skipHtmlTags: ['script','noscript','style','textarea','pre','code'] } };
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<script>
+function toggleLanguage() {
+  const html = document.documentElement;
+  const isKo = html.classList.toggle('ko-active');
+  document.querySelectorAll('.lang-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.lang === (isKo ? 'ko' : 'en'));
+  });
+  localStorage.setItem('survey-lang', isKo ? 'ko' : 'en');
+}
+document.addEventListener('DOMContentLoaded', function() {
+  const saved = localStorage.getItem('survey-lang');
+  if (saved === 'ko') {
+    document.documentElement.classList.add('ko-active');
+    document.querySelectorAll('.lang-btn').forEach(b =>
+      b.classList.toggle('active', b.dataset.lang === 'ko'));
+  } else {
+    document.querySelectorAll('[data-lang="en"]').forEach(b => b.classList.add('active'));
+  }
+  const article = document.querySelector('.bd-article');
+  const sections = Array.from(document.querySelectorAll('.section-anchor[id]'));
+  const sideLinks = Array.from(document.querySelectorAll('.bd-sidebar-primary .sidebar-nav-link'));
+  const tocLinks = Array.from(document.querySelectorAll('.bd-sidebar-secondary .mini-toc a'));
+  if (!article || !sections.length) return;
+  function current() {
+    let id = sections[0].id;
+    const scrollTop = article.scrollTop + 60;
+    sections.forEach(function(s) { if (s.offsetTop <= scrollTop) id = s.id; });
+    return id;
+  }
+  function update() {
+    const id = current();
+    sideLinks.forEach(function(a) {
+      a.classList.toggle('active', a.getAttribute('href') === '#' + id);
+    });
+    tocLinks.forEach(function(a) {
+      a.classList.toggle('toc-active', a.getAttribute('href') === '#' + id);
+    });
+  }
+  article.addEventListener('scroll', update, { passive: true });
+  update();
+});
+</script>
+
+</head>
+<body>
+<div class="bd-root">
+
+<nav class="bd-sidebar-primary">
+  <div class="sidebar-logo">
+    <a href="../index.html">&#x2B21; <span class="en-only">Exposure-Frequency Control Survey</span><span class="ko-only">Exposure-빈도 제어 문헌 조사</span></a>
+  </div>
+  <div class="sidebar-section"><span class="en-only">Overview</span><span class="ko-only">개요</span></div>
+  <a href="../index.html#overview" class="sidebar-nav-link"><span class="en-only">Survey Hub</span><span class="ko-only">조사 허브</span></a>
+  <a href="../index.html#answers" class="sidebar-nav-link"><span class="en-only">Key Answers</span><span class="ko-only">핵심 답변</span></a>
+  <div class="sidebar-section"><span class="en-only">Sub-Problems</span><span class="ko-only">세부 문제</span></div>
+<a href="../sp1_fairness-of-exposure-fixed-scores.html" class="sidebar-nav-link">SP1: <span class="en-only">Exposure fairness</span><span class="ko-only">Exposure 공정성</span></a>
+<a href="../sp2_2024-2026-frontier-llm-era.html" class="sidebar-nav-link">SP2: <span class="en-only">2024–26 frontier / LLM</span><span class="ko-only">2024–26 최전선 / LLM</span></a>
+<a href="../sp3_postproc-rerank-blackbox.html" class="sidebar-nav-link">SP3: <span class="en-only">Post-proc re-ranking</span><span class="ko-only">Post-proc re-ranking</span></a>
+<a href="../sp4_stochastic-ranking-policies.html" class="sidebar-nav-link">SP4: <span class="en-only">Stochastic policies</span><span class="ko-only">확률적 정책</span></a>
+<a href="../sp5_amortized-equity-attention.html" class="sidebar-nav-link">SP5: <span class="en-only">Amortized fairness</span><span class="ko-only">Amortized 공정성</span></a>
+<a href="../sp6_bandit-exposure-allocation.html" class="sidebar-nav-link">SP6: <span class="en-only">Bandit allocation</span><span class="ko-only">Bandit 배분</span></a>
+<a href="../sp7_capping-pacing-feeds-ads.html" class="sidebar-nav-link">SP7: <span class="en-only">Capping &amp; pacing</span><span class="ko-only">Capping·pacing</span></a>
+<a href="../sp8_popularity-debias-calibration.html" class="sidebar-nav-link">SP8: <span class="en-only">Debiasing &amp; calibration</span><span class="ko-only">Debiasing·calibration</span></a>
+<a href="../sp9_ecosystems-creator-incentives.html" class="sidebar-nav-link">SP9: <span class="en-only">Ecosystems &amp; creators</span><span class="ko-only">생태계·creator</span></a>
+<a href="../sp10_llm-exposure-feedback-loops.html" class="sidebar-nav-link">SP10: <span class="en-only">LLM feedback loops</span><span class="ko-only">LLM feedback loop</span></a>
+<a href="../sp11_strategyproof-exposure.html" class="sidebar-nav-link active">SP11: <span class="en-only">Strategy-proofness</span><span class="ko-only">Strategy-proofness</span></a>
+
+  <div class="sidebar-section"><span class="en-only">Synthesis</span><span class="ko-only">종합</span></div>
+  <a href="../conclusion.html" class="sidebar-nav-link"><span class="en-only">Conclusion</span><span class="ko-only">결론</span></a>
+  <a href="../thinking-process.html" class="sidebar-nav-link"><span class="en-only">Thinking Process</span><span class="ko-only">추론 과정</span></a>
+</nav>
+  <div class="bd-main">
+<div class="article-header-bar"><div class="header-brand"><a href="../index.html"><span class="en-only">Exposure-Frequency Control Survey</span><span class="ko-only">Exposure-빈도 제어 문헌 조사</span></a></div><nav class="breadcrumb"><a href="../index.html"><span class="en-only">Survey</span><span class="ko-only">조사</span></a><span>&rsaquo;</span><a href="../sp11_strategyproof-exposure.html">SP11</a><span>&rsaquo;</span><span>[123] Strategic Linear Contextual Bandits</span></nav><button class="lang-btn" data-lang="en" onclick="toggleLanguage()">EN</button><button class="lang-btn" data-lang="ko" onclick="toggleLanguage()">KO</button></div>
+    <div class="bd-article">
+<section id="header" class="section-anchor"><div class="paper-meta">
+<h1 style="margin-bottom:0.3rem">Strategic Linear Contextual Bandits</h1>
+<p style="margin:0.3rem 0;color:var(--muted)">Kleine Buening et al. · NeurIPS 2024 · 2024 · 3 citations</p>
+<p style="margin:0.3rem 0"><a href="https://arxiv.org/abs/2406.00551" target="_blank">arXiv:2406.00551</a> · <a href="https://arxiv.org/pdf/2406.00551.pdf" target="_blank">PDF</a> · SP: <a href="../sp11_strategyproof-exposure.html">SP11</a></p>
+<p><span class="pill pill-p0">P0</span><span class="pill" style="background:rgba(255,255,255,0.05);color:var(--muted)">Track B</span></p>
+</div>
+<div class="card ko-only" style="border-color:var(--teal)"><div class="section-label">한 줄 요약</div><p style="margin:0">arm의 효용을 선택 횟수(즉 exposure 빈도)로 정의한 전략적 linear contextual bandit(NeurIPS 2024). 약속 대비 전달 격차에 대한 grim-trigger 감사(OptGTM)라는 조사 내 유일한 구성적 인센티브 인지 exposure 메커니즘을 주지만, 재등록(re-upload)에 의해 무력화된다.</p></div>
+</section>
+<section id="problem" class="section-anchor">
+<div class="card"><div class="section-label"><span class="en-only">Problem</span><span class="ko-only">해결하려는 문제</span></div><p>Recommendation/ranking algorithms are gamed by items (sellers, websites) that misrepresent their attributes to maximize how often they get recommended. Existing bandit responses either (a) assume adversarial corruptions with a bounded, often known, budget — vacuous when agents can manipulate without limit — or (b) model content-creator incentives descriptively under fixed algorithms without designing the algorithm to shape those incentives. There was no learning algorithm for linear contextual bandits that simultaneously minimizes regret and makes truthful context reporting (approximately) incentive-compatible without payments.</p></div>
+</section>
+<section id="solution" class="section-anchor">
+<div class="card"><div class="section-label"><span class="en-only">Solution / Contribution</span><span class="ko-only">해결책 / 기여</span></div><p>Cast the algorithm design as mechanism design under uncertainty. Two mechanisms:</p>
+<ol><li><strong>GGTM</strong> ($\theta^*$ known): greedy selection on reported reward among active arms; eliminate arm $i$ forever if cumulative reported reward exceeds $\mathrm{UCB}_t(\hat r_{t,i}) = \hat r_{t,i} + 2\sqrt{n_t(i)\log T}$.</li><li><strong>OptGTM</strong> ($\theta^*$ unknown): per-arm least-squares estimators $\hat\theta_{t,i}$ with confidence sets $C_{t,i}$ (possibly excluding $\theta^*$); select $i_t = \arg\max_{i\in A_t} \mathrm{UCB}_{t,i}(x_{t,i})$; eliminate if $\sum_{\ell\le t: i_\ell=i}\mathrm{LCB}_{\ell,i}(x_{\ell,i}) &gt; \mathrm{UCB}_t(\hat r_{t,i})$.</li></ol>
+<p>Both require Assumption 1/2 (arms never under-report their value — shown necessary via an indistinguishability example in Appendix C). A negative result (Prop. 3.3) shows any incentive-unaware algorithm (greedy with known $\theta^*$, LinUCB, RobustBandit) suffers $\Omega(T)$ regret in every NE, since the only NE is maximal misreporting every round.</p>
+<p><strong>Why it works</strong>: the grim trigger bounds each arm's cumulative "over-promise" at $O(\sqrt{n_{\tau_i}(i)\log T})$ before elimination (Lemma D.1/E.3), which (a) caps how many selections a liar can poach from truthful arms — making truthfulness an approximate NE — and (b) caps the regret contribution of undetected manipulation. The cost is the mechanism's own destructiveness: eliminating a sometimes-optimal arm costs $K^2\sqrt{KT}$ in the worst case.</p></div>
+<div class="card"><div class="section-label"><span class="en-only">Key Results</span><span class="ko-only">주요 결과</span></div><ul><li>Incentive-unaware algorithms (greedy with known $\theta^*$, LinUCB, RobustBandit) suffer $\Omega(T)$ strategic regret in every NE on any non-trivial instance (Prop. 3.3).</li><li>GGTM (known $\theta^*$): truthfulness is an $\tilde O(\sqrt T)$-NE; regret $\le 1/T$ under truthful play; $\tilde O(K^2\sqrt{KT})$ under every NE (Thms 4.1–4.2).</li><li>OptGTM (unknown $\theta^*$): truthfulness is an $\tilde O(d\sqrt{KT})$-NE with regret $\tilde O(d\sqrt{KT})$ — optimal up to $\sqrt K$ vs. the non-strategic $\Theta(d\sqrt T)$; $\tilde O(dK^2\sqrt{KT})$ under every NE (Thms 5.1–5.2).</li><li>Simulations (gradient-ascent arms, 20 epochs × 10k rounds): LinUCB degrades toward uniform-sampling performance as arms adapt; OptGTM's regret stays flat across epochs. OptGTM does NOT prevent feature-space manipulation ($\sum\|x-x^*\|$ keeps growing) but bounds its effect on decisions and on arm utility.</li><li>Trade-off shown as apparently unavoidable: exact incentive-compatibility with no-regret is conjectured impossible under noise (an IC constant-regret algorithm exists only in the fully deterministic case, Appendix A).</li></ul></div>
+<details><summary><span class="en-only">5Cs Analysis</span><span class="ko-only">5Cs 분석</span></summary><div class="card" style="margin-top:0.5rem"><p><strong>Category</strong>: new method (mechanism design + online learning) with an accompanying impossibility result. <strong>Context</strong>: builds on linear contextual bandits (Abbasi-Yadkori et al. 2011; LinUCB), corruption-robust bandits (Ding et al. 2022 RobustBandit; He et al. 2022), strategic MAB (Braverman et al. 2019), and the clickbait mechanism-design paper by the same authors (Buening et al., ICLR 2024). Complementary to descriptive content-creator-incentive work (Hron et al., Jagadeesan et al., Yao et al.) that SP11 likely also covers. <strong>Correctness</strong>: theorem-driven with full proofs in appendices; assumptions (no under-reporting, constant optimality gap, bounded contexts) are stated explicitly and the necessity of no-under-reporting is justified with an indistinguishability construction. Experiments are small-scale (K=5, d=5, 10 runs) with visible confidence bands. <code>[SKIM - proofs not line-checked]</code> <strong>Contributions</strong>: (1) formalizes the strategic linear contextual bandit where arm utility = exposure count; (2) OptGTM: $\tilde O(d\sqrt{KT})$ regret under truthful approximate-NE, $\tilde O(dK^2\sqrt{KT})$ under every NE, without learning $\theta^*$; (3) proof that incentive-unaware algorithms suffer linear regret against strategic arms. <strong>Clarity</strong>: mechanisms are fully specified in pseudocode (Mechanisms 1–2) with explicit confidence widths; reproducible from the paper alone.</p></div></details>
+<details><summary><span class="en-only">Contribution vs Claim</span><span class="ko-only">기여 대 주장</span></summary><div class="card" style="margin-top:0.5rem"><ul><li><strong>Stated claims</strong>: OptGTM incentivizes approximate truthfulness while minimizing regret; incentive-unawareness ⇒ linear regret; mechanism-design-vs-regret trade-off unavoidable.</li><li><strong>Demonstrated</strong>: the first two are proven (Thms 5.1/5.2, Prop 3.3) under Assumptions 1–2 and constant optimality gap. Simulations support the qualitative story but use gradient-ascent arms, not NE play.</li><li><strong>Gap</strong>: the "trade-off is unavoidable" claim and the tightness of the $K^2$ factor are conjectures, not theorems (authors say so). The no-under-reporting assumption is load-bearing and only motivated by an example. NE existence requires a smoothing modification (Remark D.8). <code>[SKIM - appendix details not fully verified]</code></li></ul></div></details>
+</section>
+<section id="results" class="section-anchor">
+<details><summary><span class="en-only">Concepts Introduced</span><span class="ko-only">도입된 개념</span></summary><div class="card" style="margin-top:0.5rem"><p><strong>Strategic linear contextual bandit</strong></p>
+<ul><li><strong>What it computes</strong>: A linear contextual bandit where each arm $i$ privately observes its true context $x^*_{t,i}$, reports a possibly gamed context $x_{t,i}$ to the learner; the learner selects an arm from the reported contexts and receives reward with mean $\langle\theta^*, x^*_{t,i_t}\rangle$ (true context, not reported).</li><li><strong>Why it was created</strong>: Prior corruption-robust bandit work assumes a bounded adversarial corruption budget; here arms are self-interested agents with unbounded manipulation ability whose objective is maximizing their own selection count, so budget-based guarantees become vacuous.</li><li><strong>Concrete example</strong>: A seller alters product metadata (reported context) to look more relevant; the actual purchase reward is still governed by the true product features.</li><li><strong>How it is used in this paper</strong>: The problem definition (Interaction Protocol 1); all mechanisms and regret bounds are stated in this model.</li></ul>
+<p><strong>Arm utility = selection frequency</strong></p>
+<ul><li><strong>What it computes</strong>: $u_i(M,\sigma) = \mathbb{E}_M[n_T(i) \mid \sigma]$ — the expected number of times arm $i$ is pulled over $T$ rounds under mechanism $M$ and strategy profile $\sigma$.</li><li><strong>Why it was created</strong>: Formalizes the exposure-maximizing incentive of platform agents (sellers, websites): they care about how often they are shown, not about the platform's reward.</li><li><strong>Concrete example</strong>: In the simulations, each of $K{=}5$ arms runs gradient ascent on its reported feature vector to increase its own pull count across 20 epochs of $T{=}10$k rounds.</li><li><strong>How it is used in this paper</strong>: Defines the Nash equilibrium the arms play; strategic regret is evaluated over all NE this utility induces.</li></ul>
+<p><strong>Strategic regret</strong></p>
+<ul><li><strong>What it computes</strong>: $R_T(M,\sigma) = \mathbb{E}[\sum_t \langle\theta^*, x^*_{t,i^*_t}\rangle - \langle\theta^*, x^*_{t,i_t}\rangle]$ for $\sigma \in \mathrm{NE}(M)$, with guarantees holding uniformly over all NE the mechanism induces ($\max_{\sigma\in\mathrm{NE}(M)} R_T$).</li><li><strong>Why it was created</strong>: Standard regret assumes truthful contexts; performance must instead be measured against the equilibrium behavior the algorithm itself incentivizes.</li><li><strong>Concrete example</strong>: LinUCB has $\tilde O(d\sqrt T)$ regret with truthful arms but $\Omega(T)$ strategic regret, because its only NE is all arms reporting the maximal-UCB context every round.</li><li><strong>How it is used in this paper</strong>: The main performance criterion for GGTM and OptGTM (Theorems 4.2, 5.2).</li></ul>
+<p><strong>Grim Trigger Mechanism (GGTM / OptGTM)</strong></p>
+<ul><li><strong>What it computes</strong>: Per arm, compare the cumulative <em>promised</em> reward (sum of reported values, or pessimistic LCB estimates of them) against the optimistic UCB of the cumulative <em>observed</em> reward; if promised exceeds observed beyond a Hoeffding confidence width $2\sqrt{n_t(i)\log T}$, eliminate the arm for all remaining rounds.</li><li><strong>Why it was created</strong>: The learner never observes true contexts, so per-round lie detection is impossible; but cumulative over-promising relative to delivered reward is statistically detectable, and the permanent-elimination threat makes over-reporting unprofitable in a repeated interaction.</li><li><strong>Concrete example</strong>: GGTM elimination rule: $\sum_{\ell\le t: i_\ell=i}\langle\theta^*, x_{\ell,i}\rangle &gt; \hat r_{t,i} + 2\sqrt{n_t(i)\log T}$.</li><li><strong>How it is used in this paper</strong>: GGTM (known $\theta^*$) and OptGTM (unknown $\theta^*$) are the paper's two proposed mechanisms.</li></ul>
+<p><strong>Per-arm independent confidence sets (learning without learning $\theta^*$)</strong></p>
+<ul><li><strong>What it computes</strong>: For each arm separately, a least-squares estimator $\hat\theta_{t,i}$ and ellipsoid $C_{t,i}$ built only from that arm's reported contexts and observed rewards. The sets may NOT contain $\theta^*$ (reports can bias them arbitrarily), yet the pessimistic/optimistic reward estimates they yield still bound the effect of manipulation on decisions.</li><li><strong>Why it was created</strong>: Accurate estimation of $\theta^*$ under strategic context reports is arguably intractable (an arm can manipulate orthogonally to $\theta^*$ undetectably); the key insight is that regret minimization does not require learning $\theta^*$. Per-arm separation also prevents one arm (or a colluding majority) from steering another arm's elimination.</li><li><strong>Concrete example</strong>: Grim trigger fires when $\sum_{\ell\le t:i_\ell=i}\mathrm{LCB}_{\ell,i}(x_{\ell,i}) &gt; \mathrm{UCB}_t(\hat r_{t,i})$, using the sequence of past ("outdated") estimators — using only the latest $\hat\theta_{t,i}$ would make the condition vacuous since least squares minimizes exactly that gap.</li><li><strong>How it is used in this paper</strong>: The core of OptGTM (Mechanism 2) and the source of the extra $\sqrt K$ factor vs. non-strategic optimal regret.</li></ul></div></details>
+<details><summary><span class="en-only">Implementation Feasibility</span><span class="ko-only">구현 가능성</span></summary><div class="card" style="margin-top:0.5rem"><ul><li><strong>Needs</strong>: standard linear-bandit tooling (ridge regression per arm, elliptical confidence sets); a simulator of strategic arm behavior (paper uses decentralized gradient ascent on reported features); trivial compute (K=5, d=5, 200k rounds in the paper).</li><li><strong>Code</strong>: not available (no repository link found in the paper). <code>[SKIM - check arXiv page/author pages]</code></li><li><strong>Modifications</strong>: for SP11-style use one would need (a) extension from single-pull to top-k exposure slates, (b) handling arm entry/exit to preserve the grim trigger's threat, (c) replacing linear reward models or exploiting the §E.4 per-arm linear-realizability relaxation.</li><li><strong>Unknowns</strong>: missing link: optimal $K$-dependence (authors conjecture $\sqrt K$, prove $K^2\sqrt K$); missing link: whether any no-regret mechanism exists without the no-under-reporting assumption; missing link: robustness to Sybil/replica arms.</li></ul></div></details>
+<details><summary><span class="en-only">Follow-up Papers</span><span class="ko-only">관련 후속 논문</span></summary><div class="card" style="margin-top:0.5rem"><ul><li>Buening, Saha, Dimitrakakis &amp; Xu, "Bandits Meet Mechanism Design to Combat Clickbait in Online Recommendation" (ICLR 2024) — same authors, arms strategically choose click-rates to maximize clicks; the direct predecessor mechanism-design-for-exposure paper.</li><li>Braverman, Mao, Schneider &amp; Weinberg, "Multi-armed Bandit Problems with Strategic Arms" (COLT 2019) — origin of strategic-arms bandits (arms withhold reward); baseline model SP11 contrasts with.</li><li>Esmaeili, Hajiaghayi &amp; Shin, "Replication-Proof Bandit Mechanism Design" (2023) — addresses the Sybil/replica gap that OptGTM's fixed-arm-set assumption leaves open.</li><li>Yao et al., "How Bad is Top-k Recommendation under Competing Content Creators?" (ICML 2023) — the descriptive counterpart: exposure competition under existing top-k algorithms, relevant to the slate-ranking condition delta.</li><li>Feng, Parkes &amp; Xu, "The Intrinsic Robustness of Stochastic Bandits to Strategic Manipulation" (ICML 2020) — budget-bounded strategic manipulation baseline this paper argues is insufficient.</li></ul></div></details>
+</section>
+<section id="delta" class="section-anchor">
+<div class="card"><div class="section-label"><span class="en-only">Condition Delta — transfer to our setting</span><span class="ko-only">조건 차이 — 우리 설정으로의 전이</span></div><p><strong>Paper's setting</strong>: inputs = per-round reported context vectors from $K$ strategic arms, noisy scalar reward from the pulled arm's true context; outputs = one arm selection per round + permanent eliminations; conditions = linear reward realizability, arms maximize pull count, arms never under-report, constant optimality gap, repeated interaction with the same fixed arm set. <strong>Our setting (SP11 — exposure frequency as the incentive target that proxies ranking)</strong>: items/creators game a ranking or recommender system to inflate exposure frequency; typically many items, slate/top-k output rather than single pulls, non-linear relevance models, item churn, and observational rather than mechanism-controlled interaction. <strong>Differences</strong>:</p>
+<ul><li>Arm utility exactly = exposure count: resolved — this is precisely SP11's incentive model, formalized cleanly here.</li><li>Single-pull bandit vs. top-k slate ranking: missing link — grim trigger per arm does not directly transfer to slate exposure allocation.</li><li>Linear realizability of rewards: missing link — modern rankers are non-linear; the confidence-set machinery is linear-specific (though §E.4 shows the analysis simplifies whenever reports are linearly realizable by <em>some</em> per-arm parameter).</li><li>Fixed arm set over $T$ rounds: missing link — the grim trigger's threat power comes from repeated interaction; item churn/re-entry (Sybil re-registration) would defeat permanent elimination. Related replication-proof work ([11],[35] in the paper) is reference only.</li><li>No-under-reporting assumption: reference only — plausible for exposure-seeking sellers but unverified in real platforms.</li><li>Learner commits publicly to the mechanism: reference only — real platforms rarely publish their ranking mechanism.</li></ul></div>
+<div class="card"><div class="section-label"><span class="en-only">Root-cause vs. Symptom</span><span class="ko-only">근본 원인 대 증상</span></div><p><strong>Direct.</strong> The paper attacks the root cause — the incentive structure that makes misreporting profitable — by designing the learning algorithm as a mechanism that makes truthfulness an approximate best response, and it proves the converse (ignoring incentives ⇒ linear regret) rather than patching manipulation symptoms with corruption-robustness bounds. Residual caveat: it does not eliminate feature-space manipulation itself (Figure 2), only its payoff.</p></div>
+</section>
+<div class="page-nav"><a href="122_PropRankingConvergence.html">&larr; [122] PropRankingConvergence</a><a href="../sp11_strategyproof-exposure.html">&uarr; SP11</a><a href="124_PUDA.html">[124] PUDA &rarr;</a></div>
+    </div>
+  </div>
+<nav class="bd-sidebar-secondary"><div class="mini-toc-label"><span class="en-only">On this page</span><span class="ko-only">이 페이지</span></div><ul class="mini-toc"><li><a href="#header"><span class="en-only">Paper info</span><span class="ko-only">논문 정보</span></a></li><li><a href="#problem"><span class="en-only">Problem</span><span class="ko-only">문제</span></a></li><li><a href="#solution"><span class="en-only">Solution &amp; Results</span><span class="ko-only">해결책 · 결과</span></a></li><li><a href="#results"><span class="en-only">Concepts &amp; Follow-ups</span><span class="ko-only">개념 · 후속</span></a></li><li><a href="#delta"><span class="en-only">Condition Delta</span><span class="ko-only">조건 차이</span></a></li></ul></nav>
+</div>
+</body>
+</html>

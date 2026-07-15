@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>[94] Empowering Long-tail Item Recommendation through Cross Decou — Exposure-Frequency Control Survey</title>
+
+<style>
+:root {
+  --bg: #0d1117; --card: #161b22; --border: #30363d;
+  --text: #e6edf3; --muted: #7d8590; --accent: #58a6ff;
+  --teal: #39d0c7; --green: #3fb950; --yellow: #d29922;
+  --red: #f85149; --purple: #bc8cff; --orange: #e3b341;
+  --sidebar-w: 262px; --toc-w: 210px; --hdr-h: 48px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+body { font-family: -apple-system, sans-serif; background: var(--bg);
+       color: var(--text); line-height: 1.6; }
+.bd-root { display: flex; height: 100vh; overflow: hidden; }
+.bd-sidebar-primary {
+  width: var(--sidebar-w); min-width: var(--sidebar-w);
+  overflow-y: auto; background: var(--card);
+  border-right: 1px solid var(--border);
+  padding: 0.75rem 0; flex-shrink: 0;
+}
+.bd-sidebar-primary::-webkit-scrollbar { width: 4px; }
+.bd-sidebar-primary::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+.bd-main { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-width: 0; }
+.article-header-bar {
+  height: var(--hdr-h); background: var(--card);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; padding: 0 1.5rem;
+  gap: 1rem; flex-shrink: 0;
+}
+.header-brand { color: var(--teal); font-weight: bold; font-size: 0.95em;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 1; }
+.header-brand a { color: inherit; text-decoration: none; }
+.breadcrumb { color: var(--muted); font-size: 0.82em; display: flex;
+  align-items: center; gap: 0.3rem; flex-shrink: 0; }
+.breadcrumb a { color: var(--accent); text-decoration: none; }
+.breadcrumb span { color: var(--border); }
+.bd-article { flex: 1; overflow-y: auto; padding: 2rem 2.5rem; }
+.bd-article::-webkit-scrollbar { width: 6px; }
+.bd-article::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+.bd-sidebar-secondary {
+  width: var(--toc-w); min-width: var(--toc-w);
+  overflow-y: auto; border-left: 1px solid var(--border);
+  padding: 1rem 0.75rem; flex-shrink: 0;
+}
+.bd-sidebar-secondary::-webkit-scrollbar { width: 4px; }
+.bd-sidebar-secondary::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+.sidebar-logo { padding: 0.5rem 1rem 0.75rem;
+  border-bottom: 1px solid var(--border); margin-bottom: 0.5rem; }
+.sidebar-logo a { color: var(--teal); font-weight: bold; font-size: 0.95em;
+  text-decoration: none; display: block; }
+.sidebar-section { color: var(--muted); font-size: 0.72em; font-weight: bold;
+  text-transform: uppercase; letter-spacing: 0.07em;
+  padding: 0.7rem 1rem 0.25rem; }
+.sidebar-nav-link { display: block; padding: 0.28rem 1rem 0.28rem 1.25rem;
+  color: var(--muted); font-size: 0.875em; text-decoration: none; }
+.sidebar-nav-link:hover { color: var(--text); background: rgba(255,255,255,0.03); }
+.sidebar-nav-link.active { color: var(--teal);
+  border-left: 2px solid var(--teal);
+  padding-left: calc(1.25rem - 2px); background: rgba(57,208,199,0.05); }
+.mini-toc-label { color: var(--muted); font-size: 0.72em; font-weight: bold;
+  text-transform: uppercase; letter-spacing: 0.07em; padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border); margin-bottom: 0.5rem; }
+.mini-toc { list-style: none; }
+.mini-toc li a { display: block; padding: 0.22rem 0;
+  color: var(--muted); font-size: 0.83em; text-decoration: none;
+  border-left: 2px solid transparent; padding-left: 0.5rem; }
+.mini-toc li a:hover { color: var(--text); }
+.mini-toc li a.toc-active { color: var(--teal); border-left-color: var(--teal); }
+.section-anchor { scroll-margin-top: calc(var(--hdr-h) + 8px); }
+h1 { color: var(--teal); font-size: 1.7em; margin-bottom: 0.5rem; line-height:1.3; }
+h2 { color: var(--teal); font-size: 1.25em; margin: 1.5rem 0 0.6rem; }
+h3 { color: var(--teal); font-size: 1.05em; margin: 1.2rem 0 0.4rem; }
+h4 { color: var(--teal); font-size: 0.95em; margin: 1rem 0 0.3rem; }
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+p { margin-bottom: 0.8rem; }
+ul, ol { margin: 0 0 0.8rem 1.4rem; }
+li { margin-bottom: 0.3rem; }
+code { background: rgba(255,255,255,0.06); border-radius: 3px; padding: 1px 4px; font-size: 0.9em; }
+blockquote { border-left: 3px solid var(--border); color: var(--muted);
+  padding: 0.2rem 0.8rem; margin-bottom: 0.8rem; }
+.card { background: var(--card); border: 1px solid var(--border);
+        border-radius: 8px; padding: 1.2rem; margin-bottom: 1rem; }
+table { width: 100%; border-collapse: collapse; font-size: 0.9em; margin-bottom: 0.8rem; }
+th { background: var(--card); color: var(--teal); padding: 8px;
+     border: 1px solid var(--border); text-align: left; }
+td { padding: 8px; border: 1px solid var(--border); vertical-align: top; }
+tr:nth-child(even) td { background: rgba(0,0,0,0.2); }
+.stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+             gap: 1rem; margin-bottom: 1.5rem; }
+.stat-box { background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+            padding: 1rem; text-align: center; }
+.stat-num { font-size: 2rem; font-weight: bold; color: var(--teal); }
+.stat-label { color: var(--muted); font-size: 0.85em; margin-top: 0.2rem; }
+.sp-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+           gap: 1rem; margin: 1rem 0; }
+.sp-card { background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+           padding: 1.2rem; cursor: pointer; transition: border-color 0.15s; height:100%; }
+.sp-card:hover { border-color: var(--teal); }
+.sp-card h3 { margin: 0 0 0.5rem; color: var(--teal); font-size: 1em; }
+.sp-card p { margin: 0; color: var(--muted); font-size: 0.88em; }
+.sp-badge { display: inline-block; background: rgba(57,208,199,0.1); color: var(--teal);
+            border-radius: 4px; padding: 2px 8px; font-size: 0.8em; margin-bottom: 0.5rem; }
+.paper-meta { color: var(--muted); font-size: 0.9em; margin-bottom: 1.5rem; }
+.paper-meta a { color: var(--accent); }
+.section-label { color: var(--teal); font-weight: bold; font-size: 0.85em;
+                 text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.4rem; }
+.pill { display: inline-block; border-radius: 4px; padding: 0.15rem 0.6rem;
+        font-size: 0.8em; font-weight: bold; margin-right: 0.4rem; }
+.pill-p0 { background: rgba(63,185,80,0.2); color: var(--green); }
+.pill-p1 { background: rgba(57,208,199,0.15); color: var(--teal); }
+.pill-p2 { background: rgba(210,153,34,0.2); color: var(--yellow); }
+.pill-p3 { background: rgba(188,140,255,0.2); color: var(--purple); }
+.pill-p4 { background: rgba(125,133,144,0.2); color: var(--muted); }
+.delta-row { margin: 0.4rem 0; padding: 0.4rem 0.8rem;
+             border-left: 3px solid var(--border); border-radius: 0 4px 4px 0; }
+.chain { position: relative; padding-left: 2rem; }
+.chain::before { content: ''; position: absolute; left: 0.95rem; top: 0;
+                 bottom: 0; width: 2px; background: var(--border); }
+.chain-node { position: relative; margin-bottom: 2rem; }
+.chain-node::before { content: ''; position: absolute; left: -1.55rem;
+                      top: 1.1rem; width: 12px; height: 12px;
+                      border-radius: 50%; background: var(--teal); }
+.chain-num { display: inline-block; width: 28px; height: 28px; background: var(--teal);
+             color: #000; border-radius: 50%; text-align: center; line-height: 28px;
+             font-weight: bold; font-size: 0.85em; margin-right: 0.6rem; flex-shrink: 0; }
+.chain-q { font-weight: bold; color: var(--text); margin: 0.4rem 0 0.3rem; font-size: 1em; }
+.chain-papers { color: var(--muted); font-size: 0.85em; margin-bottom: 0.6rem; }
+.chain-start { background: var(--card); border: 1px solid var(--teal);
+               border-radius: 8px; padding: 1rem; margin-bottom: 2rem; }
+.chain-start h3 { margin: 0 0 0.5rem; color: var(--teal); }
+.chain-converge { background: var(--card); border: 1px solid var(--green);
+                  border-radius: 8px; padding: 1rem; margin-top: 1rem; }
+.chain-converge h3 { margin: 0 0 0.5rem; color: var(--green); }
+.chain-label { display: inline-block; border-radius: 4px; padding: 0.15rem 0.6rem;
+               font-size: 0.8em; font-weight: bold; margin-right: 0.4rem; }
+.chain-status { border-radius: 0 4px 4px 0; padding: 0.5rem 0.8rem;
+                margin: 0.35rem 0; font-size: 0.88em; }
+.chain-status ul { margin: 0.3rem 0 0 1.2rem; padding: 0; }
+.chain-status li { margin-bottom: 0.25rem; }
+.chain-status.solved  { background: rgba(63,185,80,0.07);  border-left: 3px solid var(--green); }
+.chain-status.remains { background: rgba(210,153,34,0.07); border-left: 3px solid var(--yellow); }
+.chain-status.added   { background: rgba(248,81,73,0.07);  border-left: 3px solid var(--red); }
+.chain-status.pivoted { background: rgba(188,140,255,0.1); border-left: 3px solid var(--purple); }
+.chain-label.solved   { background: rgba(63,185,80,0.2);  color: var(--green); }
+.chain-label.remains  { background: rgba(210,153,34,0.2); color: var(--yellow); }
+.chain-label.added    { background: rgba(248,81,73,0.2);  color: var(--red); }
+.chain-label.pivoted  { background: rgba(188,140,255,0.2); color: var(--purple); }
+.chain-status.expected { background: rgba(88,166,255,0.07);  border-left: 3px solid var(--accent); }
+.chain-label.expected  { background: rgba(88,166,255,0.2);   color: var(--accent); }
+.chain-status.revised  { background: rgba(57,208,199,0.07);  border-left: 3px solid var(--teal); }
+.chain-label.revised   { background: rgba(57,208,199,0.2);   color: var(--teal); }
+.concept-box { border-left: 4px solid var(--teal); background: #0d1f1f;
+               border-radius: 4px; padding: 1.2rem; margin-bottom: 1.2rem; }
+.concept-name { font-weight: bold; color: var(--teal); font-size: 1.05em; margin-bottom: 0.5rem; }
+.hypothesis { border-left: 4px solid var(--teal); background: #0d1f1f;
+              border-radius: 4px; padding: 1rem; margin: 1rem 0; }
+.recommendation { border-left: 4px solid var(--purple); background: #1a0f2e;
+                  border-radius: 4px; padding: 1rem; margin: 1rem 0; }
+.rq-row { background: rgba(88,166,255,0.05); border-left: 3px solid var(--accent);
+          padding: 0.4rem 0.8rem; margin-bottom: 0.5rem; border-radius: 0 4px 4px 0; }
+.scroll-table-wrap { max-height: 420px; overflow-y: auto; border: 1px solid var(--border);
+                     border-radius: 4px; }
+.scroll-table-wrap table { margin-bottom: 0; }
+.scroll-table-wrap thead th { position: sticky; top: 0; background: #161b22; z-index: 1; }
+.page-nav { display: flex; justify-content: space-between; margin-top: 2rem;
+            padding-top: 1rem; border-top: 1px solid var(--border); gap: 1rem; }
+.page-nav a { color: var(--accent); font-size: 0.9em; }
+html.ko-active .en-only { display: none !important; }
+html.ko-active .ko-only { display: block !important; }
+.ko-only { display: none; }
+span.ko-only, .sidebar-logo a span.ko-only { display: none; }
+html.ko-active span.ko-only { display: inline !important; }
+.lang-btn { background: transparent; color: var(--muted); border: 1px solid var(--border);
+            border-radius: 4px; padding: 3px 9px; font-size: 0.8em; cursor: pointer; }
+.lang-btn.active { border-color: var(--teal); color: var(--teal); }
+details { margin-bottom: 0.8rem; }
+details summary { color: var(--muted); cursor: pointer; }
+@media (max-width: 1024px) { .bd-sidebar-secondary { display: none; } }
+@media (max-width: 768px) {
+  .bd-sidebar-primary { display: none; }
+  .bd-root { flex-direction: column; height: auto; overflow: visible; }
+  .bd-main { overflow: visible; }
+  .bd-article { overflow: visible; padding: 1rem; }
+  .stat-grid { grid-template-columns: repeat(2, 1fr); }
+  .sp-grid { grid-template-columns: 1fr; }
+}
+</style>
+
+<script>
+MathJax = { tex: { inlineMath: [['$','$']], displayMath: [['$$','$$']] },
+            options: { skipHtmlTags: ['script','noscript','style','textarea','pre','code'] } };
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<script>
+function toggleLanguage() {
+  const html = document.documentElement;
+  const isKo = html.classList.toggle('ko-active');
+  document.querySelectorAll('.lang-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.lang === (isKo ? 'ko' : 'en'));
+  });
+  localStorage.setItem('survey-lang', isKo ? 'ko' : 'en');
+}
+document.addEventListener('DOMContentLoaded', function() {
+  const saved = localStorage.getItem('survey-lang');
+  if (saved === 'ko') {
+    document.documentElement.classList.add('ko-active');
+    document.querySelectorAll('.lang-btn').forEach(b =>
+      b.classList.toggle('active', b.dataset.lang === 'ko'));
+  } else {
+    document.querySelectorAll('[data-lang="en"]').forEach(b => b.classList.add('active'));
+  }
+  const article = document.querySelector('.bd-article');
+  const sections = Array.from(document.querySelectorAll('.section-anchor[id]'));
+  const sideLinks = Array.from(document.querySelectorAll('.bd-sidebar-primary .sidebar-nav-link'));
+  const tocLinks = Array.from(document.querySelectorAll('.bd-sidebar-secondary .mini-toc a'));
+  if (!article || !sections.length) return;
+  function current() {
+    let id = sections[0].id;
+    const scrollTop = article.scrollTop + 60;
+    sections.forEach(function(s) { if (s.offsetTop <= scrollTop) id = s.id; });
+    return id;
+  }
+  function update() {
+    const id = current();
+    sideLinks.forEach(function(a) {
+      a.classList.toggle('active', a.getAttribute('href') === '#' + id);
+    });
+    tocLinks.forEach(function(a) {
+      a.classList.toggle('toc-active', a.getAttribute('href') === '#' + id);
+    });
+  }
+  article.addEventListener('scroll', update, { passive: true });
+  update();
+});
+</script>
+
+</head>
+<body>
+<div class="bd-root">
+
+<nav class="bd-sidebar-primary">
+  <div class="sidebar-logo">
+    <a href="../index.html">&#x2B21; <span class="en-only">Exposure-Frequency Control Survey</span><span class="ko-only">Exposure-빈도 제어 문헌 조사</span></a>
+  </div>
+  <div class="sidebar-section"><span class="en-only">Overview</span><span class="ko-only">개요</span></div>
+  <a href="../index.html#overview" class="sidebar-nav-link"><span class="en-only">Survey Hub</span><span class="ko-only">조사 허브</span></a>
+  <a href="../index.html#answers" class="sidebar-nav-link"><span class="en-only">Key Answers</span><span class="ko-only">핵심 답변</span></a>
+  <div class="sidebar-section"><span class="en-only">Sub-Problems</span><span class="ko-only">세부 문제</span></div>
+<a href="../sp1_fairness-of-exposure-fixed-scores.html" class="sidebar-nav-link">SP1: <span class="en-only">Exposure fairness</span><span class="ko-only">Exposure 공정성</span></a>
+<a href="../sp2_2024-2026-frontier-llm-era.html" class="sidebar-nav-link">SP2: <span class="en-only">2024–26 frontier / LLM</span><span class="ko-only">2024–26 최전선 / LLM</span></a>
+<a href="../sp3_postproc-rerank-blackbox.html" class="sidebar-nav-link">SP3: <span class="en-only">Post-proc re-ranking</span><span class="ko-only">Post-proc re-ranking</span></a>
+<a href="../sp4_stochastic-ranking-policies.html" class="sidebar-nav-link">SP4: <span class="en-only">Stochastic policies</span><span class="ko-only">확률적 정책</span></a>
+<a href="../sp5_amortized-equity-attention.html" class="sidebar-nav-link">SP5: <span class="en-only">Amortized fairness</span><span class="ko-only">Amortized 공정성</span></a>
+<a href="../sp6_bandit-exposure-allocation.html" class="sidebar-nav-link">SP6: <span class="en-only">Bandit allocation</span><span class="ko-only">Bandit 배분</span></a>
+<a href="../sp7_capping-pacing-feeds-ads.html" class="sidebar-nav-link">SP7: <span class="en-only">Capping &amp; pacing</span><span class="ko-only">Capping·pacing</span></a>
+<a href="../sp8_popularity-debias-calibration.html" class="sidebar-nav-link active">SP8: <span class="en-only">Debiasing &amp; calibration</span><span class="ko-only">Debiasing·calibration</span></a>
+<a href="../sp9_ecosystems-creator-incentives.html" class="sidebar-nav-link">SP9: <span class="en-only">Ecosystems &amp; creators</span><span class="ko-only">생태계·creator</span></a>
+<a href="../sp10_llm-exposure-feedback-loops.html" class="sidebar-nav-link">SP10: <span class="en-only">LLM feedback loops</span><span class="ko-only">LLM feedback loop</span></a>
+<a href="../sp11_strategyproof-exposure.html" class="sidebar-nav-link">SP11: <span class="en-only">Strategy-proofness</span><span class="ko-only">Strategy-proofness</span></a>
+
+  <div class="sidebar-section"><span class="en-only">Synthesis</span><span class="ko-only">종합</span></div>
+  <a href="../conclusion.html" class="sidebar-nav-link"><span class="en-only">Conclusion</span><span class="ko-only">결론</span></a>
+  <a href="../thinking-process.html" class="sidebar-nav-link"><span class="en-only">Thinking Process</span><span class="ko-only">추론 과정</span></a>
+</nav>
+  <div class="bd-main">
+<div class="article-header-bar"><div class="header-brand"><a href="../index.html"><span class="en-only">Exposure-Frequency Control Survey</span><span class="ko-only">Exposure-빈도 제어 문헌 조사</span></a></div><nav class="breadcrumb"><a href="../index.html"><span class="en-only">Survey</span><span class="ko-only">조사</span></a><span>&rsaquo;</span><a href="../sp8_popularity-debias-calibration.html">SP8</a><span>&rsaquo;</span><span>[94] Empowering Long-tail Item Recommendation</span></nav><button class="lang-btn" data-lang="en" onclick="toggleLanguage()">EN</button><button class="lang-btn" data-lang="ko" onclick="toggleLanguage()">KO</button></div>
+    <div class="bd-article">
+<section id="header" class="section-anchor"><div class="paper-meta">
+<h1 style="margin-bottom:0.3rem">Empowering Long-tail Item Recommendation through Cross Decoupling Network (CDN)</h1>
+<p style="margin:0.3rem 0;color:var(--muted)">Zhang et al. · KDD 2023 · 2022</p>
+<p style="margin:0.3rem 0"><a href="https://arxiv.org/abs/2210.14309" target="_blank">arXiv:2210.14309</a> · <a href="https://arxiv.org/pdf/2210.14309.pdf" target="_blank">PDF</a> · SP: <a href="../sp8_popularity-debias-calibration.html">SP8</a></p>
+<p><span class="pill pill-p0">P0</span><span class="pill" style="background:rgba(255,255,255,0.05);color:var(--muted)">Track C</span></p>
+</div>
+<div class="card ko-only" style="border-color:var(--teal)"><div class="section-label">한 줄 요약</div><p style="margin:0">Google의 Cross Decoupling Network(CDN)로 long-tail item 추천을 개선한 production 사례(KDD 2023). double-win 증거의 한 축.</p></div>
+</section>
+<section id="problem" class="section-anchor">
+<div class="card"><div class="section-label"><span class="en-only">Problem</span><span class="ko-only">해결하려는 문제</span></div><p>Two-stage decoupling methods for long-tail learning (representation learning on the original distribution, then classifier re-training on rebalanced data — imported from computer vision, e.g. Kang et al. 2020) lift tail-item performance but suffer a severe forgetting issue in recommendation: head-item knowledge learned in stage 1 is overwritten in stage 2, degrading overall performance. Additionally, existing rebalancing methods (logQ correction, class-balanced reweighting, IPS) correct only the item prior distribution discrepancy p(i) between training and serving, ignoring the discrepancy in user preference given an item p(u|i) — which the paper shows via Bayes' theorem is the second bias term in the estimated softmax (Eq. 2). Two-stage training is also operationally complex for production systems.</p></div>
+</section>
+<section id="solution" class="section-anchor">
+<div class="card"><div class="section-label"><span class="en-only">Solution / Contribution</span><span class="ko-only">해결책 / 기여</span></div><p>Cross Decoupling Network (CDN), co-trained end-to-end:</p>
+<ol><li><strong>Item side</strong>: split features into memorization vs. generalization groups; feed each to dedicated expert sub-networks combined by a frequency-based gate (Eq. 3). Tail-item gradients mostly update the generalization expert, leaving head memorization intact.</li><li><strong>User side</strong>: regularized bilateral branch network — a main branch on the original long-tail distribution Ω_m and a regularizer branch on a rebalanced distribution Ω_r, sharing a user tower.</li><li><strong>Cross learning</strong>: γ-adapter α_t = 1 − (t/(γT))² with γ &gt; 1 mixes the two branch logits, s(i_m, i_r) = α_t y_m^T x_m + (1−α_t) y_r^T x_r, trained with batch softmax (Eq. 8). Inference uses only the main branch: s(u,i) = y_m^T x_m — negligible extra training cost and zero extra serving cost vs. a standard two-tower model.</li></ol></div>
+<div class="card"><div class="section-label"><span class="en-only">Key Results</span><span class="ko-only">주요 결과</span></div><ul><li>MovieLens1M: CDN HR@50 overall 26.75 vs. two-tower 24.68 (+8.39%); head 36.46 vs. 33.83 (+7.77%); tail 11.51 vs. 10.32 (+11.53%) — the only method improving both head and tail simultaneously.</li><li>Rebalancing baselines trade head for tail: LogQ tail HR@50 17.30 (best tail) but overall collapses to 13.37; ClassBalance overall 20.21 with tail down to 5.19.</li><li>BookCrossing: CDN overall HR@50 +8.94%, tail +13.31%, but head NDCG@50 −2.09% vs. two-tower.</li><li>Ablations: user-side-only (UDN) and item-side-only (IDN) each beat two-tower; full cross-decoupling best. Mem/Gen expert split beats Unbalanced/Balanced and Head/Tail expert splits.</li><li>Google production (app-install recommendation): offline AUCLoss −0.27% overall / −0.66% sparse slice (0.1% considered significant); online KPI +1.43% overall, +3.75% on the sparse slice over 14 days.</li></ul></div>
+<details><summary><span class="en-only">5Cs Analysis</span><span class="ko-only">5Cs 분석</span></summary><div class="card" style="margin-top:0.5rem"><p><strong>Category</strong>: new method (production-oriented architecture + training scheme). <strong>Context</strong>: builds on two-tower retrieval with sampling-bias-corrected batch softmax (Yi et al. 2019), decoupling for long-tail vision (Kang et al. 2020 NDP; Zhou et al. 2020 BBN), logQ/logit-adjustment corrections (Menon et al. 2021), and wide-and-deep memorization/generalization framing (Cheng et al. 2016). Predecessor by the same group: dual transfer learning for long-tail items (Zhang et al. 2021). <strong>Correctness</strong>: reports mean ± standard error over 5 trials on public datasets; the Bayes-decomposition motivation (Eq. 2) is a bias identity, not an identifiability proof — the architecture is a heuristic response to it. Google A/B test reported over 14 days. [SKIM — head NDCG on BookCrossing is actually −2.09% vs. two-tower, worth noting against the "preserves head" claim.] <strong>Contributions</strong>: (1) two-source bias decomposition (item prior + user-preference-given-item) for long-tail recommendation; (2) CDN architecture (MoE mem/gen decoupling + regularized bilateral branch + γ-adapter) that lifts tail without the forgetting issue; (3) production case study at Google with offline AUCLoss and online KPI gains. <strong>Clarity</strong>: architecture and loss are fully specified (Eqs. 3–8); reproducible on public datasets modulo hyperparameter details in appendix. No public code link found in the paper.</p></div></details>
+</section>
+<section id="results" class="section-anchor">
+<details><summary><span class="en-only">Concepts Introduced</span><span class="ko-only">도입된 개념</span></summary><div class="card" style="margin-top:0.5rem"><p><strong>Memorization vs. generalization feature split</strong></p>
+<ul><li><strong>What it computes</strong>: input = the model's raw item features → operation = partition into (a) memorization features (categorical, unique-per-item, independent — e.g. item ID embeddings) and (b) generalization features (shared across items or continuous — e.g. category, tags) → output = two disjoint feature groups fed to separate expert networks.</li><li><strong>Why it was created</strong>: item-ID embeddings for tail items get few gradient updates and are noisy; mixing them with content features in one tower lets tail-focused training overwrite head-item knowledge (the "forgetting issue").</li><li><strong>Concrete example</strong>: item ID is a memorization feature (injective map item → embedding, updated only by that item's examples); "movie genre" is a generalization feature (shared across many items).</li><li><strong>How it is used</strong>: defines the inputs to the two expert groups in the item tower (Eq. 3).</li></ul>
+<p><strong>Frequency-gated mixture-of-experts item tower</strong></p>
+<ul><li><strong>What it computes</strong>: input = memorization features i_mm and generalization features i_gen plus item frequency → operation = y = Σ G(i)_k E^mm_k(i_mm) + Σ G(i)_k E^gen_k(i_gen), where the gate g(i) = softmax(W · i_freq) is a learned function of item frequency/popularity → output = item embedding y.</li><li><strong>Why it was created</strong>: head items need more memorization weight, tail items more generalization weight; a static combination cannot adapt per-item.</li><li><strong>Concrete example</strong>: learned gates (Fig. 3) show head items weight the memorization expert higher and tail items weight the generalization expert higher.</li><li><strong>How it is used</strong>: the item-side half of CDN; mitigates the p(u|i) conditional-probability discrepancy.</li></ul>
+<p><strong>Regularized bilateral branch network (user side)</strong></p>
+<ul><li><strong>What it computes</strong>: input = a sample from the original long-tail distribution Ω_m and a sample from a rebalanced distribution Ω_r (head feedback down-sampled to the most-popular-tail frequency) → operation = shared sub-network f(·) plus branch-specific heads h_m, h_r → output = two user representations x_m, x_r.</li><li><strong>Why it was created</strong>: prior two-stage decoupling (train on original, then re-train on rebalanced data) causes catastrophic forgetting of head items; co-training two branches with a shared tower avoids the two-stage switch.</li><li><strong>How it is used</strong>: the user-side half of CDN; targets the item-prior p(i) discrepancy. Only the main branch is used at serving time (zero extra serving cost).</li></ul>
+<p><strong>γ-adapter</strong></p>
+<ul><li><strong>What it computes</strong>: input = training epoch t, total epochs T, hyperparameter γ &gt; 1 → operation = α_t = 1 − (t/(γT))², used as the mixing weight s = α_t·y_m^T x_m + (1−α_t)·y_r^T x_r and in the loss → output = a schedule that softly shifts training attention toward tail items while never letting focus leave the main branch (guaranteed by γ &gt; 1).</li><li><strong>Why it was created</strong>: BBN's adapter (γ = 1) treats the balanced branch as equally important, which fails when the test distribution is itself long-tail; γ &gt; 1 keeps the main branch dominant.</li><li><strong>Concrete example</strong>: performance improves sharply as γ grows up to ≈5 then saturates; too-large γ can hurt tail items (γ = 4 example in Fig. 4).</li><li><strong>How it is used</strong>: the "cross" in cross-decoupling — fuses user-side and item-side decoupled representations during training.</li></ul></div></details>
+<details><summary><span class="en-only">Implementation Feasibility</span><span class="ko-only">구현 가능성</span></summary><div class="card" style="margin-top:0.5rem"><ul><li><strong>Needs</strong>: two-tower retrieval backbone with batch softmax, item frequency statistics for the gate, a rebalanced data sampler (down-sample head feedback to top-tail frequency), MovieLens1M / BookCrossing for reproduction; modest compute (co-training adds negligible cost per the paper).</li><li><strong>Code</strong>: not available (no repository link in the paper).</li><li><strong>Modifications</strong>: for our exposure-lift benchmarking, would need to add exposure-distribution metrics (item coverage, Gini over recommended slates) on top of the reported HR/NDCG slices; head/tail split thresholds (top 20% ML1M, top 0.1% BookCrossing) must be replicated exactly for comparability.</li><li><strong>Unknowns</strong>: missing link: expert counts n1/n2, embedding dims, and γ values used per dataset [SKIM — check appendix/Section 4 details]; missing link: how the rebalanced Ω_r sampler behaves when tail feedback is nearly zero.</li></ul></div></details>
+<details><summary><span class="en-only">Follow-up Papers</span><span class="ko-only">관련 후속 논문</span></summary><div class="card" style="margin-top:0.5rem"><ul><li>Zhang et al., "A Model of Two Tales: Dual Transfer Learning Framework for Improved Long-tail Item Recommendation" (WWW 2021) — same group's predecessor; meta-learning approach the paper rejects for 2× training cost, useful as the cost side of the lift-vs-cost record.</li><li>Kang et al., "Decoupling Representation and Classifier for Long-Tailed Recognition" (ICLR 2020) — the two-stage decoupling method (NDP baseline) whose forgetting issue CDN is built to fix.</li><li>Menon et al., "Long-tail Learning via Logit Adjustment" (ICLR 2021) — the logQ-style correction representing the deployed prior-only intervention class CDN improves on.</li><li>Zheng et al., "Disentangling User Interest and Conformity for Recommendation with Causal Embedding" (WWW 2021) — cited as the academic long-tail/popularity-bias line; connects to the survey's causal-debiasing track.</li></ul></div></details>
+</section>
+<section id="delta" class="section-anchor">
+<div class="card"><div class="section-label"><span class="en-only">Condition Delta — transfer to our setting</span><span class="ko-only">조건 차이 — 우리 설정으로의 전이</span></div><p><strong>Paper's setting</strong>: inputs = user/item feature vectors with rich content features in a two-tower retrieval model; outputs = engagement prediction (click/install) via batch softmax; conditions = highly skewed long-tail item feedback (production IF &gt; 100,000), training = co-training with rebalanced regularizer branch, hard constraint that overall/head performance must not regress. <strong>Our setting</strong> (SP8, exposure-frequency-as-ranking-proxy survey): studying interventions that lift long-tail item exposure and their utility cost — building the long-tail-lift-vs-utility-cost empirical record, and mapping which interventions modify the model itself vs. act on the ranking/output. <strong>Differences</strong>:</p>
+<ul><li>Intervention locus: CDN modifies the model architecture and training distribution (not a post-hoc re-ranker or score adjustment) — resolved: record CDN in the O2 feasibility map as a model-level intervention with zero serving-cost delta.</li><li>Metric of interest: paper reports accuracy on tail/head/overall slices (HR/NDCG), giving the lift-vs-cost trade-off empirically (Tables 2–4); it does not directly report exposure/frequency-of-recommendation shifts — missing link: exposure-distribution change (e.g. Gini/coverage of recommended items) is not measured.</li><li>Popularity signal usage: item frequency is used as a gating input, i.e. exposure frequency is an explicit model feature here rather than a proxy under critique — reference only.</li><li>Scale: production IF &gt; 100,000 vs. public benchmarks; the production case study redefines slices as dense/sparse rather than head/tail — reference only.</li></ul></div>
+<div class="card"><div class="section-label"><span class="en-only">Root-cause vs. Symptom</span><span class="ko-only">근본 원인 대 증상</span></div><p><strong>Mixed.</strong> The paper does identify the structural root of long-tail bias (a two-term Bayes decomposition: prior discrepancy p(i) and conditional discrepancy p(u|i)) and designs one component per term, which is more root-cause-directed than pure reweighting baselines; but the actual fix is a heuristic architecture (frequency-gated experts, hand-scheduled γ-adapter) with no guarantee that either discrepancy term is driven to zero, and the forgetting issue is mitigated by soft scheduling rather than eliminated.</p></div>
+</section>
+<div class="page-nav"><a href="93_ArtistExposure.html">&larr; [93] ArtistExposure</a><a href="../sp8_popularity-debias-calibration.html">&uarr; SP8</a><a href="95_DynamicExposure.html">[95] DynamicExposure &rarr;</a></div>
+    </div>
+  </div>
+<nav class="bd-sidebar-secondary"><div class="mini-toc-label"><span class="en-only">On this page</span><span class="ko-only">이 페이지</span></div><ul class="mini-toc"><li><a href="#header"><span class="en-only">Paper info</span><span class="ko-only">논문 정보</span></a></li><li><a href="#problem"><span class="en-only">Problem</span><span class="ko-only">문제</span></a></li><li><a href="#solution"><span class="en-only">Solution &amp; Results</span><span class="ko-only">해결책 · 결과</span></a></li><li><a href="#results"><span class="en-only">Concepts &amp; Follow-ups</span><span class="ko-only">개념 · 후속</span></a></li><li><a href="#delta"><span class="en-only">Condition Delta</span><span class="ko-only">조건 차이</span></a></li></ul></nav>
+</div>
+</body>
+</html>
